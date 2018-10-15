@@ -1,0 +1,282 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+
+class Konta extends CI_Controller
+{
+
+
+    function __construct()
+
+    {
+
+        parent::__construct();
+
+    }
+
+
+    public function new_klasa()
+
+    {
+
+        $this->load->model('konta/konta_model');
+        //$this->load->model('podatoci/grad_model');
+        //   $data['grad']=$this->grad_model->get_grad_dropdown();
+        //  $data['grad']=$this->podatoci_model->get_grad_dropdown();
+        //$data['oddel']        = $this->start_model->get_oddel();
+        //$data['pododdel']     = $this->start_model->get_pododdel();
+        $this->load->view('konta/klasi/nova_klasa');
+
+    }
+    public function nova_grupa()
+    {
+        $this->load->model('konta/konta_model');
+        $klasa=$this->konta_model->getKlasa($this->input->get('klasaid'));
+        $data['idnaklasa'] =$klasa[0]->id ;
+        $data['opisnaklasa'] = $klasa[0]->opis ;
+        $data['sifranaklasa'] = $klasa[0]->sifra ;
+        $this->load->view('konta/klasi/nova_grupa', $data);
+    }
+    public function novo_konto()
+    {
+        $this->load->model('konta/konta_model');
+
+      $grupa=$this->konta_model->getGrupa($this->input->get('klasaid'));
+       $klasa=$this->konta_model->getKlasa($grupa[0]->parent_klasa);
+        $data['idnaklasa'] =$klasa[0]->id ;
+        $data['idnagrupa'] =$grupa[0]->id ;
+        $data['opisnaklasa'] = $klasa[0]->opis ;
+        $data['sifranaklasa'] = $klasa[0]->sifra ;
+        $data['opisnagrupa'] = $grupa[0]->opis ;
+        $data['sifranagrupa'] = $grupa[0]->sifra ;
+        $this->load->view('konta/klasi/novo_konto', $data);
+    }
+
+    public function create_klasa()	{
+        $this->load->model('konta/konta_model');
+        if ($query = $this->konta_model->create_klasa()) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+    public function create_grupa()	{
+        $this->load->model('konta/konta_model');
+        if ($query = $this->konta_model->create_grupa()) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+    public function create_konto()	{
+        $this->load->model('konta/konta_model');
+        if ($query = $this->konta_model->create_konto()) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+
+    public function view_klasa()
+
+    {
+        $this->load->model('konta/konta_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $firmi = $this->konta_model->getAll_klasa();
+        $data['konto'] = $this->plan_model->konto_dropdown();
+         //print_r($firmi); die();
+        $data['firma'] = $firmi;
+
+        $this->load->view('konta/klasi/klasa_form', $data);
+
+    }
+
+
+    public function delete_klasa()
+    {
+
+
+        $this->load->model('konta/konta_model');
+        $this->konta_model->delete_klasa($this->input->get('klasaid'));
+        echo "ok";
+
+
+    }
+    public function filtriraj_po_konto(){
+        $konto=$this->input->post('konto');
+
+        $this->load->model('konta/konta_model');
+        $query = $this->konta_model->filtriraj_po_konto($konto);
+      //  print_r($query); die();
+        echo json_encode($query);
+
+    }
+
+    public function izmeni_konto()
+    {
+        $this->load->model('konta/konta_model');
+        $id=$this->input->get('id');
+        $klasa=$this->konta_model->getKlasa($id);
+       // $data['adresa']=$firma[0]->adresa;
+       // $data['danocenbroj']=$firma[0]->danocenbroj;
+        $data['id'] =$id ;
+//        if ($klasa[0]->parent_klasa==0 AND $klasa[0]->parent_grupa==0 ){
+            //LOAD FIRMA SETTINGS
+            $data['tip']='klasa';
+            $data['opisnaklasa'] = $klasa[0]->opis ;
+            $data['sifranaklasa'] = $klasa[0]->sifra ;
+//        }elseif ($klasa[0]->parent_klasa !=0 AND $klasa[0]->parent_grupa==0 ){
+//            //LOAD ODEL
+//
+//
+//            $klasaklasa=$this->konta_model->getKlasa($klasa[0]->parent_klasa);
+//            $data['tip']='grupa';
+//
+//            $data['opisnaklasa'] = $klasaklasa[0]->opis ;
+//            $data['sifranaklasa'] = $klasaklasa[0]->sifra ;
+//
+//
+//            $data['opisnagrupa'] = $klasa[0]->opis ;
+//            $data['sifranagrupa'] = $klasa[0]->sifra ;
+//
+//
+//        }elseif ($klasa[0]->parent_klasa !=0 AND $klasa[0]->parent_grupa !=0 ){
+//            //LOAD PODODEL
+//            $klasaklasa=$this->konta_model->getKlasa($klasa[0]->parent_klasa);
+//            $klasagrupa=$this->konta_model->getKlasa($klasa[0]->parent_grupa);
+//            $data['tip']='konto';
+//
+//            $data['opisnaklasa'] = $klasaklasa[0]->opis ;
+//            $data['sifranaklasa'] = $klasaklasa[0]->sifra ;
+//
+//
+//            $data['opisnagrupa'] = $klasagrupa[0]->opis ;
+//            $data['sifranagrupa'] = $klasagrupa[0]->sifra ;
+//
+//            $data['opisnakonto'] = $klasa[0]->opis ;
+//            $data['sifranakonto'] = $klasa[0]->sifra ;
+//
+//        }
+
+        $this->load->view('konta/klasi/edit_klasa_form', $data);
+
+    }
+    public function povrzi_konto()
+    {
+        $this->load->model('konta/konta_model');
+        $id=$this->input->get('id');
+        $klasa=$this->konta_model->getKlasa($id);
+        // $data['adresa']=$firma[0]->adresa;
+        // $data['danocenbroj']=$firma[0]->danocenbroj;
+        $pole=$klasa[0]->sifra;
+        for($i=0; $i <= strlen($pole); $i++){
+            if($pole[0]=='1' && $pole[1]=='2'){
+                $data['test']='12';
+            }
+            else if($pole[0]=='1' && $pole[1]=='9'&& $pole[2]=='8' ){
+                $data['test'] ='198';
+
+            }
+            else if($pole[0]=='3' && $pole[1]=='1' && $pole[2]=='0' ){
+                $data['test']='310';
+            }
+            else $data['test']='0';
+        }
+        $data['id'] =$id ;
+//        if ($klasa[0]->parent_klasa==0 AND $klasa[0]->parent_grupa==0 ){
+        //LOAD FIRMA SETTINGS
+
+        $data['tip']='klasa';
+        $data['opisnaklasa'] = $klasa[0]->opis ;
+        $data['sifranaklasa'] = $klasa[0]->sifra ;
+        $data['trosok_konto'] =$klasa[0]->trosok_konto;
+        $data['materijalno_konto'] =$klasa[0]->materijalno_konto;
+        $data['materijalno_zatvoranje'] =$klasa[0]->materijalno_zatvoranje;
+
+//        }elseif ($klasa[0]->parent_klasa !=0 AND $klasa[0]->parent_grupa==0 ){
+//            //LOAD ODEL
+//
+//
+//            $klasaklasa=$this->konta_model->getKlasa($klasa[0]->parent_klasa);
+//            $data['tip']='grupa';
+//
+//            $data['opisnaklasa'] = $klasaklasa[0]->opis ;
+//            $data['sifranaklasa'] = $klasaklasa[0]->sifra ;
+//
+//
+//            $data['opisnagrupa'] = $klasa[0]->opis ;
+//            $data['sifranagrupa'] = $klasa[0]->sifra ;
+//
+//
+//        }elseif ($klasa[0]->parent_klasa !=0 AND $klasa[0]->parent_grupa !=0 ){
+//            //LOAD PODODEL
+//            $klasaklasa=$this->konta_model->getKlasa($klasa[0]->parent_klasa);
+//            $klasagrupa=$this->konta_model->getKlasa($klasa[0]->parent_grupa);
+//            $data['tip']='konto';
+//
+//            $data['opisnaklasa'] = $klasaklasa[0]->opis ;
+//            $data['sifranaklasa'] = $klasaklasa[0]->sifra ;
+//
+//
+//            $data['opisnagrupa'] = $klasagrupa[0]->opis ;
+//            $data['sifranagrupa'] = $klasagrupa[0]->sifra ;
+//
+//            $data['opisnakonto'] = $klasa[0]->opis ;
+//            $data['sifranakonto'] = $klasa[0]->sifra ;
+//
+//        }
+        //print_r($klasa); die();
+
+        $this->load->view('konta/klasi/povrzi_klasa_form', $data);
+
+    }
+
+    public function getKlasi()
+    {
+        $this->load->model('konta/konta_model');
+        $query = $this->konta_model->getKlasi();
+        echo json_encode($query);
+    }
+    public function getGrupi()
+    {
+        $this->load->model('konta/konta_model');
+        $query = $this->konta_model->getGrupi($this->input->post("id"));
+        echo json_encode($query);
+    }
+
+    public function getKonta()
+    {
+        $this->load->model('konta/konta_model');
+        $query = $this->konta_model->getKonta($this->input->post("id"));
+        echo json_encode($query);
+    }
+
+    public function update_klasa()
+    {
+        $this->load->model('konta/konta_model');
+        $query = $this->konta_model->update_klasa();
+        if ($query) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+    public function povrzi_konta()
+    {
+        $this->load->model('konta/konta_model');
+        $query = $this->konta_model->povrzi_konta();
+        if ($query) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+    public function setKlasa(){
+        $klasaid=$this->input->get("klasaid");
+        $query = $this->session->set_userdata($klasaid);
+
+    }
+
+
+}

@@ -1,0 +1,24 @@
+<?php
+    $this->load->helper('lista_helper.php');
+    $modul="zirosmetka";
+    $buttons=array("nov_zirosmetka()"=>"Нова сметка") ;
+    $collons=array("delete"=>"",
+                    "edit"=>"",
+                    "frimakolona"=>"Фирма",
+                   "bankakolona"=>"Банка",
+                   "zirosmetkakolona"=>"Жиросметка"
+                  );
+    tabela($modul,$buttons,$collons);
+?>
+<script>
+jQuery(document).ready(function(){
+    jQuery(".zirosmetka-tabela").tablesorter();
+    zirosmetka_popolnilista();
+    jQuery(".zirosmetka-tabela .edit-tr").live("click",function(){
+        izmeni_zirosmetka(jQuery(this).parent().parent().attr("id"));
+    });
+    jQuery(".zirosmetka-tabela .delete-tr").live("click",function(){
+        delete_zirosmetki(jQuery(this).parent().parent().attr("id"));
+    });
+});
+</script>

@@ -1,0 +1,8 @@
+<button type="button" value="" class="button bnovdogovor"><span>Нов договор</span></button>
+ <script>
+     jQuery(document).ready(function () {
+         jQuery('.bnovdogovor').click(function () {
+             nov_dogovor();
+         });
+     });
+ </script>

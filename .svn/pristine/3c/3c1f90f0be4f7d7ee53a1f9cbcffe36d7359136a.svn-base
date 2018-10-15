@@ -1,0 +1,43 @@
+<div class="editklasa">
+    <form method="post" action="/index.php/finansiski_plan/plan/update_stavka">
+        <input type="hidden" name="id" value="<?php echo $id ?>" />
+
+        Конто :<br/>
+        <select name="konto" >
+            <option value="0"></option>
+            <?php foreach ($planmodel->getKonta() as $konta) { ?>
+            <option value="<?php  echo $konta->id  ?>" <?php echo ($konta->sifra == $konto ? "selected" : "") ?>><?php  echo $konta->sifra  ?>  </option>
+            <?php } ?>
+        </select><br/>
+        Назив:<br />
+        <input type="text" value="<?= $nazivnastavka ?>" name="naziv"><br /><br/>
+        Квартал 1:<br />
+        <input type="text" value="<?= $k1;?>" name="k1" class="kvartal k1"><br />
+        Квартал 2:<br />
+        <input type="text" value="<?= $k2;?>" name="k2" class="kvartal k2"><br />
+        Квартал 3:<br />
+        <input type="text" value="<?= $k3;?>" name="k3" class="kvartal k3"><br />
+        Квартал 4:<br />
+        <input type="text" value="<?= $k4;?>" name="k4" class="kvartal k4"><br />
+        Вкупно :<br />
+        <input type="text" value="<?= $vk;?>" readonly="" name="vkupno" class="vkupno"><br />
+
+        <input type="button" class="ajaxstavkiupdate button" value="Измени"><br/>
+   </form>
+</div>
+
+
+<script>
+    jQuery(document).ready(function () {
+        var vk=0;
+        jQuery(".kvartal").live('blur', function () {
+            var k1 = 1* jQuery('.k1').val();
+            var k2 = 1* jQuery('.k2').val();
+            var k3 = 1* jQuery('.k3').val();
+            var k4 = 1* jQuery('.k4').val();
+            vk=  k1+k2+k3+k4 ;
+
+            jQuery('.vkupno').val(vk);
+        }  );
+    });
+</script>

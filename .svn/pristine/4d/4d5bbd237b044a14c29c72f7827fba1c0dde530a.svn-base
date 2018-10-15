@@ -1,0 +1,192 @@
+<?php
+
+class Klient_model extends CI_Model{
+
+
+    public function create_klient()
+    {
+        $new_field_insert_data = array(
+            'ime' => $this->input->post('ime'),
+            'sifrall' => $this->input->post('sifrall'),
+            'adresa' => $this->input->post('adresa'),
+            'klTipID' => $this->input->post('klTipID'),
+            'gradID' => $this->input->post('grad'),
+            'phone1' => $this->input->post('phone1'),
+            'phone2' => $this->input->post('phone2'),
+            'phone3' => $this->input->post('phone3'),
+            'phone4' => $this->input->post('phone4'),
+            'fax' => $this->input->post('fax'),
+            'email' => $this->input->post('email'),
+            'kontakt' => $this->input->post('kontakt'),
+            'pozicija' => $this->input->post('pozicija'),
+            'ziroSka' => $this->input->post('ziroSka'),
+            'edb' => $this->input->post('edb'),
+            'bankaDBroj' => $this->input->post('banka'),
+            'kontFlag' => $this->input->post('kontFlag'),
+            'kojGoVodiID' => $this->input->post('kojGoVodiID'),
+            'komentar' => $this->input->post('komentar'),
+            'komercID' => $this->input->post('komerc')
+
+
+        );
+
+        $insert = $this->db->insert('firma', $new_field_insert_data);
+        return $insert;
+    }
+
+    public function getAll()
+    {
+        $this->db->select('
+                   firma.firmaID,
+                   firma.ime,
+                   firma.sifrall,
+                   firma.adresa,
+                   firma.phone1,
+                   firma.phone2,
+                   firma.email,
+                   firma.fax,
+                   firma.kontakt,
+                   firma.komentar,grad.GradIme as grad_ime');
+        $this->db->from('firma');
+       $this->db->join('grad','firma.gradID=grad.GradID');
+        //$this->db->join('banka','firma.bankaDBroj=banka.bankaID');
+        //$this->db->join('komerc','firma.komercID=komerc.komercID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+
+    }
+    public function getKlienti($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('firma');
+        $this->db->where("komercID",$id);
+
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function delete_klient(){
+
+        $this->db->where('firmaID', $this->uri->segment(4));
+
+        $this->db->delete('firma');
+    }
+
+    public function edit_klient(){
+
+        $this->db->where('firmaID', $this->uri->segment(4));
+
+        $query = $this->db->get('firma');
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+
+    }
+    public function getPregled($gradid, $tipid)
+    {
+
+        $this->db->select('
+                   firma.ime,
+                   firma.sifrall,
+                   firma.adresa,
+                   firma.phone1,
+                    firma.fax,
+                   firma.email,
+                   firma.kontakt');
+        $this->db->from('firma');
+       // $this->db->join('grad','firma.gradID=grad.GradID');
+        //$this->db->join('banka','firma.bankaDBroj=banka.bankaID');
+        //$this->db->join('komerc','firma.komercID=komerc.komercID');
+        if($gradid!=0) $this->db->where('firma.gradID', $gradid);
+        if($tipid!=0)$this->db->where('firma.kontFlag', $tipid);
+
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+
+    public function update_klient()
+    {
+        $field_update_data = array(
+            'ime' => $this->input->post('ime'),
+            'sifrall' => $this->input->post('sifrall'),
+            'adresa' => $this->input->post('adresa'),
+            'klTipID' => $this->input->post('klTipID'),
+            'gradID' => $this->input->post('grad'),
+            'phone1' => $this->input->post('phone1'),
+            'phone2' => $this->input->post('phone2'),
+            'phone3' => $this->input->post('phone3'),
+            'fax' => $this->input->post('fax'),
+            'email' => $this->input->post('email'),
+            'kontakt' => $this->input->post('kontakt'),
+            'ziroSka' => $this->input->post('ziroSka'),
+            'edb' => $this->input->post('edb'),
+            'bankaDBroj' => $this->input->post('banka'),
+            'kontFlag' => $this->input->post('kontFlag'),
+            'kojGoVodiID' => $this->input->post('kojGoVodiID'),
+            'komentar' => $this->input->post('komentar'),
+            'komercID' => $this->input->post('komerc')
+
+        );
+
+        $this->db->where('firmaID', $this->input->post('firmaID'));
+        $update = $this->db->update('firma', $field_update_data);
+        return $update;
+    }
+
+
+
+        function get_all_grad()
+    {
+        $this->db->select('gradID');
+        $this->db->from('firma');
+        $query = $this->db->get();
+
+        return $query;
+
+    }
+    function get_all_komerc()
+    {
+        $this->db->select('komercID');
+        $this->db->from('firma');
+        $query = $this->db->get();
+
+        return $query;
+
+    }
+    function get_komerc_klient($id){
+        $this->db->select('firmaID,ime');
+        $this->db->from('firma');
+        $this->db->where('komercID',$id);
+        $query=$this->db->get();
+        return $query;
+    }
+
+
+}

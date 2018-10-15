@@ -1,0 +1,52 @@
+<?php
+$CI =& get_instance();
+$CI->load->model('start/start_model');
+$firmi = $CI->start_model->getFirmi();
+$UlogaFirmiPermisii = $CI->session->userdata('firmi');
+$firma_id=$CI->session->userdata('firma_id');
+if (!is_array($UlogaFirmiPermisii)){
+    $UlogaFirmiPermisii=array();
+}
+
+//echo "bbb" . $CI->session->userdata('firmaid');
+?>
+
+
+<select class="firmadropdown" name="firmaid"><?php
+    foreach ($firmi as $row) {
+        if (in_array($row->id, $UlogaFirmiPermisii)) {
+
+
+            ?>
+            <option value="<?= $row->id ?>" <?php echo ($firma_id == $row->id ? "selected" : "") ?> class="firmafirma"><?= $row->ime ?></option><?php
+        }
+        $odeli = $CI->start_model->getOdeli($row->id);
+        foreach ($odeli as $rowodel) {
+
+            if (in_array($rowodel->id, $UlogaFirmiPermisii)) {
+                ?>
+                <option value="<?= $rowodel->id ?>" <?php echo ($firma_id == $rowodel->id ? "selected" : "") ?> class="firmaodel" ><?= $row->ime ?> : <?= $rowodel->ime ?> </option>
+            <?php
+            }
+        }
+    }
+    ?>
+</select>
+<script>
+    function firma_updateMomentalna() {
+        jQuery.ajax({
+            url: '/index.php/start/firma/setFirma',
+            type: 'POST',
+            data: {firma_id: jQuery(".firmadropdown").val(), firma_ime: jQuery(".firmadropdown option:selected").text().trim()}
+        });
+
+    }
+    function refreshpage() {
+        document.location = "";
+    }
+    jQuery(".firmadropdown").change(function () {
+        firma_updateMomentalna();
+        setTimeout('refreshpage()', 1000);
+    });
+    firma_updateMomentalna();
+</script>

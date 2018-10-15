@@ -1,0 +1,95 @@
+<div class="novklient">
+    <form action="/index.php/podatoci/klienti/create_klient" method="post">
+
+            <div class="novklient-levomeni">
+<fieldset>
+ <legend>Податоци за клиент</legend>
+            Име : <br/> <input type="text" name="ime" class="nklient"><br/>
+
+            Адреса:<br/> <input type="text" name="adresa"  class="nklient"><br/>
+
+            Град <br/>   <input type="text" name="gradID" class="nklientgrad">
+
+            Телефон1 :<br/> <input type="text" name="phone1" class="nklienttelefon" >
+
+            Телефон2 :  <input type="text" name="phone2" class="nklienttelefon" >   <br/>
+
+
+
+
+             Факс : <br/>  <input type="text" name="fax" class="nklient" ><br/>
+
+             Е-пошта :<br/>  <input type="text" name="email" class="nklient" ><br/>
+</fieldset>
+            </div>
+        <br/>
+        <br/>
+
+            <div class="novklient-desnomeni">
+                Лого:
+                <input type="file" name="sliki[]"/><br/>
+                Тип на клиент:<br/>
+                <select name="klTipID">
+                    <option value="0">A</option>
+                    <option value="1">B</option>
+                </select><br/>
+                Жиро сметка : <br/>
+                <input type="text" name="ziroSka"  ><br/>
+                <label>Банка: </label>   <br/>
+                <select name="bankaDBroj">
+                    <option value="0"></option>
+                    <?php foreach ($banka as $bankaid => $bankavalue) { ?>
+                <option value="<?php  echo $bankaid  ?>"<?php  echo $bankavalue  ?></option>
+                <?php } ?>
+                </select><br/>
+                Даночен број: <br/>
+                <input type="text" name="edb" class="edb"><br/>
+                Тип на клиент:<br/>
+                <select name="kontFlag">
+                    <option value="1">Фирма</option>
+                    <option value="2">интерно конто</option>
+                    <option value="3">физичко лице</option>
+                </select><br/>
+            </div>
+        <br/>
+        <br/>
+           <div class="clear"></div>
+           <div class="novartikl-podmeni">
+               <fieldset class="podatocizakontakt">
+                   <legend>Податоци за контакт лице</legend>
+               <div class="novklient-levomeni">
+                   Контакт :
+                   <input type="text" name="kontakt"  ><br/>
+                   Позиција :
+                   <input type="text" name="pozicija"  ><br/>
+
+
+                   Мобилен1 : <br/>
+                   <input type="text" name="phone3" ><br/>
+
+                   Мобилен2 : <br/>
+                   <input type="text" name="phone4" ><br/>
+               </div>
+
+               </fieldset>
+
+           </div>
+
+
+
+
+            <label>Коментар :</label>
+            <textarea style="overflow-y:scroll;width:99%;resize: none;" class="komentar" name="komentar"></textarea>
+
+
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="klient_popolnilista()" poraka_uspesno="Клиентот е успешно снимен"
+                poraka_neuspesno="Грешка при снимање на клиент"
+                ><span>Сними</span></button>
+
+
+        <br/>
+    </form>
+
+</div>

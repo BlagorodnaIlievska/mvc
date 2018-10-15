@@ -1,0 +1,29 @@
+<?php
+if (!isset($ajax)) $ajax = 0;
+if (isset($_GET['ajax'])) {
+    $ajax = $_GET['ajax'];
+}
+if ($ajax != 1)
+    $this->load->view('includes/header');
+?>
+
+<?php
+if ($ajax != 1) $this->load->view('includes/menu');
+?>
+<?php
+if ($ajax != 1) {
+    ?>
+<div class="wrapper">
+    <div class="content-wrapper">
+        <?php
+}
+$this->load->view($main_content);
+if ($ajax != 1) {
+    ?>
+    </div>
+</div>
+    <?php } ?>
+<?php
+if ($ajax != 1)
+    $this->load->view('includes/footer');
+?>

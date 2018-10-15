@@ -1,0 +1,72 @@
+<div class="novodlivpriliv">
+    <form action="/index.php/kasi/kasi/create_nov_odliv_priliv" method="post">
+        <input type="hidden" class="faktura_id" value="<?=$query[0]->dbid;?>">
+        <input type="hidden" class="oddel-kasa" name="firma_id"/>
+        <input type="hidden" class="faktura_id" name="konto" value="<?=$query[0]->konto;?>">
+        <fieldset>
+            <legend>Нова каса</legend>
+            <label>Каса: </label>
+            <?php echo form_dropdown('kasi', $kasi, '', 'class="kasi-dropdown"'); ?><br/>
+            <label>Пациент :</label>
+            <?= $query[0]->pacientIme." ".$query[0]->pacientPrezime; ?><br/>
+            <label>За фактура број: </label>
+            <span class="arhivskibroj"><?= $query[0]->broj ?></span>
+            <input type="hidden" name="fakturabroj" class="fakturabroj" value="<?= $query[0]->broj ?>">
+            <input type="hidden" name="faktura_dbid" class="faktura_dbid"  value="<?= $query[0]->dbid ?>">
+            <input type="hidden" name="pacient_id" class="pacient_id" value="<?= $query[0]->pacientID ?>">
+            <br/>
+            Пакет : <?echo $query[0]->paket;?>   <br>
+            Референтна цена <? echo $query[0]->ref_cena;?>  <br>
+            <? $d=date("Y-m-d");?>
+             Датум :
+            <input type="text" name="datum" class="datum big" value=<? echo $d;?> > <br>
+            <label>Одлив</label>  <br>
+            <input type="text" name="odliv" class="odliv medium">  <br>
+            <label>Прилив</label>  <br>
+            <input type="text" name="priliv" class="priliv medium" value="<?= $query[0]->iznos ?>">   <br>
+            <label>Забелешка</label><br>
+            <textarea style="overflow-y:scroll;resize: none;" class="zabeleska" name="zabeleska"></textarea>
+            </textarea><br/>
+        </fieldset>
+
+        <div class="snimi-kasa">
+            <button type="button" class="button snimikasapriem"><span>Сними</span></button>
+
+        </div>
+    </form>
+</div>
+<script>
+    jQuery(document).ready(function() {
+        jQuery(".oddel-kasa").val(jQuery(".firmadropdown").val());
+        var kasaid = jQuery('.ddkasa option:selected').val();
+        jQuery('.datum1').datepicker({dateFormat:'yy-mm-dd'});
+        jQuery('.odliv1').blur(function(){
+            if( jQuery('.odliv1').val().length >= 1 )
+            {
+                jQuery('.priliv1').val("");
+                jQuery('.s-kasa').attr("disabled", false);
+                jQuery('.s-brojfaktura').attr("disabled", false);
+            }
+        });
+        jQuery('.priliv1').blur(function(){
+            if( jQuery('.priliv1').val().length >= 1 )
+            {
+                jQuery('.odliv1').val("");
+                jQuery('.s-kasa').attr("disabled", false);
+                jQuery('.s-brojfaktura').attr("disabled", false);
+            }
+        });
+        jQuery('.snimikasapriem').click( function () {
+            var kopce = jQuery(this);
+            snimiKasa(kopce);
+        });
+//        jQuery(".cmd-printlink-kasa").click(function(e){
+//
+//                var kasa = jQuery('.kasi-dropdown option:selected').val();
+//                var faktura_id=jQuery('.faktura_id').val();
+//                console.log(faktura_id);
+//                jQuery(".cmd-printlink-kasa").attr("href","/index.php/print/pdf?view=/index.php/kasi/kasi/print_kasa_od_bolnicko&kasaid="+ kasa+ "&fakturaid=" + faktura_id);
+//
+//        });
+    });
+</script>

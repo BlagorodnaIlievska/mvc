@@ -1,0 +1,28 @@
+<div class="nov-pridones">
+    <form action="/index.php/plata_podatoci/pridonesi/update_pridonesi" method="post">
+        <fieldset>
+            <input type="hidden" name="id" value="<?php echo $pridones->id  ?>"/>
+            <legend>Измени придонеси</legend>
+            Назив:<br/>
+            <input type="text" name="naziv" value="<?php echo $pridones->naziv ?>"/><br/>
+            Жиросметка:<br/>
+            <input type="text" name="zirosmetka" value="<?php echo $pridones->zirosmetka ?>"/><br/>
+            Стапка:<br/>
+            <input type="text" name="stapka" value="<?php echo $pridones->stapka ?>"/><br/>
+            Цел на уплата:<br/>
+            <input type="text" name="cel_na_uplata" value="<?php echo $pridones->cel_na_uplata ?>"/><br/>
+            Повикувачки број:<br/>
+            <input type="text" name="povikuvacki_broj" value="<?php echo $pridones->povikuvacki_broj ?>"/><br/>
+            Банка депонент:<br/>
+            <input type="text" name="banka_id" value="<?php echo $pridones->banka_id ?>"/><br/>
+            Уплатна сметка:<br/>
+            <input type="text" name="uplatna_smetka" value="<?php echo $pridones->uplatna_smetka ?>"/><br/>
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="pridonesi_polnilista()" poraka_uspesno="Успешно изменетo"
+                poraka_neuspesno="Грешка при снимање"
+                ><span>Сними</span></button>
+        <br/>
+    </form>
+</div>

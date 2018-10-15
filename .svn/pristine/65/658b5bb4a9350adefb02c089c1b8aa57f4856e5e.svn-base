@@ -1,0 +1,97 @@
+<?php
+
+$pacient_sm = '';
+if(property_exists($fakturi[0],'firmaIme')){
+    $pacient_sm = $fakturi[0]->firmaIme;
+}else
+    if(property_exists($fakturi[0], 'pacientIme') && property_exists($fakturi[0],'pacientTatkovoIme') && property_exists($fakturi[0], 'pacientPrezime')){
+        $pacient_sm = $fakturi[0]->pacientIme . " " . $fakturi[0]->pacientTatkovoIme . " " . $fakturi[0]->pacientPrezime;
+
+}
+?>
+<p><h3 style="text-align: center">Kоминтент - <?php echo $pacient_sm; ?></h3></p>
+<br/>
+<br/>
+<p style="text-align: left">Период од: <?php echo $periodod; ?></p>
+<p style="text-align: left">Период до: <?php echo $perioddo; ?></p>
+<br/>
+<br/>
+ <?php
+
+if($fakturi != false && !empty($fakturi)){
+    $vkupno_vk = 0;
+
+    ?>
+
+
+<div class="detali">
+    <p class="naslovperioddetali"> ( <span class="vkupnostavki"><?= count($fakturi, COUNT_NORMAL)  ?></span> ) Листа на фактури</p>
+
+    <div class="predtabela">
+        <table class="tklientfakturi" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="datum">Датум</th>
+                <th class="broj">Број</th>
+                <th class="vkupno">Вкупно</th>
+ <th>Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+
+   <?php
+
+            foreach($fakturi as $faktura){
+                ?>
+<tr>
+            <td class="datum"><?= $faktura->datum ?></td>
+            <td class="broj"><?= $faktura->broj ?></td>
+                <?php
+                if(property_exists($faktura, 'vkupno')){
+                    $vk1 = $faktura->vkupno;
+                }else
+                    if(property_exists($faktura, 'pacientIznos')){
+                        $vk1 = $faktura->pacientIznos;
+                    }else{
+                        $vk1 = '';
+                    }
+                ?>
+                <td class="vkupno"><?= $vk1 ?></td>
+            <td class="zabeleska"><?= $faktura->zabeleska ?></td>
+</tr>
+                <?php
+$vkupno_vk += $vk1;
+            }
+                ?>
+
+            </tbody>
+        </table>
+    </div>
+
+    <br/>
+    <br/>
+    <table class="sumiranje sumfakturi sumvlezni-pk" style="width: 250px">
+        <!--   <tr>
+            <td><span style="padding-top: 3px; width: 120px;">Вкупно основица: <span></td><td><input type="text" style="border-left: none; border-right: none; border-top: none" value=""></td>
+        </tr>
+        <tr>
+            <td><span style="padding-top: 3px; width: 120px;">Вкупно ддв: <span></td><td><input type="text" style="border-left: none; border-right: none; border-top: none" value=""></td>
+        </tr> -->
+        <tr>
+            <td><span style="padding-top: 3px; width: 120px;">Вкупно износ: <span></td><td><input type="text" style="border-left: none; border-right: none; border-top: none" value="<?= $vkupno_vk ?>"></td>
+        </tr>
+    </table>
+</div>
+    <?php
+}else{
+    ?>
+    <div style="text-align: center">Листата е празна</div>
+    <?php
+}
+?>
+
+
+
+<style type="text/css">
+    th {background-color: transparent !important;}
+</style>

@@ -1,0 +1,13 @@
+<div id="main_menu" class="main-menu-tabs">
+    <ul>
+    <?php if (bis_check_access('materijalno_vlez_izlez_tab')): ?>
+        <li><a href="/index.php/materijalno/vlez_izlez/menu">Влез-излез</a></li>
+            <?php endif ?>
+    <?php if (bis_check_access('materijalno_magacin_tab')): ?>
+        <li><a href="/index.php/materijalno/lager_lista/menu">Магацин</a></li>
+    <?php endif ?>
+        <?php if (bis_check_access('materijalno_popis_tab')): ?>
+        <li><a href="/index.php/materijalno/popis/index">Попис</a></li>
+        <?php endif ?>
+    </ul>
+</div>

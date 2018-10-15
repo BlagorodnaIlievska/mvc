@@ -1,0 +1,77 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: ivana
+ * Date: 4/5/13
+ * Time: 3:09 PM
+ * To change this template use File | Settings | File Templates.
+ */
+
+class Ulogi_model extends CI_Model
+{
+
+    public function getUlogi()
+    {
+        //  $this->db->where("parent_id", 0);
+        $query = $this->db->get('bis_korisnici_ulogi');
+        return $query->result();
+    }
+
+    public function getUloga($id)
+    {
+        $this->db->where('ulogi_id', $id);
+        $query = $this->db->get('bis_korisnici_ulogi');
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_uloga()
+    {
+        $insert_data = $this->input->post();
+        $insert = $this->db->insert('bis_korisnici_ulogi', $insert_data);
+        return $insert;
+    }
+
+    public function delete_uloga($id)
+    {
+
+        $this->db->where('ulogi_id', $id);
+        $this->db->delete('bis_korisnici_ulogi');
+
+
+    }
+
+    public function update_uloga()
+    {
+        $field_update_data = $this->input->post();
+        if (is_array($field_update_data['access'])){
+            $access=serialize($field_update_data['access']);
+        } else {
+            $access = '';
+        }
+        if (is_array($field_update_data['firmi'])){
+            $firmi=serialize($field_update_data['firmi']);
+        } else {
+            $firmi = '';
+        }
+        if (is_array($field_update_data['magacini'])){
+            $magacini=serialize($field_update_data['magacini']);
+        } else {
+            $magacini = '';
+        }
+        if (is_array($field_update_data['kasi'])){
+            $kasi=serialize($field_update_data['kasi']);
+        } else {
+            $kasi = '';
+        }
+        $field_update_data['access']=$access;
+        $field_update_data['firmi']=$firmi;
+        $field_update_data['magacini']=$magacini;
+        $field_update_data['kasi']=$kasi;
+        $this->db->where('ulogi_id', $field_update_data['ulogi_id']);
+        unset($field_update_data['ulogi_id']);
+        $this->db->update('bis_korisnici_ulogi', $field_update_data);
+    }
+
+}

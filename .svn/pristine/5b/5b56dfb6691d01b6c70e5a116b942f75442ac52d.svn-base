@@ -1,0 +1,232 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Menu extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('izvodi/izvodi_model');
+    }
+
+    public function index()
+    {
+        $data['main_content'] = 'izvodi/index_form';
+        $this->load->view('includes/template', $data);
+    }
+
+    public function pregled_izvodi()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['zirosmetka'] = $this->izvodi_model->zirosmetka_dropdown();
+        $this->load->view('izvodi/pregled_izvodi_form', $data);
+    }
+
+    public function prebaruvanje()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['smetka'] = $this->izvodi_model->zirosmetka_dropdown();
+        $data['klient'] = $this->materijalno_model->klient_site_dropdown();
+        $this->load->view('izvodi/prebaruvanje_form', $data);
+    }
+
+    public function fin_grupiranje()
+    {
+        $this->load->view('izvodi/fin_grupiranje_form');
+    }
+
+    public function nov_izvod()
+    {
+	    $this->load->model('start/start_model');
+        $this->load->model('finansiski_plan/plan_model');
+	    $data['komintenti'] = $this->izvodi_model->getKomintenti();
+	    $data['konta'] = $this->plan_model->getKonta();
+	    $data['zirosmetki'] = $this->start_model->getZirosmetki();
+        $this->load->view('izvodi/nov_izvod_form', $data);
+    }
+
+    public function editIzvod()
+    {
+        $this->load->model('start/start_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $query = $this->izvodi_model->getIzvodPodatoci(trim($this->input->post('broj')),trim($this->input->post('zirosmetka')));
+//        bis_debug($query, "Izvod: ");
+        $data['izvod'] = $query;
+        $data['komintenti'] = $this->izvodi_model->getKomintenti();
+        $data['konta'] = $this->plan_model->getKonta();
+        $data['zirosmetki'] = $this->start_model->getZirosmetki();
+        $this->load->view('izvodi/edit_izvod_form', $data);
+    }
+
+    public function create_izvod()
+    {
+        $data = $this->input->post();
+        $query = $this->izvodi_model->create_izvod($data);
+        echo $query;
+//        echo json_encode($query);
+    }
+
+    public function update_izvod()
+    {
+        $data = $this->input->post();
+        $query = $this->izvodi_model->update_izvod($data);
+        echo $query;
+//        echo json_encode($query);
+    }
+
+    public function create_stavka()
+    {
+        $query = $this->izvodi_model->create_stavka();
+        echo json_encode($query);
+    }
+
+    public function getZirosmetkiZaKlient()
+    {
+        $firmaid = $this->input->post('firmaid');
+        $query = $this->izvodi_model->getZirosmetkiZaKlient($firmaid);
+        echo json_encode($query);
+    }
+
+    public function prebarajIzvodi()
+    {
+        $klient = $this->input->post('klientid');
+        $smetka = $this->input->post('smetkaid');
+        $pogled = $this->input->post('pogledid');
+        $query = $this->izvodi_model->prebarajIzvodi($klient, $smetka, $pogled);
+        echo json_encode($query);
+    }
+
+    public function getIzvodByZirosmetka()
+    {
+        $zirosmetka = $this->input->post('zirosmetkaid');
+        if(isset($zirosmetka))
+        {
+            if($zirosmetka == 0)  $query = $this->izvodi_model->baraj_izvod_site();
+            else  $query = $this->izvodi_model->getIzvodByZirosmetka($zirosmetka);
+        }
+
+        echo json_encode($query);
+    }
+
+    public function countIzvodByZirosmetka()
+    {
+        $zirosmetka = $this->input->post('zirosmetka');
+        $query = $this->izvodi_model->countIzvodByZirosmetka($zirosmetka);
+        echo json_encode($query);
+    }
+
+    public function countStavkaByIzvod()
+    {
+        $zirosmetka = $this->input->post('zirosmetka');
+        $izvodbroj = $this->input->post('izvodbroj');
+        $query = $this->izvodi_model->countStavkaByIzvod($zirosmetka, $izvodbroj);
+        echo json_encode($query);
+    }
+
+
+    public function getStavkaByIzvodBroj()
+    {
+        $izvodbroj = $this->input->post('izvodbroj');
+        $zirosmetka = $this->input->post('zirosmetka');
+        if(isset($izvodbroj))
+        {
+            if($izvodbroj == 0)  $query = $this->izvodi_model->baraj_izvod_site();
+            else  $query = $this->izvodi_model->getStavkaByIzvodBroj($izvodbroj, $zirosmetka);
+        }
+
+        echo json_encode($query);
+    }
+
+    public function editStavkaIzvod()
+    {
+        $id = $this->input->get('id');
+        $ziro=$this->input->get('ziroid');
+        $this->load->model('finansiski_plan/plan_model');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->izvodi_model->getStavkaIzvodById($id);
+        $data['zirosmetka'] = $this->izvodi_model->zirosmetka_dropdown();
+        $data['query'] = $query;
+        $data['klient'] = $this->materijalno_model->klient_site_dropdown();
+        $data['grupa'] = $this->plan_model->konto_dropdown();
+        $this->load->view('izvodi/edit_stavka_form', $data);
+    }
+
+    public function updateStavkaIzvod()
+    {
+        $id = $this->input->post('dbid');
+        $query = $this->izvodi_model->updateStavkaIzvod($id);
+        echo json_encode($query);
+    }
+
+    public function deleteIzvod()
+    {
+        $broj = $this->input->post('broj');
+        $zirosmetka = $this->input->post('zirosmetka');
+        $query = $this->izvodi_model->deleteIzvod($broj, $zirosmetka);
+        echo json_encode($query);
+    }
+
+    public function deleteStavkaIzvod()
+    {
+        $id = $this->input->post('id');
+        $query = $this->izvodi_model->deleteStavkaIzvod($id);
+        echo json_encode($query);
+    }
+
+    public function grupiraj_izvodi()
+    {
+        $izbor = $this->input->post('izbor');
+        if($izbor == 0)  $query = $this->izvodi_model->baraj_izvod_bezgrupa();
+        else  $query = $this->izvodi_model->baraj_izvod_site();
+
+        echo json_encode($query);
+    }
+
+    public function nova_stavka()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $data['grupa'] = $this->plan_model->konto_dropdown();
+        $data['zirosmetka'] = array();
+//        $data['zirosmetka'] = $this->izvodi_model->zirosmetka_dropdown();
+        $this->load->view('izvodi/nova_stavka_form', $data);
+    }
+
+    public function nova_smetka()
+    {
+        $data['banki'] = $this->izvodi_model->banki_dropdown();
+        $this->load->view('izvodi/nova_smetka_form', $data);
+    }
+
+    public function create_smetka()
+    {
+        $query = $this->izvodi_model->create_smetka();
+        echo json_encode($query);
+    }
+
+    public function povrzi_postoecka()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        //$data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('izvodi/postoecka_faktura_form');
+    }
+
+    public function proveri_faktura()
+    {
+        $brojfaktura = $this->input->post('brojfaktura');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->proveri_faktura($brojfaktura);
+        echo json_encode($query);
+    }
+
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+}

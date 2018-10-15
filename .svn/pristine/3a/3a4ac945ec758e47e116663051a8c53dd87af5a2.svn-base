@@ -1,0 +1,174 @@
+<div>
+    <?php
+    $addkatbroj = array(
+        'type' => 'image',
+        'src' => '/images/add.png',
+        'width' => '25',
+        'height' => '25',
+        'name' => 'add-katbroj',
+        'onclick' => 'return false',
+        'class' => 'add-katbroj',
+        'dest' => '/index.php/materijalno/priemnica/new_katbroj'
+    );
+    $addproizvoditel = array(
+        'type' => 'image',
+        'src' => '/images/add.png',
+        'width' => '25',
+        'height' => '25',
+        'name' => 'add-katbroj',
+        'onclick' => 'return false',
+        'class' => 'add-katbroj',
+        'dest' => '/index.php/materijalno/priemnica/new_proizvoditel'
+    );
+    $usluga = array(
+        'name' => 'usluga',
+        'id' => 'usluga',
+        'value' => 'accept',
+        //'checked'     => TRUE,
+        'style' => 'margin:10px',
+    );
+    $ceniddv = array(
+        '0' => 'Без ДДВ',
+        '1' => 'Со ДДВ'
+    );
+
+    echo form_open('materijalno/priemnica/create_artikl');
+    ?>
+    <fieldset>
+        <legend>Артикли</legend>
+
+        <div class="artikl novartikl">
+            <div class="artiklivlez1">
+                <?php
+                echo form_label('Услуга:', 'usluga');
+                echo form_checkbox($usluga);
+                ?>
+            </div>
+            <div class="artiklivlez1">
+                <?php
+                echo form_label('Шифра:', 'sifra');
+                echo form_input('sifra', '', 'id="sifra" readonly');
+                ?>
+            </div>
+            <div class="artiklivlez1">
+                <?php
+                echo form_label('Шифра 2:', 'sifra2');
+                echo form_input('sifra2', '', 'id="sifra2"');
+                ?>
+            </div>
+            <div class="artiklivlez2">
+                <?php
+                echo form_label('Кат. Број: ', 'kat-broj');
+                echo form_dropdown('kat-broj', $katbroj, 'id="kat-broj"');
+                echo form_input($addkatbroj);
+                echo form_input('kat-podbroj', '', 'id="kat-podbroj"');
+                echo form_label('(макс. 10)', 'kat-podbroj');
+                ?>
+            </div>
+            <div style="clear: both;" class="artiklivlez3">
+                <?php
+                echo form_label('Бар Код:', 'barcode');
+                echo form_input('barcode', '', 'id="barcode"');
+                ?>
+            </div>
+            <div class="artiklivlez3 ">
+                <?php
+                echo form_label('Артикл:', 'artikl');
+                echo form_input('artikl', '', 'id="artikl"');
+                ?>
+            </div>
+            <div class="artiklivlez3">
+                <?php
+                echo form_label('Производител: ', 'proizvoditel');
+                echo form_dropdown('proizvoditel', $proizvoditel, '', 'id="proizvod"');
+                echo form_input($addproizvoditel);
+                ?>
+            </div>
+            <div class="artiklivlez3">
+                <?php
+                echo form_label('Единица мерка: ', 'edinicamerka');
+                echo form_dropdown('edinicamerka', $edinicamerka, 'id="edinicamerka"');
+                ?>
+            </div>
+        </div>
+    </fieldset>
+    <div class="ceni">
+        <fieldset class="ceni">
+            <legend>Цени</legend>
+            <div class="artiklivlez1">
+            <?php
+            echo form_label('ДДВ:', 'ddv');
+            echo form_input('ddv', '');
+            ?>
+            </div>
+            <div class="artiklivlez1">
+            <?php
+            echo form_label('Добавувач 1:', 'diler1');
+            echo form_input('diler1', '');
+            ?>
+            </div>
+            <div class="artiklivlez1">
+            <?php
+            echo form_label('Добавувач 2:', 'diler2');
+            echo form_input('diler2', '');
+            ?>
+            </div>
+                <div class="artiklivlez1">
+            <?php
+            echo form_label('Малопродажна:', 'maloprodazna');
+            echo form_input('maloprodazna', '');
+            ?>
+                </div>
+                    <div class="artiklivlez1">
+            <?php
+            echo form_label('Цените се: ', 'ceni-ddv');
+            echo form_dropdown('ceni-ddv', $ceniddv);
+            ?>
+                    </div>
+        </fieldset>
+    </div>
+    <div class="createartikl">
+        <button type="button" class="novaroba button"><span>Додади</span></button>
+    </div>
+    <?php
+    echo form_close();
+    ?>
+</div>
+
+<script>
+    jQuery(document).ready(function () {
+        jQuery('.novaroba').live('click', function () {
+            var formaction = jQuery(this).parent().parent().attr('action');
+            //var formmethod=jQuery(this).parent().attr('method');
+            var dialogid = jQuery(this).parent().parent().parent().parent();
+            //alert(jQuery(this).parent().serialize());
+            jQuery.ajax({
+                type:"post",
+                url:formaction,
+                data:jQuery(this).parent().parent().serialize(),
+                success:function (data) {
+                    /* jQuery('.t-priemnica tbody>tr:last').clone(true).insertAfter('.t-priemnica tbody>tr:last');
+                     jQuery('.t-suma tbody>tr:last').clone(true).insertAfter('.t-suma tbody>tr:last')
+                     jQuery('#tsifra').val(jQuery('#sifra').val());
+                     jQuery('#tsifra2').val(jQuery('#sifra2').val());
+                     jQuery('#tkat-broj').val(jQuery('#kat-broj').val());
+                     jQuery('#tstavka').val(jQuery('#artikl').val());
+                     //zapisi vo tabela kalkulacija
+                     jQuery('#ssifra').val(jQuery('#sifra2').val());
+                     jQuery('#sstavka').val(jQuery('#artikl').val()); */
+                    dialogid.dialog("destroy").remove();
+                    //var tabs = jQuery('.sub-menu-tabs');
+                    //var selected = tabs.tabs('option', 'selected');
+                    //jQuery(".sub-menu-tabs").tabs('load',selected);
+                }
+            });
+        });
+        jQuery('.add-katbroj').live('click', function () {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true, width:400}).load(jQuery(this).attr('dest'));
+
+        });
+    });
+</script>

@@ -1,0 +1,99 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Zirosmetki extends CI_Controller{
+    function __construct()
+    {
+        parent::__construct();
+    }
+    public function novaZirosmetka()
+    {
+        $this->load->model('start/start_model');
+		$data['start_model']=$this->start_model;
+	    $data['firmi'] = $this->start_model->getFirmi();
+	    $data['banki'] = $this->start_model->getBanki();
+        $this->load->view('start/zirosmetki/nova_zirosmetka' );
+    }
+
+     public function createZirosmetka()
+    {
+            $this->load->model('start/start_model');
+            if($query = $this->start_model->create_zirosmetka())
+            {
+                echo "ok";
+            }
+            else
+            {
+	            echo "error";
+            }
+     }
+
+    public function izmeni()
+    {
+        $this->load->model('start/start_model');
+        $zirosmetka = $this->start_model->getSmetka($this->input->get("id"));
+        $data['zirosmetka']      = $zirosmetka;
+        $data['firmi']       = $this->start_model->getFirmi();
+        $data['banki']       = $this->start_model->getBanki();
+        $data['start_model']=$this->start_model;
+        $this->load->view('start/zirosmetki/izmeni', $data);
+    }
+
+    public function view_smetka()
+    {
+        $this->load->model('start/start_model');
+        $this->load->model('podatoci/banka_model');
+        $query = $this->start_model->getSmetka($this->input->get("id"));
+        $data['smetka'] = $query;
+        $this->load->view('start/zirosmetki/zirosmetki_list', $data);
+    }
+	public function zirosmetki_list(){
+		$this->load->view('start/zirosmetki/zirosmetki_list');
+	}
+
+	public function  getZirosmetki(){
+		$this->load->model('start/start_model');
+//        bis_debug($this->start_model->getZirosmetki(),'zirosmetki');
+		echo json_encode($this->start_model->getZirosmetki());
+	}
+    public function delete_smetka()
+    {
+        $this->load->model('start/start_model');
+        $id=$this->input->get("id");
+        $this->start_model->delete_smetka($id);
+    }
+    public function edit_smetka()
+    {
+        $this->load->model('start/start_model');
+        $this->load->model('podatoci/banka_model');
+        $query = $this->start_model->edit_smetka();
+        $data['main_content'] = 'start/update_smetka_form';
+        $data['smetka'] = $query;
+        $data['firma']=$this->start_model->get_firma_dropdown();
+        $data['banka']=$this->banka_model->get_banka_dropdown();
+        $data['oddel']=$this->start_model->get_oddel();
+        $data['pododdel']=$this->start_model->get_pododdel();
+        $this->load->view('includes/template', $data);
+        $this->view_smetka();
+    }
+
+    public function update_smetka()
+    {
+        $this->load->model('start/start_model');
+        $query = $this->start_model->update_smetka();
+        if($query)
+        {
+            echo "ok";
+        }
+        else
+        {
+            echo "err.";
+        }
+      //  $this->view_smetka();
+    }
+
+
+
+
+
+
+}

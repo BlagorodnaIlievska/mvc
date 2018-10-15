@@ -1,0 +1,11 @@
+<?php
+
+    foreach($join->result() as $row)
+    {
+        echo $row->id . "\n";
+        echo $row->username . "\n";
+        echo $row->email . "\n";
+        echo $row->name . "</br>";
+    }
+
+?>

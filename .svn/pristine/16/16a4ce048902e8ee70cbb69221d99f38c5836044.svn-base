@@ -1,0 +1,117 @@
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+class Korisnici extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function lista()
+    {
+        $this->load->view('korisnici/korisnici/lista');
+    }
+
+    public function napolnilista()
+    {
+        $this->load->model('korisnici/korisnici_model');
+
+        $filter = $this->input->post();
+
+        $rows_q = $this->korisnici_model->getKorisniciShortFlexGrid($filter);
+        $total = $rows_q->total;
+        $rows = $rows_q->rows;
+
+        $jsonData = array('page' => $filter['page'], 'total' => $total, 'rows' => array());
+        foreach ($rows AS $row) {
+            $entry = array('id' => $row['id'], 'cell' => $row);
+            $jsonData['rows'][] = $entry;
+        }
+
+        header("Content-type: application/json");
+        echo json_encode($jsonData);
+    }
+
+    public function getKorisniciPoImeNaUloga()
+    {
+        $this->load->model('korisnici/korisnici_model');
+        echo json_encode($this->korisnici_model->getKorisniciPoImeNaUloga($this->input->post('uloga')));
+    }
+
+    public function nov_korisnik()
+    {
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $this->load->model('korisnici/korisnici_model');
+
+        $data['rabotni_grupi'] = $this->korisnici_model->getUlogi();
+        $data['coveckiresursi'] = $this->covecki_resursi_model->getVraboteniBojan();
+        $this->load->view('korisnici/korisnici/nov', $data);
+    }
+
+    public function izmeni_korisnik()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $this->load->model('korisnici/korisnici_model');
+        $korisnik_info = $this->korisnici_model->getKorisnikInfo($id);
+//        bis_debug($korisnik_info, "info");
+
+        $data['podatoci'] = $korisnik_info;
+        $data['rabotni_grupi'] = $this->korisnici_model->getUlogi();
+        $data['coveckiresursi'] = $this->covecki_resursi_model->getVraboteniBojan();
+        $this->load->view('korisnici/korisnici/izmeni', $data);
+    }
+
+    public function prikazi_korisnik()
+    {
+        $id = $this->input->get('id');
+        $this->load->model('korisnici/korisnici_model');
+        echo json_encode($this->korisnici_model->getKorisnik($id));
+    }
+
+    public function korisnikpostoi()
+    {
+        $this->load->model('korisnici/korisnici_model');
+        if ($this->korisnici_model->korisnikpostoi($this->input->post('username'))) {
+            echo "err";
+        } else {
+            echo "ok";
+        }
+    }
+
+    public function izlezi()
+    {
+        $this->session->sess_destroy();
+        redirect('/');
+    }
+
+    public function vlez()
+    {
+        $this->load->model('korisnici/korisnici_model');
+        $korisnik = $this->korisnici_model->validacija();
+        if (isset($korisnik->username)) {
+            $data = array(
+                'korisnik' => $korisnik,
+                'korisnik_id' => $korisnik->id,
+                'doktor_id' => $korisnik->covecki_resursi_id,
+                'logiran' => 1,
+                'access' => @unserialize($korisnik->access),
+                'firmi' => @unserialize($korisnik->firmi),
+                'magacini' => @unserialize($korisnik->magacini),
+                'kasi' => @unserialize($korisnik->kasi)
+            );
+
+            $this->session->set_userdata($data);
+            setcookie('activemenu','menu-info',time()+7*36000,'/');
+            setcookie('menustate','menu-info',time()-7*36000,'/');
+            redirect('info');
+        } else {
+            redirect('/');
+        }
+
+    }
+
+
+}
+

@@ -1,0 +1,9 @@
+<div id="index" class="main-menu-tabs">
+    <ul>
+        <?//php if (bis_check_access('knizenje_pregled_na_nalozi_tab')): ?>
+        <li><a href="/index.php/statisticki_podatoci/statistika/pregled">Статистички податоци во ОЕ на ЈЗУ УК ТОАРИЛУЦ</a></li>
+        <?//php endif ?>
+
+
+    </ul>
+</div>

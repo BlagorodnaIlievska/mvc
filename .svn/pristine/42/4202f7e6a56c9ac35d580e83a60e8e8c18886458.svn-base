@@ -1,0 +1,114 @@
+<?php
+
+class Ajax_model extends CI_Model{
+
+
+    public function check_username($username)
+    {
+        $this->db->where('username', $username);
+        $query = $this->db->get('users');
+        if($query->num_rows() == 0) $result='userOk';
+        else $result='userNo';
+        return $result;
+    }
+
+    //  test funkcii za dynamic dropdown - drzava/grad- pocetok
+
+    function get_drzava_dropdown()
+    {
+        $this->db->select('id, name');
+        $this->db->from('drzava');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = 'izberi drzava';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['name'];
+            }
+        }
+        return $dropdown;
+
+    }
+
+    function get_grad_drzava_dropdown()
+    {
+        $this->db->select('id, name, drzava_id');
+        $this->db->from('grad');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = 'izberi grad';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['name'];
+            }
+        }
+        return $dropdown;
+
+    }
+
+    function getGradodDrzava($drzavaId)
+    {
+        if($drzavaId){
+            $this->db->select('id, name');
+            $this->db->where('drzava_id', $drzavaId);
+            $this->db->from('grad');
+            //$this->db->where("Contacts.FK_Contacts_Firm = " . $drzavaId);
+            $query = $this->db->get();
+
+            if ($query->num_rows() > 0)
+            {
+                return $query->result();
+            }
+        }
+    }
+    //kraj dynamic dropdown - test za drzava/grad
+
+    //pocetok - dynamic dropdown - fields_data
+    function get_role_user($userId)
+    {
+        $this->db->select('id, role_id');
+        $this->db->where('id', $userId);
+        $this->db->from('users');
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            foreach($query->result_array() as $row){
+                $dropdown = $row['role_id'];
+            }
+        }
+        return $dropdown;
+
+    }
+
+    function getFieldodUser($roleId)
+    {
+        if($roleId){
+            $this->db->select('id, name');
+            $this->db->where('role_id', $roleId);
+            $this->db->from('fields');
+            $query = $this->db->get();
+            if ($query->num_rows() > 0)
+            {
+                return $query->result();
+            }
+        }
+    }
+    //kraj - dynamic dropdown - fields_data
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

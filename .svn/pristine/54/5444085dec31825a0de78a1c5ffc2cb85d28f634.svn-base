@@ -1,0 +1,109 @@
+<div class="novpaket_dnbol">
+    <fieldset>
+        <legend>Нов пакет</legend>
+        <form accept-charset="utf-8" method="post" action="/index.php/paketi/dnBol_uslugi/create_paket">
+
+            Пакет:<br />
+            <input type="text" value="" name="naziv"><br />
+
+            Шифра:<br />
+            <input type="text" value="" name="sifra"><br />
+
+            Цена:<br />
+            <input type="text" value="" name="cena" class="cena1"><br />
+            Партиципација:<br />
+            <input type="text" value="" name="participacija" class="participacija"><br />
+
+            <br/>
+            <input type="button" class="ajaxpaketcreateform_dn button" value="Додади"><br/>
+        </form>
+    </fieldset>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        var vk=0;
+        jQuery(".cena1").live('blur', function () {
+            vk = parseFloat(jQuery('.cena1').val());
+            switch (true){
+                case (vk <= 100):
+                    jQuery('.participacija').val(0);
+                    break;
+                case(vk >=101 && vk <= 300):
+                    jQuery('.participacija').val(20);
+                    break;
+                case(vk >=301 && vk <= 500):
+                    jQuery('.participacija').val(40);
+                    break;
+                case(vk >=501 && vk <= 700):
+                    jQuery('.participacija').val(60);
+                    break;
+                case(vk >=701 && vk <= 1000):
+                    jQuery('.participacija').val(80);
+                    break;
+                case(vk >=1001 && vk <= 2000):
+                    jQuery('.participacija').val(150);
+                    break;
+                case(vk >=2001 && vk <= 3000):
+                    jQuery('.participacija').val(250);
+                    break;
+                case(vk >=3001 && vk <= 4000):
+                    jQuery('.participacija').val(350);
+                    break;
+                case(vk >=4001 && vk <= 5000):
+                    jQuery('.participacija').val(450);
+                    break;
+                case(vk >=5001 && vk <= 6000):
+                    jQuery('.participacija').val(550);
+                    break;
+                case(vk >=6001 && vk <= 8000):
+                    jQuery('.participacija').val(700);
+                    break;
+                case(vk >=8001 && vk <= 10000):
+                    jQuery('.participacija').val(900);
+                    break;
+                case(vk >=10001 && vk <= 15000):
+                    jQuery('.participacija').val(1250);
+                    break;
+                case(vk >=15001 && vk <= 20000):
+                    jQuery('.participacija').val(1700);
+                    break;
+                case(vk >=20001 && vk <= 25000):
+                    jQuery('.participacija').val(2200);
+                    break;
+                case(vk >=25001 && vk <= 30000):
+                    jQuery('.participacija').val(2700);
+                    break;
+                case(vk >=30001 && vk <= 35000):
+                    jQuery('.participacija').val(3200);
+                    break;
+                case(vk >=35001 && vk <= 40000):
+                    jQuery('.participacija').val(3700);
+                    break;
+                case(vk >=40001 && vk <= 45000):
+                    jQuery('.participacija').val(4200);
+                    break;
+                case(vk >=45001 && vk <= 50000):
+                    jQuery('.participacija').val(4700);
+                    break;
+                case(vk >=50001 && vk <= 55000):
+                    jQuery('.participacija').val(5200);
+                    break;
+                case(vk >=55001 && vk <= 60000):
+                    jQuery('.participacija').val(5700);
+                    break;
+                case(vk >60000):
+                    jQuery('.participacija').val(6000);
+                    break;
+            }
+            //vk= vk + parseFloat(jQuery('.kvartal1').val()) + parseFloat(jQuery('.kvartal2').val()) + parseFloat(jQuery('.kvartal3').val())+ parseFloat(jQuery('.kvartal4').val());
+            //jQuery('.vkupno').val(vk);
+        }  );
+    });
+</script>
+    <!--
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.vaziod').datepicker({dateFormat:'yy-mm-dd'});
+    });
+</script>
+    -->

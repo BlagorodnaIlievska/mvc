@@ -1,0 +1,71 @@
+<?php  if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class Smena extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+    }
+
+    public function nov()
+    {
+        $this->load->view('smenska_grupa/nov');
+    }
+
+
+    public function izmeni()
+    {
+        $this->load->model('smenska_grupa/smena_model');
+        //print_r($smena); die();
+        $data['smena']      = $this->smena_model->getSmena($this->input->get("id"));
+        $this->load->view('smenska_grupa/izmeni', $data);
+    }
+
+
+
+    public function lista()
+    {
+        $this->load->view('smenska_grupa/lista');
+    }
+
+    public function popolnilista()
+    {
+
+        //$data['main_content'] = 'podatoci/katalog/popolnilista';
+        $this->load->model('smenska_grupa/smena_model');
+        $return = $this->smena_model->getSmeni();
+        echo json_encode($return);
+    }
+
+
+
+
+
+    public function create_smena()
+    {
+        $this->load->model('smenska_grupa/smena_model');
+        $this->smena_model->create_smena();
+        echo "ok";
+    }
+
+
+
+    public function update_smena()
+    {
+        $this->load->model('smenska_grupa/smena_model');
+        $this->smena_model->update_smena();
+        echo "ok";
+    }
+
+    public function delete_smena()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('smenska_grupa/smena_model');
+        $this->smena_model->delete_smena($id);
+        echo "ok";
+    }
+}

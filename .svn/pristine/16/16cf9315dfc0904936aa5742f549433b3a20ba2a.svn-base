@@ -1,0 +1,312 @@
+function nov_dogovor(){
+    var formaction = '/index.php/javni_nabavki/javni_nabavki/nov_dogovor';
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery.ajax({
+        url:formaction,
+        success:function (response) {
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery("." + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+//                width:"auto",
+                width:1024,
+                position:[00, 00],
+                modal:true,
+                dialogClass: 'dialogsotabovi',
+                title:"Нов договор",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/javni_nabavki/javni_nabavki/dogovor_index',
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #dogovor").html(response);
+                }
+            });
+            jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                cache:true,
+                ajaxOptions:{
+                    type:"POST"
+                }
+            });
+        }
+    });
+}
+function dogovori_napolnilista(){
+
+    jQuery.ajax({
+        url:"/index.php/javni_nabavki/javni_nabavki/getDogovori",
+        type:'POST',
+        data:{klient:0,dogovorid:0} ,
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            jQuery(".tdogovori tbody tr").removeClass("active");
+            jQuery(".tdogovori tbody").find("tr:gt(1)").remove();
+            var tr = jQuery('.tdogovori tr:last');
+            tr.removeClass('hiderow');
+            var vkupnostavki = response.length;
+            for (var i = 0; i < response.length; i++) {
+
+                var newrow = jQuery(tr).clone().insertAfter(tr);
+                newrow.attr("dogovorid", response[i].id);
+                newrow.find('.brojt').html(response[i].broj_tender);
+                newrow.find('.datumt').html(response[i].datum_tender);
+                newrow.find('.vid').html(response[i].vid_postapka);
+                newrow.find('.brojd').html(response[i].broj_dogovor);
+                newrow.find('.datums').html(response[i].datum_sklucuvanje_dogovor);
+                newrow.find('.datumi').html(response[i].datum_istekuvanje_dogovor);
+                newrow.find('.kl').html(response[i].klient);
+                newrow.find('.zab').html(response[i].zabeleska);
+
+
+
+            }
+            tr.addClass('hiderow');
+
+            jQuery(".tdogovori .vkupnostavki").html(vkupnostavki + " во листа");
+            jQuery(".naslovvleznifakturi .vkupnostavki").html(vkupnostavki);
+            jQuery(".tvleznifakturi").trigger("update");
+            //bind the delete event
+            jQuery('.tdogovori tbody .deletefaktura').click(function() {
+                var trow = jQuery(this).closest('tr');
+                var fakturaid = trow.attr('dogovorid');
+               // delete_vf(fakturaid);
+            });
+            jQuery(".tdogovori tbody .editfaktura").click(function () {
+              //  editfaktura(jQuery(this).parent());
+            });
+
+        }
+    });
+}
+
+function dogovor_primena_kolicina(){
+
+    jQuery.ajax({
+        url:"/index.php/javni_nabavki/javni_nabavki/dogovor_primena_kolicina",
+        type:'POST',
+
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            jQuery(".dogovor-vf tbody tr").removeClass("active");
+            jQuery(".dogovor-vf tbody").find("tr:gt(1)").remove();
+            var tr = jQuery('.dogovor-vf tr:last');
+            tr.removeClass('hiderow');
+            var rb=1;
+            var num=response.length;
+            var vkupnostavki = response.length;
+            for (var i = 0; i < response.length; i++) {
+                                      // console.log(response[i].kolicina_faktura.kolicina);
+                var newrow = jQuery(tr).clone().insertAfter(tr);
+              //  newrow.attr("id", response[i].id);
+                newrow.find('.rb').html(num);
+                newrow.find('.brojd').html(response[i].broj_dogovor);
+                newrow.find('.sif').html(response[i].sifra);
+                newrow.find('.stav').html(response[i].stavka);
+                newrow.find('.kold').html(response[i].kolicina);
+
+                newrow.find('.kolp').html(response[i].kolicina_faktura.kolicina);
+
+                 num--;
+
+
+            }
+            tr.addClass('hiderow');
+
+            jQuery(".dogovor-vf  .vkupnostavki").html(vkupnostavki + " во листа");
+            jQuery(".naslovvleznifakturi .vkupnostavki").html(vkupnostavki);
+            jQuery(".dogovor-vf ").trigger("update");
+            //bind the delete event
+            jQuery('.dogovor-vf  tbody .deletefaktura').click(function() {
+                var trow = jQuery(this).closest('tr');
+                var fakturaid = trow.attr('id');
+                // delete_vf(fakturaid);
+            });
+            jQuery(".dogovor-vf  tbody .editfaktura").click(function () {
+                //  editfaktura(jQuery(this).parent());
+            });
+
+        }
+    });
+}
+function dogovor_pobarana_kolicina(){
+
+    jQuery.ajax({
+        url:"/index.php/javni_nabavki/javni_nabavki/dogovor_pobarana_kolicina",
+        type:'POST',
+
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            jQuery(".dogovor-baranje tbody tr").removeClass("active");
+            jQuery(".dogovor-baranje tbody").find("tr:gt(1)").remove();
+            var tr = jQuery('.dogovor-baranje tr:last');
+            tr.removeClass('hiderow');
+            var rb=1;
+            var num=response.length;
+            var vkupnostavkidogovorbaranje = response.length;
+            for (var i = 0; i < response.length; i++) {
+                console.log(response[i].kolicina_faktura.kolicinap);
+                var newrow = jQuery(tr).clone().insertAfter(tr);
+                //  newrow.attr("id", response[i].id);
+                newrow.find('.rb').html(num);
+                newrow.find('.brojd').html(response[i].broj_dogovor);
+                newrow.find('.sif').html(response[i].sifra);
+                newrow.find('.stav').html(response[i].stavka);
+                newrow.find('.kold').html(response[i].kolicina);
+
+              newrow.find('.kolp').html(response[i].kolicina_faktura.kolicinap);
+
+
+                num--;
+
+
+            }
+            tr.addClass('hiderow');
+
+            jQuery(".dogovor-baranje  .vkupnostavkidogovorbaranje").html(vkupnostavkidogovorbaranje + " во листа");
+            jQuery(".naslovvleznifakturi .vkupnostavkidogovorbaranje").html(vkupnostavkidogovorbaranje);
+            jQuery(".dogovor-baranje ").trigger("update");
+            //bind the delete event
+            jQuery('.dogovor-baranje  tbody .deletefaktura').click(function() {
+                var trow = jQuery(this).closest('tr');
+                var fakturaid = trow.attr('id');
+                // delete_vf(fakturaid);
+            });
+            jQuery(".dogovor-baranje  tbody .editfaktura").click(function () {
+                //  editfaktura(jQuery(this).parent());
+            });
+
+        }
+    });
+}
+function baranje_primena_kolicina(){
+
+    jQuery.ajax({
+        url:"/index.php/javni_nabavki/javni_nabavki/baranje_primena_kolicina",
+        type:'POST',
+
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            jQuery(".baranje-vf tbody tr").removeClass("active");
+            jQuery(".baranje-vf tbody").find("tr:gt(1)").remove();
+            var tr = jQuery('.baranje-vf tr:last');
+            tr.removeClass('hiderow');
+            var rb=1;
+            var num=response.length;
+            var vkupnostavkibaranjeprimena = response.length;
+            for (var i = 0; i < response.length; i++) {
+                console.log(response[i].kolicina_faktura.kolicinap);
+                var newrow = jQuery(tr).clone().insertAfter(tr);
+                //  newrow.attr("id", response[i].id);
+                newrow.find('.rb').html(num);
+                newrow.find('.brojb').html(response[i].broj_baranje);
+                newrow.find('.sif').html(response[i].sifra);
+                newrow.find('.stav').html(response[i].stavka);
+                newrow.find('.kolpo').html(response[i].kolicinap);
+
+                newrow.find('.kolpr').html(response[i].kolicina_faktura.kolicina);
+
+
+                num--;
+
+
+            }
+            tr.addClass('hiderow');
+
+            jQuery(".baranje-vf  .vkupnostavkibaranjeprimena").html(vkupnostavkibaranjeprimena + " во листа");
+            jQuery(".naslovvleznifakturi .vkupnostavkibaranjeprimena").html(vkupnostavkibaranjeprimena);
+            jQuery(".baranje-vf ").trigger("update");
+            //bind the delete event
+            jQuery('.baranje-vf  tbody .deletefaktura').click(function() {
+                var trow = jQuery(this).closest('tr');
+                var fakturaid = trow.attr('id');
+                // delete_vf(fakturaid);
+            });
+            jQuery(".baranje-vf  tbody .editfaktura").click(function () {
+                //  editfaktura(jQuery(this).parent());
+            });
+
+        }
+    });
+}
+function delete_dogovor(dogovorid){
+    var r=confirm("Избриши договор");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/javni_nabavki/javni_nabavki/delete_dogovor";
+            var data = {  id:dogovorid  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                   dogovori_napolnilista();
+                    jQuery(".tdogovori tr:gt(1)").remove();
+                }
+            });
+            dogovori_napolnilista();
+        }
+    }
+}
+function delete_baranje(id){
+    var r=confirm("Избриши барање");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/javni_nabavki/javni_nabavki/delete_baranje";
+            var data = {  id:id  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    baranja_napolnilista();
+                    jQuery(".tbaranja tr:gt(1)").remove();
+                }
+            });
+          baranja_napolnilista();
+        }
+    }
+}
+function izmeni_dogovor(dogovorid){
+    var formurl = "/index.php/javni_nabavki/javni_nabavki/izmeni_dogovor";
+    var data = {  id:dogovorid }
+//    console.log(data);
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени Договор",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+
+}

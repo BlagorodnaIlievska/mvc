@@ -1,0 +1,13 @@
+.kataloglista {
+    width: 300px;
+    float: left;
+}
+.podkataloglista {
+    width: 300px;
+    float: left;
+    margin-left: 15px;
+}
+.katalog-glavnalista .buttoncontainer {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

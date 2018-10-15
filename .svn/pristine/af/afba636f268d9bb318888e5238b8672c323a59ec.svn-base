@@ -1,0 +1,39 @@
+<div class="podatoci-plata">
+    <div class="kreditori">
+        <?php if (bis_check_access('sistemsko_podesuvanje_planiranje_resursi_kreditori_nov_kreditor_button')): ?>
+        <div class="buttoncontainer">
+            <button class="button" onclick="kreditor_nov()">Нов кредитор</button>
+        </div>
+            <?php endif ?>
+        <div class="predtabela">
+            <table class="tabela-kreditori">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>РБ</th>
+                    <th>Назив</th>
+                    <th>Жиросметка</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".tabela-kreditori").tablesorter();
+        kreditori_polnilista();
+        jQuery(".tabela-kreditori tbody tr").live('click', function () {
+            jQuery(".tabela-kreditori tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+        jQuery(".tabela-kreditori .edit-tr").live('click', function () {
+            kreditor_izmeni(jQuery(this).parent().parent().attr('kreditor_id'));
+        });
+        jQuery(".tabela-kreditori .delete-tr").live('click', function () {
+            kreditor_delete(jQuery(this).parent().parent().attr('kreditor_id'));
+        });
+    });
+</script >

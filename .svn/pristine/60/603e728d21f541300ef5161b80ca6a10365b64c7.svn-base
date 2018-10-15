@@ -1,0 +1,2431 @@
+function lekuvanja_lista_so_zapisi_sortiraj() {
+    //console.log(window.timeoutsort);
+    jQuery(".pacienti-pregledi-lista-tabela").trigger("update");
+//    var sorting = [
+//        [2, 1],
+//        [3, 1]
+//    ];
+//    var sorting = jQuery(".pacienti-pregledi-lista-tabela").get(0).config.sortList;
+//    if (jQuery(".pacienti-pregledi-lista-tabela tbody tr").length > 0) {
+//        jQuery(".pacienti-pregledi-lista-tabela").trigger("sorton", [sorting]);
+//    }
+    //  jQuery(".pacienti-pregledi-lista-tabela").trigger("update");
+//TONI
+}
+function lekuvanja_lista_priem(firma) {
+
+    var formurl = "/index.php/pacienti/lekuvanja/getPriemi";
+   // var filterform = {firma:firma};
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {firma:firma},
+        dataType: 'json',
+        success: function (response) {
+//              console.log(response);
+            if (response != null) {
+                var today = jQuery('.perioddo').val();
+                jQuery('.pacienti-priem-lista-aktivni-tabela tbody').html('');
+                jQuery.each(response, function (index, item) {
+                    console.log(today, item.vaznost_na_upat);
+                    if(today<=item.vaznost_na_upat) var vaznost = "vazecki_rok";
+                    else var vaznost = "izminat_rok";
+                    jQuery('.pacienti-priem-lista-aktivni-tabela tbody').append(
+                        '<tr class="'+vaznost+'" priem_id="' + item.id + '" doktype="priem">' +
+                            '<td>' +
+                            '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                            '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                            '<a class="info-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/information.png"></a>' +
+                            '</td>' +
+                            '<td>' + item.id + '</td>' +
+                            '<td>' + item.priem_datum + '</td>' +
+                            '<td>' + item.priem_vreme + '</td>' +
+                            '<td class="' + vaznost + '">'+item.vaznost_na_upat+'</td>' +
+                            '<td>' + item.ime + ' ' + item.tatkovoime + ' ' + item.prezime + '</td>' +
+                            '<td>' + item.datum_na_raganje + '</td>' +
+                            '<td>' + item.br_zdravstvena_legitimacija + '</td>' +
+                            '<td>' + item.firma_ime + '</td>' +
+                            '<td>' + item.pod_oddel_ime + '</td>' +
+                            '<td>' + item.tip_na_osiguruvanje + '</td>' +
+                            '</tr>'
+                    );
+                });
+            }
+            jQuery(".pacienti-priem-lista-aktivni-tabela").trigger("update");
+
+            jQuery('.pacienti-priem-lista-aktivni-tabela tbody .delete-tr').click(function () {
+                var trow = jQuery(this).closest('tr');
+                lekuvanja_deletedokument(trow.attr("priem_id"),"priem");
+            });
+            jQuery(".pacienti-priem-lista-aktivni-tabela tbody .edit-tr").click(function () {
+                var trow = jQuery(this).closest('tr');
+                lekuvanja_editdokument(trow.attr("priem_id"),"priem", 1);
+            });
+            jQuery(".pacienti-priem-lista-aktivni-tabela tbody .info-tr").click(function () {
+                var trow = jQuery(this).closest('tr');
+                lekuvanja_infodokument(trow.attr("priem_id"),"priem", 2);
+            });
+        }
+    });
+}
+function lekuvanja_nov_pregled() {
+    if (jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").length == 0) {
+        alert("Ве молиме одберете лекување");
+        return false;
+    }
+    var id = jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").attr("priem_id");
+    var formurl = "/index.php/pacienti/lekuvanja/pregled";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id: id},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                modal: true,
+                title: "Почетна Состојба",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function nov_priem() {
+    if (jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").length == 0) {
+        alert("Ве молиме одберете пациент");
+        return false;
+    }
+//    var pacient_id = lekuvanja_getpacientid(lekuvanja_getaktiven_priemid());
+//    console.log(pacient_id, " = ");
+    var formurl = "/index.php/pacienti/lekuvanja/nov_priem";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {pacient_id: 34},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_potpolnipacient_id(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                title: "Нов прием",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+function nov_priem_interen() {
+    if (jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").length == 0) {
+        alert("Ве молиме одберете пациент");
+        return false;
+    }
+
+    var formurl = "/index.php/pacienti/lekuvanja/nov_priem_interen";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {pacient_id: 34},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_potpolnipacient_id(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                title: "Нов прием",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+
+        }
+    });
+}
+function lekuvanja_nov_pregled_dijagnoza() {
+    if (jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").length == 0) {
+        alert("Ве молиме одберете лекување");
+        return false;
+    }
+    var id = jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").attr("priem_id");
+    var formurl = "/index.php/pacienti/lekuvanja/pregleddijagnoza";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id: id},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                modal: true,
+                title: "Преглед",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function lekuvanja_listasozapisi(priemid) {
+    jQuery('.pacienti-pregledi-lista-tabela tbody').html('');
+    lekuvanja_lista_priemid(priemid);
+    lekuvanja_lista_pregledi(priemid);
+    lekuvanja_lista_pregledidijagnozi(priemid);
+    lekuvanja_lista_upati(priemid);
+    lekuvanja_obrasci_c(priemid);
+    lekuvanja_recepti(priemid);
+    lekuvanja_izjavi(priemid);
+    lekuvanja_lista_biohemiski_analizi(priemid);
+    lekuvanja_lista_potvrdazasmrt(priemid);
+    lekuvanja_lista_otpusnalista(priemid);
+    lekuvanja_lista_trebuvanjazakrv(priemid);
+    lekuvanja_lista_konzilijaren_pregled(priemid);
+    lekuvanja_lista_mrtoveckapridruznica(priemid);
+    lekuvanja_lista_zapiszapriem(priemid);
+}
+
+function lekuvanja_upatprikaziprint() {
+
+}
+
+function lekuvanja_obrasci_c(priemid) {
+    var formurl = "/index.php/upati/upati/getObrasci";
+    var filterform = {id: priemid};
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+//              console.log(response);
+//              console.log(response, "  :upat");
+            if (response != null) {
+
+                jQuery.each(response, function (index, item) {
+//                    console.log(index + ":" + item);
+                    jQuery('.pacienti-pregledi-lista-tabela tbody').append(
+                        '<tr dok_id="' + item.id + '" doktype="' + item.tip + '">' +
+                            '<td>' +
+                            '<a href="javascript:" class="delete-tr">' +
+                            '<img width="15" height="15" src="/images/delete.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="edit-tr">' +
+                            '<img width="15" height="15" src="/images/edit.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="info-tr">' +
+                            '<img width="15" height="15" src="/images/information.png" alt="">' +
+                            '</a>' +
+                            '</td>' +
+                            '<td>' + item.tip_upat_label + '</td>' +
+                            '<td>' + item.datum + '</td>' +
+                            '<td>' + item.vreme + '</td>' +
+                            '<td>' + item.dijagnoza + '</td>' +
+                            '<td>' + item.doktor + '</td>' +
+                            '<td>' + item.firma_ime + '</td>' +
+                            '</tr>'
+                    );
+
+                });
+                lekuvanja_lista_so_zapisi_sortiraj();
+            }
+
+
+        }
+    });
+}
+
+function lekuvanja_lista_priemid(priemid) {
+
+    var formurl = "/index.php/pacienti/lekuvanja/getPriemid";
+    var filterform = {id: priemid};
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+//              console.log(response);
+            if (response != null) {
+                jQuery.each(response, function (index, item) {
+                    //console.log(index + ":" + item);
+                    jQuery('.pacienti-pregledi-lista-tabela tbody').append(
+                        '<tr dok_id="' + item.id + '" doktype="priem">' +
+                            '<td>' +
+                            '<a href="javascript:" class="delete-tr">' +
+                            '<img width="15" height="15" src="/images/delete.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="edit-tr">' +
+                            '<img width="15" height="15" src="/images/edit.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="info-tr">' +
+                            '<img width="15" height="15" src="/images/information.png" alt="">' +
+                            '</a>' +
+                            '</td>' +
+                            '<td>Прием</td>' +
+                            '<td>' + item.priem_datum + '</td>' +
+                            '<td>' + item.priem_vreme + '</td>' +
+                            '<td>' + item.priem_status + '</td>' +
+                            '<td>' + item.doktor + '</td>' +
+                            '<td>' + item.firma_ime + '</td>' +
+                            '</tr>'
+                    );
+                });
+                lekuvanja_lista_so_zapisi_sortiraj();
+            }
+        }
+    });
+}
+function lekuvanja_lista_pregledi(priemid) {
+    var formurl = "/index.php/pacienti/lekuvanja/getPregledi";
+    var filterform = {id: priemid};
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+//              console.log(response);
+            if (response != null) {
+                jQuery.each(response, function (index, item) {
+                    //console.log(index + ":" + item);
+                    jQuery('.pacienti-pregledi-lista-tabela tbody').append(
+                        '<tr dok_id="' + item.id + '" doktype="pocetna_sostojba">' +
+                            '<td>' +
+                            '<a href="javascript:" class="delete-tr">' +
+                            '<img width="15" height="15" src="/images/delete.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="edit-tr">' +
+                            '<img width="15" height="15" src="/images/edit.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="info-tr">' +
+                            '<img width="15" height="15" src="/images/information.png" alt="">' +
+                            '</a>' +
+                            '</td>' +
+                            '<td>Почетна Состојба</td>' +
+                            '<td>' + item.primen_datum + '</td>' +
+                            '<td>' + item.primen_vreme + '</td>' +
+                            '<td>' + item.dijagnoza_terapija_opis + '</td>' +
+                            '<td>' + item.doktor + '</td>' +
+                            '<td>' + item.firma_ime + '</td>' +
+                            '</tr>'
+                    );
+                });
+                lekuvanja_lista_so_zapisi_sortiraj();
+            }
+        }
+    });
+}
+function lekuvanja_lista_pregledidijagnozi(priemid) {
+    var formurl = "/index.php/pacienti/lekuvanja/getPreglediDijagnozi";
+    var filterform = {id: priemid};
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+            //  console.log(response);
+//            console.log(response, "  :pregled");
+            if (response != null) {
+                jQuery.each(response, function (index, item) {
+                    //console.log(index + ":" + item);
+                    jQuery('.pacienti-pregledi-lista-tabela tbody').append(
+                        '<tr dok_id="' + item.id + '" doktype="pregled">' +
+                            '<td>' +
+                            '<a href="javascript:" class="delete-tr">' +
+                            '<img width="15" height="15" src="/images/delete.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="edit-tr">' +
+                            '<img width="15" height="15" src="/images/edit.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="info-tr">' +
+                            '<img width="15" height="15" src="/images/information.png" alt="">' +
+                            '</a>' +
+                            '</td>' +
+                            '<td>Преглед</td>' +
+                            '<td>' + item.primen_datum + '</td>' +
+                            '<td>' + item.primen_vreme + '</td>' +
+                            '<td>' + item.dijagnoza_terapija_opis + '</td>' +
+                            '<td>' + item.doktor + '</td>' +
+                            '<td>' + item.firma_ime + '</td>' +
+                            '</tr>'
+                    );
+                });
+                lekuvanja_lista_so_zapisi_sortiraj();
+            }
+        }
+    });
+}
+function lekuvanja_zacuvajpregled(kopce) {
+    var data = kopce.closest("form").serialize();
+//     jQuery().extend()
+    var formurl = "/index.php/pacienti/lekuvanja/zacuvajpregled";
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+        success: function (response) {
+            lekuvanja_listasozapisi(jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").attr("priem_id"));
+//            kopce.closest(".ui-dialog").remove();
+            destroyparentdialog(kopce);
+        }
+    });
+}
+function lekuvanja_zacuvajpregleddijagnoza(kopce) {
+    var data = kopce.closest("form").serialize();
+    var formurl = "/index.php/pacienti/lekuvanja/zacuvajpregleddijagnoza";
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+        success: function (response) {
+            lekuvanja_listasozapisi(jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").attr("priem_id"));
+            destroyparentdialog(kopce);
+        }
+    });
+}
+function lekuvanja_updatepregleddijagnoza(kopce) {
+    var data = kopce.closest("form").serialize();
+//     jQuery().extend()
+    var formurl = "/index.php/pacienti/lekuvanja/updatepregleddijagnoza";
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+        success: function (response) {
+            lekuvanja_listasozapisi(jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").attr("priem_id"));
+            destroyparentdialog(kopce);
+        }
+    });
+}
+function lekuvanja_zacuvajpriemuslugi(kopce) {
+    var data = kopce.closest("form").serialize();
+    var formurl = "/index.php/pacienti/lekuvanja/zacuvajpriemuslugi";
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+        success: function (response) {
+            lekuvanja_listasozapisi(jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").attr("priem_id"));
+            destroyparentdialog(kopce);
+        }
+    });
+}
+function lekuvanja_zacuvajpriemdopolnitelniuslugi(kopce) {
+    var data = kopce.closest("form").serialize();
+    var formurl = "/index.php/pacienti/lekuvanja/zacuvajpriemdopolnitelniuslugi";
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+        success: function (response) {
+            lekuvanja_listasozapisi(jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").attr("priem_id"));
+            destroyparentdialog(kopce);
+        }
+    });
+}
+function lekuvanja_zacuvajpriemterapija(kopce) {
+    var data = kopce.closest("form").serialize();
+    var formurl = "/index.php/pacienti/lekuvanja/updatepriemterapija";
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+        success: function (response) {
+            lekuvanja_listasozapisi(jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").attr("priem_id"));
+            destroyparentdialog(kopce);
+        }
+    });
+}
+function lekuvanja_shalter_priemi() {
+    var formurl = "/index.php/pacienti/lekuvanja/getShalterPriemi";
+    var filterform = jQuery('.shalterbarajform').serialize();
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            var today = jQuery('.todaydate').val();
+            jQuery('.pacienti-shalter-lista-aktivni-tabela tbody').html('');
+            if (response != null) {
+                jQuery.each(response, function (index, item) {
+                    var klasa_priem = ((item.priem_status == 50) ? ((item.plateno_lekuvanje == 1) ? "plateni_priemi" : "fakturirani_priemi") : ((item.priem_status == 40) ? "zatvoreni_priemi" : "aktivni_priemi"));
+                    if(today<=item.vaznost_na_upat) var vaznost = "vazecki_rok";
+                    else var vaznost = "izminat_rok";
+
+                    jQuery('.pacienti-shalter-lista-aktivni-tabela tbody').append(
+                        '<tr priem_id="' + item.id + '" priem_status="' + item.priem_status + '" pod_oddel="' + item.upaten_vo + '">' +
+                            '<td>' +
+                            '<a href="javascript:" class="delete-tr">' +
+                            '<img width="15" height="15" src="/images/delete.png" alt="">' +
+                            '</a>' + ( (item.priem_status == 50) ?
+                            '<a href="javascript:" class="info-tr">' +
+                                '<img width="15" height="15" src="/images/information.png" alt="">' +
+                                '</a>' : "" ) +
+                            '</td>' +
+                            '<td class="text-right">' + item.id + '</td>' +
+                            '<td class="' + klasa_priem + '">&nbsp;&nbsp;</td>' +
+                            '<td>' + item.priem_datum + '</td>' +
+                            '<td>' + item.priem_vreme + '</td>' +
+                            '<td class="' + vaznost + '">' + item.vaznost_na_upat + '</td>' +
+                            '<td>' + item.ime + ' ' + item.tatkovoime + ' ' + item.prezime + '</td>' +
+                            '<td>' + item.datum_na_raganje + '</td>' +
+                            '<td>' + item.br_zdravstvena_legitimacija + '</td>' +
+                            '<td>' + item.firma_ime + '</td>' +
+                            '<td>' + item.pod_oddel_ime + '</td>' +
+                            '<td>' + item.tip_na_osiguruvanje + '</td>' +
+                            '</tr>'
+                    );
+                });
+                jQuery(".naslovshalter .vkupnostavki").html(response.length);
+            }
+            jQuery(".pacienti-shalter-lista-aktivni-tabela").trigger("update");
+            jQuery('.pacienti-shalter-lista-aktivni-tabela tbody .delete-tr').click(function () {
+                var trow = jQuery(this).closest('tr');
+            });
+            jQuery(".pacienti-shalter-lista-aktivni-tabela tbody .info-tr").click(function () {
+                var trow = jQuery(this).closest('tr');
+                lekuvanje_info(trow.attr("priem_id"));
+            });
+        }
+    });
+}function lekuvanja_shalter_fondovski() {
+    var formurl = "/index.php/pacienti/lekuvanja/getShalterPriemiFondovski";
+    var filterform = jQuery('.fondovski-barajform').serialize();
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            jQuery('.fondovski-lekuvanja-tabela tbody').html('');
+            if (response != null)
+            {
+                jQuery('.fondovski-lekuvanja-vkupnostavki').html(response.length);
+                jQuery.each(response, function (index, item) {
+                    var arr_paketi = '';
+                    jQuery.each(item.naplateni_paketi, function (index2, item2) {
+                        arr_paketi = arr_paketi + ", " + item2.sifra;
+                    });
+                    jQuery('.fondovski-lekuvanja-tabela tbody').append(
+                        '<tr priem_id="' + item.id + '" priem_status="' + item.priem_status + '">' +
+                            '<td class="text-right">' + item.id + '</td>' +
+                            '<td>'+ item.ime + " " + item.tatkovoime + " " + item.prezime +'</td>' +
+                            '<td>' + item.priem_datum + '</td>' +
+                            '<td>' + item.priem_vreme + '</td>' +
+                            '<td>' + item.firma_ime + '</td>' +
+                            '<td>' + item.podOddel + '</td>' +
+                            '<td>' + arr_paketi.substring(2) + '</td>' +
+                            '<td class="text-right">' + formatnumbermkd(item.fond_trosok)  + '</td>' +
+                            '<td class="text-right">' + formatnumbermkd(item.realen_trosok)  + '</td>' +
+                            '</tr>'
+                    );
+                });
+            }
+            jQuery(".fondovski-lekuvanja-tabela").trigger("update");
+        }
+    });
+}
+function lekuvanje_info(priem_id) {
+    var formaction = "/index.php/pacienti/lekuvanja/lekuvanje_info";
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery.ajax({
+        url: formaction,
+        data: {id: priem_id},
+        success: function (response) {
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery("." + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                modal: true,
+                dialogClass: 'dialogsotabovi',
+                title: "Информација за лекување",
+                close: function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function lekuvanja_shalter_fakturi() {
+    var formurl = "/index.php/pacienti/lekuvanja/getShalterFakturirani";
+    var filterform = {};
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+            //  console.log(response);
+            jQuery('.pacienti-shalter-lista-fakturirani-tabela tbody').html('');
+            if (response != null) {
+                jQuery.each(response, function (index, item) {
+                    jQuery('.pacienti-shalter-lista-fakturirani-tabela tbody').append(
+                        '<tr priem_id="' + item.id + '">' +
+                            '<td>' + item.id + '</td>' +
+                            '<td>' + item.priem_datum + '</td>' +
+                            '<td>' + item.priem_vreme + '</td>' +
+                            '<td>' + item.ime + ' ' + item.tatkovoime + ' ' + item.prezime + '</td>' +
+                            '<td>' + item.datum_na_raganje + '</td>' +
+                            '<td>' + item.br_zdravstvena_legitimacija + '</td>' +
+                            '<td>' + item.priem_status + '</td>' +
+                            '<td>' + item.firma_ime + '</td>' +
+                            '</tr>'
+                    );
+                });
+            }
+            jQuery(".pacienti-shalter-lista-fakturirani-tabela").trigger("update");
+        }
+    });
+}
+function lekuvanja_shalter_fakturapriem(id) {
+    var elem = jQuery(".vkupna_cena_sam");
+    var cenasam = jQuery(".vkupna_cena_sam").val();
+    var cenafzom = jQuery(".vkupna_cena_fzom").val();
+    var kasa = jQuery(".kasafaktura").val();
+    var formurl = "/index.php/pacienti/lekuvanja/fakturiraj_priem";
+    var data = {
+        id: id,
+        cenasam: cenasam,
+        cenafzom: cenafzom,
+        kasa: kasa
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+            var row = jQuery("<tr fakturaid=" + response + "></tr>")
+            if_info(row);
+//            lekuvanja_shalter_priemi();
+//            lekuvanja_shalter_fakturi();
+            destroyparentdialog(elem);
+        }
+    });
+}
+function lekuvanja_shalter_fakturaprint(id) {
+    alert("Фактурата успешно испринтана");
+    return false;
+
+    var formurl = "/index.php/pacienti/lekuvanja/fakturiraj_priem";
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: {id: id},
+        dataType: 'json',
+        success: function (response) {
+            lekuvanja_shalter_priemi();
+            lekuvanja_shalter_fakturi();
+        }
+    });
+}
+function fakturiranje_prikazi_informacii(priem_id) {
+    var formaction = "/index.php/pacienti/lekuvanja/informacii_fakturiranje_priem";
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery.ajax({
+        url: formaction,
+        data: {id: priem_id},
+        success: function (response) {
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery("." + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                modal: true,
+                dialogClass: 'dialogsotabovi',
+                title: "Пресметка за лекување",
+                close: function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function zemiPacientPriemInfo(priem) {
+    var formurl = "/index.php/pacienti/lekuvanja/zemiPacientPriemInfo";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: {id: priem},
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            jQuery('.priem-pacient-info .ime').html(response.ime);
+            jQuery('.priem-pacient-info .prezime').html(response.prezime);
+            jQuery('.priem-pacient-info .embg').html(response.embg);
+            jQuery('.priem-pacient-info .broj-zdr-legitimacija').html(response.br_zdravstvena_legitimacija);
+            jQuery('.priem-pacient-info .ezbo').html(response.ezbo);
+//            jQuery('.priem-pacient-info .opis-dijagnoza').html(response.dijagnoza_terapija);
+        }
+    });
+}
+function zemiPaketiZaPriem(priem) {
+    var formurl = "/index.php/pacienti/lekuvanja/zemiPaketiZaPriem";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: {id: priem},
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            if (response) {
+                var vkupnostavki = response.length;
+                jQuery('.paketi-tabela tbody').html('');
+                var vkupnacena = 0, vkupnacenasam = 0;
+                jQuery.each(response, function (index, item) {
+                    jQuery('.paketi-tabela tbody').append(
+                        '<tr>' +
+                            '<td class="text-right">' + item.paket.sifra + '</td>' +
+                            '<td class="nazivsal">' + item.paket.naziv + '</td>' +
+                            '<td class="text-right">' + item.kolicina + '</td>' +
+                            '<td class="text-right">' + item.paket.participacija + '</td>' +
+                            '<td class="text-right">' + formatnumbermkd(item.paket.cena) + '</td>' +
+                            '</tr>'
+                    );
+                    vkupnacena = 1 * vkupnacena + 1 * item.kolicina * item.paket.cena;
+                    vkupnacenasam = 1 * vkupnacenasam + 1 * item.kolicina * item.paket.participacija;
+                });
+                jQuery(".paketi .vkupnostavki").html(vkupnostavki);
+                jQuery(".vkupna_cena_paketi").val(vkupnacena);
+                jQuery(".vkupna_cena_sam").val(vkupnacenasam);
+                presmetajIznosFaktura();
+            }
+            else {
+                jQuery(".pregled-paketi").addClass("hide");
+                jQuery(".ceni-paketi").addClass("hide");
+            }
+        }
+    });
+}
+function zemiDopolnitelniPaketiZaPriem(priem) {
+    var formurl = "/index.php/pacienti/lekuvanja/zemiDopolnitelniPaketiZaPriem";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: {id: priem},
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            if (response) {
+                var vkupnostavki = response.length;
+                jQuery('.paketi-tabela-dopolnitelni tbody').html('');
+                var vkupnacena = 0;
+                jQuery.each(response, function (index, item) {
+                    jQuery('.paketi-tabela-dopolnitelni tbody').append(
+                        '<tr>' +
+                            '<td class="text-right">' + item.paket.sifra + '</td>' +
+                            '<td class="nazivsal">' + item.paket.naziv + '</td>' +
+                            '<td class="text-right">' + item.kolicina + '</td>' +
+                            '<td class="text-right">' + formatnumbermkd(item.paket.cena) + '</td>' +
+                            '<td class="text-right">' + formatnumbermkd(item.paket.cena*item.kolicina) + '</td>' +
+                            '</tr>'
+                    );
+                    vkupnacena = 1 * vkupnacena + 1 * item.kolicina * item.paket.cena;
+                });
+                jQuery(".paketi-dopolnitelni .vkupnostavki").html(vkupnostavki);
+                jQuery(".presmetki-dopolnitelni-uslugi .vkupno-dopolnitelno-suma").html(formatnumbermkd(vkupnacena));
+                jQuery(".vkupna_cena_paketi_dopolnitelni").val(formatnumbermkd(vkupnacena));
+                var suma1 = jQuery(".vkupna_cena_sam").val();
+                jQuery(".presmetki-dopolnitelni-uslugi .sevkupno-suma").html(formatnumbermkd(vkupnacena + 1 * suma1));
+            }
+            else {
+                jQuery(".pregled-paketi-dopolnitelni").addClass("hide");
+                var sevkupno = jQuery(".presmetki-participacija-priem .iznos-ne-na-tovar-fzom").html();
+                jQuery(".presmetki-dopolnitelni-uslugi .sevkupno-suma").html(sevkupno);
+            }
+        }
+    });
+}
+function zemiMaterijaliZaPriem(priem) {
+    var formurl = "/index.php/pacienti/lekuvanja/zemiMaterijaliZaPriem";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: {id: priem},
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            var vkupnostavki = response.length;
+            jQuery('.materijali-tabela tbody').html('');
+            if (response != null) {
+                jQuery.each(response, function (index, item) {
+                    //console.log(index + ":" + item);
+                    jQuery('.materijali-tabela tbody').append(
+                        '<tr>' +
+                            '<td>' + item.sifra + '</td>' +
+                            '<td>' + item.naziv + '</td>' +
+                            '<td>' + item.cena + '</td>' +
+                            '</tr>'
+                    );
+                });
+                jQuery(".materijali .vkupnostavki").html(vkupnostavki);
+            }
+        }
+    });
+}
+function lekuvanja_lista_priem_criteria() {
+    if(jQuery(".upatna-dijagnoza").val().length == 0) jQuery(".dijagnoza_upatna_id").val(0);
+    var broj = jQuery(".filtermenupriem .broj").val();
+    var priem = jQuery(".filtermenupriem .priem").val();
+    var pacient = jQuery(".pacienti-dropdown").val();
+    var dijagnoza = jQuery(".dijagnoza_upatna_id").val();
+    var period_od = jQuery(".periodod").val();
+    var period_do = jQuery(".perioddo").val();
+    var formurl = "/index.php/pacienti/lekuvanja/getPriemByCriteria";
+    var data = {
+        pacient: pacient,
+        brojlekuvanje: broj,
+        priem: priem,
+        dijagnoza: dijagnoza,
+        period_od: period_od,
+        period_do: period_do
+    };
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+            //  console.log(response);
+            if (response != null) {
+                jQuery('.pacienti-priem-lista-aktivni-tabela tbody').html('');
+                jQuery.each(response, function (index, item) {
+                    //console.log(index + ":" + item);
+                    jQuery('.pacienti-priem-lista-aktivni-tabela tbody').append(
+                        '<tr priem_id="' + item.id + '">' +
+                            '<td>' +
+                            '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                            '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                            '<a class="info-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/information.png"></a>' +
+                            '</td>' +
+                            '<td>' + item.id + '</td>' +
+                            '<td>' + item.priem_datum + '</td>' +
+                            '<td>' + item.priem_vreme + '</td>' +
+                            '<td>' + item.ime + ' ' + item.tatkovoime + ' ' + item.prezime + '</td>' +
+                            '<td>' + item.datum_na_raganje + '</td>' +
+                            '<td>' + item.br_zdravstvena_legitimacija + '</td>' +
+                            '<td>' + item.firma_ime + '</td>' +
+                            '<td>' + item.pod_oddel_ime + '</td>' +
+                            '</tr>'
+                    );
+                });
+            }
+            else {
+                jQuery('.pacienti-priem-lista-aktivni-tabela tbody').html('');
+                popupmessage("Не постои лекување со бараниот број !!!");
+            }
+            jQuery(".pacienti-priem-lista-aktivni-tabela").trigger("update");
+
+            jQuery('.pacienti-priem-lista-aktivni-tabela tbody .delete-tr').click(function () {
+                var trow = jQuery(this).closest('tr');
+                lekuvanja_deletedokument(trow.attr("priem_id"),"priem");
+            });
+            jQuery(".pacienti-priem-lista-aktivni-tabela tbody .edit-tr").click(function () {
+                var trow = jQuery(this).closest('tr');
+                lekuvanja_editdokument(trow.attr("priem_id"),"priem", 1);
+            });
+            jQuery(".pacienti-priem-lista-aktivni-tabela tbody .info-tr").click(function () {
+                var trow = jQuery(this).closest('tr');
+                lekuvanja_infodokument(trow.attr("priem_id"),"priem", 2);
+            });
+        }
+    });
+}
+function pacientiDropdown() {
+    jQuery.ajax({
+        url: "/index.php/pacienti/pacienti/pacientiDropdown",
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            jQuery('.pacienti-dropdown').append('<option value="0">' + "Сите" + '</option>')
+            for (var i = 0; i < response.length; i++) {
+                jQuery('.pacienti-dropdown').append('<option value="' + response[i].id + '">' + response[i].ime + " " + response[i].tatkovoime + " " + response[i].prezime + '</option>');
+            }
+            jQuery('.pacienti-dropdown').val();
+        }
+    });
+}
+
+function lekuvanja_popopni_priem(tempdialog, id) {
+    var formurl = "/index.php/pacienti/lekuvanja/getFullPriem";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: id},
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            if (response != null) {
+                jQuery('.' + tempdialog).find(".podatoci-za-kontakt-form").append('<input type="hidden" name="update_id" value="' + response.pacient_id + '">');
+                jQuery('.' + tempdialog).find(".podatoci-za-osig.osig1").append('<input type="hidden" name="update_id" value="' + response.osiguruvanje_id + '">');
+                jQuery('.' + tempdialog).find(".podatoci-za-pridruznik-form").append('<input type="hidden" name="update_id" value="' + response.pridruznik_id + '">');
+                jQuery.each(response, function (index, item) {
+                    jQuery('.' + tempdialog + ' .podatoci-za-kontakt [name="' + index + '"]').val(item);
+                });
+            }
+        }
+    });
+}
+function lekuvanja_update_priem(jQueryobject) {
+
+    jQuery.ajax({
+        url: '/index.php/pacienti/pacienti/vnesiPacientKontakt',
+        type: 'POST',
+        data: jQuery('.pacienti-priem-edit-form .podatoci-za-kontakt-form').serialize()
+    });
+    jQuery.ajax({
+        url: '/index.php/pacienti/pacienti/vnesiPacientOsig',
+        type: 'POST',
+        data: jQuery('.pacienti-priem-edit-form .podatoci-za-osig-form').serialize()
+    });
+    jQuery.ajax({
+        url: '/index.php/pacienti/pacienti/updatePacientPriem',
+        type: 'POST',
+        data: jQuery('.pacienti-priem-edit-form .podatoci-za-priemkajdoktor-form').serialize()
+    });
+
+    setTimeout("lekuvanja_update_priem_closedialog()", 200);
+
+}
+function lekuvanja_update_priem_closedialog() {
+    destroyparentdialog(jQuery(".pacienti-priem-edit-form .za-edit-forma"));
+}
+function lekuvanja_edit_priem(id) {
+    var formurl = '/index.php/pacienti/lekuvanja/edit_priem';
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        async: false,
+        data: {priem_id: id},
+        success: function (response) {
+
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_popopni_priem(tempdialog, id);
+            // lekuvanja_potpolnidokumenvrednosti(id, vrednostiurl, tempdialog);
+            // jQuery('div.' + tempdialog).find("form").attr("action", updateurl);
+            jQuery('div.' + tempdialog).find("input, select, textarea").removeAttr("readonly");
+            jQuery('div.' + tempdialog).find("form.podatoci-za-priemkajdoktor-form").append('<input type="hidden" name="update_id" value="' + id + '">');
+            //  jQuery('div.' + tempdialog).find(".printlink").attr("href", jQuery('div.' + tempdialog).find(".printlink").attr("href") + id);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                modal: true,
+                title: "Измени прием",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function lekuvanja_infodokument(id, doktype, print) {
+    jQuery.when(tempdialog = lekuvanja_editdokument(id, doktype, print)).done(function(msg){
+        jQuery('div.podatoci-za-priemkajdoktor').find(".za-edit-forma").remove();
+        jQuery('div.podatoci-za-priemkajdoktor').find("input, textarea, select").attr('disabled', 'disabled');
+        return 0;
+    });
+}
+function lekuvanja_edit_pregleddijagnoza(priem_id, id)
+{
+    var formurl = "/index.php/pacienti/lekuvanja/edit_pregleddijagnoza";
+    var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getPregled";
+    var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updatePregled";
+    var naslov = "Промени преглед";
+
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        async: false,
+        data: {priem_id: priem_id, dok_id: id},
+        success: function (response) {
+
+            jQuery('div.' + tempdialog).html(response);
+//            lekuvanja_potpolnidokumenvrednosti(id, vrednostiurl, tempdialog);
+            jQuery('div.' + tempdialog).find("form").attr("action", updateurl);
+            jQuery('div.' + tempdialog).find("form").append('<input type="hidden" name="update_id" value="' + id + '">');
+//            jQuery('div.' + tempdialog).find(".printlink").attr("href", jQuery('div.' + tempdialog).find(".printlink").attr("href") + id);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                modal: true,
+                title: naslov,
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+    return tempdialog;
+}
+function lekuvanja_editdokument(id, doktype, print) {
+    // alert(id + " " + doktype);
+    if (doktype == "pocetna_sostojba") {
+        var formurl = "/index.php/pacienti/lekuvanja/pregled";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getPocetnaSostojba";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updatePocetnaSostojba";
+    } else if (doktype == "laboratoriski") {
+        var formurl = "/index.php/upati/upati/nov_laboratoriski_upat";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getUpatVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateUpatVrednosti";
+        var naslov = "Промени лабораториски упат";
+    } else if (doktype == "pregled") {
+        if(!jQuery(".firmadropdown option:selected").hasClass("firmaodel")){
+            alert("Ве молиме изберете оддел!!!");
+            return;
+        }
+        lekuvanja_edit_pregleddijagnoza(lekuvanja_getaktiven_priemid(),id);
+        return;
+    } else if (doktype == "priem") {
+        lekuvanja_edit_priem(id);
+        return;
+    } else if (doktype == "interklinicki") {
+        var formurl = "/index.php/upati/upati/nov_interklinicki";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getUpatVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateUpatVrednosti";
+        var naslov = "Промени интерклинички упат";
+    }else if (doktype == "interbolnicki") {
+        var formurl = "/index.php/upati/upati/nov_inter_bolnicki";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getUpatVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateUpatVrednosti";
+        var naslov = "Промени интерболнички упат";
+    }else if (doktype == "interoddelenski") {
+        var formurl = "/index.php/upati/upati/nov_inter_oddelenski_upat";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getUpatVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateUpatVrednosti";
+        var naslov = "Промени интеродделенски упат";
+    }
+    else if (doktype == "radiodijagnosticki") {
+
+        var formurl = "/index.php/upati/upati/nov_radiodijagnosticki";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getUpatVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateUpatVrednosti";
+        var naslov = "Промени радиодијагностички упат";
+    } else if (doktype == "bolnicki") {
+
+        var formurl = "/index.php/upati/upati/nov_bolnicki_upat";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getUpatVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateUpatVrednosti";
+        var naslov = "Промени болнички упат";
+    } else if (doktype == "pacient") {
+
+        var formurl = "/index.php/pacienti/pacienti/editPacient";
+        var vrednostiurl = "/index.php/pacienti/pacienti/getPacient";
+        var updateurl = "/index.php/pacienti/pacienti/updatePacient";
+        var naslov = "Пациент инфо";
+    } else if (doktype == "laboratoriski_naod") {
+
+        var formurl = "/index.php/upati/upati/nov_laboratoriski_naod";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getUpatVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateUpatVrednosti";
+        var naslov = "Промени лабораториски наод";
+    }else if (doktype == "konzolijarno_mislenje") {
+
+        var formurl = "/index.php/upati/upati/novo_konz_mislenje";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getUpatVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateUpatVrednosti";
+        var naslov = "Промени конзилијарно мислење";
+    }
+    else if (doktype == "radiodijagnosticki_naod") {
+
+        var formurl = "/index.php/upati/upati/nov_radiodijagnosticki_naod";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getUpatVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateUpatVrednosti";
+        var naslov = "Промени радиодијагностички наод";
+    } else if (doktype == "potvrdazasmrt") {
+
+        var formurl = "/index.php/upati/upati/nova_potvrda_za_smrt";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getPotvrdaZaSmrtVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updatePotvrdaZaSmrtVrednosti";
+        var naslov = "Промени потврда за смрт";
+    } else if (doktype == "otpusnalista") {
+
+        var formurl = "/index.php/upati/upati/nova_otpusna_lista";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getOtpusnaListaVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateOtpusnaListaVrednosti";
+        var naslov = "Промени отпусна листа";
+    } else if (doktype == "biohemiska_analiza") {
+
+        var formurl = "/index.php/upati/upati/nov_rezultat_biohemija";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getBiohemiskaAnalizaVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateBiohemiskaAnalizaVrednosti";
+        var naslov = "Промени резултат биохемија";
+    } else if (doktype == "izjavi") {
+
+        var formurl = "/index.php/upati/upati/nova_izjava";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getIzjaviVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateIzjaviVrednosti";
+        var naslov = "Промени изјава";
+    } else if (doktype == "izjava_za_soglasnost") {
+
+        var formurl = "/index.php/upati/upati/nova_izjava_soglasnost";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getIzjaviVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateIzjaviVrednosti";
+        var naslov = "Промени изјава за согласност";
+    } else if (doktype == "recepta_stranski_osiguranik") {
+
+        var formurl = "/index.php/upati/upati/nova_recepta_stranski_osiguranik";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getReceptiVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateReceptiVrednosti";
+        var naslov = "Промени рецепта";
+    } else if (doktype == "recepta_domasen_osiguranik") {
+
+        var formurl = "/index.php/upati/upati/nova_recepta_obicna";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getReceptiVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateReceptiVrednosti";
+        var naslov = "Промени рецепта";
+    } else if (doktype == "obrazec_s") {
+
+        var formurl = "/index.php/upati/upati/nov_obrazecc";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getObrazecVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateObrazecVrednosti";
+        var naslov = "Промени образец с";
+    } else if (doktype == "zapiszapriem") {
+
+        var formurl = "/index.php/upati/upati/nov_zapis_za_priem";
+        var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getZapisZaPriemVrednosti";
+        var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateZapisZaPriemVrednosti";
+        var naslov = "Промени запис за прием";
+    }
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        async: false,
+        data: {priem_id: lekuvanja_getaktiven_priemid(), dok_id: id, print: print},
+        success: function (response) {
+
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_potpolnidokumenvrednosti(id, vrednostiurl, tempdialog);
+            jQuery('div.' + tempdialog).find("form").attr("action", updateurl);
+            jQuery('div.' + tempdialog).find("form").append('<input type="hidden" name="update_id" value="' + id + '">');
+            jQuery('div.' + tempdialog).find(".printlink").attr("href", jQuery('div.' + tempdialog).find(".printlink").attr("href") + id);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                modal: true,
+                title: naslov,
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+    console.log(tempdialog);
+    return tempdialog;
+}
+function testrecepta(){
+    var formurl = "/index.php/upati/upati/nova_recepta_stranski_osiguranik";
+    var vrednostiurl = "/index.php/pacienti/lekuvanja_pomosen/getReceptiVrednosti";
+    var updateurl = "/index.php/pacienti/lekuvanja_pomosen/updateReceptiVrednosti";
+    var naslov = "Промени рецепта";
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    var id = 16;
+    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        async: false,
+        data: {priem_id: 362, dok_id: id},
+        success: function (response) {
+
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_potpolnidokumenvrednosti(id, vrednostiurl, tempdialog);
+            jQuery('div.' + tempdialog).find("form").attr("action", updateurl);
+            jQuery('div.' + tempdialog).find("form").append('<input type="hidden" name="update_id" value="' + id + '">');
+            jQuery('div.' + tempdialog).find(".printlink").attr("href", jQuery('div.' + tempdialog).find(".printlink").attr("href") + id);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                modal: true,
+                title: naslov,
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+    return tempdialog;
+}
+function lekuvanja_deletedokument(id, doktype) {
+    // alert(id + " " + doktype);
+    if (doktype == "laboratoriski") {
+        var formurl = "/index.php/upati/upati/delete_upat";
+    } else if (doktype == "pregled") {
+//        var formurl = "/index.php/pacienti/lekuvanja/edit_pregleddijagnoza";
+    } else if (doktype == "priem") {
+        var formurl = "/index.php/pacienti/lekuvanja/delete_priem";
+    } else if (doktype == "interklinicki") {
+        var formurl = "/index.php/upati/upati/delete_upat";
+        var naslov = "Промени интерколинички упат";
+    } else if (doktype == "interbolnicki") {
+        var formurl = "/index.php/upati/upati/delete_upat";
+    } else if (doktype == "interoddelenski") {
+        var formurl = "/index.php/upati/upati/delete_upat";
+    } else if (doktype == "radiodijagnosticki") {
+        var formurl = "/index.php/upati/upati/delete_upat";
+    } else if (doktype == "bolnicki") {
+        var formurl = "/index.php/upati/upati/delete_upat";
+    } else if (doktype == "laboratoriski_naod") {
+        var formurl = "/index.php/upati/upati/delete_upat";
+    } else if (doktype == "konzolijarno_mislenje") {
+        var formurl = "/index.php/upati/upati/delete_upat";
+    } else if (doktype == "radiodijagnosticki_naod") {
+        var formurl = "/index.php/upati/upati/delete_upat";
+    } else if (doktype == "potvrdazasmrt") {
+        var formurl = "/index.php/upati/upati/delete_potvrda_za_smrt";
+    } else if (doktype == "otpusnalista") {
+        var formurl = "/index.php/upati/upati/delete_otpusna_lista";
+    } else if (doktype == "biohemiska_analiza") {
+        var formurl = "/index.php/upati/upati/delete_rezultat_biohemija";
+    } else if (doktype == "izjavi") {
+        var formurl = "/index.php/upati/upati/delete_izjava";
+    } else if (doktype == "izjava_za_soglasnost") {
+        var formurl = "/index.php/upati/upati/delete_izjava";
+    } else if (doktype == "recepta_stranski_osiguranik") {
+        var formurl = "/index.php/upati/upati/delete_recepta";
+    } else if (doktype == "recepta_domasen_osiguranik") {
+        var formurl = "/index.php/upati/upati/delete_recepta";
+    } else if (doktype == "obrazec_s") {
+        var formurl = "/index.php/upati/upati/delete_obrazec";
+    }
+    if(confirm("Дали сте сигурни !!!"))
+    {
+        jQuery.ajax({
+            url: formurl,
+            type: 'POST',
+            data: {id: id},
+            dataType: 'json',
+            success: function (response) {
+                if (response) {
+                    if(doktype == "priem"){
+                        popupmessage("Приемот е успешно избришан");
+                        lekuvanja_lista_priem();
+                    }
+                    else {
+                        popupmessage("Документот е успешно избришан");
+                        lekuvanja_listasozapisi(lekuvanja_getaktiven_priemid());
+                    }
+                }
+                else {
+                    popupmessage("Грешка при бришење на документот!");
+                    lekuvanja_listasozapisi(lekuvanja_getaktiven_priemid());
+                }
+            }
+        });
+    }
+}
+function lekuvanja_potpolnidokumenvrednosti(id, formurl, dialogtempclass) {
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: id},
+        dataType: 'json',
+        success: function (response) {
+            if (response != null) {
+                jQuery.each(response, function (index, item) {
+//               console.log(index + ":" + item);
+                    jQuery('div.' + dialogtempclass + ' [name="' + index + '"]').val(item);
+                });
+            }
+        }
+    });
+}
+
+function lekuvanja_potpolnipacientinfo(dialogtempclass, priem_id) {
+    var formurl = "/index.php/pacienti/pacienti/getPacientFullPoPriemId";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: priem_id},
+        dataType: 'json',
+        success: function (response) {
+            if (response != null) {
+                jQuery.each(response, function(index, item) {
+//                    console.log(index + ":" + item);
+                    jQuery('div.' + dialogtempclass + ' [name="' + index + '"]').val(item);
+
+                });
+            }
+        }
+    });
+}
+function lekuvanja_zapis_priem_potpolnipacientinfo(dialogtempclass, priem_id) {
+    var formurl = "/index.php/pacienti/pacienti/getPacientFullPoPriemId_zaZapisPriem";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: priem_id},
+        dataType: 'json',
+        success: function (response) {
+            if (response != null) {
+                jQuery.each(response, function(index, item) {
+//                    console.log(index + ":" + item);
+                    jQuery('div.' + dialogtempclass + ' [name="' + index + '"]').val(item);
+
+                });
+            }
+        }
+    });
+}
+function lekuvanja_potpolnipacient_id(dialogtempclass, priem_id) {
+    var formurl = "/index.php/pacienti/pacienti/getPacientFromPriem";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: priem_id},
+        dataType: 'json',
+        success: function (response) {
+            if (response != null) {
+                jQuery('div.' + dialogtempclass + ' [name="pacient_id"]').val(response);
+            }
+        }
+    });
+}
+function lekuvanja_getpacientid(priem_id) {
+    var formurl = "/index.php/pacienti/pacienti/getPacientFromPriem";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: priem_id},
+        dataType: 'json',
+        success: function (response) {
+            return response;
+        }
+    });
+}
+function lekuvanja_potpolnipacientinfo_otpusnalista(dialogtempclass, priem_id) {
+    //console.log(priem_id);
+    var formurl = "/index.php/pacienti/pacienti/getPacientFullPoPriemId_zaOtpusnaForma";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: priem_id},
+        dataType: 'json',
+        success: function (response) {
+            if (response != null) {
+
+                // var pacientIme = response.ime+" "+response.tatkovoime+" "+response.prezime;
+                // 'div.' + dialogtempclass.find('.pacient').html(pacientIme);
+                jQuery.each(response, function (index, item) {
+                    //console.log(index + ":" + item);
+                    jQuery('div.' + dialogtempclass + ' [name="' + index + '"]').val(item);
+
+                });
+            }
+        }
+    });
+}
+function lekuvanja_getaktiven_priemid() {
+    var priem_id = jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").attr("priem_id");
+    if (priem_id > 0) {
+        return priem_id;
+    } else {
+        return 0;
+    }
+}
+function shalter_getaktiven_priemid() {
+    var priem_id = jQuery(".pacienti-shalter-lista-aktivni-tabela tbody tr.active").attr("priem_id");
+    if (priem_id > 0) {
+        return priem_id;
+    } else {
+        return 0;
+    }
+}
+
+function lekuvanja_lista_upati(priemid) {
+    var formurl = "/index.php/upati/upati/getUpati";
+    var filterform = {id: priemid};
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+//              console.log(response);
+//              console.log(response, "  :upat");
+            if (response != null) {
+
+                jQuery.each(response, function (index, item) {
+//                    console.log(index + ":" + item);
+                    jQuery('.pacienti-pregledi-lista-tabela tbody').append(
+                        '<tr dok_id="' + item.id + '" doktype="' + item.tip_upat + '">' +
+                            '<td>' +
+                            '<a href="javascript:" class="delete-tr">' +
+                            '<img width="15" height="15" src="/images/delete.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="edit-tr">' +
+                            '<img width="15" height="15" src="/images/edit.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="info-tr">' +
+                            '<img width="15" height="15" src="/images/information.png" alt="">' +
+                            '</a>' +
+                            '</td>' +
+                            '<td>' + item.tip_upat_label + '</td>' +
+                            '<td>' + item.datum + '</td>' +
+                            '<td>' + item.vreme + '</td>' +
+                            '<td>' + item.dijagnoza + '</td>' +
+                            '<td>' + item.doktor + '</td>' +
+                            '<td>' + item.firma_ime + '</td>' +
+                            '</tr>'
+                    );
+
+                });
+                lekuvanja_lista_so_zapisi_sortiraj();
+            }
+
+
+        }
+    });
+}
+
+function lekuvanja_izjavi(priemid) {
+    var formurl = "/index.php/upati/upati/getIzjavi";
+    var filterform = {id: priemid};
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+//              console.log(response);
+//              console.log(response, "  :upat");
+            if (response != null) {
+
+                jQuery.each(response, function (index, item) {
+//                    console.log(index + ":" + item);
+                    jQuery('.pacienti-pregledi-lista-tabela tbody').append(
+                        '<tr dok_id="' + item.id + '" doktype="' + item.tip + '">' +
+                            '<td>' +
+                            '<a href="javascript:" class="delete-tr">' +
+                            '<img width="15" height="15" src="/images/delete.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="edit-tr">' +
+                            '<img width="15" height="15" src="/images/edit.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="info-tr">' +
+                            '<img width="15" height="15" src="/images/information.png" alt="">' +
+                            '</a>' +
+                            '</td>' +
+                            '<td>' + item.tip_upat_label + '</td>' +
+                            '<td>' + item.datum + '</td>' +
+                            '<td>'  + item.vreme + '</td>' +
+                            '<td>' + item.opis_medicinska_intervencija + '</td>' +
+                            '<td>' + item.doktor + '</td>' +
+                            '<td>' + item.firma_ime + '</td>' +
+                            '</tr>'
+                    );
+
+                });
+                lekuvanja_lista_so_zapisi_sortiraj();
+            }
+
+
+        }
+    });
+}
+
+function lekuvanja_recepti(priemid) {
+    var formurl = "/index.php/upati/upati/getRecepti";
+    var filterform = {id: priemid};
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+//              console.log(response);
+//              console.log(response, "  :upat");
+            if (response != null) {
+
+                jQuery.each(response, function (index, item) {
+//                    console.log(index + ":" + item);
+                    jQuery('.pacienti-pregledi-lista-tabela tbody').append(
+                        '<tr dok_id="' + item.id + '" doktype="' + item.tip + '">' +
+                            '<td>' +
+                           '<a href="javascript:" class="delete-tr">' +
+                            '<img width="15" height="15" src="/images/delete.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="edit-tr">' +
+                            '<img width="15" height="15" src="/images/edit.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="info-tr">' +
+                            '<img width="15" height="15" src="/images/information.png" alt="">' +
+                            '</a>' +
+                            '</td>' +
+                            '<td>' + item.tip_upat_label + '</td>' +
+                            '<td>' + item.datum_propisuvanje + '</td>' +
+                            '<td>' + item.vreme_propisuvanje + '</td>' +
+                            '<td>' + item.recepta_text + '</td>' +
+                            '<td>' + item.doktor + '</td>' +
+                            '<td>' + item.firma_ime + '</td>' +
+                            '</tr>'
+                    );
+
+                });
+                lekuvanja_lista_so_zapisi_sortiraj();
+            }
+
+
+        }
+    });
+}
+function lekuvanja_lista_otpusnalista(priemid) {
+    var formurl = "/index.php/upati/upati/getOtpusnaLista";
+    var filterform = {id: priemid};
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+//              console.log(response[0]);
+            if (response) {
+//                jQuery.each(response, function (index, item) {
+//                    console.log(index + ":" + item);
+                jQuery('.pacienti-pregledi-lista-tabela tbody').append(
+                    '<tr dok_id="' + response[0].id + '" doktype="otpusnalista">' +
+                        '<td>' +
+                        '<a href="javascript:" class="delete-tr">' +
+                        '<img width="15" height="15" src="/images/delete.png" alt="">' +
+                        '</a>' +
+                        '<a href="javascript:" class="edit-tr">' +
+                        '<img width="15" height="15" src="/images/edit.png" alt="">' +
+                        '</a>' +
+                        '<a href="javascript:" class="info-tr">' +
+                        '<img width="15" height="15" src="/images/information.png" alt="">' +
+                        '</a>' +
+                        '</td>' +
+                        '<td>Упат: Отпусна листа</td>' +
+                        '<td>' + response[0].datum_na_ispis + '</td>' +
+                        '<td>' + '</td>' +
+                        '<td>' + response[0].sovet + '</td>' +
+                        '<td>' + response[0].odgovoren_hirurg + '</td>' +
+                        '<td>' + '</td>' +
+                        '</tr>'
+                );
+//                });
+                lekuvanja_lista_so_zapisi_sortiraj();
+            }
+        }
+    });
+}
+function lekuvanja_lista_zapiszapriem(priemid) {
+    var formurl = "/index.php/upati/upati/getZapisZapriem";
+    var filterform = {id: priemid};
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+//              console.log(response[0]);
+            if (response) {
+//                jQuery.each(response, function (index, item) {
+//                    console.log(index + ":" + item);
+                jQuery('.pacienti-pregledi-lista-tabela tbody').append(
+                    '<tr dok_id="' + response[0].id + '" doktype="zapiszapriem">' +
+                        '<td>' +
+                        '<a href="javascript:" class="delete-tr">' +
+                        '<img width="15" height="15" src="/images/delete.png" alt="">' +
+                        '</a>' +
+                        '<a href="javascript:" class="edit-tr">' +
+                        '<img width="15" height="15" src="/images/edit.png" alt="">' +
+                        '</a>' +
+                        '<a href="javascript:" class="info-tr">' +
+                        '<img width="15" height="15" src="/images/information.png" alt="">' +
+                        '</a>' +
+                        '</td>' +
+                        '<td>Запис за прием</td>' +
+                        '<td>' + response[0].datum + '</td>' +
+                        '<td>' + response[0].vreme + '</td>' +
+                        '<td>' + '</td>' +
+                        '<td>' + '</td>' +
+                        '<td>' + '</td>' +
+                        '</tr>'
+                );
+//                });
+                lekuvanja_lista_so_zapisi_sortiraj();
+            }
+        }
+    });
+}
+function lekuvanja_lista_potvrdazasmrt(priemid) {
+//    var formurl = "/index.php/pacienti/lekuvanja/getPreglediDijagnozi";
+    var formurl = "/index.php/upati/upati/getPotvrdaZaSmrt";
+    var filterform = {id: priemid};
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+//              console.log(response[0]);
+            if (response) {
+//                jQuery.each(response, function (index, item) {
+//                    console.log(index + ":" + item);
+                    jQuery('.pacienti-pregledi-lista-tabela tbody').append(
+                        '<tr dok_id="' + response[0].id + '" doktype="potvrdazasmrt">' +
+                            '<td>' +
+                            '<a href="javascript:" class="delete-tr">' +
+                            '<img width="15" height="15" src="/images/delete.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="edit-tr">' +
+                            '<img width="15" height="15" src="/images/edit.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="info-tr">' +
+                            '<img width="15" height="15" src="/images/information.png" alt="">' +
+                            '</a>' +
+                            '</td>' +
+                            '<td>Потврда за смрт</td>' +
+                            '<td>' + response[0].data_na_smrtta + '</td>' +
+                            '<td>' + response[0].cas_na_smrtta + '</td>' +
+                            '<td>' + '</td>' +
+                            '<td>' + '</td>' +
+                            '<td>' + '</td>' +
+                            '</tr>'
+                    );
+//                });
+                lekuvanja_lista_so_zapisi_sortiraj();
+            }
+        }
+    });
+}
+function lekuvanja_lista_biohemiski_analizi(priemid) {
+//    var formurl = "/index.php/pacienti/lekuvanja/getPreglediDijagnozi";
+    var formurl = "/index.php/upati/upati/getBiohemiskiAnalizi";
+    var filterform = {id: priemid};
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+//              console.log(response);
+            if (response) {
+//                jQuery.each(response, function (index, item) {
+//                    console.log(index + ":" + item);
+                jQuery('.pacienti-pregledi-lista-tabela tbody').append(
+                    '<tr dok_id="' + response[0].id + '" doktype="biohemiska_analiza">' +
+                        '<td>' +
+                        '<a href="javascript:" class="delete-tr">' +
+                        '<img width="15" height="15" src="/images/delete.png" alt="">' +
+                        '</a>' +
+                        '<a href="javascript:" class="edit-tr">' +
+                        '<img width="15" height="15" src="/images/edit.png" alt="">' +
+                        '</a>' +
+                        '<a href="javascript:" class="info-tr">' +
+                        '<img width="15" height="15" src="/images/information.png" alt="">' +
+                        '</a>' +
+                        '</td>' +
+                        '<td>Наод: Биохемиска анализа</td>' +
+                        '<td>' + response[0].datum + '</td>' +
+                        '<td>' + response[0].vreme + '</td>' +
+                        '<td>' + '</td>' +
+                        '<td>' + '</td>' +
+                        '<td>' + '</td>' +
+                        '</tr>'
+                );
+//                });
+                lekuvanja_lista_so_zapisi_sortiraj();
+            }
+        }
+    });
+}
+function lekuvanja_lista_trebuvanjazakrv(priemid) {
+    return;
+    var formurl = "/index.php/pacienti/lekuvanja/getPreglediDijagnozi";
+    var filterform = {id: priemid};
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+            //  console.log(response);
+//            console.log(response, "  :trebuvanja za krv");
+            if (response != null) {
+                jQuery.each(response, function (index, item) {
+                    //console.log(index + ":" + item);
+                    jQuery('.pacienti-pregledi-lista-tabela tbody').append(
+                        '<tr dok_id="' + item.id + '" doktype="trebuvanje_za_krv">' +
+                            '<td>' +
+                            '<a href="javascript:" class="delete-tr">' +
+                            '<img width="15" height="15" src="/images/delete.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="edit-tr">' +
+                            '<img width="15" height="15" src="/images/edit.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="info-tr">' +
+                            '<img width="15" height="15" src="/images/information.png" alt="">' +
+                            '</a>' +
+                            '</td>' +
+                            '<td>Требувања за крв</td>' +
+                            '<td>' + item.primen_datum + '</td>' +
+                            '<td>' + item.primen_vreme + '</td>' +
+                            '<td>' + item.dijagnoza_terapija_opis + '</td>' +
+                            '<td>' + item.doktor + '</td>' +
+                            '<td>' + item.firma_ime + '</td>' +
+                            '</tr>'
+                    );
+                });
+                lekuvanja_lista_so_zapisi_sortiraj();
+            }
+        }
+    });
+}
+function lekuvanja_lista_konzilijaren_pregled(priemid) {
+    return;
+    var formurl = "/index.php/pacienti/lekuvanja/getPreglediDijagnozi";
+    var filterform = {id: priemid};
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+            //  console.log(response);
+//            console.log(response, "  :konzilijaren pregled");
+            if (response != null) {
+
+                jQuery.each(response, function (index, item) {
+                    //console.log(index + ":" + item);
+                    jQuery('.pacienti-pregledi-lista-tabela tbody').append(
+                        '<tr dok_id="' + item.id + '" doktype="konzilijaren_pregled">' +
+                            '<td>' +
+                            '<a href="javascript:" class="delete-tr">' +
+                            '<img width="15" height="15" src="/images/delete.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="edit-tr">' +
+                            '<img width="15" height="15" src="/images/edit.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="info-tr">' +
+                            '<img width="15" height="15" src="/images/information.png" alt="">' +
+                            '</a>' +
+                            '</td>' +
+                            '<td>Конзилијарен преглед</td>' +
+                            '<td>' + item.primen_datum + '</td>' +
+                            '<td>' + item.primen_vreme + '</td>' +
+                            '<td>' + item.dijagnoza_terapija_opis + '</td>' +
+                            '<td>' + item.doktor + '</td>' +
+                            '<td>' + item.firma_ime + '</td>' +
+                            '</tr>'
+                    );
+                });
+                lekuvanja_lista_so_zapisi_sortiraj();
+            }
+        }
+    });
+}
+function lekuvanja_lista_mrtoveckapridruznica(priemid) {
+    return;
+    var formurl = "/index.php/pacienti/lekuvanja/getPreglediDijagnozi";
+    var filterform = {id: priemid};
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filterform,
+        dataType: 'json',
+        success: function (response) {
+            //  console.log(response);
+//            console.log(response, "  :mrtovecka pridruznica");
+            if (response != null) {
+                jQuery.each(response, function (index, item) {
+                    //console.log(index + ":" + item);
+                    jQuery('.pacienti-pregledi-lista-tabela tbody').append(
+                        '<tr dok_id="' + item.id + '" doktype="mrtovecka_pridruznica">' +
+                            '<td>' +
+                            '<a href="javascript:" class="delete-tr">' +
+                            '<img width="15" height="15" src="/images/delete.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="edit-tr">' +
+                            '<img width="15" height="15" src="/images/edit.png" alt="">' +
+                            '</a>' +
+                            '<a href="javascript:" class="info-tr">' +
+                            '<img width="15" height="15" src="/images/information.png" alt="">' +
+                            '</a>' +
+                            '</td>' +
+                            '<td>Мртовечка придружница</td>' +
+                            '<td>' + item.primen_datum + '</td>' +
+                            '<td>' + item.primen_vreme + '</td>' +
+                            '<td>' + item.dijagnoza_terapija_opis + '</td>' +
+                            '<td>' + item.doktor + '</td>' +
+                            '<td>' + item.firma_ime + '</td>' +
+                            '</tr>'
+                    );
+                });
+                lekuvanja_lista_so_zapisi_sortiraj();
+            }
+        }
+    });
+}
+function lekuvanja_zatvorilekuvanje(priem_id) {
+
+    var formurl = "/index.php/pacienti/lekuvanja/zatvorilekuvanje";
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: priem_id},
+        dataType: 'json',
+        success: function (response) {
+            lekuvanja_zapisiDatumZatvoriLekuvanje(priem_id);
+            jQuery(".pacienti-shalter-lista-aktivni-tabela tbody").html('');
+            popupmessage("Лекувањето е успешно затворено");
+            lekuvanja_shalter_priemi();
+        }
+    });
+}
+function lekuvanja_zapisiDatumZatvoriLekuvanje(priem_id) {
+
+    var formurl = "/index.php/pacienti/lekuvanja/zapisiDatumZatvoranjeNaPriem";
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: priem_id},
+        dataType: 'json',
+        success: function (response) {
+//            console.log("ok");
+        }
+    });
+}
+function lekuvanja_vratilekuvanje(priem_id) {
+    var formurl = "/index.php/pacienti/lekuvanja/vratilekuvanje";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: priem_id},
+        dataType: 'json',
+        success: function (response) {
+            lekuvanja_clearDatumZatvoriLekuvanje(priem_id);
+            jQuery(".pacienti-shalter-lista-aktivni-tabela tbody").html('');
+            popupmessage("Лекувањето е успешно вратено");
+            lekuvanja_shalter_priemi();
+        }
+    });
+}
+function lekuvanja_clearDatumZatvoriLekuvanje(priem_id) {
+
+    var formurl = "/index.php/pacienti/lekuvanja/clearDatumZatvoranjeNaPriem";
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: priem_id},
+        dataType: 'json',
+        success: function (response) {
+//            console.log("ok");
+        }
+    });
+}
+function priem_uslugi() {
+    if (jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").length == 0) {
+        alert("Ве молиме одберете лекување");
+        return false;
+    }
+    var id = jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").attr("priem_id");
+    var formurl = "/index.php/pacienti/lekuvanja/uslugi";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id: id},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                modal: true,
+                title: "Услуги",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function priem_dopolnitelni_uslugi() {
+    if (jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").length == 0) {
+        alert("Ве молиме одберете лекување");
+        return false;
+    }
+    var id = jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").attr("priem_id");
+    var formurl = "/index.php/pacienti/lekuvanja/dopolnitelni_uslugi";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id: id},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                modal: true,
+                title: "Дополнителни услуги",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function priem_terapija() {
+    if (jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").length == 0) {
+        alert("Ве молиме одберете лекување");
+        return false;
+    }
+    var id = jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr.active").attr("priem_id");
+    var formurl = "/index.php/pacienti/lekuvanja/terapija";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id: id},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                modal: true,
+                title: "Тераписка листа",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function zemi_cena_za_usluga(usluga_id) {
+    var formurl = "/index.php/pacienti/lekuvanja/getCenaZaUsluga";
+    return jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: usluga_id},
+        dataType: 'json'
+    });
+}
+function zemi_cena_za_bolnickiden(id) {
+    var formurl = "/index.php/pacienti/lekuvanja/getCenaZaBolnickiDen";
+    return jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: id},
+        dataType: 'json'
+    });
+}
+function autocomplete_upatnadijagnoza()
+{
+    jQuery( "#dijagnoza" ).autocomplete({
+        source: function( request, response ) {
+            jQuery.ajax({
+                url: "/index.php/pacienti/lekuvanja/autocomplete_dijagnozi",
+                dataType: "jsonp",
+                data: {
+                    featureClass: "P",
+                    style: "full",
+                    maxRows: 25,
+                    name_startsWith: request.term
+                },
+                success: function( data ) {
+                    response( jQuery.map( data, function( item ) {
+                        return {
+                            label: "( "+item.sifra+" ) "+ item.opis,
+                            value: "( "+item.sifra+" ) "+ item.opis,
+                            id: item.id
+                        }
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            jQuery(".dijagnoza_upatna").val(ui.item.id);
+        },
+        open: function() {
+            jQuery( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+        },
+        close: function() {
+            jQuery( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+        }
+    });
+}
+function autocomplete_tabeladijagnoza()
+{
+    jQuery( ".tabela-dijagnozi" ).autocomplete({
+        source: function( request, response ) {
+            jQuery.ajax({
+                url: "/index.php/pacienti/lekuvanja/autocomplete_dijagnozi",
+                dataType: "jsonp",
+                data: {
+                    featureClass: "P",
+                    style: "full",
+                    maxRows: 25,
+                    name_startsWith: request.term
+                },
+                success: function( data ) {
+                    response( jQuery.map( data, function( item ) {
+                        return {
+                            label: "( "+item.sifra+" ) "+ item.opis,
+                            value: "( "+item.sifra+" ) "+ item.opis,
+                            id: item.id
+                        }
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            var row = jQuery(this).closest("tr");
+            row.find("input.dijagnoza").val(ui.item.id);
+            if(row.is(":last-child")) dodadi_nov_red_dijagnoza();
+        },
+        open: function() {
+            jQuery( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+        },
+        close: function() {
+            jQuery( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+        }
+    });
+}
+function autocomplete_potrosenmaterijal()
+{
+    jQuery( ".potrosenmat_artikl" ).autocomplete({
+        source: function( request, response ) {
+            jQuery.ajax({
+                url: "/index.php/pacienti/lekuvanja/autocomplete_potrosenmaterijal",
+                dataType: "jsonp",
+                data: {
+                    featureClass: "P",
+                    style: "full",
+                    maxRows: 25,
+                    name_startsWith: request.term
+                },
+                success: function( data ) {
+                    response( jQuery.map( data, function( item ) {
+                        return {
+                            label: "( "+item.sifra+" ) "+ item.S1Ime,
+                            value: "( "+item.sifra+" ) "+ item.S1Ime,
+                            id: item.SID
+                        }
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            var row = jQuery(this).closest("tr");
+            row.find("input.potrosenmaterijal-artikal").val(ui.item.id);
+            if(row.is(":last-child")) dodadi_nov_red_potrosenmaterijal();
+        },
+        open: function() {
+            jQuery( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+        },
+        close: function() {
+            jQuery( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+        }
+    });
+}
+function autocomplete_izvrseniuslugi()
+{
+    jQuery( ".izvrseni_uslugi" ).autocomplete({
+        source: function( request, response ) {
+            jQuery.ajax({
+                url: "/index.php/pacienti/lekuvanja/autocomplete_paketi",
+                dataType: "jsonp",
+                data: {
+                    featureClass: "P",
+                    style: "full",
+                    maxRows: 25,
+                    name_startsWith: request.term
+                },
+                success: function( data ) {
+                    response( jQuery.map( data, function( item ) {
+                        return {
+                            label: "( "+item.sifra+ " ) "+ item.naziv,
+                            value: "( "+item.sifra+" ) "+ item.naziv,
+                            id: item.id
+                        }
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            var row = jQuery(this).closest("tr");
+            row.find("input.paketi-usluga").val(ui.item.id);
+            if(row.is(":last-child")) dodadi_nov_red_paketi();
+        },
+        open: function() {
+            jQuery( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+        },
+        close: function() {
+            jQuery( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+        }
+    });
+}
+function autocomplete_dopolnitelniuslugi()
+{
+    jQuery( ".dopolnitelni_paketi" ).autocomplete({
+        source: function( request, response ) {
+            jQuery.ajax({
+                url: "/index.php/pacienti/lekuvanja/autocomplete_paketi",
+                dataType: "jsonp",
+                data: {
+                    featureClass: "P",
+                    style: "full",
+                    maxRows: 25,
+                    name_startsWith: request.term
+                },
+                success: function( data ) {
+                    response( jQuery.map( data, function( item ) {
+                        return {
+                            label: "( "+item.sifra+" ) "+ item.naziv,
+                            value: "( "+item.sifra+" ) "+ item.naziv,
+                            id: item.id
+                        }
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            var row = jQuery(this).closest("tr");
+            row.find("input.paketidop-usluga").val(ui.item.id);
+            if(row.is(":last-child")) dodadi_nov_red_dopolnitelniuslugi();
+            var promise = zemi_cena_za_usluga(ui.item.id);
+            promise.success(function(cena) {
+                row.find(".paketi-cena").val(cena);
+                var kolicina = row.find(".paketi-kolicina").val();
+                row.find(".paketi-vkupno").val(formatnumbermkd(cena*kolicina));
+            });
+        },
+        open: function() {
+            jQuery( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+        },
+        close: function() {
+            jQuery( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+        }
+    });
+}
+function autocomplete_uslugizanaplata()
+{
+    var upaten_vo = jQuery(".paketi-tabela-2 tbody").attr("upaten_vo");
+    jQuery( ".uslugi_za_naplata" ).autocomplete({
+        source: function( request, response ) {
+            jQuery.ajax({
+                url: "/index.php/pacienti/lekuvanja/autocomplete_uslugizanaplata",
+                dataType: "jsonp",
+                data: {
+                    upaten_vo: upaten_vo,
+                    featureClass: "P",
+                    style: "full",
+                    maxRows: 25,
+                    name_startsWith: request.term
+                },
+                success: function( data ) {
+                    response( jQuery.map( data, function( item ) {
+                        return {
+                            label: "( "+item.sifra+" ) "+ item.naziv,
+                            value: "( "+item.sifra+" ) "+ item.naziv,
+                            id: item.id
+                        }
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            var row = jQuery(this).closest("tr");
+            row.find("input.paketi-uslugizanaplata").val(ui.item.id);
+            if(row.is(":last-child")) dodadi_nov_red_paketi_2(upaten_vo);
+        },
+        open: function() {
+            jQuery( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+        },
+        close: function() {
+            jQuery( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+        }
+    });
+}
+function autocomplete_cenovnikuslugi(cenovnik)
+{
+    jQuery( ".izvrseni_uslugi" ).autocomplete({
+        source: function( request, response ) {
+            jQuery.ajax({
+                url: "/index.php/pacienti/lekuvanja/autocomplete_cenovnikuslugi",
+                dataType: "jsonp",
+                data: {
+                    cenovnik: cenovnik,
+                    featureClass: "P",
+                    style: "full",
+                    maxRows: 25,
+                    name_startsWith: request.term
+                },
+                success: function( data ) {
+                    response( jQuery.map( data, function( item ) {
+                        return {
+                            label: "( "+item.sifra+" ) "+ item.naziv,
+                            value: "( "+item.sifra+" ) "+ item.naziv,
+                            id: item.id
+                        }
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            var row = jQuery(this).closest("tr");
+            row.find("input.paketi-usluga").val(ui.item.id);
+//            if(row.is(":last-child")) dodadi_nov_red_paketi();
+        },
+        open: function() {
+            jQuery( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+        },
+        close: function() {
+            jQuery( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+        }
+    });
+}
+function autocomplete_upatnadijagnoza_search()
+{
+    jQuery( ".upatna-dijagnoza" ).autocomplete({
+        source: function( request, response ) {
+            jQuery.ajax({
+                url: "/index.php/pacienti/lekuvanja/autocomplete_dijagnozi",
+                dataType: "jsonp",
+                data: {
+                    featureClass: "P",
+                    style: "full",
+                    maxRows: 25,
+                    name_startsWith: request.term
+                },
+                success: function( data ) {
+                    response( jQuery.map( data, function( item ) {
+                        return {
+                            label: "( "+item.sifra+" ) "+ item.opis,
+                            value: "( "+item.sifra+" ) "+ item.opis,
+                            id: item.id
+                        }
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            jQuery(".dijagnoza_upatna_id").val(ui.item.id);
+            lekuvanja_lista_priem_criteria();
+        },
+        open: function() {
+            jQuery( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+        },
+        close: function() {
+            jQuery( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+        }
+    });
+}
+function autocomplete_bolnickidenovistacionar()
+{
+    jQuery( ".bolnicki_denovi_pole" ).autocomplete({
+        source: function( request, response ) {
+            jQuery.ajax({
+                url: "/index.php/pacienti/lekuvanja/autocomplete_bolnickidenovistacionar",
+                dataType: "jsonp",
+                data: {
+                    featureClass: "P",
+                    style: "full",
+                    maxRows: 25,
+                    name_startsWith: request.term
+                },
+                success: function( data ) {
+                    response( jQuery.map( data, function( item ) {
+                        return {
+                            label: "( "+item.sifra+" ) "+ item.naziv,
+                            value: "( "+item.sifra+" ) "+ item.naziv,
+                            id: item.id
+                        }
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            var row = jQuery(this).closest("tr");
+            row.find("input.bolnickidenovi_id").val(ui.item.id);
+            if(row.is(":last-child")) dodadi_nov_red_bolnickidenovi();
+            var promise = zemi_cena_za_bolnickiden(ui.item.id);
+            promise.success(function(cena) {
+                row.find(".bolnickidenovi-cena").val(cena);
+                var kolicina = row.find(".bolnickidenovi-kolicina").val();
+                row.find(".bolnickidenovi-iznos").val(cena*kolicina);
+            });
+        },
+        open: function() {
+            jQuery( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+        },
+        close: function() {
+            jQuery( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+        }
+    });
+}
+function lekuvanja_proveri_dali_ima_za_fakturiranje(priem)
+{
+    jQuery.when(proverkaPaketiZaPriem(priem), proverkaDopolnitelniPaketiZaPriem(priem)).done(function(res1, res2){
+//        console.log(res1[0], res2[0]);
+        if(!res1[0] && !res2[0]) return 1;
+        else return 0;
+    });
+}
+function proverkaPaketiZaPriem(priem) {
+    var formurl = "/index.php/pacienti/lekuvanja/zemiPaketiZaPriem";
+    return jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: {id: priem},
+        dataType: 'json'
+    });
+}
+function proverkaDopolnitelniPaketiZaPriem(priem) {
+    var formurl = "/index.php/pacienti/lekuvanja/zemiDopolnitelniPaketiZaPriem";
+    return jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: {id: priem},
+        dataType: 'json'
+    });
+}
+function lekuvanja_proveriLagerMagacin(elem)
+{
+    var trow = jQuery(elem).closest("tr");
+    var kolicina = trow.find(".potrosenmaterijal-kolicina").val();
+    var magacin = trow.find(".potrosenmaterijal-magacin").val();
+    var artikl = trow.find(".potrosenmaterijal-artikal").val();
+    //console.log("func ", artikl, kolicina, magacin);
+    if(kolicina>0 && magacin>0)
+    {
+        var data = {
+            artikl: artikl,
+            magacin: magacin
+        }
+        var formurl = "/index.php/materijalno/izlez/proveriLagerMagacin";
+        jQuery.ajax({
+            url: formurl,
+            type: 'GET',
+            data: data,
+            dataType: 'json',
+            success: function (response) {
+//            console.log(response);
+                if(kolicina > response)
+                {
+                    trow.find(".potrosenmaterijal-kolicina").val('0');
+                    alert("Количина на лагер за овој артикл во овој магацин е " + response);
+                }
+            }
+        });
+    }
+}

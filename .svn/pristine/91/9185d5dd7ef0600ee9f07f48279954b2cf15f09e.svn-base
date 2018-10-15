@@ -1,0 +1,101 @@
+<div id="update_artikl_form">
+    <?php
+    foreach($artikl as $row) {
+        $a0=$row->SID;
+        $a1=$row->sifra;
+        $a2=$row->katBroj;
+        $a3=$row->BarCode;
+        $a4=$row->S1Ime;
+        $a5=$row->MarkerID;
+        $a6=$row->SDDV;
+        $a7=$row->Cen1;
+        $a8=$row->Cen2;
+        $a9=$row->Cen0;
+        $a10=1;
+        $a11=2;
+        $a12=2;
+        $a13=$row->paket;
+        $a14=floatval(preg_replace("/[^-0-9\.]/","",$row->za_fond));
+        $a15=floatval(preg_replace("/[^-0-9\.]/","",$row->privatno));
+        $a16=floatval(preg_replace("/[^-0-9\.]/","",$row->participacija));
+        $a17=floatval(preg_replace("/[^-0-9\.]/","",$row->predvidena_participacija));
+        $a18=floatval(preg_replace("/[^-0-9\.]/","",$row->za_fzom));
+        $a19=$row->S1tip;
+    }
+    if($a13 == 1)
+    {
+        $paket = array(
+            'name'        => 'paket',
+            'class'       => 'paket2',
+            'value'       => 'accept',
+            'checked'     => TRUE,
+            'style'       => 'margin:10px',
+        );
+    }
+    else
+    {
+        $paket = array(
+            'name'        => 'paket',
+            'class'       => 'paket2',
+            'value'       => 'accept',
+            'checked'     => FALSE,
+            'style'       => 'margin:10px',
+        );
+    }
+
+    ?>
+
+    <h1>Артикл</h1>
+    <?php
+        echo form_open('podatoci/artikl/update_artikl');
+        echo form_label('Пакет: ','paket');
+        echo form_checkbox($paket);
+        echo br();
+    ?>
+    <?php echo form_hidden('SID', $a0); ?>
+    <?php echo form_label('Шифра:', 'sifra'); ?><br>
+    <?php echo form_input('sifra', $a1, 'sifra' ); ?><br><br>
+    <?php echo form_label('КатБрој:', 'katBroj'); ?>
+    <?php echo form_dropdown('katbroj', $katbroj, $a2 ); ?><br><br>
+    <?php echo form_label('Баркод:', 'BarCode');?>
+    <?php echo form_input('barcode', $a3, 'BarCode' ); ?><br><br>
+    <?php echo form_label('Име:', 'S1Ime');?>
+    <?php echo form_input('artikl', $a4, 'S1Ime');?>
+    <?php echo form_label('Конто:', 'konto');?>
+    <?php echo form_dropdown('konto', $konto, $a19);?><br>
+    <?php echo form_label('Производител:', 'MarkerID');?>
+    <?php echo form_dropdown('proizvoditel', $proizvoditel, $a18);?><br>
+        <div class="paketfields2 hide">
+            За фонд: <input type="text" class="zafond" name="zafond" value="<?php echo $a14; ?>">
+            Приватно: <input type="text" class="privatno" name="privatno" value="<?php echo $a15; ?>">
+            Партиципација: <input type="text" class="participacija" name="participacija" value="<?php echo $a16; ?>">
+            Предвидена партиципација: <input type="text" class="predvidena" name="predvidena" value="<?php echo $a17; ?>">
+            За ФЗОМ: <input type="text" class="zafzom" name="zafzom" value="<?php echo $a18; ?>">
+        </div>
+    <?php echo form_label('Ддв:', 'SDDV');?>
+    <?php echo form_input('ddv', $a6, 'SDDV');?>
+    <?php echo form_label('Дилер1 :', 'Cen1');?>
+    <?php echo form_input('diler1', $a7, 'Cen1');?>
+    <?php echo form_label('Дилер2:', 'Cen2');?>
+    <?php echo form_input('diler2', $a8, 'Cen2');?>
+    <?php echo form_label('Малопродажна:', 'Cen0');?>
+    <?php echo form_input('maloprodazna', $a9, 'Cen0');?>
+
+    <input type="button" value="Промени" class="ajaxsubmitform"><br>
+
+    <?php
+    echo form_close(); ?>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        if(jQuery('.paket2').is(':checked')) jQuery('.paketfields2').removeClass('hide');
+        else jQuery('.paketfields2').addClass('hide');
+        jQuery('.paket2').live('click',function(){
+//            jQuery('.paketfields').toggle('hide');
+            if(jQuery('.paket2').is(':checked')) jQuery('.paketfields2').removeClass('hide');
+            else jQuery('.paketfields2').addClass('hide');
+        });
+
+    });
+</script>

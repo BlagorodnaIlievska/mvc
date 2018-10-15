@@ -1,0 +1,87 @@
+<div id="fin_grupiranje_form">
+    <p>Podelba na stavki po grupi za finansiska analiza</p>
+    <?php
+    $delete = img(array(
+        'src' => 'images/delete.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $options = array(
+        '0' => 'Bez Grupa',
+        '1' => 'Site'
+    );
+    echo form_open('izlezni_fakturi/fin_grupiranje/getFinGrupiranje');
+    echo form_label('Pogled: ', 'pogled');
+    echo form_dropdown('pogled', $options,'','id="pogled"');
+    echo br();
+//    echo form_label('Godina:','godina');
+//    echo form_dropdown('godina',$godina);
+    echo form_close();
+    ?>
+    <br>
+    <div class="prikaz">
+        <table class="tfingrupiranje" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th>Datum</th>
+                <th>Broj</th>
+                <th>Klient</th>
+                <th>Vkupno</th>
+                <th>Fin. Grupi</th>
+                <th>Zabeleska</th>
+            </tr>
+            <?php
+            echo "<tr>";
+            echo "<td> <input type='text' class='datum big' name='datum' readonly> </td>";
+            echo "<td> <input type='text' class='broj medium' name='broj' readonly> </td>";
+            echo "<td> <input type='text' class='klient big' name='klient' readonly> </td>";
+            echo "<td> <input type='text' class='vkupno medium' name='vkupno' readonly> </td>";
+            echo "<td> <input type='text' class='fingrupi big' name='fingrupi' readonly> </td>";
+            echo "<td> <input type='text' class='zabeleska big' name='zabeleska' readonly> </td>";
+            echo "</tr>";
+            ?>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('#pogled').live('change',function(){
+            var pogled = jQuery('#pogled option:selected').val();
+            var formaction = jQuery(this).parent().attr('action');
+            //var formaction = jQuery(this).parent().attr('action');
+            //console.log(formaction);
+            var data = {
+                pogledid: pogled
+            }
+            jQuery.ajax({
+                url: formaction,
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    console.log(response);
+                    jQuery(".tfingrupiranje").find("tr:gt(1)").remove();
+                    var tr = jQuery('.tfingrupiranje tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        //console.log(response[i].ZSID);
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('input[name=datum]').val(response[i].datum);
+                        newrow.find('input[name=broj]').val(response[i].textBroj);
+                        newrow.find('input[name=klient]').val(response[i].firmaIme);
+                        newrow.find('input[name=vkupno]').val(response[i].suma);
+                        newrow.find('input[name=fingrupi]').val(response[i].tip);
+                        newrow.find('input[name=zabeleska]').val(response[i].zabeleska);
+                    }
+                    tr.addClass('hiderow');
+                }
+            });
+        });
+    });
+</script>

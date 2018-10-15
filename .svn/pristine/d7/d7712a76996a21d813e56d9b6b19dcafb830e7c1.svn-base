@@ -1,0 +1,74 @@
+<?php
+
+class Accounts_model extends CI_Model{
+
+    public function getAll()
+    {
+        $query = $this->db->get('users');
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+
+    public function delete_row()
+    {
+        $this->db->where('id', $this->uri->segment(4));
+        $this->db->delete('users');
+    }
+
+    public function edit_row(){
+
+        $this->db->where('id', $this->uri->segment(4));
+        $query = $this->db->get('users');
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+
+    public function update_row()
+    {
+        $member_update_data = array(
+            'username' => $this->input->post('username'),
+            'email' => $this->input->post('email_address'),
+            'role_id' => $this->input->post('role')
+        );
+
+        $this->db->where('id', $this->input->post('row_id'));
+        $update = $this->db->update('users', $member_update_data);
+        return $update;
+    }
+
+    function get_users_dropdown()
+    {
+        $this->db->select('id, username, role_id');
+        $this->db->from('users');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = 'select user';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['username'];
+            }
+        }
+        return $dropdown;
+
+    }
+
+    public function getById($userId)
+    {
+        $this->db->where('id', $userId);
+        $this->db->from('covecki_resursi');
+        $query = $this->db->get();
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+
+}

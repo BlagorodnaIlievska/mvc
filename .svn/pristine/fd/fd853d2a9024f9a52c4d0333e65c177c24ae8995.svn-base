@@ -1,0 +1,165 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+class Generate extends CI_Controller
+{
+    function __construct(){
+        parent::__construct();
+        $this->load->helper('download');
+    }
+    function test(){
+        $faktura_id = $this->input->get("id");
+        $this->load->model('pacienti/pacienti_model');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $fakturi_za_fzom = $this->izlezni_fakturi_model->getPodatociOdIzlezniFakturiZaFzomZaSpec($faktura_id);
+        $fzom_faktura = $this->izlezni_fakturi_model->getFakturaFzom($faktura_id);
+        $fzom_faktura_firma = $this->izlezni_fakturi_model->getBisFirmaInfo($fzom_faktura->firma_id);
+
+//        echo "<pre>", print_r($fakturi_za_fzom, true), "</pre>";
+
+        $datum = $fzom_faktura->datum;
+//        bis_debug($fzom_faktura, "fak");
+//        bis_debug($fakturi_za_fzom, "fakturi za fzom");
+//        bis_debug($fzom_faktura_firma, "test");
+        foreach($fakturi_za_fzom as $faktura){
+                bis_debug($faktura, "ставка");
+        }
+    }
+    function sp(){
+        $xmlstr ='<?xml version="1.0" encoding="UTF-8"?><specifikacija></specifikacija>';
+        $sp = new SimpleXMLElement($xmlstr);
+        $faktura_id = $this->input->get("id");
+        $this->load->model('pacienti/pacienti_model');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+
+        $fakturi_za_fzom = $this->izlezni_fakturi_model->getPodatociOdIzlezniFakturiZaFzomZaSpec($faktura_id);
+        $fzom_faktura = $this->izlezni_fakturi_model->getFakturaFzom($faktura_id);
+        $fzom_faktura_firma = $this->izlezni_fakturi_model->getBisFirmaInfo($fzom_faktura->firma_id);
+
+        $datum = $fzom_faktura->datum;
+        $datum = explode("-", $datum);
+        $nov_datum = $datum[2].$datum[1].$datum[0];
+
+        $sp->glavaSpecifikacija->EDB = $fzom_faktura_firma->danocenbroj;
+        $sp->glavaSpecifikacija->dejnost =  $fzom_faktura_firma->sifra;
+        $sp->glavaSpecifikacija->brojSpecifikacija =  'da se dovrsi';
+        $sp->glavaSpecifikacija->mesec =  $datum[1];
+        $sp->glavaSpecifikacija->godina = $datum[2];
+        $sp->glavaSpecifikacija->datum =  $nov_datum;
+        $sp->glavaSpecifikacija->podracnaSluzba =  'da se dovrsi';
+
+        $i = 0;
+        foreach($fakturi_za_fzom as $faktura)
+        {
+            $datum_ragjanje_tmp =  explode("-", $faktura->pacientDatumRagjanje);
+            $datum_ragjanje = $datum[2].$datum[1].$datum[0];
+            $sp->teloSpecifikacija->epizoda[$i]->embg = $faktura->pacientEmbg;
+            $sp->teloSpecifikacija->epizoda[$i]->imePrezime = $faktura->pacientIme . " " . $faktura->pacientPrezime;
+            $sp->teloSpecifikacija->epizoda[$i]->datumRagjanje = $datum_ragjanje;
+            $sp->teloSpecifikacija->epizoda[$i]->brojPresmetka = $faktura->lekuvanje_id;
+            $sp->teloSpecifikacija->epizoda[$i]->brojUpat='';
+            $sp->teloSpecifikacija->epizoda[$i]->sifraDijagnoza = $faktura->dijagnoza;
+            $sp->teloSpecifikacija->epizoda[$i]->faksimil = $faktura->faksimil;
+            $sp->teloSpecifikacija->epizoda[$i]->datumIzdavanjeUpat='';
+            $sp->teloSpecifikacija->epizoda[$i]->datumPocetok='';
+            $sp->teloSpecifikacija->epizoda[$i]->datumKraj='';
+            $sp->teloSpecifikacija->epizoda[$i]->sifraDrzavaVoStranstvo='';
+            $sp->teloSpecifikacija->epizoda[$i]->brojZdravstvenoOsiguruvanje = $faktura->pacientBrojZL;
+            $sp->teloSpecifikacija->epizoda[$i]->EHIS='';
+
+            $j=0;
+            foreach($faktura->paketi as $paket)
+            {
+                $sp->teloSpecifikacija->epizoda->paket[$j]->sifraPaket = $paket->sifra_paket;
+                $sp->teloSpecifikacija->epizoda->paket[$j]->kolicina = $paket->kolicina;
+                $sp->teloSpecifikacija->epizoda->paket[$j]->referentnaCena = $paket->cena;
+                $sp->teloSpecifikacija->epizoda->paket[$j]->brojZaverenaPotvrda = '';
+                $j++;
+            }
+            $i++;
+        }
+
+        force_download("sp.xml",$sp->asXML());
+    }
+
+    function fzom(){
+        $xmlstr='<?xml version="1.0" encoding="UTF-8"?><faktura></faktura>';
+        $fzom = new SimpleXMLElement($xmlstr);
+
+        $faktura_id = $this->input->get("id");
+        $this->load->model('pacienti/pacienti_model');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $fzom_faktura = $this->izlezni_fakturi_model->getFakturaFzom($faktura_id);
+        $fzom_faktura_firma = $this->izlezni_fakturi_model->getBisFirmaInfo($fzom_faktura->firma_id);
+//        $fakturi_fzom = $this->izlezni_fakturi_model->getPodatociOdIzlezniFakturiZaFzom($faktura_id);
+//        $if_broj_query = explode("-",$this->pacienti_model->createIFBroj());
+//        $if_broj = $if_broj_query[0];
+
+        $datum = $fzom_faktura->datum;
+        $datum = explode("-", $datum);
+        $nov_datum = $datum[2].$datum[1].$datum[0];
+
+        $fzom->glavaFaktura->transakciskaSmetka = '210255488757878'; //dorabotka
+        $fzom->glavaFaktura->banka = 'Тутунска Банка'; //dorabotka
+        $fzom->glavaFaktura->EDB = $fzom_faktura_firma->danocenbroj;
+        $fzom->glavaFaktura->dejnost = $fzom_faktura_firma->sifra;
+        $fzom->glavaFaktura->brojFaktura = $fzom_faktura->textBroj;
+        $fzom->glavaFaktura->godina = $datum[2];
+        $fzom->glavaFaktura->mesec = $datum[1];
+        $fzom->glavaFaktura->datum = $nov_datum;
+        $fzom->glavaFaktura->datumValuta = $fzom_faktura->datetime;
+        $fzom->glavaFaktura->vkupenIznosPaketi = $fzom_faktura->presmetana_participacija+$fzom_faktura->vkupno_fzom;
+        $fzom->glavaFaktura->presmetanaParticipacija = $fzom_faktura->presmetana_participacija;
+        $fzom->glavaFaktura->naplatenaParticipacija = $fzom_faktura->naplatena_participacija;
+        $fzom->glavaFaktura->vkupnoLekovi = 'вк лекови'; //dorabotka
+        $fzom->glavaFaktura->vkupenIznosFZOM = $fzom_faktura->vkupno_fzom;
+        $fzom->glavaFaktura->podracnaSluzba = '25'; //dorabotka
+        $fzom->glavaFaktura->procent = '0'; //dorabotka
+        $fzom->glavaFaktura->vkupenIznosSoProcent = $fzom_faktura->vkupno_fzom; // dorabotka
+
+        $i = 0;
+        foreach($fzom_faktura->stavki as $faktura)
+        {
+            $fzom->teloFaktura->paket[$i]->sifraPaket = $faktura->stavkaSifraPaket;
+            $fzom->teloFaktura->paket[$i]->kolicina = $faktura->stavkaKolicina;
+            $fzom->teloFaktura->paket[$i]->referentnaCena = $faktura->stavkaCena;
+            $i++;
+        }
+
+        force_download("fzom.xml",$fzom->asXML());
+    }
+    function ministerstvo(){
+        $xmlstr='<?xml version="1.0" encoding="UTF-8"?><faktura></faktura>';
+        $ministerstvo = new SimpleXMLElement($xmlstr);
+
+        $this->load->model('pacienti/pacienti_model');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $fakturi_ministerstvo = $this->izlezni_fakturi_model->getIzlezniFakturiZaMinisterstvo();
+        $if_broj_query = explode("-",$this->pacienti_model->createIFBroj());
+        $if_broj = $if_broj_query[0];
+
+        $ministerstvo->informacijaFaktura->broj = $if_broj;
+        $ministerstvo->informacijaFaktura->komintent = 'Министерство за здравство';
+        $ministerstvo->informacijaFaktura->datum = date("d-m-y");
+
+        $brojac = 0; $vkupno_zdravstveni_so_participacija = 0;
+        $vkupno_presmetana_participacija = 0; $vkupno_naplata_fzom = 0;
+        foreach($fakturi_ministerstvo as $row){
+            $vkupno_zdravstveni_so_participacija += $row->fakturaVkupno;
+            $vkupno_presmetana_participacija += $row->fakturaVkupnoMinisterstvo;
+            $vkupno_naplata_fzom += $row->fakturaVkupnoFzom;
+            foreach($row->stavki as $stavka){
+            $ministerstvo->sodrzinaFaktura->stavka_faktura[$brojac]->sifra = $stavka->sifra;
+            $ministerstvo->sodrzinaFaktura->stavka_faktura[$brojac]->naziv = $stavka->stavkaIme;
+            $ministerstvo->sodrzinaFaktura->stavka_faktura[$brojac]->kolicina = $stavka->stavkaKolicina;
+            $ministerstvo->sodrzinaFaktura->stavka_faktura[$brojac]->referentna_cena = $stavka->stavkaCena;
+            $ministerstvo->sodrzinaFaktura->stavka_faktura[$brojac]->vkupen_iznos = $stavka->stavkaKolicina*$stavka->stavkaCena;
+            $brojac ++;
+            }
+        }
+        $ministerstvo->iznosFaktura->vkupnoZdravstveniUslugiSoParticipacija = $vkupno_zdravstveni_so_participacija;
+        $ministerstvo->iznosFaktura->vkupnoPresmetanaParticipacija = $vkupno_presmetana_participacija;
+        $ministerstvo->iznosFaktura->vkupnoNaplataOdFzom = $vkupno_naplata_fzom;
+
+        force_download("ministerstvo.xml",$ministerstvo->asXML());
+    }
+
+}

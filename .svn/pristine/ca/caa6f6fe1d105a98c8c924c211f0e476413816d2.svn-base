@@ -1,0 +1,8 @@
+<div id="edit_otpis_roba_form" class="pop-menu-tabs">
+    <ul>
+        <li><a href="#otpisnica">Отписница</a></li>
+
+    </ul>
+    <div id="otpisnica"></div>
+
+</div>

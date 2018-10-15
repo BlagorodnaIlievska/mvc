@@ -1,0 +1,306 @@
+<div class="vlez-form content-area">
+
+    <?php
+    $tip=array(
+        '0'=>'Сите',
+        '1'=>'Фирма',
+        '2'=>'Интерно конто',
+        '3'=>'Физичко лице'
+    );
+    echo form_open('podatoci/klient/new_klient');
+    ?>
+    <div class="klienti-top">
+        <button type="button" value="" class="klientbutton button bnovafak"><span>Нов клиент</span></button>
+        <span class="print"> <?php echo anchor('', 'Печати'); ?></span>
+        <button type="button" value="" class="barajklient button"><span>Барај</span></button>
+    </div>
+    <div class="filtermenuklient" style="display: none;">
+
+
+        <div class="filter-vleznifak">
+            <?php
+            echo form_label('Име:', 'ime');
+            echo form_input('ime','','class="ddime listaklienti"');
+
+            ?>
+        </div>
+        <div class="filter-vleznifak">
+            <?php
+            echo form_label('Тип на клиент:', 'tip');
+            echo form_dropdown('tip',$tip,'','class="ddtip listaklienti"');
+            ?>
+        </div>
+        <div class="filter-vleznifak">
+            <?php
+            echo form_label('Град','grad');
+            echo form_dropdown('grad',$grad,'','class="ddgrad listaklienti"');
+            ?>
+        </div>
+
+        <?php
+        echo form_close();
+        ?>
+    </div>
+
+    <div class="vlezni-fakturi">
+    </div>
+
+    <div class="predtabela">
+        <table class="tklienti" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>Име</th>
+                <th>Шифра</th>
+                <th>Адреса</th>
+                <th>Град</th>
+                <th>Телефон</th>
+                <th>Факс</th>
+                <th>Емаил</th>
+                <th>Контакт</th>
+            </tr>
+            </thead>
+            <tfoot>
+            <tr>
+                <td colspan="4" class="vkupnostavki"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tfoot>
+            <tbody>
+            <tr class='hiderow trow' firmaid="">
+                <td class="deletefaktura"><img width="15" height="15" alt="" src="/images/delete.png"></td>
+                <td class="editfaktura"><img width="15" height="15" alt=""
+                                             src="http://bis.server4.bointsoft.com/images/edit.png"></td>
+                <td class="infofaktura"><img width="15" height="15" alt=""
+                                             src="http://bis.server4.bointsoft.com/images/down.png"></td>
+                <td class="ime"></td>
+                <td class="sifra"></td>
+                <td class="adresa"></td>
+                <td class="grad"></td>
+                <td class="telefon"></td>
+                <td class="faks"></td>
+                <td class="email"></td>
+                <td class="kontakt"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+jQuery(document).ready(function () {
+   // jQuery('.periodod').datepicker({dateFormat:'yy-mm-dd'});
+    //jQuery('.perioddo').datepicker({dateFormat:'yy-mm-dd'});
+
+    jQuery('.ddstatus, .ddnacin, .ddkomerc, .ddklient').combobox();
+    jQuery(".tklienti").tablesorter();
+    jQuery(".tklienti").tablesorter();
+
+    jQuery.ajax({
+        url:"/index.php/podatoci/klient/getAll",
+        type:'POST',
+        dataType:'json',
+        success:function (response) {
+
+            //console.log(response);
+            jQuery(".tklienti tbody").find("tr:gt(1)").remove();
+            var tr = jQuery('.tklienti tr:last');
+            tr.removeClass('hiderow');
+
+            var vkupnostavki = response.length;
+            for (var i = 0; i < response.length; i++) {
+                var newrow = jQuery(tr).clone().insertAfter(tr);
+                newrow.attr("firmaid", response[i].firmaID);
+                newrow.find('.ime').html(response[i].ime);
+                newrow.find('.sifra').html(response[i].sifrall);
+                newrow.find('.adresa').html(response[i].adresa);
+                newrow.find('.grad').html(response[i].grad_ime);
+                newrow.find('.telefon').html(response[i].phone1);
+                newrow.find('.faks').html(response[i].fax);
+                newrow.find('.email').html(response[i].email);
+                newrow.find('.kontakt').html(response[i].kontakt);
+
+
+            }
+
+
+            jQuery(".tklienti .vkupnostavki").html(vkupnostavki + " во листа");
+            //console.log(OsnovaSum);
+            //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+            tr.addClass('hiderow');
+
+            jQuery(".tklienti").trigger("update");
+        }
+    });
+  //tuka ke se promeni listaklienti treba
+    jQuery('.pregledvlezna').live('change', function () {
+        jQuery(".tvleznifakturi").find("tr:gt(1)").remove();
+        jQuery(".tstavkadetail").find("tr:gt(1)").remove();
+        var stat = jQuery('.ddstatus option:selected').val();
+        var klient = jQuery('.ddklient option:selected').val();
+        var nacin = jQuery('.ddnacin option:selected').val();
+        var komerc = jQuery('.ddkomerc option:selected').val();
+        var formaction = "/index.php/vlezni_fakturi/pregled_vlezni/pregled";
+        //   console.log(klient, status, nacin, formaction);
+        var data = {
+            statusid:stat,
+            klientid:klient,
+            nacinid:nacin,
+            komercid:komerc
+        }
+        jQuery.ajax({
+            url:formaction,
+            type:'POST',
+            data:data,
+            dataType:'json',
+            success:function (response) {
+                //console.log(response);
+                var tr = jQuery('.tvleznifakturi tr:last');
+                tr.removeClass('hiderow');
+                for (var i = 0; i < response.length; i++) {
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.find('.dbid').val(response[i].dbid);
+                    newrow.find('.broj').val(response[i].broj);
+                    newrow.find('.datum').val(response[i].datum);
+                    newrow.find('.klient').val(response[i].firmaIme);
+                    newrow.find('.osnova').val(response[i].osnova);
+                    newrow.find('.ddv').val(response[i].ddv);
+                    newrow.find('.vkupno').val(response[i].vkupno);
+                    newrow.find('.zabeleska').val(response[i].zabeleska);
+                }
+                //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                tr.addClass('hiderow');
+            }
+        });
+    });
+    //za otvoranje na forma za nov klient
+    jQuery('.klientbutton').click(function()
+    {
+        var formaction="/index.php/podatoci/klient/new_klient";
+        var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+
+        //jQuery("body").append('<div class="'+tempdialog+'"></div>');
+       // jQuery('div.'+tempdialog).dialog({ autoOpen: true, width: 1100 }).load(formaction);
+        jQuery.ajax({
+            url:formaction,
+            success:function (response) {
+                jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                jQuery("." + tempdialog).html(response);
+                jQuery('div.' + tempdialog).dialog({
+                    autoOpen:true,
+                    width:"auto",
+                    position:[20, 20],
+                    modal:true,
+                    dialogClass: 'dialogsotabovi',
+                    title:"Нов клиент",
+                    close:function (event, ui) {
+                        // Remove the dialog elements
+                        // Note: this will put the original div element in the dom
+                        jQuery(this).dialog("destroy");
+                        // Remove the left over element (the original div element)
+                        jQuery(this).remove();
+                    }
+                    //buttons:{ "Close": function() { jQuery(this).dialog('destroy'); } }
+                });
+
+
+                jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                    cache:false,
+                    ajaxOptions:{
+                        type:"POST"
+                    }
+                });
+            }
+        });
+    });
+
+//za da se otvori formata za prebaruvanje
+    jQuery(".barajklient").live("click", function () {
+        if (jQuery(".filtermenuklient").hasClass("prikazano")) {
+            jQuery(".filtermenuklient").hide(500);
+            jQuery(".filtermenuklient").removeClass("prikazano");
+        } else {
+            jQuery(".filtermenuklient").show(500);
+            jQuery(".filtermenuklient").addClass("prikazano");
+        }
+    });
+    //za promena
+    function editfaktura(data) {
+        var id = jQuery(data).attr('fakturaid');
+        //console.log(id);
+        var formaction = "/index.php/vlezni_fakturi/pregled_vlezni/editVleznaFaktura?id=" + id;
+        var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+
+        jQuery.ajax({
+            url:formaction,
+            success:function (response) {
+                jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                jQuery("." + tempdialog).html(response);
+                jQuery('div.' + tempdialog).dialog({
+                    autoOpen:true,
+                    width:"auto",
+                    position:[20, 20],
+                    modal:true,
+                    title:"Измени Фактура",
+                    dialogClass: 'dialogsotabovi',
+                    close:function (event, ui) {
+                        // Remove the dialog elements
+                        // Note: this will put the original div element in the dom
+                        jQuery(this).dialog("destroy");
+                        // Remove the left over element (the original div element)
+                        jQuery(this).remove();
+                    }
+                    //buttons:{ "Close": function() { jQuery(this).dialog('destroy'); } }
+                });
+                jQuery.ajax({
+                    url:'/index.php/vlezni_fakturi/faktura/editFaktura?id='+id,
+                    type:'GET',
+                    success:function (response) {
+
+                        jQuery("." + tempdialog +" #editfaktura").html(response);
+                    }
+                });
+                jQuery.ajax({
+                    url:'/index.php/vlezni_fakturi/faktura/editUplata?id='+id,
+                    type:'GET',
+                    success:function (response) {
+
+                        jQuery("." + tempdialog +" #edituplata").html(response);
+                    }
+                });
+                jQuery.ajax({
+                    url:'/index.php/vlezni_fakturi/faktura/editPriemnica?id='+id,
+                    type:'GET',
+                    success:function (response) {
+
+                        jQuery("." + tempdialog +" #editpriemnici").html(response);
+                    }
+                });
+                jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                    cache:false,
+                    ajaxOptions:{
+                        type:"POST"
+                    }
+                });
+            }
+        });
+    }
+
+    jQuery(".editfaktura").live("click", function () {
+        editfaktura(jQuery(this).parent());
+    });
+    jQuery('.tvleznifakturi tbody tr').live("dblclick", function () {
+        editfaktura(jQuery(this));
+    });
+
+});
+</script>

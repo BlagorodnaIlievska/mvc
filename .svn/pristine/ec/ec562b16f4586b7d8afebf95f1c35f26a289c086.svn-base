@@ -1,0 +1,44 @@
+<div class="cenovnik-listaglavna">
+   <div class="filtermenu">
+
+
+    <?php
+
+   echo form_label('Избери главна група: ', 'grupa');
+   echo form_dropdown('grupa', $grupa, '', 'class="ddgrupa"');
+    ?>
+
+   </div>
+   <div class="filtermenu-podgrupi" style="display:none">
+
+   </div>
+
+</div>
+
+ <script>
+     jQuery(document).ready(function () {
+
+       //  jQuery('.ddgrupa').combobox();
+         jQuery('.ddgrupa').live('change', function () {
+             var grupa= jQuery('.ddgrupa option:selected').val();
+             var formaction = "/index.php/podatoci/cenovnik/zemiPodgrupi";
+             console.log(grupa);
+             var data = {
+                 grupaid:grupa
+                  }
+
+         jQuery.ajax({
+             url:formaction,
+                     type:'POST',
+                     data:data,
+                     dataType:'json',
+                     success:function (response) {
+//
+                     }
+         });
+
+         });
+
+
+         });
+ </script>

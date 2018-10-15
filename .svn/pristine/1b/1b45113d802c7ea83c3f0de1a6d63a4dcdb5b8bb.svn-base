@@ -1,0 +1,25 @@
+<div class="novaedmerka">
+    <form action="/index.php/smenska_grupa/smena/create_smena" method="post">
+        <fieldset>
+
+
+            <legend>Нова</legend>
+
+            <ul>
+                <li><label>Име:</label>
+                <input type="text" name="ime"/></li><br/>
+                <li><label>Број:</label>
+                <input type="text" name="broj"/></li><br/>
+            </ul>
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="smenska_grupa_popolnilista()" poraka_uspesno=" успешно снимена"
+                poraka_neuspesno="Грешка при снимање"
+                ><span>Сними</span></button>
+
+
+        <br/>
+    </form>
+
+</div>

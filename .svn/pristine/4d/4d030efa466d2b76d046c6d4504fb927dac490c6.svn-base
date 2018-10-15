@@ -1,0 +1,53 @@
+<div class="novaklasa">
+    <fieldset>
+        <legend>Нова ставка</legend>
+        <form accept-charset="utf-8" method="post" action="/index.php/finansiski_plan/plan/create_stavka">
+
+            <?
+
+            $godina = array(
+                '2013'  => '2013',
+                '2012'  => '2012',
+                '2011'  => '2011',
+                '2010'=>'2010',
+                '2009'=>'2009',
+                '2008'=>'2008'
+            );
+
+            echo   form_label('Избери конто','konto');  ?>
+         <?   echo    form_dropdown('konto',$konto,'','class="ddkonto pregledstavki"');
+            ?>  <br/>
+            <label>Избери година :</label>
+            <?  echo    form_dropdown('godina',$godina,'','class="ddgodina pregledpogodina"');?> <br>
+            Назив:<br />
+            <input type="text" name="naziv"><br /><br/>
+            Квартал 1:<br />
+            <input type="text" name="k1" class="kvartal1 kvartal"><br />
+            Квартал 2:<br />
+            <input type="text" name="k2" class="kvartal2 kvartal"><br />
+            Квартал 3:<br />
+            <input type="text" name="k3" class="kvartal3 kvartal"><br />
+            Квартал 4:<br />
+            <input type="text"  name="k4" class="kvartal4 kvartal"><br />
+            Вкупно :<br />
+            <input type="text"  readonly name="vkupno" class="vkupno"><br />
+            <br />
+            <input type="button" class="ajaxcreatеstavka button" value="Додади"><br />
+
+        </form>
+    </fieldset>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        var vk=0;
+    jQuery(".kvartal").live('blur', function () {
+        var k1 = 1* jQuery('.kvartal1').val();
+        var k2 = 1* jQuery('.kvartal2').val();
+        var k3 = 1* jQuery('.kvartal3').val();
+        var k4 = 1* jQuery('.kvartal4').val();
+           vk=  k1+k2+k3+k4 ;
+
+        jQuery('.vkupno').val(vk);
+    }  );
+    });
+</script>

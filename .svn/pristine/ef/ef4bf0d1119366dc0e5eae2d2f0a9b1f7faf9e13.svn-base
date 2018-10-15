@@ -1,0 +1,60 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+
+class Pridonesi extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function lista()
+    {
+        $this->load->view('plata_podatoci/pridonesi/lista');
+    }
+
+    public function nov_pridones()
+    {
+        $this->load->view('plata_podatoci/pridonesi/nov_pridones');
+    }
+
+    public function izmeni()
+    {
+        $this->load->model('plata_podatoci/pridonesi_model');
+        $pridones = $this->pridonesi_model->getPridones($this->input->get("id"));
+        $data['pridones']     = $pridones;
+        $this->load->view('plata_podatoci/pridonesi/izmeni', $data);
+    }
+
+    public function polnilista()
+    {
+        $this->load->model('plata_podatoci/pridonesi_model');
+        $return = $this->pridonesi_model->getPridonesi();
+        echo json_encode($return);
+    }
+
+    public function create_pridonesi()
+    {
+        $this->load->model('plata_podatoci/pridonesi_model');
+        $this->pridonesi_model->create_pridonesi();
+        echo "ok";
+    }
+
+    public function update_pridonesi()
+    {
+        $this->load->model('plata_podatoci/pridonesi_model');
+        $this->pridonesi_model->update_pridonesi() ;
+        echo 'ok';
+
+    }
+
+    public function delete_pridonesi()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('plata_podatoci/pridonesi_model');
+        $this->pridonesi_model->delete_pridonesi($id);
+        echo "ok";
+    }
+}

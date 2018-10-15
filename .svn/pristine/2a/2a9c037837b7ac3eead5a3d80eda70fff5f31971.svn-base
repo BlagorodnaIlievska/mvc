@@ -1,0 +1,49 @@
+<div class="edit-trezor-novapratka-podatok">
+    <form class="trezor-novapratkapodatok-form" action="/index.php/trezor/trezor/updatePratkaPodatok" method="post">
+        <input type="hidden" name="id" value="<?= $podatoci->id ?>" class="pratka_id">
+        <input type="hidden" name="pratka_id" value="<?= $podatoci->pratka_id ?>" class="pratka_id">
+        Сметка на задолжување:<br/>
+        <input class="smetkanazadolzuvanje" name="smetkanazadolzuvanje" value="<?= $podatoci->smetkanazadolzuvanje ?>"><br/>
+
+        Подсметка на задолжување:<br/>
+        <input class="podsmetkanazadolzuvanje" name="podsmetkanazadolzuvanje"  value="<?= $podatoci->podsmetkanazadolzuvanje ?>" >   <br/>
+
+        Конто на задолжување:<br/>
+        <input name="konto" value="<?= $podatoci->konto ?>" class=""><br/>
+        Програма на задолжување:<br/>
+        <input name="prognazadolzuvanje" value="<?= $podatoci->prognazadolzuvanje ?>" class=""><br/>
+        Цел:<br/>
+        <input name="cel" value="<?= $podatoci->cel ?>" class=""><br/>
+        Шифра:<br/>
+        <input name="sifra" value="<?= $podatoci->sifra ?>" class=""><br/>
+        Износ:<br/>
+        <input name="iznos" value="<?= $podatoci->iznos ?>" class=""><br/>
+        Назив на примачот:<br/>
+        <input name="nazivnaprimacot" value="<?= $podatoci->nazivnaprimacot ?>" class=""><br/>
+        Сметка на примачот:<br/>
+        <input name="smetkanaprimacot" value="<?= $podatoci->smetkanaprimacot ?>" class=""><br/>
+        Подсметка на примачот:<br/>
+        <input name="podsmetkanaprimacot" value="<?= $podatoci->podsmetkanaprimacot ?>" class=""><br/>
+        Конто на примачот:<br/>
+        <input name="kontonaprimacot" value="<?= $podatoci->kontonaprimacot ?>" class=""><br/>
+        Програма на примачот:<br/>
+        <input name="programanaprimacot" value="<?= $podatoci->programanaprimacot ?>" class=""><br/>
+        Повикување на број на примачот:<br/>
+        <input name="povikuvanjenabrojnaprimacot" value="<?= $podatoci->povikuvanjenabrojnaprimacot ?>" class=""><br/>
+        Вид образец:<br/>
+        <input name="vidobrazec" value="<?= $podatoci->vidobrazec ?>" class=""><br/>
+        Начин:<br/>
+        <input name="nacin" value="<?= $podatoci->nacin ?>" class=""><br/>
+        ЕДБ:<br/>
+        <input name="edb" value="<?= $podatoci->edb ?>" class=""><br/>
+        <button
+            type="button"
+            izvrsi="trezor_pratkilista_podatoci({id: <?= $podatoci->pratka_id; ?>})"
+            poraka_uspesno="Податокот е успешно изменет"
+            poraka_neuspesno="Грешка при снимање на податок"
+            class="button snimi-forma"
+            ><span>Сними</span>
+        </button>
+
+    </form>
+</div>

@@ -1,0 +1,17 @@
+<div class="trezor-novapratka">
+    <form class="trezor-novapratka-form" action="/index.php/trezor/trezor/updatePratka/<?=$db->id?>" method="post">
+        <input name="klient" value="<?=$db->klient?>" class="">
+        <input name="datum" value="<?=$db->datum?>" class="">
+        <input name="brojnaciklusi" value="<?=$db->brojnaciklusi?>" class="">
+        <input name="zabeleska" value="<?=$db->zabeleska?>" class="">
+        <button
+            type="button"
+            izvrsi="trezor_pratkilista()"
+            poraka_uspesno="Пратката е снимена"
+            poraka_neuspesno="Грешка при снимање на пратка"
+            class="snimi-forma button"
+            ><span>Сними</span>
+        </button>
+        <button type="button snimi-forma"><span>Откажи</span></button>
+    </form>
+</div>

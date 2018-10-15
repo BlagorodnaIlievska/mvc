@@ -1,0 +1,165 @@
+@charset "UTF-8";
+
+.nov-artikl {position: relative; width: 100%; display: block;}
+.novupat-desnomeni {position: absolute; top: 0; right: 0;}
+.novupat-podmeni {position: absolute; top: 200px; width: 100%; }
+.naslovupat {margin-bottom: 10px;}
+li {list-style: none; margin-bottom: 10px !important;}
+
+.novupat-levomeni input[type="text"] {width: 210px;}
+.novupat-podmeni textarea {margin-bottom: 0px !important;}
+.novupat-podmeni h4 {font-size: 20px;}
+.novupat-desnomeni.bolnicki input[type="text"] {width: 200px;}
+.ime-tatko-prezime li.last {position: absolute; right: 0;}
+.ime-tatko-prezime li.last input {width: 200px;}
+.ime-tatko-prezime li.second {position: absolute; right: 300px;}
+.adresa .adresaupat {border-bottom: 1px solid #000000; width: 698px;}
+.legitimacija-matichen li.last {position: absolute; right: 0;}
+.novupat-podmeni .dolno-meni select {border-bottom: 1px solid #000000;}
+.nov-artikl .novupat-podmeni li input.osnovosig {width: 152px;}
+.nov-artikl .novupat-podmeni li input.karton,
+.nov-artikl .novupat-podmeni .podracna-sluzba input {width: 255px;}
+.nov-artikl .novupat-podmeni .ezbo {width: 200px;}
+.nov-artikl .novupat-podmeni .zdrleg {width: 180px;}
+.print_body .za_view {display: none;}
+
+/*Interbolnichki Upat*/
+
+.nov-interbolnicki-upat .text-inside li {
+    width: 100%;
+    margin-bottom: 5px;
+}
+.nov-artikl-2 {padding-left: 30px; padding-bottom: 10px; padding-right: 30px; padding-top: 40px; }
+
+.levo-2{
+    float: left;
+    width: 300px;
+    height: 250px;
+
+}
+.desno-2{
+    float: left;
+    width: 400px;
+    height: 250px;
+
+}
+.levo-2 li {
+    width: 300px !important;
+    text-align: center;
+    margin-top: 5px;
+}
+.levo-2 li input:not(.sirina_100){
+    width: 300px;
+}
+.desno-2 ul{
+    display: block;
+    text-align: right;
+    float: right;
+}
+.desno-2 li {
+    width: 300px;
+    text-align:center;
+    margin-top: 5px;
+}
+.desno-2 li input{
+    width: 300px;
+}
+.label-text{
+    font-size: 11px;
+}
+.text12{
+    font-size: 12px;
+}
+
+.label-right{
+    display: block;
+    text-align: right;
+}
+.sirina_100{
+    width: 100px;
+}
+
+.sredno-2{
+    clear: both;
+    width: 700px;
+}
+.center-2{
+    text-align: center;
+}
+.text-inside{
+    text-align: justify;
+    font-size: 12px;
+
+}
+.text-inside li{
+    margin-top: 3px;
+}
+.text-inside li:not(.krajno) input:not(.ulica1){
+    width: 100px !important;
+}
+.text-inside li input.osnov-na-osiguruvanje{
+    width: 200px;
+}
+.text-inside li input.ulica1{
+    width: 300px;
+}
+.text-inside li.krajno input:not(.potpis-faksimil){
+    width: 100px;
+}
+.text-inside li textarea{
+    width: 450px;
+}
+.krajno{
+    display: block;
+
+}
+/*Interbolnicki*/
+.levo-interbolnicki-header ul li p input {white-space: nowrap;}
+.levo-interbolnicki-header {display: inline-block;width: 450px;}
+.desno-interbolnicki-header {display: inline-block;width: 450px;}
+.desno-interbolnicki-header ul li p input , .levo-interbolnicki-header ul li p input {width: 170px;}
+.desno-interbolnicki-header ul li p , .levo-interbolnicki-header ul li p {margin-bottom: 0px !important;}
+.interbolnicki-header {height: 200px;}
+.interbolnicki-container p input {white-space: nowrap;}
+.interbolnicki-content-levo {width: 330px;display: inline-block;margin-top: 8px;}
+.interbolnicki-content-desno {width: 400px;display: inline-block;margin-top: 20px;}
+.interbolnicki-content-desno p input {}
+.interbolnicki-content-levo p {height: 25px;}
+.fzopodracna-spacer {margin-top: 5px;}
+.interbolnicki-container {height: 290px;}
+.interbolnicki-footer-levo {display: inline-block;width: 100px;}
+.interbolnicki-footer-desno {display: inline-block;width: 200px;}
+.interbolnicki-podfooter {height: 30px;display: block;}
+.interbolnicki-podfooter p {margin-bottom: 0px;}
+.interbolnicki-faksimil {margin-left: 490px;height: 30px;}
+.interbolnicki-faksimil input {width: 205px;}
+
+/*Potvrda za smrt*/
+.ps-naslov-levo {width: 100px;display: inline-block;}
+.ps-naslov-levo h4 {white-space: normal;text-transform: uppercase;text-align: center;}
+.ps-zastita-podatoci-div {display: inline-block;border: 1px solid #000;width: 400px;}
+.ps-zastita-podatoci-div p {font-size: 8px;text-align: center;}
+.ps-slvesnik-div {display: inline-block;border: 1px solid #000;width: 200px;margin-left: 20px;}
+.ps-slvesnik-div p {font-size: 8px;text-align: center;}
+.ps-levo {width: 370px;display: inline-block;border: 1px solid #000;}
+.ps-desno {width: 350px;display: inline-block;border: 1px solid #000;margin-left: 2px;}
+.ps-levo * , .ps-desno * , .ps-beleski * {font-size: 10px;}
+.ps-desno {padding-left: 20px;}
+
+/*Konzilijarno Mislenje*/
+.konzm-levo {width: 300px;}
+.konzm-desno {width: 300px;display: inline-block;margin-left: 360px;}
+.konzm-levo input {white-space: nowrap;width: 250px;}
+.text-inside p {white-space: normal;}
+
+/*Inter - Oddelenski Upat*/
+.io-levo {width: 300px;display: inline-block;margin-right: 200px;}
+.io-desno {width: 400px;display: inline-block;}
+.io-levo input , .io-desno input {white-space: nowrap;width: 200px;}
+.io-header {height: 220px;}
+.text-inside label {white-space: normal;}
+
+
+
+
+

@@ -1,0 +1,69 @@
+<div class="pacienti-lekuvanje-info">
+        <input type="hidden" name="priem_id" class="priem_id" value="<?php echo $priem_id ?>"/>
+    <fieldset class="lekuvanje-informacija">
+        <legend>Информација за лекување</legend>
+        Број на лекување: <span><?php echo $priem_id ?></span><br />
+        Пациент: <span><?php echo $pacient->ime . " " . $pacient->tatkovoime . " " . $pacient->prezime; ?></span><br />
+        Основ на осигурување: <span class="osnov_osiguruvanje"><?= $osnov_osiguruvanje; ?></span>
+    </fieldset>
+    <fieldset>
+        <legend>Записи за лекување</legend>
+        <div class="lekuvanje-zapisi">
+            <div class="predtabela">
+                <table class="pacienti-pregledi-lista-tabela">
+                    <thead>
+                    <th></th>
+                    <th>Документ</th>
+                    <th>Датум</th>
+                    <th>Време</th>
+                    <th>Опис</th>
+                    <th>Изготвил</th>
+                    <th>Одел</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </fieldset>
+</div>
+<script>
+function dodadi_nov_red_dopolnitelniuslugi(){
+    var redovi = jQuery(".paketi-tabela tbody tr").length;
+    redovi = 1 * redovi + 1*1;
+    jQuery(".paketi-tabela tbody").append('<tr>' +
+        '<td class="deletetablerow">' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' + '</td>' +
+        '<td class="redenbroj">' + redovi + '</td>' +
+        '<td class="usluga"><select name="paketi-dopolnitelni[' + redovi + '][paket_id]" class="potrosenmaterijal-artikal"  >'+lekuvanje_paketi_option_values()+'</select></td>' +
+        '<td class="cena"><input type="text" name="paketi-dopolnitelni[' + redovi + '][cena]" class="paketi-cena text-right" /></td>' +
+        '<td class="kolicina"><input type="text" name="paketi-dopolnitelni[' + redovi + '][kolicina]" class="paketi-kolicina text-right" value="1" /></td>' +
+        '<td class="vkupno"><input type="text" name="paketi-dopolnitelni[' + redovi + '][vkupno]" class="paketi-vkupno text-right" /></td>' +
+        '<td class="hide"><input type="hidden" name="paketi-dopolnitelni[' + redovi + '][cenovnik]" class="paketi-cenovnik" value="1" /></td>' +
+        '</tr>');
+    jQuery('[name="paketi-dopolnitelni[' + redovi + '][paket_id]"]').combobox();
+}
+jQuery(document).ready(function () {
+    lekuvanja_listasozapisi(jQuery(".priem_id").val());
+//    dodadi_nov_red_dopolnitelniuslugi();
+//    jQuery(".zacuvajpriemuslugi").click(function () {
+//        lekuvanja_zacuvajpriemdopolnitelniuslugi(jQuery(this));
+//    });
+//    jQuery(".paketi-tabela tbody tr .potrosenmaterijal-artikal").live("change", function () {
+//        var thisrow = jQuery(this).closest("tr");
+//        var usluga_id = jQuery(this).val();
+//        if(thisrow.is(":last-child")) dodadi_nov_red_dopolnitelniuslugi();
+//        var promise = zemi_cena_za_usluga(usluga_id);
+//        promise.success(function(cena) {
+//            thisrow.find(".paketi-cena").val(cena);
+//            var kolicina = thisrow.find(".paketi-kolicina").val();
+//            thisrow.find(".paketi-vkupno").val(formatnumbermkd(cena*kolicina));
+//        });
+//    });
+//    jQuery(".paketi-tabela tbody tr .paketi-kolicina").live("blur", function () {
+//        var thisrow = jQuery(this).closest("tr");
+//        var cena = thisrow.find(".paketi-cena").val();
+//        var kolicina = thisrow.find(".paketi-kolicina").val();
+//        thisrow.find(".paketi-vkupno").val(formatnumbermkd(cena*kolicina));
+//    });
+});
+</script>

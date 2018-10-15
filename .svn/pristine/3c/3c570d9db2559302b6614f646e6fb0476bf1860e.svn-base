@@ -1,0 +1,46 @@
+<?php
+
+class Tip_osiguruvanje_model extends CI_Model
+{
+
+    public function getTipOsiguruvanje()
+    {
+        $this->db->select('bis_tip_osiguruvanje.*, konta.sifra as konto_sifra');
+        $this->db->from('bis_tip_osiguruvanje');
+        $this->db->join('konta','bis_tip_osiguruvanje.konto_id = konta.id', 'left');
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+
+    public function getTipOsiguruvanjeByID($id)
+    {
+        $this->db->where("id", $id);
+        $query = $this->db->get('bis_tip_osiguruvanje');
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_tiposiguruvanje()
+    {
+        $insert  = $this->db->insert('bis_tip_osiguruvanje', $this->input->post());
+        return $insert;
+    }
+
+
+    public function delete_tiposiguruvanje($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_tip_osiguruvanje');
+    }
+
+    public function update_tiposiguruvanje()
+    {
+        $this->db->where('id',$this->input->post("id"));
+        $this->db->update('bis_tip_osiguruvanje', $this->input->post());
+    }
+
+
+
+}

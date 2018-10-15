@@ -1,0 +1,153 @@
+<div id="plata_vlezni_podatoci">
+    <div class="top-top">
+        ЈЗУ УК ТОАРИЛУЦ <br />
+        Водњанска бр. 17 <br />
+        Скопје <br />
+        Тел: <br />
+        Жиро сметка: <br />
+        Даночен број:
+    </div>
+    <div class="top-center">
+        <h1>Платен список по вработени</h1><br/>
+        ЈЗУ УК за <?= $ustanova->ime; ?>
+    </div>
+    <div class="top-left">
+        Вкупен број на вработени: <?= count($vraboteni); ?><br/>
+    </div>
+    <div class="top-right">
+        Година: <?= $godina; ?>     Месец: <?= $mesec; ?>    Пресметка 1<br/>
+    </div>
+    <div class="tabela">
+        <table class="tabela-stavki-popis" border="1" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="">Бр.</th>
+                <th class="">Шифра</th>
+                <th class="">Име и презиме</th>
+                <th class="">вкупно</th>
+                <th class="">рр час</th>
+                <th class="">рр износ</th>
+                <th class="">мин. труд износ</th>
+                <th class="">прод. час</th>
+                <th class="">прод. износ</th>
+                <th class="">ноќ раб. час</th>
+                <th class="">ноќ раб. износ</th>
+                <th class="">празник час</th>
+                <th class="">празник износ</th>
+                <th class="">деж. час</th>
+                <th class="">деж. износ</th>
+                <th class="">бол. час</th>
+                <th class="">бол. износ</th>
+                <th class="">Додаток</th>
+                <th class="">НЕТО</th>
+                <th class="">Синдикат</th>
+                <th class="">Лек. Ком.</th>
+                <th class="">Кредити</th>
+                <th class="">Осигур.</th>
+                <th class="">Одбиток</th>
+                <th class="">Вк. задршка</th>
+                <th class="">Нето исплата</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $i=0;
+            $koef_vkupno = 0;
+            foreach ($vraboteni as $vraboten) {
+                //bis_debug($vraboten->mesecni_promeni, "mesecni promeni");
+                $i++;
+                $koef_vkupno = $vraboten->koef_slozenost+$vraboten->koef_uslovi_na_rabota+$vraboten->koef_rakovodno_mesto+$vraboten->koef_staz;
+                if($vraboten->mesecni_promeni->vkupno_casovi > 0) $vrednost_po_cas = $vraboten->iznos_efektivna_rabota / $vraboten->mesecni_promeni->vkupno_casovi;
+                $pridonesi = $vraboten->pridones_za_pio+$vraboten->pridones_za_vrabotuvanje+$vraboten->pridones_za_zdravstvo+
+                             $vraboten->dop_pridones_za_zdravstvo+$vraboten->personalen_danok_na_dohod;
+                $lekarska_komora = ($vraboten->clen_lekarska_komora == 1) ? number_format(122,2) : '';
+                $osiguruvanje = ($vraboten->osiguruvanje == 1) ? number_format(100,2) : '';
+                $vkupno_zadrski = $lekarska_komora + $vraboten->krediti + $osiguruvanje + $vraboten->mesecni_promeni->odbitok;
+                $neto = $vraboten->bruto_plata - $pridonesi;
+                $neto_isplata = $neto - $vkupno_zadrski;
+                    ?>
+                    <tr>
+                        <td class="reden_broj"><?= $i ?></td>
+                        <td class="sifra_vraboten"><?= $vraboten->id; ?></td>
+                        <td class="ime_prezime"><?= $vraboten->vrabotenIme." ".$vraboten->vrabotenPrezime; ?></td>
+                        <td class="vkupen_koeficient"><?= $koef_vkupno; ?></td>
+                        <?php if(isset($vraboten->mesecni_promeni->vkupno_casovi)) { ?> <td class="vkupno_casovi"><?= $vraboten->mesecni_promeni->vkupno_casovi; ?></td>
+                        <?php } else{ ?> <td class="vkupno_casovi"></td> <?php } ?>
+                        <td class="iznos_efektivna_rabota"><?= number_format(round($vraboten->iznos_efektivna_rabota),2); ?></td>
+                        <td class="iznos_minat_trud"><?= number_format(round($vraboten->iznos_minat_trud),2); ?></td>
+                        <?php if(isset($vrednost_po_cas)) { ?>
+                            <td></td>
+                            <td></td>
+                            <td><?= $vraboten->mesecni_promeni->noken_trud; ?></td>
+                            <td><?= number_format(round($vrednost_po_cas*$vraboten->mesecni_promeni->noken_trud*0.29),2); ?></td>
+                            <td><?= $vraboten->mesecni_promeni->drzavni_praznici; ?></td>
+                            <td><?= number_format(round($vrednost_po_cas*$vraboten->mesecni_promeni->drzavni_praznici*1.42),2); ?></td>
+                            <td><?= $vraboten->mesecni_promeni->dezurstvo_1; ?></td>
+                            <td><?= number_format(round($vrednost_po_cas*$vraboten->mesecni_promeni->dezurstvo_1*0.84),2); ?></td>
+                            <td></td>
+                            <td></td>
+                        <?php } else{ ?>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        <?php } ?>
+                        <td class="dodatok"></td>
+                        <td class="neto"><?= number_format(round($neto),2); ?></td>
+                        <td class="sindikat"></td>
+                        <td class="lekarska_komora"><?= $lekarska_komora; ?></td>
+                        <td class="krediti"><?= number_format(round($vraboten->krediti),2); ?></td>
+                        <td class="osiguruvanje"><?= $osiguruvanje; ?></td>
+                        <td class="odbitok"><?= number_format(round($vraboten->mesecni_promeni->odbitok),2); ?></td>
+                        <td class="vkupno_zadrski"><?= number_format(round($vkupno_zadrski),2); ?></td>
+                        <td class="neto_isplata"><?= number_format(round($neto_isplata),2); ?></td>
+                    </tr>
+                <?php
+            }
+            ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<style type="text/css">
+    #plata_vlezni_podatoci .top-top {
+        clear: both;
+        margin-bottom: 10px;
+    }
+    #plata_vlezni_podatoci .top-center {
+        width: 33%;
+        /*float: left;*/
+    }
+
+    #plata_vlezni_podatoci .top-left {
+        width: 33%;
+        float: left;
+    }
+
+    #plata_vlezni_podatoci .top-right {
+        width: 33%;
+        float: right;
+    }
+
+    .tabela {
+        margin-top: 40px;
+    }
+
+    table thead th, table tbody td, table tfoot td {
+        overflow: hidden;
+    }
+
+    table {
+        font-size: 9px !important;
+    }
+
+    th {
+        background-color: transparent;
+    }
+</style>

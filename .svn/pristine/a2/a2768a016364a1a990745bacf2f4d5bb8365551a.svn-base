@@ -1,0 +1,5 @@
+<?php $this->load->view('includes/print_head_dif'); ?>
+<div class="print_body">
+    <?php $this->load->view($main_content); ?>
+</div>
+<?php $this->load->view('includes/footer'); ?>

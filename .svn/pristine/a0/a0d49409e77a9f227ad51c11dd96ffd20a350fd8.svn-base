@@ -1,0 +1,45 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Podesuvanja extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function main_menu()
+    {
+        $data['main_content'] = 'start/main_menu';
+        $this->load->view('includes/template', $data);
+    }
+    public function firma()
+    {
+       // $this->load->model('materijalno/materijalno_model');
+      //  $data['klient'] = $this->materijalno_model->klient_dropdown();
+	    $this->load->model('start/start_model');
+	    //$query = $this->start_model->getAll_firma();
+	   // $data['firma'] = $query;
+        $this->load->view('start/firmi/firma_form');
+
+
+    }
+    public function zirosmetki_tabs()
+    {
+        // $this->load->model('materijalno/materijalno_model');
+        //  $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('start/zirosmetki/zirosmetki_tabs');
+    }
+
+    public function kasi()
+    {
+        // $this->load->model('materijalno/materijalno_model');
+        //  $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('start/kasi/lista');
+    }
+    public function magacin()
+    {
+        // $this->load->model('materijalno/materijalno_model');
+        //  $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('start/magacin/lista');
+    }
+}

@@ -1,0 +1,126 @@
+<div id="plata_kontrolen_list">
+    <div class="top-center">
+        <h1>Контролен лист за пресметка на плата</h1><br/>
+        <?= $mesec; ?> / <?= $godina; ?><br />
+        ЈЗУ УК за <?= $ustanova->ime; ?>
+    </div>
+    <div class="top-left">
+        Вкупен број на вработени: <?= count($vraboteni); ?><br/>
+    </div>
+
+    <div class="tabela">
+        <table class="tabela-stavki-popis" border="1" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="">Реден број</th>
+                <th class="">Шифра</th>
+                <th class="">Име и презиме</th>
+                <th class="">вкупно</th>
+                <th class="">слож</th>
+                <th class="">раковод</th>
+                <th class="">услов</th>
+                <th class="">минат труд</th>
+                <th class="">ред. раб</th>
+                <th class="">ноќ. раб</th>
+                <th class="">про. раб</th>
+                <th class="">раб. праз</th>
+                <th class="">Хир.</th>
+                <th class="">Инт.</th>
+                <th class="">Боледување</th>
+                <th class="">Смен. ско</th>
+                <th class="">Друг додаток</th>
+                <th class="">Друг одбиток</th>
+                <th class="">Синд.</th>
+                <th class="">Сметка</th>
+                <th class="">Бан.</th>
+                <th class="">Одд.</th>
+                <th class="">ЛК</th>
+                <th class="">АГ</th>
+                <th class="">ОС</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $i=0;
+            $koef_vkupno = 0;
+            foreach ($vraboteni as $vraboten) {
+                    $i++;
+                    $koef_vkupno = $vraboten->koef_slozenost+$vraboten->koef_uslovi_na_rabota+$vraboten->koef_rakovodno_mesto+$vraboten->koef_staz;
+                    ?>
+                    <tr>
+                        <td class=""><?= $i ?></td>
+                        <td class=""><?= $vraboten->id; ?></td>
+                        <td class=""><?= $vraboten->ime." ".$vraboten->prezime; ?></td>
+                        <td class=""><?= $koef_vkupno; ?></td>
+                        <td class=""><?= $vraboten->koef_slozenost; ?></td>
+                        <td class=""><?= $vraboten->koef_uslovi_na_rabota; ?></td>
+                        <td class=""><?= $vraboten->koef_rakovodno_mesto; ?></td>
+                        <td class=""><?= $vraboten->koef_staz; ?></td>
+                    <?php if(isset($vraboten->mesecni_promeni->vkupno_casovi)) { ?>
+                        <td><?= $vraboten->mesecni_promeni->vkupno_casovi; ?></td>
+                        <td><?= $vraboten->mesecni_promeni->noken_trud; ?></td>
+                        <td></td>
+                        <td><?= $vraboten->mesecni_promeni->drzavni_praznici; ?></td>
+                        <td><?= $vraboten->mesecni_promeni->dezurstvo_1; ?></td>
+                        <td><?= $vraboten->mesecni_promeni->dezurstvo_2; ?></td>
+                        <td></td>
+                        <td><?= $vraboten->mesecni_promeni->smensko_rabotenje; ?></td>
+                        <td><?= $vraboten->mesecni_promeni->dodatok_1 + $vraboten->mesecni_promeni->dodatok_2; ?></td>
+                        <td><?= $vraboten->mesecni_promeni->odbitok; ?></td>
+                     <?php } else{ ?>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                     <?php } ?>
+                        <?php if($vraboten->clen_na_sindikat == 1) { ?> <td class="sindikat">Да</td>
+                        <?php } else{ ?> <td class="sindikat"></td> <?php } ?>
+                        <td class="smetka"><?= $vraboten->zirosmetka; ?></td>
+                        <td class="banka"><?= $vraboten->banka_id; ?></td>
+                        <td></td>
+                        <?php if($vraboten->clen_lekarska_komora == 1) { ?> <td class="lekarska_komora">Л</td>
+                        <?php } else{ ?> <td class="lekarska_komora"></td> <?php } ?>
+                        <td></td>
+                        <?php if($vraboten->osiguruvanje == 1) { ?> <td class="osiguruvanje">Да</td>
+                        <?php } else{ ?> <td class="osiguruvanje"></td> <?php } ?>
+                    </tr>
+                <?php
+            }
+            ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<style type="text/css">
+    #plata_kontrolen_list .top-center {
+        width: 33%;
+        /*float: left;*/
+    }
+
+    #plata_kontrolen_list .top-left {
+        width: 33%;
+        /*float: left;*/
+    }
+
+    .tabela {
+        margin-top: 40px;
+    }
+
+    table thead th, table tbody td, table tfoot td {
+        overflow: hidden;
+    }
+
+    table {
+        font-size: 9px !important;
+    }
+
+    th {
+        background-color: transparent;
+    }
+</style>

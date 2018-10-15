@@ -1,0 +1,209 @@
+<?php
+
+class Korisnici_model extends CI_Model
+{
+
+	public function korisnikpostoi($username)
+	{
+		$this->db->select('*');
+		$this->db->from('bis_korisnici');
+		$this->db->where("username", $username);
+		$query = $this->db->get();
+		if ($query->num_rows() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function getUlogi()
+	{
+		$this->db->select('*');
+		$this->db->from('bis_korisnici_ulogi');
+		$query = $this->db->get();
+		if ($query->num_rows() > 0) {
+			return $query->result();
+		} else {
+			return false;
+		}
+	}
+
+    public function getKorisnikInfo($id)
+    {
+        $this->db->where('id', $id);
+        $query     = $this->db->get("bis_korisnici");
+        if($query->num_rows == 1)
+        {
+            $result = $query->result();
+            return $result[0];
+        }
+        else return false;
+    }
+
+	public function getKorisnik($id)
+	{
+		$returndata = array();
+		$this->db->select('*');
+		$this->db->from('bis_korisnici');
+		$this->db->join('bis_korisnici_ulogi', 'bis_korisnici_ulogi.ulogi_id = bis_korisnici.uloga_id');
+		//$this->db->join('bis_korisnici_atributi', 'bis_korisnici_atributi.uloga_id = bis_korisnici_ulogi.id');
+		$this->db->where('bis_korisnici.id', $id);
+		$query     = $this->db->get();
+		$korisnici = $query->result();
+
+		foreach ($korisnici as $korisnik) {
+			unset($korisnik->password);
+			foreach ($this->getAttributiData($korisnik->id,$korisnik->uloga_id) as $atribut) {
+				$atributname                                = $atribut->atribut_ime;
+				$korisnik->atributi->$atributname->naslov   = $atribut->naslov;
+				$korisnik->atributi->$atributname->vrednost = $atribut->vrednost;
+				$korisnik->atributi->$atributname->uid      = $atribut->id;
+			}
+			$returndata[] = $korisnik;
+		}
+
+		return $returndata;
+
+
+	}
+
+	public function getKorisnici()
+	{
+		$returndata = array();
+		$this->db->select('*');
+		$this->db->from('bis_korisnici');
+		$this->db->join('bis_korisnici_ulogi', 'bis_korisnici_ulogi.ulogi_id = bis_korisnici.uloga_id');
+		//$this->db->join('bis_korisnici_atributi', 'bis_korisnici_atributi.uloga_id = bis_korisnici_ulogi.id');
+		$query     = $this->db->get();
+		$korisnici = $query->result();
+		foreach ($korisnici as $korisnik) {
+			unset($korisnik->password);
+			foreach ($this->getAttributiData($korisnik->id,$korisnik->uloga_id) as $atribut) {
+				$atributname                                = $atribut->atribut_ime;
+				$korisnik->atributi->$atributname->naslov   = $atribut->naslov;
+				$korisnik->atributi->$atributname->vrednost = $atribut->vrednost;
+				//UID = id atribut data tabelata, da moze odma da se izmeni podatokot, ne e atribut id
+				$korisnik->atributi->$atributname->uid = $atribut->id;
+			}
+
+			$returndata[] = $korisnik;
+		}
+
+		return $returndata;
+
+	}
+    public function getKorisniciPoImeNaUloga($ime)
+    {
+        $returndata = array();
+        $this->db->select('*');
+        $this->db->from('bis_korisnici');
+        $this->db->join('bis_korisnici_ulogi', 'bis_korisnici_ulogi.ulogi_id = bis_korisnici.uloga_id');
+        //$this->db->join('bis_korisnici_atributi', 'bis_korisnici_atributi.uloga_id = bis_korisnici_ulogi.id');
+        $this->db->where("bis_korisnici_ulogi.uloga_ime",$ime);
+        $query     = $this->db->get();
+        $korisnici = $query->result();
+        foreach ($korisnici as $korisnik) {
+            unset($korisnik->password);
+            foreach ($this->getAttributiData($korisnik->id,$korisnik->uloga_id) as $atribut) {
+                $atributname                                = $atribut->atribut_ime;
+                $korisnik->atributi->$atributname->naslov   = $atribut->naslov;
+                $korisnik->atributi->$atributname->vrednost = $atribut->vrednost;
+                //UID = id atribut data tabelata, da moze odma da se izmeni podatokot, ne e atribut id
+                $korisnik->atributi->$atributname->uid = $atribut->id;
+            }
+
+            $returndata[] = $korisnik;
+        }
+
+        return $returndata;
+
+    }
+	public function getKorisniciShort()
+	{
+		$returndata = array();
+		$this->db->select('*');
+		$this->db->from('bis_korisnici');
+		//$this->db->join('bis_korisnici_ulogi', 'bis_korisnici_ulogi.ulogi_id = bis_korisnici.uloga_id');
+		//$this->db->join('bis_korisnici_atributi', 'bis_korisnici_atributi.uloga_id = bis_korisnici_ulogi.id');
+		$query      = $this->db->get();
+		$returndata = $query->result();
+
+		return $returndata;
+	}
+    public function getKorisniciShortFlexGrid($filter)
+    {
+        $filter['page'] = isset($filter['page']) ? $filter['page'] : 1;
+        $filter['rp']  = isset($filter['rp']) ? $filter['rp'] : 10;
+        $filter['sortname'] = isset($filter['sortname']) ? $filter['sortname'] : 'id';
+        $filter['sortorder'] = isset($filter['sortorder']) ? $filter['sortorder'] : 'desc';
+        $filter['query'] = isset($filter['query']) ? $filter['query'] : false;
+        $filter['qtype'] = isset($filter['qtype']) ? $filter['qtype'] : false;
+
+        $this->db->select('*');
+        $this->db->from('bis_korisnici');
+       // bis_debug($filter['rp'] * ($filter['page']-1)  , "filter:");
+        if ($filter['qtype']) {
+
+            $this->db->like($filter['qtype'], $filter['query']);
+        }
+
+        $this->db->limit($filter['rp'],$filter['rp'] * ($filter['page']-1));
+        $this->db->order_by($filter['sortname'],  $filter['sortorder']) ;
+        $query      = $this->db->get();
+        ;
+        $total_rows =  $this->db->query("SELECT table_rows,table_name
+        FROM INFORMATION_SCHEMA.TABLES
+        WHERE TABLE_SCHEMA='".$this->db->database."' AND
+        table_name = 'bis_korisnici'        ");
+        $total_rows = $total_rows->row();
+
+       // bis_debug($total_rows,"TR");
+        $returndata = new stdClass;
+        $returndata->rows = $query->result_array();
+        $returndata->total = $total_rows->table_rows;
+        return $returndata;
+    }
+	function getAttributiData($korisnik_id,$uloga_id)
+	{
+		$this->db->select('*');
+		$this->db->from('bis_korisnici_atributi');
+		$this->db->join('bis_korisnici_atributi_data', 'bis_korisnici_atributi_data.attribut_id = bis_korisnici_atributi.id AND bis_korisnici_atributi_data.korisnik_id='.$korisnik_id,'LEFT');
+		$this->db->where('bis_korisnici_atributi.uloga_id', $uloga_id);
+
+		$query      = $this->db->get();
+		$returndata = $query->result();
+
+		return $returndata;
+
+	}
+
+	function getUlogaAtributi($ulogaid)
+	{
+		$this->db->select('*');
+		$this->db->from('bis_korisnici_atributi');
+		$this->db->where("uloga_id", $ulogaid);
+		//$this->db->join('bis_korisnici_atributi', 'bis_korisnici_atributi.uloga_id = bis_korisnici_ulogi.id');
+		$query      = $this->db->get();
+		$returndata = $query->result();
+
+		return $returndata;
+
+	}
+
+	public function validacija()
+	{
+        $this->db->select('bis_korisnici.*,bis_korisnici_ulogi.*, covecki_resursi.ime as ime, covecki_resursi.prezime as prezime');
+		$this->db->where('bis_korisnici.username', $this->input->post('username'));
+		$this->db->where('bis_korisnici.password', sha1($this->input->post('password')));
+        $this->db->join('bis_korisnici_ulogi',"bis_korisnici_ulogi.ulogi_id = bis_korisnici.uloga_id");
+        $this->db->join('covecki_resursi',"bis_korisnici.covecki_resursi_id = covecki_resursi.id");
+		$query = $this->db->get('bis_korisnici');
+		if ($query->num_rows == 1) {
+			$q=$query->result();
+			return $q[0];
+
+		} else {
+			return false;
+		}
+	}
+}

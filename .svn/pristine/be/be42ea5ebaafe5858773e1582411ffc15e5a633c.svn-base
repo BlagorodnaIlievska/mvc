@@ -1,0 +1,19 @@
+<div id="sifrarnik" class="sub-menu-tabs">
+    <ul>
+        <?php if (bis_check_access('sistemsko_podesuvanje_bolnicko_rabotenje_sifrarnik_tab')): ?>
+            <li><a href="/index.php/bolnicko_rabotenje_podatoci/zemji/lista">Шифрарник</a></li>
+                <?php endif ?>
+        <?php if (bis_check_access('sistemsko_podesuvanje_bolnicko_rabotenje_smenski_grupi_tab')): ?>
+            <li><a href="/index.php/smenska_grupa/smena/lista">Сменски Групи</a></li>
+                <?php endif ?>
+        <?php if (bis_check_access('sistemsko_podesuvanje_bolnicko_rabotenje_mkb10_tab')): ?>
+            <li><a href="/index.php/mkb/mkb/lista">МКБ-10</a></li>
+                <?php endif ?>
+        <?php if (bis_check_access('sistemsko_podesuvanje_bolnicko_rabotenje_sifrarnik_lekari_tab')): ?>
+            <li><a href="/index.php/site_lekari/lekari/lista">Шифрарник на лекари</a></li>
+                <?php endif ?>
+        <?php if (bis_check_access('sistemsko_podesuvanje_bolnicko_rabotenje_tip_osigiruvanje_tab')): ?>
+            <li><a href="/index.php/bolnicko_rabotenje_podatoci/tip_osiguruvanje/lista">Тип на осигурување</a></li>
+                <?php endif ?>
+    </ul>
+</div>

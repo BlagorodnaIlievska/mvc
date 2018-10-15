@@ -1,0 +1,82 @@
+<?php if (!defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
+
+
+class Magacin extends CI_Controller
+{
+
+	function __construct()
+	{
+		parent::__construct();
+        $this->load->model('start/start_model');
+
+	}
+
+
+	public function nov()
+
+	{
+
+
+		// $this->load->model('podatoci/banka_model');
+
+		// $data['roles'] = $this->membership_model->get_roles_dropdown();
+
+		$data['start_model']  = $this->start_model;
+		$data['tipovi']       = $this->start_model->getMagacinTipovi();
+
+		$this->load->view('start/magacin/nov', $data);
+
+	}
+
+	public function popolnilista()
+	{
+
+		echo json_encode($this->start_model->getMagacini());
+	}
+
+	public function create_magacin()
+	{
+
+		if ($query = $this->start_model->create_magacin()) {
+			echo "ok";
+		} else {
+			echo "err";
+		}
+	}
+
+	public function izmeni()
+	{
+
+		$magacin = $this->start_model->getMagacin($this->input->get("id"));
+		$data['magacin']      = $magacin;
+		$data['tipovi']       = $this->start_model->getMagacinTipovi();
+		$data['start_model']=$this->start_model;
+		$this->load->view('start/magacin/izmeni', $data);
+	}
+
+
+	public function delete_magacin()
+	{
+
+		$id=$this->input->get("id");
+		$this->start_model->delete_magacin($id);
+		echo "ok";
+
+	}
+	public function update_magacin()
+	{
+
+
+		$query = $this->start_model->update_magacin();
+		if ($query) {
+			echo "ok";
+		} else {
+			echo "err";
+		}
+
+	}
+
+
+}

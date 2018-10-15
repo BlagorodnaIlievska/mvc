@@ -1,0 +1,24 @@
+fieldset.slika{float: left; clear: none;  width: 210px; height: 280px;  background-color:#ffffff;}
+fieldset.pod {float: left; clear: none;  width: 210px; height: 280px;  background-color:#5C89CC;}
+fieldset.podatoci {float: left; clear: none;  width: 1350px; height: 100px;  background-color:#5C89CC;}
+fieldset.datum{float: left; clear: none;  width: 210px; height: 280px; background-color:#5C89CC;}
+fieldset.mbr {float: left; clear: none;  width: 210px; height: 280px ;background-color:#5C89CC;}
+fieldset.rabotodavac {float: left; clear: none;  width: 300px; height: 400px;}
+fieldset.mesto_na_ziveenje {float: left; clear: none;  width: 300px; height: 400px;}
+fieldset.kontakt {float: left; clear: none;  width: 300px; height:400px;}
+fieldset.participacija {float: left; clear: none;  width: 300px; height:300px;}
+fieldset.osiguruvanje {float: left; clear: none;  width: 300px; height:300px;}
+fieldset.nositel_na_osig {float: left; clear: none;  width: 300px; height: 600px;}
+fieldset.zabeleskazapacient {float: left; clear: none;  width: 630px; height:300px; position: relative; top: -300px;}
+fieldset.krvodaritel {float: left; clear: none;  width: 300px; height: 300px;}
+fieldset.alergii{float: left; clear: none;  width: 600px; height: 300px; position: relative; top: -300px;}
+fieldset.kopce {float: left; clear: none;  width: 300px; height: 300px;}
+input.klientkomentar{width: 250px; height: 150px;}
+input.zabeleskazapacient{width: 600px; height: 200px;}
+input[type=text].klient {width: 300px; display: inline;}
+input[type=text].kl {width: 120px; display: inline; border: 1px solid black;}
+input[type=text].pac {width:90px; display: inline; border: 1px solid black;}
+
+
+table.goreDesno{ position: absolute; top: 0px; right: 0px;}
+.idpodgrupa{width: 20px;}

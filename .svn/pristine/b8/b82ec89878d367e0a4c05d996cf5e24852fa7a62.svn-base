@@ -1,0 +1,37 @@
+function zirosmetka_popolnilista() {
+
+    formurl="/index.php/start/zirosmetki/getZirosmetki";
+    table_class= [".zirosmetka-tabela"];
+    items=["firma","banka","zirosmetka"] ;
+
+    popolni_lista(formurl,table_class,items)
+}
+
+function nov_zirosmetka() {
+    formurl = "/index.php/start/zirosmetki/novaZirosmetka";
+    title = "Нова жиро сметка";
+    nov(formurl, title)
+}
+
+function izmeni_zirosmetka(zirosmetkaid) {
+
+    id=zirosmetkaid;
+    formurl="/index.php/start/zirosmetki/izmeni";
+    title="Измени жиро сметка";
+
+    izmeni(id,formurl,title)
+}
+
+function delete_zirosmetki(zirosmetkiid){
+
+    id=zirosmetkiid ;
+    title="Избриши Жиросметка";
+    formurl="/index.php/start/zirosmetki/delete_smetka";
+    lista_na="zirosmetka";
+
+    brisi(id,title,formurl,lista_na);
+
+}
+
+
+

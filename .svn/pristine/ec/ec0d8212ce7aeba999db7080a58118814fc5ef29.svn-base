@@ -1,0 +1,243 @@
+<?php
+
+class Vraboten_mesecni_promeni_model extends CI_Model
+{
+
+    public function getVraboteniZapisi($mesec, $godina)
+    {
+        $this->db->select('
+                covecki_resursi.id as vrabotenID,
+                covecki_resursi.ime as vrabotenIme,
+                covecki_resursi.prezime as vrabotenPrezime
+        ');
+        $this->db->from('covecki_resursi');
+        $this->db->where(array('covecki_resursi.kraj_raboten_odnos' => NULL));
+        $query = $this->db->get();
+        $vraboteni = $query->result();
+        $novreturn='';
+        if($query->num_rows > 0)
+        {
+//            $prethoden_mesec = $mesec - 1;
+            foreach($vraboteni as $vraboten){
+                $vraboten->mesec = $this->getMesec($mesec);
+                $vraboten->parametri = $this->getVrabotenZapisPrethodenMesec($vraboten->vrabotenID, $mesec, $godina);
+                $novreturn[] = $vraboten;
+            }
+            return $novreturn;
+        }
+        else return false;
+    }
+
+    public function polniLista($mesec, $godina)
+    {
+        $this->db->select('
+                covecki_resursi.id as vrabotenID,
+                covecki_resursi.ime as vrabotenIme,
+                covecki_resursi.prezime as vrabotenPrezime
+        ');
+        $this->db->from('covecki_resursi');
+        $this->db->where(array('covecki_resursi.kraj_raboten_odnos' => NULL));
+        $query = $this->db->get();
+        $vraboteni = $query->result();
+        $novreturn='';
+        if($query->num_rows > 0)
+        {
+            $prethoden_mesec = $mesec ;
+            foreach($vraboteni as $vraboten){
+                $vraboten->mesec = $this->getMesec($prethoden_mesec);
+                $vraboten->parametri = $this->getVrabotenZapisPrethodenMesec($vraboten->vrabotenID, $prethoden_mesec, $godina);
+                $novreturn[] = $vraboten;
+            }
+            return $novreturn;
+        }
+        else return false;
+    }
+
+    public function getVrabotenZapisPrethodenMesec($vraboten_id, $mesec, $godina)
+    {
+        $this->db->select('
+                bis_vraboteni_mesecni_promeni.*,
+                mesec.ime as mesecIme
+        ');
+        $this->db->from('bis_vraboteni_mesecni_promeni');
+        $this->db->join('mesec', 'bis_vraboteni_mesecni_promeni.mesec = mesec.id', 'left');
+        $this->db->where("bis_vraboteni_mesecni_promeni.vraboten_id", $vraboten_id);
+        $this->db->where("bis_vraboteni_mesecni_promeni.mesec", $mesec);
+        $this->db->where("bis_vraboteni_mesecni_promeni.godina", $godina);
+        $query = $this->db->get();
+        if($query->num_rows() == 1)
+        {
+            $result = $query->result();
+            return $result[0];
+        }
+        else return;
+    }
+
+    public function getMesec($mesec)
+    {
+        $this->db->select('
+                mesec.ime as ime,
+                mesec.id as id
+        ');
+        $this->db->from('mesec');
+        $this->db->where("id", $mesec);
+        $query = $this->db->get();
+        if($query->num_rows() == 1)
+        {
+            $result = $query->result();
+            return $result[0];
+        }
+        else return;
+    }
+
+    public function getVrabotenZapis($id,$mesec,$godina)
+    {
+        $this->db->select('
+                bis_vraboteni_mesecni_promeni.*,
+                covecki_resursi.id as vrabotenID,
+                covecki_resursi.ime as vrabotenIme,
+                covecki_resursi.prezime as vrabotenPrezime
+        ');
+        $this->db->from('bis_vraboteni_mesecni_promeni');
+        $this->db->join('covecki_resursi', 'bis_vraboteni_mesecni_promeni.vraboten_id = covecki_resursi.id', 'left');
+        $this->db->where("bis_vraboteni_mesecni_promeni.id", $id);
+        $this->db->where("bis_vraboteni_mesecni_promeni.mesec", $mesec);
+        $this->db->where("bis_vraboteni_mesecni_promeni.godina", $godina);
+        $query = $this->db->get();
+        $result = $query->result();
+
+        return $result[0];
+    }
+
+    public function create_vraboten_zapis()
+    {
+        $insert_data = $this->input->post();
+        $insert      = $this->db->insert('bis_vraboteni_mesecni_promeni', $insert_data);
+        return $insert;
+    }
+
+
+    public function delete_vraboten_zapis($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_vraboteni_mesecni_promeni');
+    }
+
+    public function update_vraboten_zapis()
+    {
+        $field_update_data =	$this->input->post();
+        $this->db->where('id',$field_update_data['id']);
+        $this->db->update('bis_vraboteni_mesecni_promeni', $field_update_data);
+    }
+
+    public function getVrabotenInfo($id)
+    {
+        $this->db->select('id, ime, prezime');
+        $this->db->from('covecki_resursi');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        if($query->num_rows() == 1)
+        {
+            $result = $query->result();
+            return $result[0];
+        }
+    }
+
+    public function nova_mesecna_presmetka($mesec, $godina)
+    {
+        $this->db->select('
+                covecki_resursi.id as vrabotenID,
+                covecki_resursi.ime as vrabotenIme,
+                covecki_resursi.prezime as vrabotenPrezime
+        ');
+        $this->db->from('covecki_resursi');
+//        $this->db->where(array('covecki_resursi.kraj_raboten_odnos' => NULL));
+        $this->db->where('covecki_resursi.status_vraboten', 0);
+      //  $this->db->limit(10);
+        $query = $this->db->get();
+        $vraboteni = $query->result();
+        if($query->num_rows > 0)
+        {
+            foreach($vraboteni as $vraboten){
+                $vraboten_id = $vraboten->vrabotenID;
+                $zapis_prethoden_mesec = $this->getVrabotenZapisPrethodenMesec($vraboten_id, $mesec-1, $godina);
+                if($zapis_prethoden_mesec)
+                {
+                    unset($zapis_prethoden_mesec->mesec);
+                    unset($zapis_prethoden_mesec->godina);
+                    unset($zapis_prethoden_mesec->mesecIme);
+                    unset($zapis_prethoden_mesec->id);
+                    $zapis_prethoden_mesec->mesec = $mesec;
+                    $zapis_prethoden_mesec->godina = $godina;
+                    $insert = $this->db->insert('bis_vraboteni_mesecni_promeni', $zapis_prethoden_mesec);
+                }
+                else
+                {
+                    $insert_data['vraboten_id'] = $vraboten_id;
+                    $insert_data['mesec'] = $mesec;
+                    $insert_data['godina'] = $godina;
+                    $insert = $this->db->insert('bis_vraboteni_mesecni_promeni', $insert_data);
+                }
+            }
+            return true;
+        }
+        else return false;
+    }
+
+    public function getMesecniPromeni($mesec, $godina, $ime, $prezime, $oddel)
+    {
+        $this->db->select('
+                bis_vraboteni_mesecni_promeni.*,
+                covecki_resursi.id as vrabotenID,
+                covecki_resursi.ime as vrabotenIme,
+                covecki_resursi.prezime as vrabotenPrezime,
+                mesec.ime as mesecIme,
+                mesec.id as mesecID,
+
+                bis_firmi.ime
+        ');
+        $this->db->from('bis_vraboteni_mesecni_promeni');
+        $this->db->join('covecki_resursi', 'bis_vraboteni_mesecni_promeni.vraboten_id = covecki_resursi.id', 'left');
+        $this->db->join('mesec', 'bis_vraboteni_mesecni_promeni.mesec = mesec.id', 'left');
+        $this->db->join('bis_firmi', 'covecki_resursi.oddel = bis_firmi.id', 'left');
+        if($mesec != 0 || $mesec != "0"){
+            $this->db->where("bis_vraboteni_mesecni_promeni.mesec", $mesec);
+        }
+        if(!empty($godina)){
+            $this->db->where("bis_vraboteni_mesecni_promeni.godina", $godina);
+        }
+        if(!empty($ime))
+        {
+            $this->db->where("covecki_resursi.ime", $ime);
+        }
+        if(!empty($prezime))
+        {
+            $this->db->where("covecki_resursi.prezime", $prezime);
+        }
+        if(!empty($oddel)){
+            $this->db->where("bis_firmi.id", $oddel);
+        }
+        $this->db->order_by('bis_vraboteni_mesecni_promeni.vraboten_id');
+        $query = $this->db->get();
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result;
+        }
+        else return false;
+    }
+
+    public function proveri_mesecna_presmetka($mesec, $godina)
+    {
+        $this->db->select();
+        $this->db->where("mesec", $mesec);
+        $this->db->where("godina", $godina);
+        $query = $this->db->get("bis_vraboteni_mesecni_promeni");
+        if($query->num_rows > 0)
+        {
+//            $result = $query->result();
+            return 1;
+        }
+        else return 0;
+    }
+}

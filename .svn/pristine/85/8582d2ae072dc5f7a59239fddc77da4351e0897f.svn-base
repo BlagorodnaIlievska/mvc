@@ -1,0 +1,317 @@
+
+<div class="pecatikartica">
+    <p align='center'>Преглед на картица за клиент</p>
+    <p align='center'><?php
+        if($klient_ime)
+            echo $klient_ime['ime'];
+        ?></p><br/><br/>
+
+    <?php if($izbor == 0){
+    $vkupno = count($kartici);
+
+        $odliv = 0; $priliv = 0; $vleznafaktura = 0; $izleznafaktura = 0; $razlika1 = 0; $razlika2 = 0;
+    ?>
+    <div class="karticivlezizlez">
+        <p class="naslovvikartici" > ( <span class="vkupnostavki"><?php echo $vkupno; ?></span> ) Картици влез/излез</p>
+        <div class="predtabela">
+            <table class="tabelavleznoizlezni" cellspacing="2" cellpadding="2" border="1">
+                <thead>
+                <tr>
+                    <th class="datum">Датум</th>
+                    <th class="dokument">Документ</th>
+                    <th class="odliv">Одлив</th>
+                    <th class="vleznafaktura">Влезна Фактура</th>
+                    <th class="izleznafaktura">Излезна Фактура</th>
+                    <th class="priliv">Прилив</th>
+                    <th class="zabeleska">Забелешка</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <?php
+                    foreach($kartici as $kartica){
+                        ?>
+                        <tr>
+                            <td><? echo $kartica->datum; ?></td>
+
+                            <?php
+                            if($kartica->tip == 10){
+                                ?>
+
+                             <td class="dokument"><? echo "Со ф-ра број " . $kartica->textBroj; ?></td>
+                                 <td class="odliv"></td>
+                                 <td class="vleznafaktura"><?php echo $kartica->suma; ?></td>
+                                     <td class="izleznafaktura"></td>
+                                         <td class="priliv"></td>
+                                <td><? echo $kartica->komentar; ?></td>
+                                     <?php $vleznafaktura += $kartica->suma; ?>
+
+                          <?php  }
+                            if($kartica->tip == 20){
+                                ?>
+
+                                <td class="dokument"><? echo "Со ф-ра број " . $kartica->textBroj; ?></td>
+                                    <td class="odliv"></td>
+                                <td class="vleznafaktura"></td>
+                                <td class="izleznafaktura"><?php echo $kartica->suma; ?></td>
+                                    <td class="priliv"></td>
+                                <td><? echo $kartica->komentar; ?></td>
+                                <?php $izleznafaktura += $kartica->suma; ?>
+
+                                <?php  }
+                            if($kartica->tip == 40){
+                            ?>
+
+                            <td class="dokument"><? echo "По извод " . $kartica->textBroj; ?></td>
+                            <td class="odliv"><?php echo $kartica->suma; ?></td>
+                                <td class="vleznafaktura"></td>
+                            <td class="izleznafaktura"></td>
+                                <td class="priliv"></td>
+                                <td><? echo $kartica->komentar; ?></td>
+                            <?php $odliv += $kartica->suma; ?>
+
+                            <?php  }
+                            if($kartica->tip == 50){
+                                ?>
+
+                                <td class="dokument"><? echo "По извод " . $kartica->textBroj; ?></td>
+                                <td class="odliv"></td>
+                                <td class="vleznafaktura"></td>
+                                <td class="izleznafaktura"></td>
+                                <td class="priliv"><?php echo $kartica->suma; ?></td>
+                                <td><? echo $kartica->komentar; ?></td>
+                                <?php $priliv += $kartica->suma; ?>
+
+                                <?php  }
+                            $razlika1 = floatval($odliv) - floatval($vleznafaktura);
+                            $razlika2 = floatval($izleznafaktura) - floatval($priliv);
+                            $sostojba = floatval($razlika1) - floatval($razlika2);
+                            ?>
+                        </tr>
+                        <?php
+                    }
+                    ?>
+
+                </tbody>
+                <tfoot style="border: none;border-bottom: none; border-bottom-style: none">
+                <tr class="dva" style="border: none;border-bottom: none; border-bottom-style: none">
+                    <td style="border: none" class="vkupno">Вкупно:</td>
+                    <td style="border: none" class="dokument"></td>
+                    <td style="border: none" class="odliv"><?php echo $odliv; ?></td>
+                    <td style="border: none" class="vleznafaktura"><?php echo $vleznafaktura; ?></td>
+                    <td style="border: none" class="izleznafaktura"><?php echo $izleznafaktura; ?></td>
+                    <td style="border: none" class="priliv"> <?php echo $priliv ?></td>
+                    <td style="border: none" class="zabeleska"></td>
+                </tr>
+                <tr class="dva" style="border: none;border-bottom: none; border-bottom-style: none">
+                    <td style="border: none" class="datum"></td>
+                    <td style="border: none" class="dokument"></td>
+                    <td style="border: none"></td>
+                    <td style="border: none" class="razlika1"><?php echo "Побарува: " . $razlika1; ?></td>
+                    <td style="border: none" class="razlika2"><?php echo "Долгува: " . $razlika2; ?></td>
+                    <td style="border: none"></td>
+                    <td style="border: none" class="zabeleska"></td>
+                </tr>
+                <tr class="tri" style="border: none;border-bottom: none; border-bottom-style: none">
+                    <td style="border: none">Состојба:</td>
+                    <td style="border: none"></td>
+                    <td style="border: none"></td>
+                    <td style="border: none" class="sostojba"></td>
+                    <td style="border: none" class="razlika1"><?php echo $sostojba; ?></td>
+                    <td style="border: none" class="razlika2"></td>
+                    <td style="border: none" class="zabeleska"></td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+    <?php
+}else
+    if($izbor == 1){
+        $vkupno =  count($kartici);
+        ?>
+        <div class="karticivlez hide">
+            <p class="naslovvkartici" > ( <span class="vkupnostavki"><?php echo $vkupno; ?></span> ) Картици влез</p>
+            <div class="predtabela">
+                <table class="tabelavlezni"  cellspacing="2" cellpadding="2" border="1">
+                    <thead>
+                    <tr>
+                        <th class="datum">Датум</th>
+                        <th class="valuta">Валута</th>
+                        <th class="dokument">Документ</th>
+                        <th class="odliv">Одлив</th>
+                        <th class="vleznafaktura">Влезна Фактура</th>
+                        <th class="sostojba">Состојба</th>
+                        <th class="status">Статус</th>
+                        <th class="zabeleska">Забелешка</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                        <?php
+                    $odliv = 0; $vleznafaktura = 0; $razlika1 = 0;
+                        foreach($kartici as $kartica){
+
+                            ?>
+                        <tr>
+                            <td><? echo $kartica->datum; ?></td>
+                            <td><? echo $kartica->datum; ?></td>
+                            <?php
+                            if($kartica->tip == 10){
+                                ?>
+
+                                <td class="dokument"><? echo "Со ф-ра број " . $kartica->textBroj; ?></td>
+
+                                <td class="odliv"></td>
+                                <td class="vleznafaktura"><?php echo $kartica->suma; ?></td>
+
+                               <td></td>
+                                <td><? echo $kartica->status; ?></td>
+                                <td><? echo $kartica->komentar; ?></td>
+                                <?php $vleznafaktura += $kartica->suma; ?>
+
+                                <?php  }
+                            if($kartica->tip == 40){
+                                ?>
+
+                                <td class="dokument"><? echo "По извод " . $kartica->textBroj; ?></td>
+                                <td class="odliv"><?php echo $kartica->suma; ?></td>
+                                <td class="vleznafaktura"></td>
+                                <td></td>
+                                <td><? echo $kartica->status; ?></td>
+                                <td><? echo $kartica->komentar; ?></td>
+                                <?php $odliv += $kartica->suma; ?>
+
+                                <?php  }
+                            $razlika1 = floatval($odliv) - floatval($vleznafaktura);
+
+                            ?>
+                        </tr>
+                            <?php
+                        }
+                        ?>
+                    </tbody>
+                    <tfoot style="border: none;border-bottom: none; border-bottom-style: none">
+                    <tr class="eden"  style="border: none;border-bottom: none; border-bottom-style: none">
+                        <td style="border: none;" class="datum">Вкупно: </td>
+                        <td style="border: none;"</td>
+                        <td style="border: none;" class="dokument"></td>
+                        <td style="border: none;" class="odliv"><?php echo $odliv; ?></td>
+                        <td style="border: none;" class="vleznafaktura"><?php echo $vleznafaktura; ?></td>
+                        <td style="border: none;"</td>
+                        <td style="border: none;"</td>
+                        <td style="border: none;" class="zabeleska"></td>
+                    </tr>
+                    <tr class="dva"  style="border: none;border-bottom: none; border-bottom-style: none">
+                        <td style="border: none;" class="datum">Состојба: </td>
+                        <td style="border: none;"</td>
+                        <td style="border: none;" class="dokument"></td>
+                        <td style="border: none;"</td>
+                        <td style="border: none;" class="razlika1"><?php echo $razlika1; ?></td>
+                        <td style="border: none;"</td>
+                        <td style="border: none;"</td>
+                        <td style="border: none;" class="zabeleska"></td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+        </div>
+        <?php
+    }elseif($izbor == 2){
+        $vkupno =  count($kartici);
+        ?>
+        <div class="karticiizlez hide">
+            <p class="naslovikartici" > ( <span class="vkupnostavki"><?php echo $vkupno; ?></span> ) Картици излез</p>
+            <div class="predtabela">
+                <table class="tabelaizlezni"  cellspacing="2" cellpadding="2" border="1">
+                    <thead>
+                    <tr>
+                        <th class="datum">Датум</th>
+                        <th class="valuta">Валута</th>
+                        <th class="dokument">Документ</th>
+                        <th class="priliv">Прилив</th>
+                        <th class="izleznafaktura">Излезна Фактура</th>
+                        <th class="sostojba">Состојба</th>
+                        <th class="status">Статус</th>
+                        <th class="zabeleska">Забелешка</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                        <?php
+                        $priliv= 0; $izleznafaktura = 0; $razlika1 = 0;
+                        foreach($kartici as $kartica){
+
+                            ?>
+                        <tr>
+                            <td><? echo $kartica->datum; ?></td>
+                            <td><? echo $kartica->datum; ?></td>
+                            <?php
+                            if($kartica->tip == 20){
+                                ?>
+
+                                <td class="dokument"><? echo "Со ф-ра број " . $kartica->textBroj; ?></td>
+
+                                <td class="priliv"></td>
+                                <td class="izleznafaktura"><?php echo $kartica->suma; ?></td>
+
+                                <td></td>
+                                <td><? echo $kartica->status; ?></td>
+                                <td><? echo $kartica->komentar; ?></td>
+                                <?php $izleznafaktura += $kartica->suma; ?>
+
+                                <?php  }
+                            if($kartica->tip == 50){
+                                ?>
+
+                                <td class="dokument"><? echo "По извод " . $kartica->textBroj; ?></td>
+                                <td class="priliv"><?php echo $kartica->suma; ?></td>
+                                <td class="izleznafaktura"></td>
+                                <td></td>
+                                <td><? echo $kartica->status; ?></td>
+                                <td><? echo $kartica->komentar; ?></td>
+                                <?php $priliv += $kartica->suma; ?>
+
+                                <?php  }
+                            $razlika1 = floatval($izleznafaktura) - floatval($priliv);
+
+                            ?>
+                        </tr>
+                            <?php
+                        }
+                        ?>
+                    </tbody>
+                    <tfoot  style="border: none;border-bottom: none; border-bottom-style: none">
+                    <tr class="eden"  style="border: none;border-bottom: none; border-bottom-style: none">
+                        <td style="border: none;" class="datum">Вкупно: </td>
+                        <td style="border: none;"</td>
+                        <td style="border: none;" class="dokument"></td>
+                        <td style="border: none;" class="priliv"><?php echo $priliv; ?></td>
+                        <td style="border: none;" class="izleznafaktura"><?php echo $izleznafaktura; ?></td>
+                        <td style="border: none;"</td>
+                        <td style="border: none;"</td>
+                        <td style="border: none;" class="zabeleska"></td>
+                    </tr>
+                    <tr class="dva"  style="border: none;border-bottom: none; border-bottom-style: none">
+                        <td style="border: none;" class="datum">Состојба:</td>
+                        <td style="border: none"></td>
+                        <td style="border: none;" class="dokument"></td>
+                        <td style="border: none"></td>
+                        <td style="border: none"></td>
+                        <td style="border: none;" class="razlika1"><?php echo $razlika1; ?></td>
+                        <td style="border: none"></td>
+                        <td style="border: none;" class="zabeleska"></td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+        </div>
+
+
+        <?php
+    }
+    ?>
+</div>

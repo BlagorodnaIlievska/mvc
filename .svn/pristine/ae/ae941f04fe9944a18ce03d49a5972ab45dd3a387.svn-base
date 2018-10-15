@@ -1,0 +1,17 @@
+.hide {display: none;}
+div.addstavka {clear: both;}
+input.add {margin-top: 10px;}
+div.stavka, div.prikaz {clear: both;}
+/*.nov-izvod {*/
+    /*clear: both;*/
+    /*margin: 10px;*/
+/*}*/
+/*div.nov-izvod .novazirosmetka {float: none;}*/
+/*div.novazirosmetka {margin: 10px 0;}*/
+/*div.izvod {clear: left; width: 50%; float: left;}*/
+/*div.nov-izvod-button {clear: both; margin: 0 10px;}*/
+/*div.sostojba {width: 50%; float: left; *//*margin-top: 5px; *//*}*/
+/*fieldset.sostojba-izvod { width: 500px; margin: 10px 0; float: left; clear: none; height: 100px;}*/
+/*div.parametar-izvod {margin: 10px 0; width: 500px;}*/
+/*.naslovizvod, .naslovstavki, .naslovsearch, .naslovgrupiranje, .naslovdospeanost, .naslovperiod, .naslovperioddetali*/
+/*{background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;padding: 1px;margin: 5px 0 0 0;}*/

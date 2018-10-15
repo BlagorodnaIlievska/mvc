@@ -1,0 +1,238 @@
+<div id="faktura-fzom-print-form">
+    <?php $datum = explode("-", $faktura->datum); ?>
+    <div class="top-left">
+        Здравствена установа: ЈЗУ ТОАРИЛУЦ<br/>
+        Дејност: <?= $ustanova->ime; ?><br/>
+<!--        Датум: ххххх_<br/>-->
+    </div>
+    <div class="top-center">
+        <h1>ФАКТУРА БР <span><?= $faktura->textBroj; ?></span></h1><br/>
+        <label>Година: </label><span><?= $datum[2]; ?></span><br/>
+        <label>Месец: </label><span><?= $datum[1]; ?></span><br/>
+        <label>Дата на фактурата: </label><span><?= $faktura->datum; ?></span><br/>
+        <label>Валута на фактурата: </label><span><?= $faktura->datum; ?></span><br/>
+    </div>
+    <div class="top-right">
+        Подрачна служба: ФЗОМ Скопје<br/>
+    </div>
+
+    <div class="tabela">
+        <table class="tabela-stavki-popis" border="1" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="rb centar-print">Реден број</th>
+                <th class="sifra-paket centar-print">Шифра на пакет</th>
+                <th class="naziv-paket centar-print">Назив на пакет</th>
+                <th class="kolicina-paket centar-print">Број на пакети</th>
+                <th class="referentna-cena centar-print">Референтна цена</th>
+                <th class="vkupen-iznos centar-print">Вкупен износ</th>
+                <th class="presmetana-participacija centar-print">Пресмет. партиципација</th>
+                <th class="vkupno-naplata-fzom centar-print">Вкупно за наплата од ФЗОМ</th>
+            </tr>
+            <tr>
+                <th class="centar-print">1</th>
+                <th class="centar-print">2</th>
+                <th class="centar-print">3</th>
+                <th class="centar-print">4</th>
+                <th class="centar-print">5</th>
+                <th class="centar-print">6</th>
+                <th class="centar-print">7</th>
+                <th class="centar-print">8</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $i=0;
+            $vkupen_iznos_paketi = 0; $vkupen_iznos_participacija = 0; $vkupen_iznos_naplata =0;
+                foreach ($paketi as $paket) {
+                    $i++;
+                    $poedicen_paket_vkupen_iznos = $paket->paketKolicina*$paket->paketReferentnaCena;
+                    $poedicen_paket_presmetana_participacija = $paket->paketKolicina*$paket->paketParticipacija;
+                    $poedicen_paket_naplata_fzom = $poedicen_paket_vkupen_iznos-$poedicen_paket_presmetana_participacija;
+
+                    $vkupen_iznos_paketi += $poedicen_paket_vkupen_iznos;
+                    $vkupen_iznos_participacija += $poedicen_paket_presmetana_participacija;
+                    $vkupen_iznos_naplata += $poedicen_paket_naplata_fzom;
+                    ?>
+                    <tr>
+                        <td class="reden-broj centar-print"><?= $i ?></td>
+                        <td class="sifra-paket centar-print"><?= $paket->paketSifra; ?></td>
+                        <td class="naziv-paket"><?= $paket->paketNaziv; ?></td>
+                        <td class="kolicina-paket"><?=$paket->paketKolicina; ?></td>
+                        <td class="referentna-cena"><?=$paket->paketReferentnaCena; ?></td>
+                        <td class="vkupen-iznos"><?=$poedicen_paket_vkupen_iznos; ?></td>
+                        <td class="presmetana-participacija"><?=$poedicen_paket_presmetana_participacija; ?></td>
+                        <td class="vkupno-naplata-fzom"><?=$poedicen_paket_naplata_fzom; ?></td>
+                    </tr>
+                <?php
+                }
+            ?>
+            </tbody>
+        </table>
+        <ul class="vkupno-izlez">
+            <li><label>Вкупен износ на извршените услуги</label>
+                <span class="vkupen-iznos-izvrseni-uslugi first"><?= $vkupen_iznos_paketi; ?></span></li>
+            <li><label>Вкупен износ на партиципација</label>
+                <span class="vkupen-iznos-participacija"><?= $vkupen_iznos_participacija; ?></span></li>
+            <li><label>Вкупен износ за наплата од ФЗОМ</label>
+                <span class="vkupen-iznos-za-naplata last"><?= $vkupen_iznos_naplata; ?></span></li>
+        </ul>
+    </div>
+</div>
+
+<style type="text/css">
+    #info_faktura_form .top-left,
+    #info_faktura_form .top-center {
+        width: 33%;
+        float: left;
+    }
+
+    #info_faktura_form .top-right {
+        width: 33%;
+        float: right;
+    }
+
+    .tabela {
+        margin-top: 150px;
+    }
+
+    table thead th, table tbody td, table tfoot td {
+        overflow: hidden;
+    }
+
+    table {
+        font-size: 9px !important;
+    }
+
+    #info_faktura_form .rb {
+        width: 30px !important;
+    }
+
+    #info_faktura_form .sifra-paket {
+        width: 40px !important;
+    }
+
+    #info_faktura_form .naziv-paketi {
+        width: 150px !important;
+    }
+
+    #info_faktura_form .dijagnoza {
+        width: 80px !important;
+    }
+
+    #info_faktura_form .embg {
+        width: 80px !important;
+    }
+
+    #info_faktura_form .prezime-ime {
+        width: 120px !important;
+    }
+
+    #info_faktura_form .broj-presmetka {
+        width: 20px !important;
+    }
+
+    #info_faktura_form .referenten {
+        width: 50px !important;
+    }
+
+    #info_faktura_form .broj-paketi {
+        width: 20px !important;
+    }
+
+    #info_faktura_form .vkupnno-usluga {
+        width: 50px !important;
+    }
+
+    #info_faktura_form .osnov {
+        width: 20px !important;
+    }
+
+    #info_faktura_form .vkupno-presmetena {
+        width: 50px !important;
+    }
+
+    #info_faktura_form .vkupno-naplatena {
+        width: 50px !important;
+    }
+
+    #info_faktura_form .iznos-naplata {
+        width: 50px !important;
+    }
+
+    .vtora {
+        margin-top: -82px !important;
+    }
+
+    .treta {
+        margin-bottom: -10 !important;
+    }
+
+    .treta li {
+        border: 1px solid #000;
+        border-right: 0;
+        border-top: 0;
+        float: left;
+        display: inline-block;
+        margin-bottom: 0 !important;
+    }
+
+    .treta .first {
+        width: 733px !important;
+    }
+
+    .treta .second {
+        width: 54px !important;
+    }
+
+    .treta .third {
+        width: 75px !important;
+    }
+
+    .treta .fourth {
+        width: 86px !important;
+        text-align: right;
+    }
+
+    .treta .fifth {
+        width: 75px !important;
+        text-align: right;
+    }
+
+    .treta .last {
+        width: 54px !important;
+        border-right: 1px solid #000;
+        text-align: right;
+    }
+
+    .vkupno-izlez li {
+        clear: left;
+        display: block;
+        margin-top: 0 !important;
+        margin-bottom: 1px !important;
+    }
+
+    .vkupno-izlez .cifra {
+        border: 1px solid #000000;
+        border-top: 0;
+        width: 54px !important;
+        float: right;
+        padding: 0 2px;
+    }
+
+    .vkupno-izlez {
+        margin-top: -10px !important;
+    }
+
+    .vtora thead {
+        visibility: hidden;
+    }
+
+    .dole-levo {
+        float: left;
+    }
+
+    th {
+        background-color: transparent;
+    }
+</style>

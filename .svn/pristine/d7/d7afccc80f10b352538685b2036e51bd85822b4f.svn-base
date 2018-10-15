@@ -1,0 +1,54 @@
+<div id="izberi_klient_form">
+
+    <?php
+    echo form_open('raporti/menu/getKlientData');
+    ?>
+    <label>Klient</label>
+    <input type="text" class="searchklient" name="klient" formaction="/index.php/kasa/menu/proveri_firma"><br>
+    <input type='hidden' class='klientfullname' name='klientfullname' style='display: none;'>
+    <input type='hidden' class='klientid' name='klientid'>
+    <input type="text" class="adresa search" name="adresa" readonly>
+    <input type="text" class="komercijalist search" name="komercijalist" readonly>
+    <input type="text" class="kontakt search" name="kontakt" readonly>
+    <input type="button" class="okbutton" value="Ok">
+    <?php
+    echo form_close();
+    ?>
+    <br>
+
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.searchklient').keyup(function(){
+            var formaction=jQuery(this).parent().attr('action');
+            //var formaction=jQuery(this).parent().attr('action');
+            if( jQuery('.searchklient').val().length >= 1 ) {
+                var data = {
+                    klient: jQuery('.searchklient').val()
+                }
+                jQuery.ajax({
+                    url: formaction,
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log(response);
+                        jQuery('.klientfullname').val(response[0].firmaIme);
+                        jQuery('.klientid').val(response[0].firmaID);
+                        jQuery('.adresa').val(response[0].adresa);
+                        jQuery('.komercijalist').val(response[0].komercijalist);
+                        jQuery('.kontakt').val(response[0].kontakt + " " + response[0].phone1 + ", "
+                                                + response[0].phone2 + ", " + response[0].phone3);
+                    }
+                });
+            }
+        });
+//        jQuery('.okbutton').live('click',function(){
+//            var dialogid=jQuery(this).parent().parent().parent();
+//            jQuery('.klient').val(jQuery('.klientfullname').val());
+//            jQuery('.klientid').val(jQuery('.klientid').val());
+//            dialogid.dialog("destroy").remove();
+//        });
+    });
+</script>

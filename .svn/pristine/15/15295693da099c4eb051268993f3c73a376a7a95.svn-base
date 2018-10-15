@@ -1,0 +1,209 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+
+class Firma extends CI_Controller
+{
+
+
+    function __construct()
+
+    {
+
+        parent::__construct();
+
+    }
+
+
+    public function new_firma()
+    {
+        $this->load->model('start/start_model');
+        //$this->load->model('podatoci/grad_model');
+        //   $data['grad']=$this->grad_model->get_grad_dropdown();
+        //  $data['grad']=$this->podatoci_model->get_grad_dropdown();
+        //$data['oddel']        = $this->start_model->get_oddel();
+        //$data['pododdel']     = $this->start_model->get_pododdel();
+        $data['gradovi']=$this->start_model->getGradovi();
+        $this->load->view('start/firmi/nova_firma',$data);
+    }
+
+    public function nov_odel()
+    {
+        $this->load->model('start/start_model');
+        $firma = $this->start_model->getFirma($this->input->get('firmaid'));
+        $data['idnafirma'] = $firma[0]->id;
+        $data['imenafirma'] = $firma[0]->ime;
+        $data['sifranafirma'] = $firma[0]->sifra;
+        $data['gradovi']=$this->start_model->getGradovi();
+        $this->load->view('start/firmi/nov_odel', $data);
+    }
+
+    public function nov_pododel()
+    {
+        $this->load->model('start/start_model');
+
+        $odel = $this->start_model->getOdel($this->input->get('firmaid'));
+        $firma = $this->start_model->getFirma($odel[0]->parent_id);
+        $data['idnafirma'] = $firma[0]->id;
+        $data['idnaodel'] = $odel[0]->id;
+        $data['imenafirma'] = $firma[0]->ime;
+        $data['sifranafirma'] = $firma[0]->sifra;
+        $data['imenaodel'] = $odel[0]->ime;
+        $data['sifranaodel'] = $odel[0]->sifra;
+        $data['gradovi']=$this->start_model->getGradovi();
+        $this->load->view('start/firmi/nov_pododel', $data);
+    }
+
+    public function create_firma()
+    {
+        $this->load->model('start/start_model');
+        if ($query = $this->start_model->create_firma()) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+
+    public function create_odel()
+    {
+        $this->load->model('start/start_model');
+        if ($query = $this->start_model->create_odel()) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+
+    public function create_pododel()
+    {
+        $this->load->model('start/start_model');
+        if ($query = $this->start_model->create_pododel()) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+
+    public function view_firma()
+    {
+        $this->load->model('start/start_model');
+
+        $data['firma'] = $this->start_model->getAll_firma();
+
+        $this->load->view('start/firmi/firma_form');
+    }
+
+
+    public function delete_firma()
+    {
+
+
+        $this->load->model('start/start_model');
+        $this->start_model->delete_firma($this->input->get('firmaid'));
+        echo "ok";
+
+
+    }
+
+
+    public function edit_firma()
+    {
+        $this->load->model('start/start_model');
+        $id = $this->input->get('id');
+        $firma = $this->start_model->getFirma($id);
+        $data['adresa'] = $firma[0]->adresa;
+        $data['danocenbroj'] = $firma[0]->danocenbroj;
+        $data['embs']=$firma[0]->embs;
+        $data['telefon']=$firma[0]->telefon;
+        $data['faks']=$firma[0]->faks;
+        $data['poceten_broj_vo_dnevnik'] = $firma[0]->poceten_broj_vo_dnevnik;
+        $data['grad_id'] = $firma[0]->grad_id;
+        $data['gradovi']=$this->start_model->getGradovi();
+        $data['id'] = $id;
+        $data['ddv_obvrznik'] = $firma[0]->ddv_obvrznik;
+        if ($firma[0]->parent_id == 0 AND $firma[0]->parent_odel_id == 0) {
+            //LOAD FIRMA SETTINGS
+            $data['tip'] = 'firma';
+
+
+            $data['imenafirma'] = $firma[0]->ime;
+            $data['sifranafirma'] = $firma[0]->sifra;
+        } elseif ($firma[0]->parent_id != 0 AND $firma[0]->parent_odel_id == 0) {
+            //LOAD ODEL
+
+
+            $firmafirma = $this->start_model->getFirma($firma[0]->parent_id);
+            $data['tip'] = 'odel';
+
+            $data['imenafirma'] = $firmafirma[0]->ime;
+            $data['sifranafirma'] = $firmafirma[0]->sifra;
+
+
+            $data['imenaodel'] = $firma[0]->ime;
+            $data['sifranaodel'] = $firma[0]->sifra;
+
+
+        } elseif ($firma[0]->parent_id != 0 AND $firma[0]->parent_odel_id != 0) {
+            //LOAD PODODEL
+            $firmafirma = $this->start_model->getFirma($firma[0]->parent_id);
+            $firmaodel = $this->start_model->getFirma($firma[0]->parent_odel_id);
+            $data['tip'] = 'pododel';
+
+            $data['imenafirma'] = $firmafirma[0]->ime;
+            $data['sifranafirma'] = $firmafirma[0]->sifra;
+
+
+            $data['imenaodel'] = $firmaodel[0]->ime;
+            $data['sifranaodel'] = $firmaodel[0]->sifra;
+
+            $data['imenapododel'] = $firma[0]->ime;
+            $data['sifranapododel'] = $firma[0]->sifra;
+
+        }
+
+        $this->load->view('start/firmi/edit_firma_form', $data);
+
+    }
+
+    public function getFirmi()
+    {
+        $this->load->model('start/start_model');
+        $query = $this->start_model->getFirmi();
+        echo json_encode($query);
+    }
+
+    public function getOdeli()
+    {
+        $this->load->model('start/start_model');
+        $query = $this->start_model->getOdeli($this->input->post("id"));
+        echo json_encode($query);
+    }
+
+    public function getPodOdeli()
+    {
+        $this->load->model('start/start_model');
+        $query = $this->start_model->getPodOdeli($this->input->post("id"));
+        echo json_encode($query);
+    }
+
+    public function update_firma()
+    {
+        $this->load->model('start/start_model');
+        $query = $this->start_model->update_firma();
+        if ($query) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+
+    public function setFirma()
+    {
+        $firma = array("firma_id" => $this->input->post("firma_id"),
+            "firma_ime" => $this->input->post("firma_ime"));
+        $this->session->set_userdata($firma);
+    }
+
+
+}

@@ -1,0 +1,46 @@
+
+
+
+<fieldset>
+
+
+
+
+
+    <?php
+
+    echo form_open('podatoci/katalog1/create_katalog1');
+
+
+
+    ?><br><br>
+
+    <?php
+    echo form_label('Име на производ','SOIme');?>&nbsp;
+
+<?    echo form_input('SOIme', '');echo br();
+    echo form_label('Каталошка шифра','SOID');
+    echo form_input('SOID','');echo br();
+
+
+    // echo form_submit('submit', 'Submit');
+
+    ?>
+
+    <input type="button" class="ajaxcreateform button" value="Додади"><br />
+
+
+
+    <?php
+
+    echo validation_errors('<p class="error">');
+
+    echo form_close();
+
+    ?>
+
+
+
+
+
+</fieldset>

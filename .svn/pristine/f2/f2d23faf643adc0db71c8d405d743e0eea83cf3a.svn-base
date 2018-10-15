@@ -1,0 +1,38 @@
+<div class="editgrupa">
+    <form method="post" action="/index.php/paketi/dnBol_uslugi/update_paket">
+        <input type="hidden" name="id" value="<?php echo $id ?>" />
+
+        <?php
+
+
+        if($tip=='paket'){ ?>
+
+
+
+            Назив на пакет:<br />
+            <input type="text" value="<?php echo $nazivnapaket ?>" name="naziv"><br />
+
+            Шифра на пакет:<br />
+            <input type="text" value="<?php echo $sifranapaket ?>" name="sifra"><br />
+            Цена на пакет:<br />
+            <input type="text" value="<?php echo $cenanapaket ?>" name="cena"><br />
+
+            Партиципација на пакет:<br />
+            <input type="text" value="<?php echo $participacija ?>" name="participacija"><br />
+
+
+            <?php } elseif($tip =='sodrzina'){ ?>
+
+            Назив на пакет: <?php echo $nazivnapaket ?><br />
+
+            Содржина : <br />
+            <input type="text" value="<?php echo $sodrzinapaket ?>" name="sodrzina"><br />
+
+            <? } ?>
+
+
+
+
+        <input type="button" class="ajaxpaketiupdatenovo_dn button" value="Измени"><br/>
+    </form>
+</div>

@@ -1,0 +1,45 @@
+<div id="update_edmerka_form">
+
+
+
+
+
+
+    <?php
+    if(isset($edmerka)){
+
+        foreach($edmerka as $row) {
+
+            $e0=$row->edMerkaID;
+            $e1=$row->edMerkaSkr;
+            $e2=$row->edMerkaDlg;
+
+        }
+    }
+    ?>
+
+
+
+    <h1>Единица мерка</h1>
+
+    <?php echo form_open('podatoci/edmerka/update_edmerka');?>
+
+    <?php echo form_hidden('edMerkaID', $e0);?>
+
+    <?php echo form_label('Скратено име:', 'edMerkaSkr');?><br>
+
+    <?php echo form_input('edMerkaSkr', $e1, 'edMerkaSkr');?>
+
+    <?php echo form_label('Долго име:', 'edMerkaDlg');?><br>
+
+    <?php echo form_input('edMerkaDlg', $e2, 'edMerkaDlg');?>
+
+    <input type="button" value="Промени" class="ajaxsubmitform"><br>
+
+
+
+    <?php echo form_close(); ?>
+
+
+
+</div>

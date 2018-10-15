@@ -1,0 +1,24 @@
+.klientllista  {
+    width: 365px;
+    float: left;
+    margin-top: 10px;
+}
+.klient-glavnalista .buttoncontainer { margin-top:10px; margin-bottom:10px; }
+.novklient-desnomeni {
+    float: right;
+    width: 220px;
+}
+.novklient-levomeni {
+    float: left;
+    width: 200px;}
+input.nklient , .novklient-levomeni input {width:250px;}
+input.nklienttelfon{width:80px;}
+.novklient{width: 500px;float: left;}
+.novklient-ul li { height: 28px; }
+.novklient-ul input , .novklient-ul select {
+    float: right;
+}
+.novklient-ul .z-smetka select {clear: both;margin-top: 10px;}
+.novklient-ul .z-smetka {height: 65px;}
+.novklient-ul select { width: 202px; }
+.klient-komentar {height: 85px !important;}

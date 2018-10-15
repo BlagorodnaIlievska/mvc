@@ -1,0 +1,109 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Period_klient extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+    }
+
+    public function menu()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('pacienti/pacienti_model');
+        $data['klient'] = $this->materijalno_model->klient_site_dropdown();
+        $data['pacienti'] = $this->pacienti_model->pacienti_site_dropdown();
+        $this->load->view('izlezni_fakturi/period_klient/menu_form', $data);
+    }
+
+    public function  getAllKlienti()
+    {
+        $period1 = $this->input->post('periodod');
+        $period2 = $this->input->post('perioddo');
+        $query = $this->izlezni_fakturi_model->getAllKlienti($period1, $period2);
+        echo json_encode($query);
+    }
+
+    public function getAllKlientiByCriteria()
+    {
+        $klientid = $this->input->post('klientid');
+        $pacientid = $this->input->post('pacientid');
+        $period1 = $this->input->post('periodod');
+        $period2 = $this->input->post('perioddo');
+        $query = $this->izlezni_fakturi_model->getAllKlientiByCriteria($klientid, $pacientid, $period1, $period2);
+        echo json_encode($query);
+    }
+
+    public function  getFakturaKlient()
+    {
+        $klientid = $this->input->post('klientid');
+        $periodod = $this->input->post('periodod');
+        $perioddo = $this->input->post('perioddo');
+        $query = $this->izlezni_fakturi_model->getFakturaKlient($klientid, $periodod, $perioddo);
+        echo json_encode($query);
+    }
+
+    public function  getFakturaPacient()
+    {
+        $pacientid = $this->input->post('pacientid');
+        $periodod = $this->input->post('periodod');
+        $perioddo = $this->input->post('perioddo');
+        $query = $this->izlezni_fakturi_model->getFakturaPacient($pacientid, $periodod, $perioddo);
+        echo json_encode($query);
+    }
+
+    public function baraj_pogrupi()
+    {
+        $pogled = $this->input->post('pogledid');
+        if(isset($pogled))
+        {
+            if($pogled == 4)  $query = $this->izlezni_fakturi_model->baraj_site_grupi1();
+            else  $query = $this->izlezni_fakturi_model->baraj_pogrupi1($pogled);
+        }
+
+        echo json_encode($query);
+    }
+    public function pecati_site_klienti_iznos(){
+        $klientid = $this->input->get('klientid');
+        $pacientid = $this->input->get('pacientid');
+        $period1 = $this->input->get("periodod");
+        $period2 = $this->input->get("perioddo");
+        $query = $this->izlezni_fakturi_model->getAllKlienti($period1, $period2);
+        $data['klienti'] = $query;
+        $data['periodod'] = $period1;
+        $data['perioddo'] = $period2;
+        $data['main_content'] = 'izlezni_fakturi/pecatenje/period_klienti_site';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+
+    }
+
+    public function pecati_fakturi_po_klient(){
+        $tip = $this->input->get('tip');
+        $klientid = $this->input->get('klientid');
+        $period1 = $this->input->get('periodod');
+        $period2 = $this->input->get('perioddo');
+
+
+        if($tip == 'komintent'){
+
+            $query = $this->izlezni_fakturi_model->getFakturaKlient($klientid, $period1, $period2);
+
+ }else
+            if($tip == 'pacient'){
+
+                $query = $this->izlezni_fakturi_model->getFakturaPacient($klientid, $period1, $period2);
+
+}else{
+                $query = false;
+        }
+$data['fakturi'] = $query;
+        $data['tip1'] = $tip;
+        $data['periodod'] = $period1; $data['perioddo'] = $period2;
+        $data['main_content'] = 'izlezni_fakturi/pecatenje/period_klient_fakturi';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+
+}

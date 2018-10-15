@@ -1,0 +1,94 @@
+<?php
+
+class Katalog1_model extends CI_Model{
+
+
+    public function create_katalog1()
+    {
+        $new_field_insert_data = array(
+
+            'SOIme' => $this->input->post('SOIme'),
+            'SOID' => $this->input->post('SOID')
+
+        );
+
+        $insert = $this->db->insert('s0', $new_field_insert_data);
+        return $insert;
+    }
+    public function getKat2($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('s1');
+        $this->db->where("SID0",$id);
+
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function getAll()
+    {
+        $query = $this->db->get('s0');
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+
+    public function delete_katalog1(){
+
+        $this->db->where('SID0', $this->uri->segment(4));
+        $this->db->delete('s0');
+    }
+
+    public function edit_katalog1(){
+
+        $this->db->where('SID0', $this->uri->segment(4));
+        $query = $this->db->get('s0');
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+
+    public function update_katalog1()
+    {
+        $field_update_data = array(
+
+            'SOIme' => $this->input->post('SOIme'),
+            'SOID' => $this->input->post('SOID')
+        );
+
+        $this->db->where('SID0', $this->input->post('SID0'));
+        $update = $this->db->update('s0', $field_update_data);
+        return $update;
+    }
+
+    function get_katalog1_dropdown()
+    {
+        $this->db->select('SOID, SOIme');
+        $this->db->from('s0');
+        $this->db->order_by('SOID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = 'kataloski broj';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['SOID']] = $row['SOIme'];
+            }
+        }
+        return $dropdown;
+
+    }
+
+
+}

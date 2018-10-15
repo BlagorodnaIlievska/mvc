@@ -1,0 +1,182 @@
+<div class="vraboteni-mesecni-promeni-lista">
+    <div class="krediti">
+        <?php if (bis_check_access('planiranje_resursi_mesecni_promeni_vraboteni_nova_mesecna_presmetka_button')): ?>
+            <div class="buttonnovamesecnapresmetka">
+                <button type="button" onclick="nova_mesecna_presmetka()" value="" class="novapresmetkabutton button"><span>Нова месечна пресметка</span></button>
+            </div>
+            <?php endif ?>
+<!--        <div class="filtermenu-mesec" style="display: none;">-->
+<!--            <div class="filter-mesec">-->
+<!--                <span class="spanmesec">Месец: </span>-->
+<!--                <select name="mesec" class="novmesec novapresmetka">-->
+<!--                    --><?php
+//                    foreach($mesec as $key => $val)
+//                    { ?>
+<!--                        <option value="--><?//= $key; ?><!--"   >--><?//= $val; ?><!--</option>-->
+<!--                    --><?php //} ?>
+<!--                </select>-->
+<!--                &nbsp;-->
+<!--                <span class="spangodina">Година: </span>-->
+<!--                <select name="godina" class="novagodina novapresmetka">-->
+<!--                    --><?php
+//                    for ($i=2010; $i<2026; $i++)
+//                    { ?>
+<!--                        <option value="--><?//= $i; ?><!--">--><?php //echo $i; ?><!--</option>-->
+<!--                    --><?php //} ?>
+<!--                </select>-->
+<!---->
+<!--            </div>-->
+<!--            <button type="button" class="kreirajpresmetka button"><span>Креирај пресметка</span></button>-->
+<!--        </div>-->
+<!--        --><?php //if (bis_check_access('planiranje_resursi_mesecni_promeni_vraboteni_baraj_button')): ?>
+<!--        <div class="buttonbaraj">-->
+<!--            <button type="button" value="" class="barajbutton button"><span>Барај</span></button>-->
+<!--        </div>-->
+<!--            --><?php //endif ?>
+        <div class="filtermenu">
+            <div class="filter-vleznifak">
+                <span class="spanmesec">Месец: </span>
+                <select name="mesec" class="mesec parametar">
+                    <?php $broj_mesec = 0;
+                    foreach($mesec as $m)
+                    { ?>
+                        <option value="<?= $broj_mesec; ?>" <?= ($broj_mesec==date("n") ? "selected" : "") ?> ><?php echo $m; ?></option>
+                    <?php
+                        $broj_mesec++;
+                    } ?>
+                </select>
+                <span style="width: 10px">&nbsp;</span>
+                <span class="spangodina">Година: </span>
+                <select name="godina" class="godina parametar">
+                    <?php
+                    for ($i=2010; $i<2026; $i++)
+                    { ?>
+                        <option value="<?= $i; ?>" <?= ($i==date("Y") ? "selected" : "") ?> ><?php echo $i; ?></option>
+                    <?php } ?>
+                </select>
+                <span style="width: 10px">&nbsp;</span>
+                <span class="spanime">Име: </span>
+                <input type="text" name="ime" class="ime parametar">
+                <span style="width: 10px">&nbsp;</span>
+                <span class="spanprezime">Презиме: </span>
+                <input type="text" name="prezime" class="prezime parametar">
+                <span style="width: 10px">&nbsp;</span>
+                <span class="spanoddel">Оддел: </span>
+                <select name="oddel" class="oddel parametar">
+                    <?php
+                    foreach($oddel as $key => $val){
+                        ?>
+                        <option value="<?= $key; ?>"><?= $val; ?></option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="zapisi-tabela">
+        <p class="naslovmesecnipromeni" > ( <span class="vkupnostavki">0</span> ) <span class="status">Вработени</span></p>
+        <div class="predtabela">
+            <table class="tabela-vraboteni-mp">
+                <thead>
+                <tr>
+                    <th class="edit"></th>
+                    <th class="redenbroj">РБ</th>
+                    <th class="vraboten">Вработен</th>
+                    <th class="mesec">Месец</th>
+                    <th class="godina">Година</th>
+                    <th class="bodovi">Бодови</th>
+                    <th class="vkupno-chasovi">Вкупно часови</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+
+//        var currentDate = new Date();
+        var mesec = jQuery(".mesec.parametar").val();
+        var godina = jQuery(".godina.parametar").val();
+//        jQuery(".mesec").val(mesec);
+        jQuery(".godina").val(godina);
+        jQuery(".platagodina").val(godina);
+        jQuery(".tabela-vraboteni-mp").tablesorter();
+        jQuery(".barajbutton").live("click", function () {
+            if (jQuery(".filtermenu").hasClass("prikazano")) {
+                jQuery(".filtermenu").hide(500);
+                jQuery(".filtermenu").removeClass("prikazano");
+            } else {
+                jQuery(".filtermenu").show(500);
+                jQuery(".filtermenu").addClass("prikazano");
+            }
+        });
+//        jQuery(".novapresmetkabutton").live("click", function () {
+//            if (jQuery(".filtermenu-mesec").hasClass("prikazano")) {
+//                jQuery(".filtermenu-mesec").hide(500);
+//                jQuery(".filtermenu-mesec").removeClass("prikazano");
+//            } else {
+//                jQuery(".filtermenu-mesec").show(500);
+//                jQuery(".filtermenu-mesec").addClass("prikazano");
+//            }
+//        });
+        jQuery(".buttonplata").live("click", function () {
+            if (jQuery(".filtermenu-plata").hasClass("prikazano")) {
+                jQuery(".filtermenu-plata").hide(500);
+                jQuery(".filtermenu-plata").removeClass("prikazano");
+            } else {
+                jQuery(".filtermenu-plata").show(500);
+                jQuery(".filtermenu-plata").addClass("prikazano");
+            }
+        });
+        jQuery('.podeliplatabutton').click(function () {
+            var mesec = jQuery(".platamesec").val();
+            var godina = jQuery(".platagodina").val();
+            proveriplata(mesec,godina);
+
+        });
+
+        //vraboteni_mp_polnilista(mesec, godina);
+//        getMesecniPromeni(mesec, godina)
+        var mesec = jQuery("select.mesec option:selected").val();
+        var godina = jQuery("select.godina option:selected").val();
+        var ime = jQuery('input[name="ime"]').val();
+        var prezime = jQuery('input[name="prezime"]').val();
+        var oddel = jQuery("select.oddel option:selected").val();
+
+        getMesecniPromeni(mesec, godina, ime, prezime, oddel);
+        jQuery(".tabela-vraboteni-mp tbody tr").live('click', function () {
+            jQuery(".tabela-vraboteni-mp tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+
+        jQuery(".tabela-vraboteni-mp .edit-tr").live('click', function () {
+            var currentDate = new Date();
+            var year = currentDate.getFullYear();
+
+            var vraboten_zapis_id = jQuery(this).parent().parent().attr('vraboten_zapis_id');
+            var vraboten_id = jQuery(this).parent().parent().attr('vraboten_id');
+            var mesec_id = jQuery(this).parent().parent().attr('mesec_id');
+            var godina_id=  jQuery(this).parent().parent().attr('godina_id');
+            // console.log(godina_id);
+            if(vraboten_zapis_id > 0) vraboteni_mp_izmeni(vraboten_zapis_id, vraboten_id, mesec_id, godina_id);
+            else vraboteni_mp_nov(vraboten_id);
+        });
+        jQuery(".tabela-vraboteni-mp .delete-tr").live('click', function () {
+            vraboteni_mp_delete(jQuery(this).parent().parent().attr('vraboten_zapis_id'));
+        });
+        jQuery('.parametar').live("change", function () {
+            var mesec = jQuery("select.mesec option:selected").val();
+            var godina = jQuery("select.godina option:selected").val();
+            var ime = jQuery('input[name="ime"]').val();
+            var prezime = jQuery('input[name="prezime"]').val();
+            var oddel = jQuery("select.oddel option:selected").val();
+
+            getMesecniPromeni(mesec, godina, ime, prezime, oddel);
+
+        });
+    });
+</script >

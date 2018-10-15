@@ -1,0 +1,57 @@
+<div class="podatoci-za-kontakt">
+    <form class="podatoci-za-kontakt-form">
+        <input type="hidden" name="id" value="" />
+        <div class="grupa1">
+            <fieldset>
+                <h4 class="naslov-priem">Живеалиште</h4>
+                <div class="levakolona">Улица:</div>
+                <div class="desnakolona"><input name="ulica" value="" class="pacient-ulica"/></div>
+                <div class="levakolona">Број:</div>
+                <div class="desnakolona"><input name="broj_na_kuka" value="" class="pacient-broj_na_kuka"/></div>
+                <div class="levakolona">Град:</div>
+                <div class="desnakolona"><input name="grad" value="" class="pacient-grad"/></div>
+                <div class="levakolona">Општина:</div>
+                <div class="desnakolona"><input name="opstina" value="" class="pacient-opstina"/></div>
+                <div class="levakolona">Држава:</div>
+                <div class="desnakolona"><input name="drzava" value="" class="pacient-drzava"/></div>
+                <div class="levakolona">Националност:</div>
+                <div class="desnakolona"><input name="nacionalnost" value="" class="pacient-nacionalnost"/></div>
+            </fieldset>
+        </div>
+        <div class="grupa2">
+            <fieldset>
+                <h4 class="naslov-priem">Работно место</h4>
+                <div class="levakolona">Работодавач:</div>
+                <div class="desnakolona"><input name="rabotodavac" value="" class="pacient-rabotodavac"/></div>
+                <div class="levakolona">Град:</div>
+                <div class="desnakolona"><input name="rabotodavac_grad" value="" class="pacient-rabotodavac_grad"/>
+                </div>
+                <div class="levakolona">Шифра на дејност:</div>
+                <div class="desnakolona"><input name="rabotodavac_sifra_na_dejnost" value=""
+                                                class="pacient-rabotodavac_sifra_na_dejnost"/></div>
+                <div class="levakolona">Регистарски број:</div>
+                <div class="desnakolona"><input name="rabotodavac_registarski_broj" value=""
+                                                class="pacient-rabotodavac_registarski_broj"/></div>
+                <div class="levakolona">Работно место:</div>
+                <div class="desnakolona"><input name="rabotodavac_rabotnomesto" value=""
+                                                class="pacient-rabotodavac_rabotnomesto"/></div>
+                .
+            </fieldset>
+        </div>
+        <div class="grupa3">
+            <fieldset>
+                <h4 class="naslov-priem">Контакт</h4>
+                <div class="levakolona">Телефон:</div>
+                <div class="desnakolona"><input name="kontakt_telefon" value="" class="pacient-kontakt_telefon"/></div>
+                <div class="levakolona">Мобилен 1:</div>
+                <div class="desnakolona"><input name="kontakt_mobilen" value="" class="pacient-kontakt_mobilen"/></div>
+                <div class="levakolona">Мобилен 2:</div>
+                <div class="desnakolona"><input name="kontakt_mobilen2" value="" class="pacient-kontakt_mobilen2"/>
+                </div>
+                <div class="levakolona">Близок за контакт:</div>
+                <div class="desnakolona"><textarea name="konatakt_blizok" value=""
+                                                   class="pacient-konatakt_blizok"></textarea></div>
+            </fieldset>
+        </div>
+    </form>
+</div>

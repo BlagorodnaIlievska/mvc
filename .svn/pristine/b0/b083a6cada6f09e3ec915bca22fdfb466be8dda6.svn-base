@@ -1,0 +1,408 @@
+<?php
+
+    /**
+     * Class Vlezni_fakturi_model
+     */
+    class Javni_nabavki_model extends CI_Model
+{
+        public function create_dogovor()
+       {
+
+            $insert_data=array(
+              'broj_tender'=>$this->input->post('broj_tender'),
+               'datum_tender'=>$this->input->post('datum_tender'),
+                'vid_postapka'=>$this->input->post('vid_postapka'),
+                'broj_dogovor'=>$this->input->post('broj_dogovor'),
+                'datum_sklucuvanje_dogovor'=>$this->input->post('datum_sklucuvanje_dogovor'),
+                'datum_istekuvanje_dogovor'=>$this->input->post('datum_istekuvanje_dogovor'),
+                 'klient'=>$this->input->post('klient'),
+                'zabeleska'=>$this->input->post('zabeleska')
+
+
+            );
+            $insert = $this->db->insert('dogovor', $insert_data);
+            if ($insert) $id = $this->db->insert_id();
+            else $id = false;
+            $stavka = $this->input->post('stavka');
+       foreach ($stavka as $index => $value) {
+          $new_stavka = $this->input->post('stavka');
+           $new_sifra = $this->input->post('sifra');
+           $new_cena = $this->input->post('bezddv');
+           $new_cenaddv = $this->input->post('soddv');
+          $new_kolicina = $this->input->post('kolicina');
+           $new_ddv = $this->input->post('ddvid');
+
+           $new_edmerka = $this->input->post('edmerkaid');
+            $new_koeficient = $this->input->post('koeficient');
+          $new_tipstavka = $this->input->post('tipstavka');
+       $detali_data = array(
+        'dogovor_id' => $id,
+       'artikl_id' => $new_sifra[$index],
+       'stavka' => $new_stavka[$index],
+       'cena' => $new_cena[$index],
+       'cena_ddv' => ($new_cena[$index] * $new_kolicina[$index] * $new_ddv[$index]) / 100 + ($new_cena[$index] * $new_kolicina[$index]),
+       'kolicina' => $new_kolicina[$index],
+        'edinica_merka' => $new_edmerka[$index],
+       'koeficient' => $new_koeficient[$index],
+       'tip_stavka' => $new_tipstavka[$index],
+       'ddv' => $new_ddv[$index],
+
+       'firma_id' => $this->input->post('klient')
+      );
+
+     $detali = $this->db->insert('dogovor_detali', $detali_data);
+       }
+     if($detali){
+       return 1;
+     }
+      else return false;
+
+    }
+        public function getDogovori($klient,$dogovorid){
+            $this->db->select('dogovor.*, firma.ime as klient') ;
+            $this->db->from('dogovor');
+            if(isset($klient) && $klient!=0)$this->db->where('klient',$klient);
+            if(isset($dogovorid) && $dogovorid!=0) $this->db->where('id',$dogovorid);
+            $this->db->join('firma','dogovor.klient=firma.firmaID');
+            $query=$this->db->get();
+            if($query->num_rows() > 0){
+                $result= $query->result();
+                return $result;
+            }
+            else return false;
+        }
+
+        public function getDogovorDetali($id){
+            $this->db->select('dogovor_detali.*,s1.sifra as artikl,s1.SID as SID,bis_edmerki.ime_skrateno');
+            $this->db->from('dogovor_detali');
+            $this->db->join('s1','s1.SID=dogovor_detali.artikl_id','left');
+            $this->db->join('bis_edmerki','bis_edmerki.id=dogovor_detali.edinica_merka','left');
+            $this->db->where('dogovor_id',$id);
+            $query=$this->db->get();
+            if($query->num_rows() > 0){
+                $result= $query->result();
+                return $result;
+            }
+            else return false;
+        }
+        public function getBaranjeDetali($id){
+            $this->db->select('baranje_detali.*,s1.sifra as artikl,s1.SID as SID');
+            $this->db->from('baranje_detali');
+            $this->db->join('s1','s1.SID=dogovor_detali.artikl_id','left');
+
+            $this->db->where('baranje_detali.baranje_id',$id);
+            $query=$this->db->get();
+            if($query->num_rows() > 0){
+                $result= $query->result();
+                return $result;
+            }
+            else return false;
+        }
+
+        public function create_baranje()
+        {
+
+            $insert_data=array(
+                'klient'=>$this->input->post('klient'),
+                'broj_baranje'=>$this->input->post('broj_baranje'),
+                'dogovor_id'=>$this->input->post('broj_dogovor'),
+                'datum_baranje'=>$this->input->post('datum_baranje'),
+                'baranje_mesec'=>$this->input->post('baranje_mesec'),
+                'predmet_baranje'=>$this->input->post('predmet_baranje')
+
+
+            );
+            $insert = $this->db->insert('baranje', $insert_data);
+            if ($insert) $id = $this->db->insert_id();
+            else $id = false;
+            $stavka = $this->input->post('stavka');
+            foreach ($stavka as $index => $value) {
+                $new_stavka = $this->input->post('stavka');
+                $new_sifra = $this->input->post('artikl_id');
+                $new_kolicinad = $this->input->post('kolicinad');
+                $new_kolicinap = $this->input->post('kolicinap');
+                $new_kolicinao = $this->input->post('kolicinao');
+
+                $detali_data = array(
+                    'baranje_id' => $id,
+                    'sifra' => $new_sifra[$index],
+                    'stavka' => $new_stavka[$index],
+                    'kolicinad' => $new_kolicinad[$index],
+                    'kolicinap' => $new_kolicinap[$index],
+                    'kolicinao' => $new_kolicinao[$index]
+                );
+
+                $detali = $this->db->insert('baranje_detali',$detali_data);
+            }
+            if($detali){
+                return 1;
+            }
+            else return false;
+
+        }
+        public function getBaranja(){
+            $this->db->select('baranje.*, firma.ime as klient') ;
+            $this->db->from('baranje');
+            $this->db->join('firma','baranje.klient=firma.firmaID');
+            $query=$this->db->get();
+            if($query->num_rows() > 0){
+                $result= $query->result();
+                return $result;
+            }
+            else return false;
+        }
+        public function dogovor_dropdown()
+        {
+            $this->db->select('id, broj_dogovor');
+            $this->db->from('dogovor');
+            $this->db->order_by('id');
+            $query = $this->db->get();
+            $dropdown = array();
+            if ($query->num_rows() > 0) {
+                $dropdown[''] = '';
+                foreach ($query->result_array() as $row) {
+                    $dropdown[$row['id']] = $row['broj_dogovor'];
+                }
+            }
+            return $dropdown;
+        }
+        public function baranje_dropdown()
+        {
+            $this->db->select('id, broj_baranje');
+            $this->db->from('baranje');
+            $this->db->order_by('id');
+            $query = $this->db->get();
+            $dropdown = array();
+            if ($query->num_rows() > 0) {
+                $dropdown[''] = '';
+                foreach ($query->result_array() as $row) {
+                    $dropdown[$row['id']] = $row['broj_baranje'];
+                }
+            }
+            return $dropdown;
+        }
+        public function zemiKolicinaPoFaktura($id,$artikl){
+            $this->db->select_sum('stavkadetali.kolicina');
+
+            $this->db->where('stavka.broj_dogovor',$id);
+            $this->db->where('stavkadetali.SID',$artikl);
+           // $this->db->group_by('stavkadetali.ID');
+            $this->db->join('stavka','stavka.ID=stavkadetali.ID','left');
+            $this->db->from('stavkadetali');
+            $query = $this->db->get();
+            if($query->num_rows() > 0){
+                $result= $query->result();
+
+                    return $result[0];
+
+
+
+            }
+            else return 0;
+        }
+        public function zemiKolicinaPoBaranje($id,$artikl){
+            $this->db->select_sum('baranje_detali.kolicinap');
+
+            $this->db->where('baranje.dogovor_id',$id);
+            $this->db->where('baranje_detali.sifra',$artikl);
+           // $this->db->group_by('baranje_detali.baranje_id');
+            $this->db->join('baranje','baranje.id=baranje_detali.baranje_id','left');
+            $this->db->from('baranje_detali');
+            $query = $this->db->get();
+            if($query->num_rows() > 0){
+                $result= $query->result();
+
+                return $result[0];
+
+
+
+            }
+            else return 0;
+        }
+        public function zemiKolicinaPoFakturaBaranje($id,$artikl){
+            $this->db->select_sum('stavkadetali.kolicina');
+
+            $this->db->where('stavka.broj_baranje',$id);
+            $this->db->where('stavkadetali.SID',$artikl);
+            // $this->db->group_by('stavkadetali.ID');
+            $this->db->join('stavka','stavka.ID=stavkadetali.ID','left');
+            $this->db->from('stavkadetali');
+            $query = $this->db->get();
+            if($query->num_rows() > 0){
+                $result= $query->result();
+
+                return $result[0];
+
+
+
+            }
+            else return 0;
+    }
+        public function zemiDogovorPrimenaKolicina(){
+            $this->db->select_sum('dogovor_detali.kolicina');
+            $this->db->select('dogovor_detali.stavka,dogovor.broj_dogovor,s1.sifra,dogovor.id as dogovor_id,s1.SID');
+            $this->db->group_by('dogovor_detali.dogovor_id');
+
+           $this->db->group_by('dogovor_detali.artikl_id');
+            $this->db->from('dogovor_detali');
+            $this->db->join('dogovor','dogovor.id=dogovor_detali.dogovor_id','left');
+            $this->db->join('s1','s1.SID=dogovor_detali.artikl_id','left');
+            $query = $this->db->get();
+            if($query->num_rows() > 0){
+                $result= $query->result();
+                 foreach($result as $row){
+                     $row->kolicina_faktura=$this->zemiKolicinaPoFaktura($row->dogovor_id,$row->SID);
+                     $nov_res[]=$row;
+                 }
+                return $nov_res;
+            }
+            else return false;
+        }
+        public function zemiDogovorPobaranaKolicina(){
+            $this->db->select_sum('dogovor_detali.kolicina');
+            $this->db->select('dogovor_detali.stavka,dogovor.broj_dogovor,s1.sifra,dogovor.id as dogovor_id,s1.SID');
+            $this->db->group_by('dogovor_detali.dogovor_id');
+
+            $this->db->group_by('dogovor_detali.artikl_id');
+            $this->db->from('dogovor_detali');
+            $this->db->join('dogovor','dogovor.id=dogovor_detali.dogovor_id','left');
+            $this->db->join('s1','s1.SID=dogovor_detali.artikl_id','left');
+            $query = $this->db->get();
+            if($query->num_rows() > 0){
+                $result= $query->result();
+                foreach($result as $row){
+                    $row->kolicina_faktura=$this->zemiKolicinaPoBaranje($row->dogovor_id,$row->SID);
+                    $nov_res[]=$row;
+                }
+                return $nov_res;
+            }
+            else return false;
+        }
+        public function zemiBaranjePrimenaKolicina(){
+            $this->db->select_sum('baranje_detali.kolicinap');
+            $this->db->select('baranje_detali.stavka,baranje.broj_baranje,s1.sifra,baranje.id as baranje_id,s1.SID,baranje.dogovor_id');
+            $this->db->group_by('baranje_detali.baranje_id');
+
+            $this->db->group_by('baranje_detali.sifra');
+            $this->db->from('baranje_detali');
+            $this->db->join('baranje','baranje.id=baranje_detali.baranje_id','left');
+            $this->db->join('s1','s1.SID=baranje_detali.sifra','left');
+            $query = $this->db->get();
+            if($query->num_rows() > 0){
+                $result= $query->result();
+                foreach($result as $row){
+                    $row->kolicina_faktura=$this->zemiKolicinaPoFakturaBaranje($row->baranje_id,$row->SID);
+                    $nov_res[]=$row;
+                }
+                return $nov_res;
+            }
+            else return false;
+        }
+        public function delete_dogovor($id)
+        {
+            $this->db->where('id', $id);
+            $delete = $this->db->delete('dogovor');
+            return $delete;
+        }
+        public function delete_baranje($id)
+        {
+            $this->db->where('id', $id);
+            $delete = $this->db->delete('baranje');
+            return $delete;
+        }
+        public function getDogovor($id){
+            $this->db->select('dogovor.*, firma.ime as firma');
+            $this->db->from('dogovor');
+            $this->db->where('dogovor.id',$id);
+            $this->db->join('firma','dogovor.klient=firma.firmaID');
+            $query = $this->db->get();
+            $result= $query->result();
+            return $result;
+
+        }
+        public function updateDogovor($id)
+        {
+//            $tipID = $this->input->post('konto');
+//            $vkupnoddv5 = $this->input->post('fakturaddv5');
+//            $vkupnoddv18 = $this->input->post('fakturaddv18');
+//            $sevkupnoddv = $vkupnoddv5 + $vkupnoddv18;
+
+            $update_data = array(
+                'broj_tender' => $this->input->post('broj_tender'),
+                'datum_tender' => $this->input->post('datum_tender'),
+                'vid_postapka' => $this->input->post('vid_postapka'),
+                'broj_dogovor' => $this->input->post('broj_dogovor'),
+                'datum_sklucuvanje_dogovor' => $this->input->post('datum_sklucuvanje_dogovor'),
+                'datum_istekuvanje_dogovor' => $this->input->post('datum_istekuvanje_dogovor'),
+                'klient' =>$this->input->post('klient'),
+                'zabeleska' => $this->input->post('zabeleska')
+
+            );
+            $this->db->where('id', $id);
+            $update = $this->db->update('dogovor', $update_data);
+
+
+            $stavka = $this->input->post('stavka');
+            $dolzina = 0;
+            if (gettype($stavka) == "string") $dolzina = strlen($stavka);
+            if (gettype($stavka) == "array") $dolzina = count($stavka);
+
+            if ($dolzina > 0) {
+                foreach ($stavka as $index => $value) {
+                    $delete_stavka = $this->input->post('brisistavka');
+                    $detal = $this->input->post('dbid');
+                    $detalid = $detal[$index];
+                    if ($delete_stavka[$index] == 1) {
+                        $this->db->where('dogovor_detali.id', $detalid);
+                        $this->db->delete('dogovor_detali');
+                    } else {
+                        $new_stavka = $this->input->post('stavka');
+                        $new_sifra = $this->input->post('sifra');
+                        $new_cena = $this->input->post('bezddv');
+
+                        $new_kolicina = $this->input->post('kolicina');
+                        $new_ddv = $this->input->post('ddvid');
+
+                        $new_edmerka = $this->input->post('edmerkaid');
+                        $new_firma= $this->input->post('kontoid');
+                        $new_tipstavka = $this->input->post('tipstavka');
+                        $new_koeficient = $this->input->post('koeficient');
+                        $detali_data = array(
+                            'dogovor_id' => $id,
+                            'artikl_id' => $new_sifra[$index],
+                            'stavka' => $new_stavka[$index],
+                            'cena' => $new_cena[$index],
+                            'cena_ddv' => ($new_cena[$index] * $new_ddv[$index]) / 100 + ($new_cena[$index]),
+                            'kolicina' => $new_kolicina[$index],
+                            'koeficient' => $new_koeficient[$index],
+                            'tip_stavka' => $new_tipstavka[$index],
+                            'edinica_merka' => $new_edmerka[$index],
+                            'ddv' => $new_ddv[$index],
+
+                            'firma_id' => $new_firma[$index]
+                        );
+
+
+                        if ($detalid > 0) {
+                            $this->db->where('dogovor_detali.id', $detalid);
+                            $this->db->update('dogovor_detali', $detali_data);
+                        } else $this->db->insert('dogovor_detali', $detali_data);
+
+                    }
+                }
+            }
+            return $update;
+        }
+        public function getBaranje($id){
+            $this->db->select('baranje.*');
+            $this->db->from('baranje');
+            $this->db->where('baranje.id',$id);
+            //$this->db->join('firma','dogovor.klient=firma.firmaID');
+            $query = $this->db->get();
+            $result= $query->result();
+            return $result;
+
+        }
+
+    }
+    ?>

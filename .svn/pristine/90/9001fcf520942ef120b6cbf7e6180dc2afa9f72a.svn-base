@@ -1,0 +1,36 @@
+<?
+$meseci = array("1"=>"Јануари","2"=>"Февруари","3"=>"Март","4"=>"Април","5"=>"Мај","6"=>"Јуни","7"=>"Јули","8"=>"Август","9"=>"Септември","10"=>"Октомври","11"=>"Ноември","12"=>"Декември",);
+?>
+<fieldset>
+<div class="filtermenu-plata">
+    <div class="filter-vleznifak">
+        <span class="spanmesec">Месец: </span>
+        <select name="mesec" class="mesec-pp4 novapresmetka">
+            <?php
+            foreach($meseci as $key => $val)
+            { ?>
+                <option value="<?= $key; ?>"><?php echo $val; ?></option>
+                <?php } ?>
+        </select>
+        <span class="spangodina">Година: </span>
+        <select name="godina" class="godina-pp4 parametarplata">
+            <?php
+            for ($i=2010; $i<2026; $i++)
+            { ?>
+                <option value="<?= $i; ?>"><?php echo $i; ?></option>
+                <?php } ?>
+        </select>
+    </div>
+
+</div>
+</fieldset>
+<button type="button" onclick="" class="podeliplatabutton button"><span>Подели плата</span></button>
+    <script>
+        jQuery(document).ready(function () {
+        jQuery('.podeliplatabutton').click(function () {
+            var mesec = jQuery(".mesec-pp4").val();
+            var godina = jQuery(".godina-pp4").val();
+            proveriplata(mesec,godina);
+        });
+});
+    </script>

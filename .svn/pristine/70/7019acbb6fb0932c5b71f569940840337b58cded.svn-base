@@ -1,0 +1,714 @@
+<div id="dospeanost">
+
+        <?php if (bis_check_access('vlezni_fakturi_pregled_po_dospeanost_komintent')): ?>
+    <div class="filter-dospeanost">
+        <?php echo form_open('vlezni_fakturi/pregled_dospeanost/getDospeanostKlient'); ?>
+        <label>Коминтент: </label>
+        <?php echo form_dropdown('klient', $klient,'0','class="pdklient pregleddospeanost"');
+
+        echo form_close(); ?>
+    </div>
+        <?php endif ?>
+    <input type="hidden" name="datum" class="today">
+    <div class="idnina">
+        <p class="naslovidnina" > ( <span class="vkupnostavki">0</span> ) За плаќање во иднина</p>
+        <div class="predtabela">
+            <table class="tabelaidnina" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr  >
+                    <th class="fakturaid hidden"></th>
+                    <th class="rok">Рок до</th>
+                    <th class="broj">Број</th>
+                    <th class="datum">Датум</th>
+                    <th class="klient">Клиент</th>
+                    <th class="iznos">Износ</th>
+                    <th class="uplati">Уплати</th>
+                    <th class="dolg">Долг</th>
+                    <th class="zabeleska">Забелешка</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class='hiderow' dbid="1">
+                    <th class="fakturaid hidden"></th>
+                    <td class='rok'></td>
+                    <td class="number"></td>
+                    <td class="datum"></td>
+                    <td class="klient"></td>
+                    <td class="suma"></td>
+                    <td class="uplati"></td>
+                    <td class="vkupno"></td>
+                    <td class="zabeleska"></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th class="fakturaid hidden"></th>
+                    <td class='rok'></td>
+                    <td class="number"></td>
+                    <td class="datum"></td>
+                    <td class="vkupnolabel klient">Вкупно:</td>
+                    <td class="osnovasum">500</td>
+                    <td class="vkupnoddv">500</td>
+                    <td class="vkupnovkupno">500</td>
+                    <td></td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+
+        <table class="sumiranje sumidnina">
+            <tfoot>
+            <tr>
+                <th class="fakturaid hidden"></th>
+                <td class="rok"></td>
+                <td class="broj"></td>
+                <td class="datum"></td>
+                <td class="klient">Вкупно:</td>
+<!--                <td class="vkupnolabel klient"></td>-->
+                <td class="osnovasum suma"></td>
+                <td class="vkupnoddv uplati"></td>
+                <td class="vkupnovkupno vkupno"></td>
+                <td class="zabeleska"></td>
+
+            </tr>
+            </tfoot>
+        </table>
+        <p class="naslov" > Ставки во документот - Детално</p>
+        <div class="predtabela">
+            <table class="tabelaidninadetali">
+                <thead>
+                <tr>
+
+                    <th class="konto">Конто</th>
+                    <th class="opis">Опис на конто</th>
+                    <th class="pobaruva">Сума</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="hiderow">
+
+                    <td class="konto"></td>
+                    <td class="opis"></td>
+                    <td class="pobaruva"></td>
+
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+        <?php if (bis_check_access('vlezni_fakturi_pregled_po_dospeanost_pecati_idnina_button')): ?>
+        <a href="" target="_blank" class="cmd-printlink-dospeanost-idnina">
+            <button type="button" class="pecatikartica print"><span>Печати</span></button>
+        </a>
+    <?php endif ?>
+        <?php if (bis_check_access('vlezni_fakturi_pregled_po_dospeanost_pecati_idnina_button')): ?>
+        <a href="" target="_blank" class="cmd-printlink-dospeanost-idnina-konto">
+            <button type="button" class="pecatikartica print"><span>Печати со 4ка</span></button>
+        </a>
+        <?php endif ?>
+    </div><br>
+    <div class="denes">
+        <p class="naslovdenes" > ( <span class="vkupnostavki">0</span> ) За плаќање денес</p>
+        <div class="predtabela">
+            <table class="tabeladenes" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th class="fakturaid hidden"></th>
+                    <th class="rok">Рок до</th>
+                    <th class="broj">Број</th>
+                    <th class="datum">Датум</th>
+                    <th class="klient">Клиент</th>
+                    <th class="iznos">Износ</th>
+                    <th class="uplati">Уплати</th>
+                    <th class="dolg">Долг</th>
+                    <th class="zabeleska">Забелешка</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class='hiderow' dbid="1">
+                    <th class="fakturaid hidden"></th>
+                    <td class='rok'></td>
+                    <td class="number"></td>
+                    <td class="datum"></td>
+                    <td class="klient"></td>
+                    <td class="suma"></td>
+                    <td class="uplati"></td>
+                    <td class="vkupno"></td>
+                    <td class="zabeleska"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <table class="sumiranje sumdenes">
+            <tfoot>
+            <tr>
+                <th class="fakturaid hidden"></th>
+                <td class='rok'></td>
+                <td class="number broj"></td>
+                <td class="datum"></td>
+                <td class="vkupnolabel klient">Вкупно:</td>
+                <td class="osnovasum suma"></td>
+                <td class="vkupnoddv uplati"></td>
+                <td class="vkupnovkupno vkupno"></td>
+                <td class="zabeleska"></td>
+<!--                <td></td>-->
+            </tr>
+            </tfoot>
+        </table>
+        <p class="naslov" > Ставки во документот - Детално</p>
+        <div class="predtabela">
+            <table class="tabeladenesdetali">
+                <thead>
+                <tr>
+                    <th class="konto">Конто</th>
+                    <th class="opis">Опис на конто</th>
+                    <th class="pobaruva">Сума</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="hiderow">
+
+                    <td class="konto"></td>
+                    <td class="opis"></td>
+                    <td class="pobaruva"></td>
+
+                </tr>
+                </tbody>
+
+            </table>
+        <?php if (bis_check_access('vlezni_fakturi_pregled_po_dospeanost_pecati_denes_button')): ?>
+        <a href="" target="_blank" class="cmd-printlink-dospeanost-denes">
+            <button type="button" class="pecatikartica print"><span>Печати</span></button>
+        </a>
+    <?php endif ?>
+            <?php if (bis_check_access('vlezni_fakturi_pregled_po_dospeanost_pecati_idnina_button')): ?>
+            <a href="" target="_blank" class="cmd-printlink-dospeanost-denes-konto">
+                <button type="button" class="pecatikartica print"><span>Печати со 4ка</span></button>
+            </a>
+            <?php endif ?>
+    </div><br>
+    <div class="minato">
+        <p class="naslovminato" > ( <span class="vkupnostavki">0</span> ) Со поминат рок на плаќање</p>
+        <div class="predtabela">
+            <table class="tabelaminato" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th class="fakturaid hidden"></th>
+                    <th class="rok">Рок до</th>
+                    <th class="broj">Број</th>
+                    <th class="datum">Датум</th>
+                    <th class="klient">Клиент</th>
+                    <th class="iznos">Износ</th>
+                    <th class="uplati">Уплати</th>
+                    <th class="dolg">Долг</th>
+                    <th class="zabeleska">Забелешка</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class='hiderow' dbid="1">
+                    <th class="fakturaid hidden"></th>
+                    <td class='rok'></td>
+                    <td class="number broj"></td>
+                    <td class="datum"></td>
+                    <td class="klient"></td>
+                    <td class="suma"></td>
+                    <td class="uplati"></td>
+                    <td class="vkupno"></td>
+                    <td class="zabeleska"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <table class="sumiranje summinato">
+            <tfoot>
+            <tr>
+                <th class="fakturaid hidden"></th>
+                <td class='rok'></td>
+                <td class="number broj"></td>
+                <td class="datum"></td>
+                <td class="vkupnolabel klient">Вкупно:</td>
+                <td class="osnovasum iznos"></td>
+                <td class="vkupnoddv iznos"></td>
+                <td class="vkupnovkupno iznos"></td>
+                <td class="zabeleska"></td>
+<!--                <td></td>-->
+            </tr>
+            </tfoot>
+        </table>
+        <p class="naslov" > Ставки во документот - Детално</p>
+        <div class="predtabela">
+            <table class="tabelaminatodetali">
+                <thead>
+                <tr>
+                    <th class="konto">Конто</th>
+                    <th class="opis">Опис на конто</th>
+                    <th class="pobaruva">Сума</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="hiderow">
+
+                    <td class="konto"></td>
+                    <td class="opis"></td>
+                    <td class="pobaruva"></td>
+
+                </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+    <?php if (bis_check_access('vlezni_fakturi_pregled_po_dospeanost_pecati_minato_button')): ?>
+    <a href="" target="_blank" class="cmd-printlink-dospeanost-minato">
+        <button type="button" class="pecatikartica print"><span>Печати</span></button>
+    </a>
+    <?php endif ?>
+        <?php if (bis_check_access('vlezni_fakturi_pregled_po_dospeanost_pecati_idnina_button')): ?>
+        <a href="" target="_blank" class="cmd-printlink-dospeanost-minato-konto">
+            <button type="button" class="pecatikartica print"><span>Печати со 4ка</span></button>
+        </a>
+        <?php endif ?>
+</div>
+
+<script>
+function faktura_idnina_getSelektirana(){
+    if ( jQuery(".tabelaidnina tbody tr.active").attr("dbid") > 0 ) {
+        return jQuery(".tabelaidnina tbody tr.active").attr("dbid") ;
+    } else {
+        return 0;
+    }
+}
+function faktura_denes_getSelektirana(){
+    if ( jQuery(".tabeladenes tbody tr.active").attr("dbid") > 0 ) {
+        return jQuery(".tabeladenes tbody tr.active").attr("dbid") ;
+    } else {
+        return 0;
+    }
+}
+function faktura_minato_getSelektirana(){
+    if ( jQuery(".tabelaminato tbody tr.active").attr("dbid") > 0 ) {
+        return jQuery(".tabelaminato tbody tr.active").attr("dbid") ;
+    } else {
+        return 0;
+    }
+}
+jQuery(document).ready(function() {
+
+    jQuery(".pdklient").combobox();
+    jQuery(".tabelaidnina").tablesorter();
+    jQuery(".tabeladenes").tablesorter();
+    jQuery(".tabelaminato").tablesorter();
+    jQuery(".today" ).datepicker({dateFormat:'yy-mm-dd'}).datepicker("setDate", new Date());
+    var today = jQuery('.today').val();
+    var date1 = (today.toString()).trim();
+    var date2;
+    var dataAll = {
+        klientid: 0
+    }
+    jQuery.ajax({
+        url: '/index.php/vlezni_fakturi/pregled_dospeanost/getDospeanostKlient',
+        data: dataAll,
+        type: 'POST',
+        dataType: 'json',
+        success: function(response) {
+         // console.log(response);
+            jQuery(".tabelaminato").find("tr:gt(1)").remove();
+            jQuery(".tabeladenes").find("tr:gt(1)").remove();
+            jQuery(".tabelaidnina").find("tr:gt(1)").remove();
+            var vkupnostavki = response.length;
+            var idnina = 0, denes = 0, minato = 0;
+            var denessuma = 0, denesuplati = 0, denesdolg =0;
+            var idninasuma = 0, idninauplati = 0, idninadolg =0;
+            var minatosuma = 0, minatouplati = 0, minatodolg =0;
+            var temp;        var splited_array=[];   var joined_array = [];
+            for ( var i = 0; i < response.length; i++ ) {
+                splited_array=[];
+                joined_array=[];
+                var fak_vkupno = response[i].p_vkupno;
+                var fak_uplati = response[i].uplati;
+                var fak_dolg = 1*fak_vkupno - 1*fak_uplati;
+                temp=response[i].rok;
+                splited_array = (temp).split('-');
+                var j = 0;
+                for(var m = (splited_array.length - 1); m >= 0; m--){
+                    joined_array[j] = splited_array[m];
+
+                    j++;
+                }
+                var joined_date = joined_array[0] + '-' + joined_array[1] + '-' + joined_array[2];
+                 date2 = (joined_date.toString()).trim();
+//
+               if(date1 < date2) //naplata vo idnina
+               {
+                   var tr = jQuery('.tabelaidnina tbody tr:first');
+
+                    tr.removeClass('hiderow');
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    //var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.attr("dbid",response[i].dbid);
+                    newrow.find('.fakturaid').html(response[i].dbid);
+                    newrow.find('.rok').html(response[i].rok);
+                    newrow.find('.number').html(response[i].textBroj);
+                    newrow.find('.datum').html(response[i].datum);
+                    newrow.find('.klient').html(response[i].firmaIme);
+                    newrow.find('.suma').html(formatnumbermkd(fak_vkupno));
+                    newrow.find('.uplati').html(formatnumbermkd(fak_uplati));
+                    newrow.find('.vkupno').html(formatnumbermkd(fak_dolg));
+                    newrow.find('.zabeleska').html(response[i].komentar);
+                    idnina = idnina + 1;
+                    idninasuma =1 * idninasuma + 1 * response[i].p_vkupno;
+                    idninauplati = 1 * idninauplati + 1 * response[i].uplati;
+                    idninadolg =1 * idninadolg + 1 * (response[i].p_vkupno - response[i].uplati);
+              }
+               if(date1 == date2) // naplata denes
+             {
+                 var tr = jQuery('.tabeladenes tbody tr:first');
+                    tr.removeClass('hiderow');
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.attr("dbid",response[i].dbid);
+                    newrow.find('.fakturaid').html(response[i].dbid);
+                    newrow.find('.rok').html(response[i].rok);
+                    newrow.find('.number').html(response[i].textBroj);
+                    newrow.find('.datum').html(response[i].datum);
+                    newrow.find('.klient').html(response[i].firmaIme);
+                    newrow.find('.suma').html(formatnumbermkd(fak_vkupno));
+                    newrow.find('.uplati').html(formatnumbermkd(fak_uplati));
+                    newrow.find('.vkupno').html(formatnumbermkd(fak_dolg));
+                    newrow.find('.zabeleska').html(response[i].komentar);
+                    denes = denes + 1;
+                    denessuma =1 * denessuma + 1 * response[i].p_vkupno;
+                    denesuplati = 1 * denesuplati + 1 * response[i].uplati;
+                    denesdolg =1 * denesdolg + 1 * (response[i].p_vkupno - response[i].uplati);
+               }
+               if(date1 > date2) // pominat rok za plakjanje
+              {
+                   var tr = jQuery('.tabelaminato tbody tr:first');
+                    tr.removeClass('hiderow');
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.attr("dbid",response[i].dbid);
+                    newrow.find('.fakturaid').html(response[i].dbid);
+                    newrow.find('.rok').html(response[i].rok);
+                    newrow.find('.number').html(response[i].textBroj);
+                    newrow.find('.datum').html(response[i].datum);
+                    newrow.find('.klient').html(response[i].firmaIme);
+                    newrow.find('.suma').html(formatnumbermkd(fak_vkupno));
+                    newrow.find('.uplati').html(formatnumbermkd(fak_uplati));
+                    newrow.find('.vkupno').html(formatnumbermkd(fak_dolg));
+                    newrow.find('.zabeleska').html(response[i].komentar);
+                    minato = minato + 1;
+                    minatosuma =1 * minatosuma + 1 * response[i].p_vkupno;
+                    minatouplati = 1 * minatouplati + 1 * response[i].uplati;
+                    minatodolg =1 * minatodolg + 1 * (response[i].p_vkupno - response[i].uplati);
+               }
+                    tr.addClass('hiderow');
+            }
+            jQuery(".naslovidnina .vkupnostavki").html(idnina + " во листа");
+            jQuery(".naslovdenes .vkupnostavki").html(denes + " во листа");
+            jQuery(".naslovminato .vkupnostavki").html(minato + " во листа");
+            jQuery(".summinato .osnovasum").html(formatnumbermkd(minatosuma.toFixed(2)));
+            jQuery(".summinato .vkupnoddv").html(formatnumbermkd(minatouplati.toFixed(2)));
+            jQuery(".summinato .vkupnovkupno").html(formatnumbermkd(minatodolg.toFixed(2)));
+            jQuery(".sumdenes .osnovasum").html(formatnumbermkd(denessuma.toFixed(2)));
+            jQuery(".sumdenes .vkupnoddv").html(formatnumbermkd(denesuplati.toFixed(2)));
+            jQuery(".sumdenes .vkupnovkupno").html(formatnumbermkd(denesdolg.toFixed(2)));
+            jQuery(".sumidnina .osnovasum").html(formatnumbermkd(idninasuma.toFixed(2)));
+            jQuery(".sumidnina .vkupnoddv").html(formatnumbermkd(idninauplati.toFixed(2)));
+            jQuery(".sumidnina .vkupnovkupno").html(formatnumbermkd(idninadolg.toFixed(2)));
+            jQuery(".tabelaidnina").trigger("update");
+            jQuery(".tabeladenes").trigger("update");
+            jQuery(".tabelaminato").trigger("update");
+        }
+    });
+    jQuery(".tabelaidnina").delegate("tbody tr", "click", function () {
+      jQuery(".tabelaidnina tbody tr").removeClass("active");
+        jQuery(this).addClass('active');
+        var dbid = jQuery(this).find('.fakturaid').html();
+        var data = {
+            dbid:dbid
+        }
+
+        //console.log(faktura_idnina_getSelektirana());
+        jQuery.ajax({
+            url:"/index.php/vlezni_fakturi/pregled_dospeanost/getDetaliTabelaIdnina",
+            type:'POST',
+            data:data,
+            dataType:'json',
+            success:function (response) {
+                //console.log('test');
+
+                var rb=response.length;
+                jQuery(".tabelaidninadetali tbody").find("tr:gt(1)").remove();
+                var tr = jQuery('.tabelaidninadetali tbody tr:last');
+                tr.removeClass('hiderow');
+                for (var i = 0; i < response.length; i++) {
+
+
+
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+
+                    newrow.find(".konto").html(response[i].konto);
+                    newrow.find(".opis").html(response[i].opis);
+                    newrow.find(".pobaruva").html(response[i].cenaDdv);
+                    newrow.find(".faktura").html(response[i].dbid);
+
+
+
+                }
+                tr.addClass('hiderow');
+
+                jQuery(".tabelaidninadetali").trigger("update");
+            }
+       });
+
+    });
+    jQuery(".tabeladenes").delegate("tbody tr", "click", function () {
+        jQuery(".tabeladenes tbody tr").removeClass("active");
+        jQuery(this).addClass('active');
+        var dbid = jQuery(this).find('.fakturaid').html();
+        var data = {
+            dbid:dbid
+        }
+
+       // console.log(faktura_denes_getSelektirana());
+        jQuery.ajax({
+            url:"/index.php/vlezni_fakturi/pregled_dospeanost/getDetaliTabelaDenes",
+            type:'POST',
+            data:data,
+            dataType:'json',
+            success:function (response) {
+                //console.log('test');
+
+                var rb=response.length;
+                jQuery(".tabeladenesdetali tbody").find("tr:gt(1)").remove();
+                var tr = jQuery('.tabeladenesdetali tbody tr:last');
+                tr.removeClass('hiderow');
+                for (var i = 0; i < response.length; i++) {
+
+
+
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+
+                    newrow.find(".konto").html(response[i].konto);
+                    newrow.find(".opis").html(response[i].opis);
+                    newrow.find(".pobaruva").html(response[i].cenaDdv);
+                    newrow.find(".faktura").html(response[i].dbid);
+
+
+
+                }
+                tr.addClass('hiderow');
+
+                jQuery(".tabeladenesdetali").trigger("update");
+            }
+        });
+
+    });
+    jQuery(".tabelaminato").delegate("tbody tr", "click", function () {
+        jQuery(".tabelaminato tbody tr").removeClass("active");
+        jQuery(this).addClass('active');
+        var dbid = jQuery(this).find('.fakturaid').html();
+        var data = {
+            dbid:dbid
+        }
+
+        //console.log(faktura_minato_getSelektirana());
+        jQuery.ajax({
+            url:"/index.php/vlezni_fakturi/pregled_dospeanost/getDetaliTabelaMinato",
+            type:'POST',
+            data:data,
+            dataType:'json',
+            success:function (response) {
+                //console.log('test');
+
+                var rb=response.length;
+                jQuery(".tabelaminatodetali tbody").find("tr:gt(1)").remove();
+                var tr = jQuery('.tabelaminatodetali tbody tr:last');
+                tr.removeClass('hiderow');
+                for (var i = 0; i < response.length; i++) {
+
+
+
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+
+                    newrow.find(".konto").html(response[i].konto);
+                    newrow.find(".opis").html(response[i].opis);
+                    newrow.find(".pobaruva").html(response[i].cenaDdv);
+                    newrow.find(".faktura").html(response[i].dbid);
+
+
+
+                }
+                tr.addClass('hiderow');
+
+                jQuery(".tabelaminatodetali").trigger("update");
+            }
+        });
+
+    });
+
+
+    jQuery('.pregleddospeanost').live('change',function(){
+        var klient = jQuery('.pdklient option:selected').val();
+        var formaction = jQuery(this).parent().attr('action');
+        var data = {
+            klientid: klient
+        }
+        jQuery.ajax({
+            url: formaction,
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+//                    console.log(response);
+                jQuery(".tabelaminato").find("tr:gt(1)").remove();
+                jQuery(".tabeladenes").find("tr:gt(1)").remove();
+                jQuery(".tabelaidnina").find("tr:gt(1)").remove();
+                var vkupnostavki = response.length;
+                var idnina = 0, denes = 0, minato = 0;
+                var denessuma = 0, denesuplati = 0, denesdolg =0;
+                var idninasuma = 0, idninauplati = 0, idninadolg =0;
+                var minatosuma = 0, minatouplati = 0, minatodolg =0;
+                //var today = jQuery('.today').val();
+                var temp;        var splited_array=[];   var joined_array = [];
+                for ( var i = 0; i < response.length; i++ ) {
+                    splited_array=[];
+                    joined_array=[];
+                    var fak_vkupno = response[i].p_vkupno;
+                    var fak_uplati = response[i].uplati;
+                    var fak_dolg = 1*fak_vkupno - 1*fak_uplati;
+                    //  console.log(response[i].rok);
+                    temp=response[i].rok;
+                    splited_array = (temp).split('-');
+                    //console.log(splited_array);
+
+                    var j = 0;
+                    for(var m = (splited_array.length - 1); m >= 0; m--){
+                        joined_array[j] = splited_array[m];
+
+                        j++;
+                    }
+                    var joined_date = joined_array[0] + '-' + joined_array[1] + '-' + joined_array[2];
+                    date2 = (joined_date.toString()).trim();
+      //console.log(date2);
+                    console.log(date1,date2);
+                        if(date1 < date2) //naplata vo idnina
+                    {
+                        var tr = jQuery('.tabelaidnina tbody tr:first');
+                        tr.removeClass('hiderow');
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.attr("dbid",response[i].dbid);
+                        newrow.find('.fakturaid').html(response[i].dbid);
+                        newrow.find('.rok').html(response[i].rok);
+                        newrow.find('.number').html(response[i].textBroj);
+                        newrow.find('.datum').html(response[i].datum);
+                        newrow.find('.klient').html(response[i].firmaIme);
+                        newrow.find('.suma').html(formatnumbermkd(fak_vkupno));
+                        newrow.find('.uplati').html(formatnumbermkd(fak_uplati));
+                        newrow.find('.vkupno').html(formatnumbermkd(fak_dolg));
+                        newrow.find('.zabeleska').html(response[i].komentar);
+                        idnina = idnina + 1;
+                        idninasuma =1 * idninasuma + 1 * response[i].p_vkupno;
+                        idninauplati = 1 * idninauplati + 1 * response[i].uplati;
+                        idninadolg =1 * idninadolg + 1 * (response[i].p_vkupno - response[i].uplati);
+                    }
+                    if(date1 == date2) // naplata denes
+                    {
+                        var tr = jQuery('.tabeladenes tbody tr:first');
+                        tr.removeClass('hiderow');
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.attr("dbid",response[i].dbid);
+                        newrow.find('.fakturaid').html(response[i].dbid);
+                        newrow.find('.rok').html(response[i].rok);
+                        newrow.find('.number').html(response[i].textBroj);
+                        newrow.find('.datum').html(response[i].datum);
+                        newrow.find('.klient').html(response[i].firmaIme);
+                        newrow.find('.suma').html(formatnumbermkd(fak_vkupno));
+                        newrow.find('.uplati').html(formatnumbermkd(fak_uplati));
+                        newrow.find('.vkupno').html(formatnumbermkd(fak_dolg));
+                        newrow.find('.zabeleska').html(response[i].komentar);
+                        denes = denes + 1;
+                        denessuma =1 * denessuma + 1 * response[i].p_vkupno;
+                        denesuplati = 1 * denesuplati + 1 * response[i].uplati;
+                        denesdolg =1 * denesdolg + 1 * (response[i].p_vkupno - response[i].uplati);
+                    }
+                    if(date1 > date2) // pominat rok za plakjanje
+                    {
+                        var tr = jQuery('.tabelaminato tbody tr:first');
+                        tr.removeClass('hiderow');
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.attr("dbid",response[i].dbid);
+                        newrow.find('.fakturaid').html(response[i].dbid);
+                        newrow.find('.rok').html(response[i].rok);
+                        newrow.find('.number').html(response[i].textBroj);
+                        newrow.find('.datum').html(response[i].datum);
+                        newrow.find('.klient').html(response[i].firmaIme);
+                        newrow.find('.suma').html(formatnumbermkd(fak_vkupno));
+                        newrow.find('.uplati').html(formatnumbermkd(fak_uplati));
+                        newrow.find('.vkupno').html(formatnumbermkd(fak_dolg));
+                        newrow.find('.zabeleska').html(response[i].komentar);
+                        minato = minato + 1;
+                        minatosuma =1 * minatosuma + 1 * response[i].p_vkupno;
+                        minatouplati = 1 * minatouplati + 1 * response[i].uplati;
+                        minatodolg =1 * minatodolg + 1 * (response[i].p_vkupno - response[i].uplati);
+                    }
+//                        jQuery(".naslovdospeanost .vkupnostavki").html(vkupnostavki + " во листа");
+                    tr.addClass('hiderow');
+                }
+                jQuery(".naslovidnina .vkupnostavki").html(idnina + " во листа");
+                jQuery(".naslovdenes .vkupnostavki").html(denes + " во листа");
+                jQuery(".naslovminato .vkupnostavki").html(minato + " во листа");
+                jQuery(".summinato .osnovasum").html( formatnumbermkd(minatosuma));
+                jQuery(".summinato .vkupnoddv").html(formatnumbermkd(minatouplati));
+                jQuery(".summinato .vkupnovkupno").html(formatnumbermkd(minatodolg));
+                jQuery(".sumdenes .osnovasum").html(formatnumbermkd(denessuma));
+                jQuery(".sumdenes .vkupnoddv").html(formatnumbermkd(denesuplati));
+                jQuery(".sumdenes .vkupnovkupno").html(formatnumbermkd(denesdolg));
+                jQuery(".sumidnina .osnovasum").html(formatnumbermkd(idninasuma));
+                jQuery(".sumidnina .vkupnoddv").html(formatnumbermkd(idninauplati));
+                jQuery(".sumidnina .vkupnovkupno").html(formatnumbermkd(idninadolg));
+                jQuery(".tabelaidnina").trigger("update");
+                jQuery(".tabeladenes").trigger("update");
+                jQuery(".tabelaminato").trigger("update");
+            }
+        });
+    });
+    jQuery(".cmd-printlink-dospeanost-idnina").click(function(){
+        var klient = jQuery('.pdklient option:selected').val();
+
+        jQuery(".cmd-printlink-dospeanost-idnina").attr("href","/index.php/print/pdf?view=/index.php/vlezni_fakturi/pregled_dospeanost/pecati_dospeanost_idnina&klientid=" + klient);
+    });
+    jQuery(".cmd-printlink-dospeanost-denes").click(function(){
+        var klient = jQuery('.pdklient option:selected').val();
+
+        jQuery(".cmd-printlink-dospeanost-denes").attr("href","/index.php/print/pdf?view=/index.php/vlezni_fakturi/pregled_dospeanost/pecati_dospeanost_denes&klientid=" + klient);
+    });
+    jQuery(".cmd-printlink-dospeanost-minato").click(function(){
+        var klient = jQuery('.pdklient option:selected').val();
+
+        jQuery(".cmd-printlink-dospeanost-minato").attr("href","/index.php/print/pdf?view=/index.php/vlezni_fakturi/pregled_dospeanost/pecati_dospeanost_minato&klientid=" + klient);
+    });
+    jQuery(".cmd-printlink-dospeanost-minato-konto").click(function(){
+        var klient = jQuery('.pdklient option:selected').val();
+        var dbid=faktura_minato_getSelektirana();
+      //  console.log(klient,dbid);
+        jQuery(".cmd-printlink-dospeanost-minato-konto").attr("href","/index.php/print/pdf?view=/index.php/vlezni_fakturi/pregled_dospeanost/pecati_dospeanost_minato_konto&klientid=" + klient+ "&dbid="+dbid);
+    });
+    jQuery(".cmd-printlink-dospeanost-denes-konto").click(function(){
+        var klient = jQuery('.pdklient option:selected').val();
+        var dbid=faktura_denes_getSelektirana();
+        ///console.log(klient,dbid);
+       jQuery(".cmd-printlink-dospeanost-denes-konto").attr("href","/index.php/print/pdf?view=/index.php/vlezni_fakturi/pregled_dospeanost/pecati_dospeanost_denes_konto&klientid=" + klient+ "&dbid="+dbid);
+    });
+    jQuery(".cmd-printlink-dospeanost-idnina-konto").click(function(){
+        var klient = jQuery('.pdklient option:selected').val();
+        var dbid=faktura_idnina_getSelektirana();
+      //  console.log(klient,dbid);
+
+        jQuery(".cmd-printlink-dospeanost-idnina-konto").attr("href","/index.php/print/pdf?view=/index.php/vlezni_fakturi/pregled_dospeanost/pecati_dospeanost_idnina_konto&klientid=" + klient + "&dbid="+dbid);
+    });
+});
+</script>

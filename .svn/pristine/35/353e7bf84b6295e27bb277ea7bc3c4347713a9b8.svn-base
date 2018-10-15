@@ -1,0 +1,82 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Otpis_na_materijali extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function menu()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['magacin'] = $this->materijalno_model->magacin_dropdown();
+        $this->load->view('materijalno/vlez_izlez/menu_form', $data);
+    }
+
+    public function otpis_roba()
+    {
+        $this->load->view('materijalno/vlez_izlez/otpis_na_materijali/otpis_roba_form');
+    }
+    public function otpisnica()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['katbroj']=$this->artikl_model->getAllKatBroj();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['magacini'] = $this->materijalno_model->magacinJquery();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $data['konto'] =$this->plan_model->getKonta();
+        $this->load->view('materijalno/vlez_izlez/otpis_na_materijali/otpisnica_form', $data);
+    }
+
+    public function novaOtpisnica()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->novaOtpisnica();
+        echo json_encode($query);
+    }
+
+
+    public function getOtpisnici()
+    {
+        $klientid = $this->input->get('klientid');
+        $pogledid = $this->input->get('pogledid');
+        $magacinid = $this->input->get('magacinid');
+        $this->load->model('materijalno/materijalno_model');
+        $query =  $this->materijalno_model->getOtpisnici($klientid, $pogledid, $magacinid);
+        echo json_encode($query);
+    }
+
+
+    public function deleteOtpisnica()
+    {
+        $id = $this->input->get('id');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->deleteOtpisnica($id);
+        echo json_encode($query);
+    }
+
+
+    public function updateOtpisnica()
+    {
+        $id = $this->input->post('otpisnicaid');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->updateOtpisnica($id);
+        echo json_encode($query);
+    }
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+
+}

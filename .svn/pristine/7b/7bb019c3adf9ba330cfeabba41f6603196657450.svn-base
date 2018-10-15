@@ -1,0 +1,24 @@
+<div class="trezor-novapratka">
+    <form class="trezor-novapratka-form" action="/index.php/trezor/trezor/insertPratka" method="post">
+        Клиент:<br/>
+        <input name="klient" value="KUCFZM" size="6" maxlength="6"><br/>
+        Датум:<br/>
+        <input name="datum" value="<?=date("d-m-Y") ?>"  class="novapratkadatum"><br/>
+        Број на циклуси:<br/>
+        <input name="brojnaciklusi" value="" class=""><br/>
+        Забелешка:<br/>
+        <input name="zabeleska" value="" class=""><br/>
+        <button
+            type="button"
+            izvrsi="trezor_pratkilista()"
+            poraka_uspesno="Пратката е снимена"
+            poraka_neuspesno="Грешка при снимање на пратка"
+            class="button snimi-forma floatright"
+            ><span>Сними</span>
+        </button>
+
+    </form>
+</div>
+<script>
+    jQuery('.novapratkadatum').datepicker();
+</script>

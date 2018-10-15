@@ -1,0 +1,115 @@
+<?php if (!defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
+
+
+class Banka extends CI_Controller
+{
+	function __construct()
+	{
+		parent::__construct();
+	}
+	public function prikazi_banki()
+	{
+		$this->load->model('podatoci/banka_model');
+		$query = $this->banka_model->getAll();
+		echo json_encode($query);
+	}
+	public function banki_nova()
+	{
+		$this->load->view('podatoci/banka/nova');
+	}
+
+	public function create_banka()
+	{
+		$this->load->library('form_validation');
+		$this->load->model('podatoci/banka_model');
+		if ($query = $this->banka_model->create_banka()) {
+			echo "ok";
+		} else {
+			echo "err";
+		}
+	}
+
+	function tables()
+	{
+		$this->load->library('cezpdf');
+		$this->load->model('podatoci/banka_model');
+		$query = $this->banka_model->getAll();
+		foreach ($query as $row) {
+			$data[] = array('BankaIme' => $row->BankaIme);
+		}
+		//$db_data[] = array('name' => 'Jon Doe', 'phone' => '111-222-3333', 'email' => 'jdoe@someplace.com');
+		//$db_data[] = array('name' => 'Jane Doe', 'phone' => '222-333-4444', 'email' => 'jane.doe@something.com');
+		// $db_data[] = array('name' => 'Jon Smith', 'phone' => '333-444-5555', 'email' => 'jsmith@someplacepsecial.com');
+		//  $data['banka'] = $query;
+		$col_names = array(
+
+			'BankaIme' => 'Ime'
+
+		);
+		$this->cezpdf->selectFont('./fonts/Helvetica.afm');
+		$this->cezpdf->ezText("<u>Trinity systems</u>", 12,
+
+			array("justification" => "full"));
+		$this->cezpdf->ezTable($data, $col_names, 'Lista na banki', array('width' => 550));
+		$this->cezpdf->ezStream();
+	}
+
+	public function view_banka()
+	{
+		$this->load->model('podatoci/banka_model');
+		$query = $this->banka_model->getAll();
+		$data['banka']        = $query;
+		$this->load->view('podatoci/banka/lista', $data);
+	}
+
+
+	public function izbrisi_banka()
+	{
+
+
+		$this->load->model('podatoci/banka_model');
+
+		$this->banka_model->delete_banka();
+
+		$this->view_banka();
+
+	}
+
+
+	public function izmeni()
+	{
+
+		$this->load->model('podatoci/banka_model');
+
+		$id=$this->input->get('id');
+		$query = $this->banka_model->edit_banka($id);
+
+		$data['banka'] = $query[0];
+
+		$this->load->view('podatoci/banka/izmeni', $data);
+
+	}
+
+
+	public function update_banka()
+	{
+		$this->load->model('podatoci/banka_model');
+		$query = $this->banka_model->update_banka();
+
+
+		if ($query) {
+			echo "ok";
+		} else {
+			echo "err";
+		}
+
+		$this->view_banka();
+
+	}
+
+
+
+
+}

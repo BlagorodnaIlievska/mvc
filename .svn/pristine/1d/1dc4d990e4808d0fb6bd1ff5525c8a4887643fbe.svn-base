@@ -1,0 +1,47 @@
+<?php //include("../../views/includes/head.php") ?>
+<div class="container">
+    <span class="span-upatna-dijagnoza">Upatna dijagnoza:</span>
+    <input class="easyui-combobox" style="width:250px" data-options="
+                loader: myloader,
+                mode: 'remote',
+                valueField: 'id',
+                textField: 'name'"
+    />
+</div>
+
+<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>css/easyui/easyui.css">
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.js"></script>
+<script type="text/javascript" src="<?php echo base_url(); ?>js/easyui/jquery.easyui.min.js"></script>
+
+<script>
+    var myloader = function(param,success,error){
+        var q = param.q || '';
+        if (q.length <= 1){return false}
+        $.ajax({
+            url: '/index.php/pacienti/lekuvanja/dijagnozi?callback=stole',
+            dataType: 'jsonp',
+            data: {
+                featureClass: "P",
+                style: "full",
+                maxRows: 20,
+                name_startsWith: q
+            },
+            success: function(data){
+//                console.log(data);
+                var items = $.map(data, function(item){
+                    return {
+                        id: item.id,
+                        name: item.opis
+                    };
+                });
+                success(items);
+            },
+            error: function(){
+                error.apply(this, arguments);
+            }
+        });
+    }
+//jQuery(document).ready(function(){
+//
+//});
+</script>

@@ -1,0 +1,140 @@
+<div>
+    <br>
+    <div class="konto-novokonto">
+    <?php if (bis_check_access('materijalno_magacin_filter_po_magacin')): ?>
+    <label>Магацин:</label>
+    <select name="magacin" class="magacinspec searchspecifikacija">
+        <option value="0">Сите</option>
+        <?php foreach ($magacini as $magacin) { ?>
+        <option value="<?php echo $magacin->id ?>"><?php echo $magacin->ime ?></option>
+        <?php } ?>
+    </select>
+<?php endif ?>
+
+
+       <?php if (bis_check_access('materijalno_magacin_filter_po_artikl')): ?>
+        <label>Артикл:</label>
+        <select name="artikli" class="artiklispec searchspecifikacija">
+            <option value="0">Сите</option>
+        <?php foreach($artikli as $artikal) { ?>
+            <option value="<?php echo $artikal->SID ?>"><?php echo '('.$artikal->sifra.') '.$artikal->S1Ime ?></option>
+        <?php }  ?>
+        </select>
+        <?php endif ?>
+
+    </div>
+    <div class="filter-vleznifak">
+        <span>Период од:</span>
+        <input type="text" class="periodod searchspecifikacija" name="periodod"/>
+        <span style="margin: 0 5px;">до:</span>
+        <input type="text" class="perioddo searchspecifikacija" name="perioddo"/>
+    </div>
+    <br>
+    <br>
+    <p class="naslovstavkipopis" > Спецификација</p>
+    <div class="predtabela">
+        <table class="tabela-stavkispecifikacija" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr >
+                <!--                <th></th>-->
+                <th class="redenbroj">РБ</th>
+                <th class="sifra">Шифра</th>
+                <th class="artikl">Артикл</th>
+
+                <th class="vleznena-kolicina">Влезена кол.</th>
+                <th class="izlezena-kolicina">Излезена кол.</th>
+                <th class="momentalna-kolicina">Моментална кол.</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="hiderow" >
+                <td class="redenbroj2"></td>
+                <td class="sifra2"></td>
+                <th class="artikl2">Артикл</th>
+
+                <td class="vlezena-kolicina2"></td>
+                <td class="izlezena-kolicina2"></td>
+                <td class="momentalna-kolicina2"></td>
+
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <br>
+    <a href="" target="_blank" class="cmd-printlink-specifikacija">
+        <button type="button" class="pecatikartica print"><span>Печати</span></button>
+    </a>
+</div>
+    <script>
+        jQuery(document).ready(function() {
+            jQuery('.magacinspec').combobox();
+            jQuery('.artiklispec').combobox();
+            jQuery('.periodod').datepicker({dateFormat:'dd-mm-yy'});
+            jQuery('.periodod').datepicker('setDate', new Date(2013,00,01));
+            jQuery('.perioddo').datepicker({dateFormat:'dd-mm-yy'});
+            jQuery('.perioddo').datepicker('setDate', new Date());
+            popolni_specifikacija();
+            jQuery('.searchspecifikacija').live('change', function () {
+                jQuery(".tabela-stavkispecifikacija").find("tr:gt(2)").remove();
+               // jQuery(".tstavkadetail").find("tr:gt(2)").remove();
+                var magacin = jQuery('.magacinspec option:selected').val();
+                var artikl = jQuery('.artiklispec option:selected').val();
+                var period1 = jQuery('.periodod').val();
+                var period2 = jQuery('.perioddo').val();
+
+                var formaction = "/index.php/materijalno/specifikacija/prebaruvanje";
+                var data = {
+                    magacin:magacin,
+                    artikl:artikl,
+                    period1:period1,
+                    period2:period2
+
+                }
+                //console.log(data);
+                jQuery.ajax({
+                    url:formaction,
+                    type:'POST',
+                    data:data,
+                    dataType:'json',
+                    success:function (response) {
+                  // console.log(response);
+                        var rb=1;
+                        jQuery(".tabela-stavkispecifikacija tbody").html('');
+                        jQuery.each(response, function (index, item) {
+                            var razlika=0;
+
+                            razlika = item.vlez.kolicina - item.izlez.kolicina;
+                            jQuery(".tabela-stavkispecifikacija tbody").append(('<tr  id="' + item.ID + '">' +
+
+                                    '<td class="redenbroj2">' + rb + '</td>' +
+                                    '<td class="sifra2">' +item.sifra+ '</td>' +
+                                    '<td class="artikl2">' + item.stavka + '</td>' +
+                                    '<td class="vlezena-kolicina2">' + item.vlez.kolicina + '</td>' +
+                                    '<td class="izlezena-kolicina2">' + item.izlez.kolicina + '</td>' +
+                                    '<td class="momentalna-kolicina2">' + razlika + '</td>' +
+                                    '</tr>'
+                                    ));
+
+
+                            rb++;
+
+                        });
+                      //  jQuery(".tabela-stavkispecifikacija").find("tr:eq(1)").remove();
+
+
+                        jQuery(".tabela-stavkispecifikacija").trigger("update");
+                    }
+                });
+            });
+            jQuery(".cmd-printlink-specifikacija").click(function(){
+                var magacin = jQuery('.magacinspec.searchspecifikacija option:selected').val();
+                var artikl  =  jQuery('.artiklispec.searchspecifikacija option:selected').val();
+                var period1 = jQuery('.periodod').val();
+                var period2 = jQuery('.perioddo').val();
+               // console.log(magacin,artikl,period1,period2);
+                jQuery(".cmd-printlink-specifikacija").attr("href","/index.php/print/pdf?view=/index.php/materijalno/specifikacija/pecati_specifikacija&magacin="+magacin + "&artikl="+ artikl +"&period1="+period1 +"&period2="+period2);
+            });
+        });
+    </script>

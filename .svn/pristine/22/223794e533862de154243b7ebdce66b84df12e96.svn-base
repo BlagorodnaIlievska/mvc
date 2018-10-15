@@ -1,0 +1,45 @@
+<fieldset>
+    <legend>Податоци за магацин</legend>
+
+    <?php
+    echo form_open('materijalno/lager_lista/create_magacin');
+    $options = array(
+        '0' => 'Магацин',
+        '1' => 'Продавница',
+        '2' => 'Производство',
+        '3' => 'Привремен'
+    );
+
+    echo form_dropdown('tip_magacin', $options, 0);
+    echo br();
+    echo form_input('magacin_name', set_value('magacin_name', 'Magacin'));
+    echo form_input('magacin_lokacija', set_value('magacin_lokacija', 'Lokacija'));
+    ?>
+<!--    <button type="button" value="Submit" class="ajaxmagacinform button"><span>Дефинирај магацин</span></button>-->
+    <?php
+    echo validation_errors('<p class="error">');
+    echo form_close();
+    ?>
+</fieldset>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.ajaxmagacinform').live('click',function(){
+            var formaction=jQuery(this).parent().attr('action');
+            //var formmethod=jQuery(this).parent().attr('method');
+            var dialogid=jQuery(this).parent().parent().parent().parent();
+            jQuery.ajax({
+                type: "post",
+                url: formaction,
+                data: jQuery(this).parent().serialize(),
+                success:  function(data){
+                    alert('uspesen zapis, uste da se zatvori dialog prozorecot!!! Lokacija: views/materijalno/lager_lista/magacin_form');
+                    var $tabs = jQuery('.main-menu-tabs').tabs();
+                    var selected = $tabs.tabs('option', 'selected');
+                    //jQuery(".main-menu-tabs").tabs('load',selected);
+                    dialogid.dialog("destroy").remove();
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,14 @@
+<div id="index" class="main-menu-tabs">
+    <ul>
+    <?php if (bis_check_access('knizenje_pregled_na_nalozi_tab')): ?>
+        <li><a href="/index.php/knizenje/nalog/pregled_nalozi">Преглед на налози</a></li>
+    <?php endif ?>
+    <?php if (bis_check_access('knizenje_pregled_po_konto_tab')): ?>
+        <li><a href="/index.php/knizenje/nalog/pregled_konta">Преглед по конто</a></li>
+        <?php endif ?>
+        <?php if (bis_check_access('knizenje_pregled_po_konto_tab')): ?>
+        <li><a href="/index.php/knizenje/nalog/promena_konta">Промени на конто</a></li>
+        <?php endif ?>
+
+    </ul>
+</div>

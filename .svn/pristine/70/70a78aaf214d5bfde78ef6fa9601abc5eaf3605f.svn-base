@@ -1,0 +1,319 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+
+class Paket extends CI_Controller
+{
+
+
+    function __construct()
+
+    {
+
+        parent::__construct();
+
+    }
+
+
+    public function new_grupapaket()
+
+    {
+
+        $this->load->model('paketi/paket_model');
+        //$this->load->model('podatoci/grad_model');
+        //   $data['grad']=$this->grad_model->get_grad_dropdown();
+        //  $data['grad']=$this->podatoci_model->get_grad_dropdown();
+        //$data['oddel']        = $this->start_model->get_oddel();
+        //$data['pododdel']     = $this->start_model->get_pododdel();
+        $this->load->view('paketi/paket/nova_grupapaket');
+
+    }
+    public function nova_podgrupa()
+    {
+        $this->load->model('paketi/paket_model');
+        $grupa=$this->paket_model->getGrupa($this->input->get('paketid'));
+       // print_r($grupa); die();
+        $data['idnagrupa'] =$grupa[0]->id ;
+        $data['nazivnagrupa'] = $grupa[0]->naziv ;
+      //  $data['sifranaklasa'] = $klasa[0]->sifra ;
+        $this->load->view('paketi/paket/nova_podgrupa', $data);
+    }
+    public function nov_paket()
+{
+    $this->load->model('paketi/paket_model');
+
+    $podgrupa=$this->paket_model->getPodgrupa($this->input->get('paketid'));
+    ///  print_r($podgrupa); die();
+    $grupa=$this->paket_model->getGrupa($podgrupa[0]->parent_grupa);
+    $data['idnagrupa'] =$grupa[0]->id ;
+    $data['idnapodgrupa'] =$podgrupa[0]->id ;
+    $data['nazivnagrupa'] = $grupa[0]->naziv ;
+    //  $data['sifranaklasa'] = $klasa[0]->sifra ;
+    $data['nazivnapodgrupa'] = $podgrupa[0]->naziv ;
+    // $data['sifranagrupa'] = $grupa[0]->sifra ;
+    $this->load->view('paketi/paket/nov_paket', $data);
+}
+    public function nov_paket_nova()
+    {
+        $this->load->model('paketi/paket_model');
+
+        $this->load->view('paketi/paket/nov_paket_nova');
+    }
+    public function nova_sodrzina()
+    {
+        $this->load->model('paketi/paket_model');
+         $paket= $this->paket_model->getPaket($this->input->get('paketid'));
+        //$podgrupa=$this->paket_model->getPodgrupa($paket[0]->parent_podgrupa);
+        ///  print_r($podgrupa); die();
+       // $grupa=$this->paket_model->getGrupa($paket[0]->parent_grupa);
+        $data['paketid'] = $paket;
+       // $data['idnagrupa'] =$grupa[0]->id ;
+       // $data['idnapodgrupa'] =$podgrupa[0]->id ;
+        //$data['idenpaket'] =$paket[0]->id ;
+        //$data['nazivnagrupa'] = $grupa[0]->naziv ;
+        //  $data['sifranaklasa'] = $klasa[0]->sifra ;
+    //    $data['nazivnapodgrupa'] = $podgrupa[0]->naziv ;
+        // $data['sifranagrupa'] = $grupa[0]->sifra ;
+        $this->load->view('paketi/paket/nova_sodrzina', $data);
+    }
+
+    public function create_grupa()	{
+        $this->load->model('paketi/paket_model');
+        if ($query = $this->paket_model->create_grupa()) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+    public function create_podgrupa()	{
+        $this->load->model('paketi/paket_model');
+        if ($query = $this->paket_model->create_podgrupa()) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+    public function create_paket()	{
+        $this->load->model('paketi/paket_model');
+        if($query = $this->paket_model->create_paket() ){
+            echo 'ok';
+        }   else 'error';
+     //   print_r($query); die();
+        }
+    public function create_sodrzina()	{
+        $this->load->model('paketi/paket_model');
+        if($query = $this->paket_model->create_sodrzina() ){
+            echo 'ok';
+        }   else 'error';
+        //   print_r($query); die();
+    }
+
+    public function view_paket()
+
+    {
+        $this->load->model('paketi/paket_model');
+
+       // $firmi = $this->konta_model->getAll_klasa();
+        //print_r($firmi); die();
+      //  $data['firma'] = $firmi;
+
+        $data['sifra']=$this->paket_model->sifra_dropdown();
+        $data['naziv']=$this->paket_model->naziv_dropdown();
+        $this->load->view('paketi/paket/paketi_najnovo', $data);
+
+    }
+
+
+    public function delete_paket()
+    {
+
+
+        $this->load->model('paketi/paket_model');
+        $this->paket_model->delete_grupa($this->input->get('paketid'));
+        echo "ok";
+
+
+    }
+
+  public function prebaruvanje_paketi_posifra(){
+      $sifraid = $this->input->post('sifraid');
+
+      $this->load->model('paketi/paket_model');
+      $query = $this->paket_model->prebaruvanje_paketi_posifra($sifraid);
+      echo json_encode($query);
+  }
+    public function prebaruvanje_paketi_ponaziv(){
+        $nazivid = $this->input->post('nazivid');
+
+        $this->load->model('paketi/paket_model');
+        $query = $this->paket_model->prebaruvanje_paketi_ponaziv($nazivid);
+        echo json_encode($query);
+    }
+    public function izmeni_paket()
+    {
+        $this->load->model('paketi/paket_model');
+        $id=$this->input->get('id');
+        $grupa=$this->paket_model->getGrupa($id);
+       // print_r($grupa); die();
+        // $data['adresa']=$firma[0]->adresa;
+        // $data['danocenbroj']=$firma[0]->danocenbroj;
+        $data['id'] =$id ;
+        if ($grupa[0]->parent_grupa==0 AND $grupa[0]->parent_podgrupa==0 ){
+            //LOAD Grupa SETTINGS
+            $data['tip']='grupa';
+            $data['nazivnagrupa'] = $grupa[0]->naziv ;
+          //  $data['sifranaklasa'] = $klasa[0]->sifra ;
+        }elseif ($grupa[0]->parent_grupa !=0 AND $grupa[0]->parent_podgrupa==0 ){
+            //LOAD podgrupa
+
+
+            $grupagrupa=$this->paket_model->getGrupa($grupa[0]->parent_grupa AND $grupa[0]->parent_paket==0);
+            $data['tip']='podgrupa';
+
+            $data['nazivnagrupa'] = $grupagrupa[0]->naziv ;
+           // $data['sifranaklasa'] = $klasaklasa[0]->sifra ;
+
+
+            $data['nazivnapodgrupa'] = $grupa[0]->naziv ;
+        //    $data['sifranagrupa'] = $klasa[0]->sifra ;
+
+
+        }elseif ($grupa[0]->parent_grupa !=0 AND $grupa[0]->parent_podgrupa !=0 AND $grupa[0]->parent_paket==0){
+            //LOAD PODODEL
+            $grupagrupa=$this->paket_model->getGrupa($grupa[0]->parent_grupa);
+            $grupapodgrupa=$this->paket_model->getGrupa($grupa[0]->parent_podgrupa);
+            $data['tip']='paket';
+
+            $data['nazivnagrupa'] = $grupagrupa[0]->naziv ;
+            //$data['sifranaklasa'] = $klasaklasa[0]->sifra ;
+
+
+            $data['nazivnapodgrupa'] = $grupapodgrupa[0]->naziv ;
+           // $data['sifranagrupa'] = $klasagrupa[0]->sifra ;
+
+            $data['nazivnapaket'] = $grupa[0]->naziv ;
+            $data['sifranapaket'] = $grupa[0]->sifra ;
+            $data['cenanapaket'] = $grupa[0]->cena ;
+
+
+        }
+           elseif($grupa[0]->parent_grupa !=0 AND $grupa[0]->parent_podgrupa !=0 AND $grupa[0]->parent_paket !=0 ){
+                                     //load sodrzina
+               $grupagrupa= $this->paket_model->getGrupa($grupa[0]->parent_grupa);
+               $grupapodgrupa=$this->paket_model->getGrupa($grupa[0]->parent_podgrupa);
+               $grupapaket=$this->paket_model->getGrupa($grupa[0]->parent_paket);
+              // print_r($grupapaket); die();
+               $data['tip']='sodrzina';
+
+               $data['nazivnagrupa']=$grupagrupa[0]->naziv;
+               $data['nazivnapodgrupa']=$grupapodgrupa[0]->naziv;
+               $data['nazivnapaket']=$grupapaket[0]->naziv;
+               $data['sodrzinapaket']=$grupa[0]->sodrzina;
+
+            }
+
+
+        $this->load->view('paketi/paket/edit_grupa_form', $data);
+
+    }
+    public function izmeni_paket_nova()
+    {
+        $this->load->model('paketi/paket_model');
+
+        $id=$this->input->get('id');
+        $grupa=$this->paket_model->getGrupa($id);
+        // print_r($grupa); die();
+        // $data['adresa']=$firma[0]->adresa;
+        // $data['danocenbroj']=$firma[0]->danocenbroj;
+        $data['id'] =$id ;
+        //if ($grupa[0]->parent_grupa==0 AND $grupa[0]->parent_podgrupa==0 AND $grupa[0]->parent_paket==0 ){
+            //LOAD Grupa SETTINGS
+            $data['tip']='paket';
+            $data['nazivnapaket'] = $grupa[0]->naziv ;
+            $data['sifranapaket'] = $grupa[0]->sifra ;
+            $data['cenanapaket'] = $grupa[0]->cena ;
+        $data['participacija'] = $grupa[0]->participacija ;
+            //  $data['sifranaklasa'] = $klasa[0]->sifra ;
+       // }
+       // elseif($grupa[0]->parent_paket !=0){
+            //load sodrzina
+           // $grupagrupa= $this->paket_model->getGrupa($grupa[0]->parent_grupa);
+          //  $grupapodgrupa=$this->paket_model->getGrupa($grupa[0]->parent_podgrupa);
+          //  $grupapaket=$this->paket_model->getGrupa($grupa[0]->parent_paket);
+            // print_r($grupapaket); die();
+            //$data['tip']='sodrzina';
+
+          //  $data['nazivnagrupa']=$grupagrupa[0]->naziv;
+          //  $data['nazivnapodgrupa']=$grupapodgrupa[0]->naziv;
+           // $data['nazivnapaket']=$grupapaket[0]->naziv;
+            //$data['sodrzinapaket']=$grupa[0]->sodrzina;
+
+       // }
+
+        $this->load->view('paketi/paket/edit_grupa_nova', $data);
+
+    }
+    public function getGrupi()
+    {
+        $this->load->model('paketi/paket_model');
+        $query = $this->paket_model->getGrupi();
+        echo json_encode($query);
+    }
+    public function getPodgrupi()
+    {
+        $this->load->model('paketi/paket_model');
+        $query = $this->paket_model->getPodgrupi($this->input->post("id"));
+        echo json_encode($query);
+    }
+
+    public function getPaketi()
+    {
+        $this->load->model('paketi/paket_model');
+        $query = $this->paket_model->getPaketi($this->input->post("id"));
+        echo json_encode($query);
+    }
+    public function getPaketi_nova()
+    {
+        $this->load->model('paketi/paket_model');
+        $query = $this->paket_model->getPaketi_nova();
+        echo json_encode($query);
+    }
+    public function getSodrzini()
+    {
+        $this->load->model('paketi/paket_model');
+        $query = $this->paket_model->getSodrzini($this->input->post("id"));
+        echo json_encode($query);
+    }
+
+    public function update_grupa()
+    {
+        $this->load->model('paketi/paket_model');
+        $query = $this->paket_model->update_paket();
+       // print_r($query); die();
+        if ($query) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+    public function update_paket()
+    {
+        $this->load->model('paketi/paket_model');
+        $query = $this->paket_model->update_paket();
+        // print_r($query); die();
+        if ($query) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+
+    public function setGrupa(){
+        $paketid=$this->input->get("paketid");
+        $query = $this->session->set_userdata($paketid);
+
+    }
+
+
+}

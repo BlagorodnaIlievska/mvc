@@ -1,0 +1,740 @@
+<div id="vlezizlez" class="sub-menu-tabs">
+
+
+<div class="listapaketiglavno_dnBol" id="listapaketiglavno_dnBol">
+
+    <!--   <div class="listagrupipaket">
+           <div class="buttoncontainer">
+               <button type="button" value="" class="button cmdnovagrupapaket"><span>Нова група</span></button>
+           </div>
+           <div class="predtabela">
+               <select class="grupipaket">
+
+               </select>
+           </div>
+       </div>
+       <div class="listapodgrupi">
+           <div class="buttoncontainer">
+               <button type="button" value="" class="button cmdnovapodgrupa"><span>Нова подгрупа</span></button>
+           </div>
+           <div class="predtabela">
+               <select class="podgrupi">
+
+               </select>
+           </div>
+       </div>
+
+       <br>
+       <br>
+       <br>
+       <br>
+       <table>
+           <tr><td class='red' height='15'></td></tr>
+       </table>   -->
+
+
+
+
+    <div class="listapaketi">
+        <div class="buttoncontainerpaketi">
+            <button type="button" value="" class="button cmdnovpaket_nov_dn"><span>Нова услуга</span></button>
+            <div class="konto-novokonto">
+            <?
+
+            echo form_label('Барај по шифра :', 'sifra');
+            echo form_dropdown('sifra', $sifra, '', 'class="ddsifra_dn pregledpaketisifra_dnBol"');
+
+            ?>
+           </div>
+            <div class="konto-novokonto">
+            <?php
+            echo form_label('Барај по назив :', 'naziv');
+            echo form_dropdown('naziv', $naziv, '', 'class="ddnaziv_dn pregledpaketinaziv_dnBol"');
+
+            ?>
+                </div>
+        </div>
+        <br>
+        <br>
+        <div class="predtabela">
+            <table class="dnbol artikli-cenovnik">
+                <thead>
+                <tr>
+                    <th class="idpaket"></th>
+                    <th class="sifra">Шифра</th>
+                    <th class="paket">Пакет</th>
+                    <th class="cena">Цена</th>
+                    <th class="participacija">Партиципација</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<!--    <div class="listasodrzini">-->
+<!--        <div class="buttoncontainerpaketi">-->
+<!--            <button type="button" value="" class="button cmdnovasodrzina"><span>Нова содржина</span></button-->
+<!--        </div>-->
+<!--        <table class="sodrzina_dn">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th class="idsodrzina"></th>-->
+<!---->
+<!--                <th>Содржина</th>-->
+<!---->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
+</div>
+<script>
+jQuery(document).ready(function(){
+    //  jQuery('.ddsifra_dn, .ddnaziv_dn').combobox();
+    //  jQuery('.grupipaket').tablesorter();
+    // jQuery('.podgrupi').tablesorter();
+    //jQuery('.grupipaket').combobox();
+   // jQuery('.dnbol').tablesorter();
+    jQuery('.sodrzina_dn').tablesorter();
+    jQuery('.pregledpaketisifra_dnBol').combobox();
+    jQuery('.pregledpaketinaziv_dnBol').combobox();
+    //  jQuery('.ddsifra_dn').combobox();
+    // jQuery('.ddnaziv_dn').combobox();
+
+    reloadpaketi4();
+    jQuery('.pregledpaketisifra_dnBol').live('change', function () {
+        var sifraid = jQuery('.ddsifra_dn option:selected').val();
+if(sifraid == ''){
+    reloadpaketi4();
+}else{
+    prebaruvaj_paketi_posifra_dn(sifraid);
+}
+
+        //   console.log(sifraid);
+
+    });
+    jQuery('.pregledpaketinaziv_dnBol').live('change', function () {
+        var nazivid = jQuery('.ddnaziv_dn option:selected').val();
+if(nazivid == ''){
+    reloadpaketi4();
+}else{
+    prebaruvaj_paketi_ponaziv_dn(nazivid);
+}
+
+        //    console.log(nazivid);
+
+    });
+
+});
+
+
+function prebaruvaj_paketi_posifra_dn(sifra){
+
+    var formurl = "/index.php/paketi/dnBol_uslugi/prebaruvanje_paketi_posifra";
+    jQuery.ajax({
+        url:formurl,
+        type:'POST',
+        data:{ sifraid:sifra
+        },
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            jQuery(".dnbol tbody").html('');
+            var sos=0;
+            jQuery.each(response, function (index, item) {
+                // console.log(item);
+
+
+                //  sos = sos + parseFloat(item.z_uplata);
+                jQuery(".dnbol tbody").append(('<tr paketid="' + item.id + '">' +
+                        '<td class="idkasa">' +
+                        '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+
+                        '</td>' +
+                        '<td>' + item.sifra + '</td>' +
+                        '<td>' + item.naziv + '</td>' +
+                        '<td>' + formatnumbermkd(item.cena) + '</td>' +
+                        '<td>' + formatnumbermkd(item.participacija) + '</td>' +
+
+
+                        '</tr>'
+                        ));
+
+
+            });
+            //  console.log(sos);
+            // jQuery('.sos').val(sos);
+        }
+    });
+}
+function prebaruvaj_paketi_ponaziv_dn(naziv){
+
+    var formurl = "/index.php/paketi/paket/prebaruvanje_paketi_ponaziv";
+    jQuery.ajax({
+        url:formurl,
+        type:'POST',
+        data:{ nazivid:naziv
+        },
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            jQuery(".dnbol tbody").html('');
+
+            jQuery.each(response, function (index, item) {
+                // console.log(item);
+
+
+                //  sos = sos + parseFloat(item.z_uplata);
+                jQuery(".dnbol tbody").append(('<tr paketid="' + item.id + '">' +
+                        '<td class="idkasa">' +
+                        '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+
+                        '</td>' +
+                        '<td>' + item.sifra + '</td>' +
+                        '<td>' + item.naziv + '</td>' +
+
+                        '<td>' + formatnumbermkd(item.cena) + '</td>' +
+                        '<td>' + formatnumbermkd(item.participacija) + '</td>' +
+
+
+                        '</tr>'
+                        ));
+
+
+            });
+            //  console.log(sos);
+            // jQuery('.sos').val(sos);
+        }
+    });
+}
+
+function editpaket_nova_dn(paketid){
+
+    var paketred=jQuery(this).parent().parent();
+    var formaction = "/index.php/paketi/dnBol_uslugi/izmeni_dnbol?id="+paketid;
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+
+    jQuery.ajax({
+        url:formaction,
+        type:'GET',
+        success:function (response) {
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position: "center",
+                title: "Измени",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+
+        }
+    });
+
+}
+
+function reloadpaketi4(){
+
+    jQuery('.grupipaket').empty();
+
+    jQuery.ajax({
+        url:"/index.php/paketi/dnBol_uslugi/getUslugi_nova",
+        type:'POST',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+            jQuery(".dnbol tbody").html('');
+            jQuery(".sodrzina_dn tbody").html('');
+            jQuery.each(response, function (index, item) {
+                jQuery(".dnbol tbody").append(('<tr paketid="' + item.id + '">'  +
+                        '<td>' +
+                        '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>'+
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>'+
+                        '</td>' +
+                        '<td>' + item.sifra + '</td>' +
+                        '<td>' + item.naziv + '</td>' +
+
+                        '<td class="cena">' + formatnumbermkd(item.cena) + '</td>' +
+                        '<td class="participacija">' + formatnumbermkd(item.participacija) + '</td>' +
+
+
+
+                        '</tr>'));
+            });
+            jQuery(".dnbol").trigger("update");
+        }
+    });
+   // jQuery('.dnbol').empty();
+}
+
+jQuery('.listapaketiglavno_dnBol table tbody .edit-tr').live('click',function () {
+    var paketid=jQuery(this).parent().parent().attr("paketid");
+    // console.log(paketid);
+    //editpaket(paketid);
+    editpaket_nova_dn(paketid);
+});
+
+jQuery('.listapaketiglavno_dnBol table tbody .delete-tr').live('click',function () {
+    var r=confirm("Дали сте сигурни?");
+    var paketid=jQuery(this).parent().parent().attr("paketid");
+    // console.log(paketid) ;
+    var paketred=jQuery(this).parent().parent();
+    if (r==true){
+        jQuery.ajax({
+            url:'/index.php/paketi/dnBol_uslugi/delete_paket?paketid='+paketid,
+            type:'GET',
+            success:function (response) {
+                if (jQuery.trim(response)=="ok"){
+                    paketred.remove();
+                }
+
+            }
+        });
+
+    }
+
+
+});
+
+jQuery('.cmdnovagrupapaket').click(function () {
+    var formaction = "/index.php/paketi/paket/new_grupapaket";
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+
+    jQuery.ajax({
+        url:formaction,
+        type:'GET',
+        success:function (response) {
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position: "center",
+                title: "Нова група",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+});
+jQuery('.cmdnovapodgrupa').click(function () {
+
+    if (jQuery('.grupipaket option:selected').val().length !=0) {
+        var paketid=jQuery('.grupipaket option:selected').val() ;
+    } else {
+        alert('Ве молиме одберете група');
+        return;
+    }
+
+    var formaction = "/index.php/paketi/paket/nova_podgrupa?paketid="+paketid;
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+
+    jQuery.ajax({
+        url:formaction,
+        type:'GET',
+        success:function (response) {
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                title: "Нова подгрупа",
+                position: "center",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+});
+jQuery('.cmdnovpaket').click(function () {
+
+    if (jQuery('.podgrupi option:selected').val().length !=0) {
+        var paketid=jQuery('.podgrupi option:selected').val() ;
+    } else {
+        alert('Ве молиме одберете подгрупа');
+        return;
+    }
+
+    var formaction = "/index.php/paketi/paket/nov_paket?paketid="+paketid;
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+
+    jQuery.ajax({
+        url:formaction,
+        type:'GET',
+        success:function (response) {
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                title: "Нов пакет",
+                position: "center",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+});
+jQuery('.cmdnovpaket_nov_dn').click(function () {
+
+
+
+    var formaction = "/index.php/paketi/dnBol_uslugi/nov_paket_nova";
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+
+    jQuery.ajax({
+        url:formaction,
+        type:'GET',
+        success:function (response) {
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                title: "Нов пакет",
+                position: "center",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+});
+jQuery('.cmdnovasodrzina').click(function () {
+
+    if (jQuery('.paketi tbody tr.active').length !=0) {
+        var paketid=jQuery('.dnbol tbody tr.active').attr("paketid");
+    } else {
+        alert('Ве молиме одберете пaкет');
+        return;
+    }
+
+    var formaction = "/index.php/paketi/paket/nova_sodrzina?paketid="+paketid;
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+
+    jQuery.ajax({
+        url:formaction,
+        type:'GET',
+        success:function (response) {
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                title: "Нова содржина",
+                position: "center",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+});
+
+jQuery('.grupipaket').live('change', function () {
+    // jQuery(".grupipaket").removeClass("active");
+    // jQuery(this).addClass("active");
+    var id = jQuery('.grupipaket option:selected').val();
+    console.log(id);
+    jQuery('.podgrupi').empty();
+    jQuery.ajax({
+        url:"/index.php/paketi/paket/getPodgrupi",
+        type:'POST',
+        data:{id:id },
+        dataType:'json',
+        success:function (response) {
+            //  jQuery(".podgrupi tbody").html('');
+            jQuery(".dnbol tbody").html('');
+            jQuery(".podgrupi").append((
+
+                    '<option></option>'
+
+                    ));
+            jQuery.each(response, function (index, item) {
+                //   console.log(item.id);
+                jQuery(".podgrupi").append((
+                        '<option value='+item.id+'>' + item.naziv + '</option>'
+
+                        ));
+            });
+            //  jQuery(".podgrupi").trigger("update");
+        }
+    });
+});
+
+jQuery(".podgrupi").live('change',function () {
+
+    // jQuery(".podgrupi tbody tr").removeClass("active");
+    //jQuery(this).addClass("active");
+    var id = jQuery('.podgrupi option:selected').val();
+
+    jQuery.ajax({
+        url:"/index.php/paketi/paket/getPaketi",
+        type:'POST',
+        data: {id:id },
+        dataType:'json',
+        success:function (response) {
+            //console.log(response);
+            jQuery(".dnbol tbody").html('');
+            jQuery.each(response, function (index, item) {
+                jQuery(".dnbol tbody").append(('<tr paketid="' + item.id + '"  parent_grupa="' + item.parent_grupa + '" parent_podgrupa="' + item.parent_podgrupa + '">'  +
+                        '<td>' +
+                        '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>'+
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>'+
+                        '</td>' +
+                        '<td>' + item.sifra + '</td>' +
+                        '<td>' + item.naziv + '</td>' +
+
+                        '<td>' + formatnumbermkd(item.cena) + '</td>' +
+
+
+
+                        '</tr>'));
+            });
+            jQuery(".dnbol").trigger("update");
+        }
+    });
+});
+jQuery(".dnbol tbody tr").live('click',function () {
+    jQuery(".dnbol tbody tr").removeClass("active");
+    jQuery(this).addClass("active");
+    var paketid=jQuery(this).attr("paketid");
+    //  console.log(paketid);
+
+    jQuery.ajax({
+
+        url:"/index.php/paketi/paket/getSodrzini",
+        type:'POST',
+        data: {id:paketid },
+        dataType:'json',
+        success:function (response) {
+            //console.log(response);
+            jQuery(".sodrzina_dn tbody").html('');
+            jQuery.each(response, function (index, item) {
+                // console.log(item.id,item.parent_grupa,item.parent_podgrupa,item.parent_paket);
+                jQuery(".sodrzina_dn tbody").append(('<tr paketid="' + item.id + '"  parent_grupa="' + item.parent_grupa + '" parent_podgrupa="' + item.parent_podgrupa + '" parent_paket="' + item.parent_paket +'" >'  +
+                        '<td>' +
+                        '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>'+
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>'+
+                        '</td>' +
+                        '<td>' + item.sodrzina + '</td>' +
+
+
+
+                        '</tr>'));
+            });
+            jQuery(".sodrzina_dn").trigger("update");
+        }
+    });
+});
+
+
+
+jQuery(".sodrzina_dn tbody tr").live('click',function () {
+    jQuery(".sodrzina_dn tbody tr").removeClass("active");
+    jQuery(this).addClass("active");
+});
+jQuery('.ajaxgrupapaketcreateform').live('click', function () {
+    var formaction = jQuery(this).parent().attr('action');
+    var formmethod = jQuery(this).parent().attr('method');
+    //var dialogid=jQuery(this).parent().parent().parent();
+    //console.log(formaction);
+    // console.log(jQuery(this).parent().serialize());
+    jQuery.ajax({
+        type:"post",
+        url:formaction,
+        data:jQuery(this).parent().serialize(),
+        success:function (data) {
+            var tabs = jQuery('.sub-menu-tabs');
+            var selected = tabs.tabs('option', 'selected');
+            jQuery(".sub-menu-tabs").tabs('load', selected);
+            alert('The data has been submitted sucessfully!!!');
+            //dialogid.dialog("destroy");
+        }
+    });
+    destroyparentdialog(jQuery(this));
+
+});
+jQuery('.ajaxpodgrupacreateform').live('click', function () {
+    var formaction = jQuery(this).parent().attr('action');
+    var formmethod = jQuery(this).parent().attr('method');
+    jQuery.ajax({
+        type:"post",
+        url:formaction,
+        data:decodeURIComponent(jQuery(this).parent().serialize()),
+        success:function (data) {
+            if (jQuery.trim(data)=="ok"){
+                jQuery('.podgrupi').empty();
+                alert('Групата е успешно направенa');
+            } else {
+                alert('Грешка при внесување на група');
+            }
+        }
+
+    });
+    destroyparentdialog(jQuery(this));
+
+});
+jQuery('.ajaxpaketcreateform_dn').live('click', function () {
+    var formaction = jQuery(this).parent().attr('action');
+    var formmethod = jQuery(this).parent().attr('method');
+    jQuery.ajax({
+        type:"post",
+        url:formaction,
+        data:decodeURIComponent(jQuery(this).parent().serialize()),
+        success:function (data) {
+            if (jQuery.trim(data)=="ok"){
+                jQuery(".podgrupi tr.active").trigger("click");
+                alert('Пакетот е успешно направен');
+                reloadpaketi4();
+            } else {
+                alert('Грешка при внесување на пакет');
+            }
+        }
+
+    });
+    destroyparentdialog(jQuery(this));
+
+});
+jQuery('.ajaxsodrzinacreateform').live('click', function () {
+    var formaction = jQuery(this).parent().attr('action');
+    var formmethod = jQuery(this).parent().attr('method');
+    jQuery.ajax({
+        type:"post",
+        url:formaction,
+        data:decodeURIComponent(jQuery(this).parent().serialize()),
+        success:function (data) {
+            if (jQuery.trim(data)=="ok"){
+                jQuery(".dnbol tr.active").trigger("click");
+                alert('Содржината е успешно направенa');
+            } else {
+                alert('Грешка при внесување на содржина');
+            }
+        }
+
+    });
+    destroyparentdialog(jQuery(this));
+
+});
+
+jQuery('.ajaxpaketiupdate').live('click', function () {
+    var formaction = jQuery(this).parent().attr('action');
+    var formmethod = jQuery(this).parent().attr('method');
+    jQuery.ajax({
+        type:"post",
+        url:formaction,
+        data:decodeURIComponent(jQuery(this).parent().serialize()),
+        success:function (data) {
+            if (jQuery.trim(data)=="ok"){
+                reloadpaketi();
+                alert('Успешно');
+            } else {
+                alert('Грешка');
+            }
+        }
+
+    });
+    destroyparentdialog(jQuery(this));
+
+});
+jQuery('.ajaxpaketiupdatenovo_dn').live('click', function () {
+    var formaction = jQuery(this).parent().attr('action');
+    var formmethod = jQuery(this).parent().attr('method');
+    jQuery.ajax({
+        type:"post",
+        url:formaction,
+        data:decodeURIComponent(jQuery(this).parent().serialize()),
+        success:function (data) {
+            if (jQuery.trim(data)=="ok"){
+                reloadpaketi4();
+                alert('Успешно');
+            } else {
+                alert('Грешка');
+            }
+        }
+
+    });
+    destroyparentdialog(jQuery(this));
+
+});
+jQuery('.ajaxcreategrupa').live('click', function () {
+    var formaction = jQuery(this).parent().attr('action');
+    var formmethod = jQuery(this).parent().attr('method');
+    jQuery.ajax({
+        type:"post",
+        url:formaction,
+        data:decodeURIComponent(jQuery(this).parent().serialize()),
+        success:function (data) {
+            if (jQuery.trim(data)=="ok"){
+                reloadpaketi();
+                alert('Успешно');
+            } else {
+                alert('Грешка');
+            }
+        }
+
+    });
+    destroyparentdialog(jQuery(this));
+
+});
+
+
+//jQuery('.ajaxcreateklasa').live('click', function () {
+///  var formaction = jQuery(this).parent().attr('action');
+//var formmethod = jQuery(this).parent().attr('method');
+//jQuery.ajax({
+//  type:"post",
+//url:formaction,
+//data:decodeURIComponent(jQuery(this).parent().serialize()),
+//success:function (data) {
+//  if (jQuery.trim(data)=="ok"){
+//    reloadfirmi();
+//  alert('Успешно');
+//} else {
+//  alert('Грешка');
+//}
+//}
+
+//});
+// destroyparentdialog(jQuery(this));
+
+//});
+
+
+</script>
+</div>

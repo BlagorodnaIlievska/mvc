@@ -1,0 +1,157 @@
+<div class="trezor-novapratka-podatok">
+    Образец: <select name="obrazecbox" class="obrazecbox">
+        <option value="90" selected>90 : Сметки надвор од ФЗО</option>
+        <option value="91">91 : Сметки во ФЗО</option>
+        <option value="92">92 : Кон траксациони за плата</option>
+        <option value="93">93 : Поврат и пренасочување на средства</option>
+        <option value="94">94 : Подигнување на готовина</option>
+        <option value="76">76 : Од/Кон Трезор</option>
+        <option value="0">0 : Рачно внесување</option>
+    </select><br/>
+
+    <form class="neplatenifakturifilter">
+        Фирма: <input class="firma baraj" name="firma.ime" value="">
+        Број: <input class="broj baraj" name="stavka.textBroj" value="">
+
+        <button type="button" class="button cmd-firlter-neplatenifakturi"><span>Барај</span></button>
+    </form>
+    <form class="trezor-novapratkapodatok-form" action="/index.php/trezor/trezor/insertPratkaPodatok" method="post">
+
+        <div class="step1">
+            <p class="naslov">Ве молиме одберете фактура</p>
+
+            <table class="trezor-neplateni-vleznifakturi-tabela">
+                <thead>
+                <tr>
+                    <th>Датум</th>
+                    <th>Број</th>
+                    <th>Основа</th>
+                    <th>ДДВ</th>
+                    <th>Вкупно</th>
+                    <th>Фирма</th>
+                    <th>Забелешка</th>
+
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+            <button type="button" class="button cmd-step2 floatright"><span>Следно</span></button>
+        </div>
+        <div class="step2" style="display: none">
+
+            <div class="fieldset-trezor">
+                <input type="hidden" name="pratka_id" value="<?= $pratka_id ?>" class="pratka_id">
+                <fieldset>
+                    <legend>Податоци за плаќачот</legend>
+                    Сметка на задолжување:<br/>
+                    <input class="smetkanazadolzuvanje" name="smetkanazadolzuvanje" value="">
+                    <br/>
+                    Подсметка на задолжување:<br/>
+                    <select class="podsmetkanazadolzuvanje" name="podsmetkanazadolzuvanje">
+                        <?php foreach ($zirosmetki as $zirosmetka): ?>
+
+                            <option
+                                value="<?= $zirosmetka->zirosmetka ?>" <?= ($zirosmetka->zirosmetka == '660250014073747' ? 'selected' : '') ?>><?= $zirosmetka->zirosmetka ?></option>
+                        <?php endforeach; ?>
+                    </select><br/>
+                    Програма на задолжување:<br/>
+                    <input name="prognazadolzuvanje" value="00" class="" size="2" maxlength="2" ><br/>
+                    Цел:<br/>
+                    <input name="cel" value="" class="" ><br/>
+                    Шифра:<br/>
+                    <input name="sifra" value="000000" class="" size="6" maxlength="6"><br/>
+                    ЕДБ:<br/>
+                    <input name="edb" value="" class="" default_val="<?=$edb?>" ><br/>
+
+                </fieldset>
+                <fieldset class="f-trezor-2">
+                    <legend>Податоци за примачот</legend>
+                    Назив на примачот:<br/>
+                    <input name="nazivnaprimacot" value="" class="" ><br/>
+                    Сметка на примачот:<br/>
+                    <input name="smetkanaprimacot" value="" class="" ><br/>
+                    Подсметка на примачот:<br/>
+                    <input name="podsmetkanaprimacot" value="" class=""><br/>
+                    Конто на примачот:<br/>
+                    <input name="kontonaprimacot" value="" class=""><br/>
+                    Програма на примачот:<br/>
+                    <input name="programanaprimacot" value="" class=""><br/>
+                    Повикување на број на примачот:<br/>
+                    <input name="povikuvanjenabrojnaprimacot" value="" class="" ><br/>
+
+                </fieldset>
+            </div>
+            <div class="pod-f-trezor">
+                Вид образец:
+                <input name="vidobrazec" value="" class="">
+                Начин:
+                <select name="nacin">
+                    <option value="2">2 Надворешен Корисник</option>
+                    <option value="3">3 Бучетски Корисник</option>
+                </select>
+            </div>
+
+            <table class="tablekonto">
+                <thead>
+                <tr>
+                    <th>Конто</th>
+                    <th>Сума која се плаќа</th>
+                    <th class="treto">Преостаната неплатена сума</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button type="button" class="button cmd-step1"><span>Назад</span></button>
+            <button
+                type="button"
+                izvrsi="trezor_pratkilista_podatoci({id: <?= $pratka_id; ?>})"
+                poraka_uspesno="Податокот е снимен"
+                poraka_neuspesno="Грешка при снимање на податок"
+                class="button snimi-forma"
+                ><span>Сними</span>
+            </button>
+
+            <input type="hidden" name="faktura_id" value="0">
+        </div>
+    </form>
+</div>
+<style type="text/css">
+    .trezor-novapratkapodatok-form .tablekonto tbody td.input input {
+        background: #ffffff !important;
+        border: 1px solid #000000 !important;
+    }
+</style>
+<script type="text/javascript">
+
+
+    jQuery('.trezor-neplateni-vleznifakturi-tabela').tablesorter();
+    jQuery('.podsmetkanazadolzuvanje').combobox();
+    var filterxxx = jQuery(".neplatenifakturifilter").serialize();
+    trezor_popolnineplatenifakturi(filterxxx);
+    jQuery('.cmd-firlter-neplatenifakturi').click(function () {
+        var filterxxx = jQuery(".neplatenifakturifilter").serialize();
+        trezor_popolnineplatenifakturi(filterxxx);
+    });
+    jQuery('.baraj').keyup(function () {
+        var filterxxx = jQuery(".neplatenifakturifilter").serialize();
+        trezor_popolnineplatenifakturi(filterxxx);
+    });
+
+    //    jQuery('.trezor-novapratkapodatok-form .tablekonto').tablesorter();
+    trezor_render_fields();
+    jQuery('.obrazecbox').change(function(){
+        trezor_render_fields();
+    });
+    jQuery('.cmd-step2').click(function () {
+        jQuery('.step1').hide();
+        jQuery('.neplatenifakturifilter').hide();
+        jQuery('.step2').show(50);
+    });
+    jQuery('.cmd-step1').click(function () {
+        jQuery('.step2').hide();
+        jQuery('.step1').show(50);
+
+    });
+</script>

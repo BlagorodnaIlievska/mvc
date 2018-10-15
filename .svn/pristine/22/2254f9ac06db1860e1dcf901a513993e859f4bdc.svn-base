@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-type" content="charset=utf-8"/>
+    <style type="text/css" media="print">
+        * {
+            font-family: "DejaVu Sans Mono";
+            padding: 0;
+            margin: 0;
+            font-size: 12px;
+        }
+
+        .print_body {
+            margin: 5mm;
+        }
+
+        .print_body input,
+        .print_body textarea {
+            border: 1px solid #ffffff !important;
+        }
+    </style>
+    <title>БИС - Болнички Информациони Системи</title>
+
+    <script type="text/javascript" src="/js/jquery-1.8.3.js"></script>
+    <script type="text/javascript" src="/js/jquery-ui-1.9.2.custom.js"></script>
+
+    <?php
+
+    $css = array();
+
+    if ($handle = opendir('css')) {
+        while (false !== ($entry = readdir($handle))) {
+            if ($entry != "." && $entry != ".." && $entry != ".svn")
+
+                $css[] = str_replace(".css", "", $entry);
+
+
+        }
+        closedir($handle);
+    }
+
+    //bis_debug($css);
+    echo load_css($css);
+    ?>
+
+    <?php
+
+    $javascripts = array();
+    if ($handle = opendir('js')) {
+        while (false !== ($entry = readdir($handle))) {
+            if ($entry != "." && $entry != ".." && $entry != ".svn" && $entry != "jquery-1.8.3.js" && $entry != "jquery-ui-1.9.2.custom.js")
+                $javascripts[] = str_replace(".js", "", $entry);
+        }
+
+        closedir($handle);
+    }
+
+
+    bis_debug($javascripts);
+    echo load_js($javascripts);
+
+    ?>
+
+</head>
+
+<body>

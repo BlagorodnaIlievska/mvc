@@ -1,0 +1,112 @@
+<div id="postoecka_faktura_form">
+    <div class="postoecka-faktura">
+        <?php
+        echo form_open('vlezni_fakturi/faktura/search_vlezna_faktura'); ?>
+        <label for="filter-broj-faktura">Broj na dokument</label>
+        <input type="text" id="filter-broj-faktura" name="filter-broj-faktura">
+        <?php
+        $options = array(
+            '0'  => 'neplateni',
+            '1'  => 'plateni',
+            '2'  => 'site'
+        );
+        echo form_dropdown('tip-faktura', $options, '', 'id="tip-faktura"');
+        echo form_close();
+        ?>
+        <br>
+        <table class="searchresult" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th>Broj</th>
+                <th>Datum</th>
+                <th>Klient</th>
+                <th>Vkupno</th>
+                <th>Zabeleska</th>
+            </tr>
+            <?php
+            echo "<tr class='hiderow trow'>";
+            echo "<td> <input type='text' class='broj medium' name='broj' readonly> </td>";
+            echo "<td> <input type='text' class='datum medium' name='datum' readonly> </td>";
+            echo "<td> <input type='text' class='klient big' name='klient' readonly> </td>";
+            echo "<td> <input type='text' class='vkupno medium' name='vkupno' readonly> </td>";
+            echo "<td> <input type='text' class='zabeleska big' name='zabeleska' readonly> </td>";
+            echo "<input type='hidden' class='ddv' name='ddv'><input type='hidden' class='dbid' name='dbid'>";
+            echo "</tr>";
+            ?>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        jQuery('#filter-broj-faktura').keyup(function(){
+            var formaction=jQuery(this).parent().attr('action');
+            if( jQuery('#filter-broj-faktura').val().length >= 1 ) {
+                var data = {
+                    brojfaktura: jQuery('#filter-broj-faktura').val()
+                }
+                jQuery.ajax({
+                    url: formaction,
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        //console.log(response);
+                        jQuery(".searchresult").find("tr:gt(1)").remove();
+                        var tr = jQuery('.searchresult tr:last');
+                        tr.removeClass('hiderow');
+                        for ( var i = 0; i < response.length; i++ ) {
+                            var newrow = jQuery(tr).clone().insertAfter(tr);
+                            newrow.find('.dbid').val(response[i].fakturaid);
+                            newrow.find('.broj').val(response[i].textBroj);
+                            newrow.find('.datum').val(response[i].datum);
+                            newrow.find('.klient').val(response[i].firmaIme);
+                            newrow.find('.osnova').val(response[i].osnova);
+                            newrow.find('.ddv').val(response[i].ddv);
+                            newrow.find('.vkupno').val(response[i].vkupno);
+                            newrow.find('.zabeleska').val(response[i].zabeleska);
+                        }
+                        tr.addClass('hiderow');
+                    }
+                });
+            }
+            //return false;
+        });
+        jQuery('.searchresult tr').live("dblclick", function(){
+            var id = jQuery(this).find('.dbid').val();
+            var formaction= "/index.php/vlezni_fakturi/pregled_vlezni/editVleznaFaktura?id=" + id;
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({
+                autoOpen: true,
+                width: 1100,
+                close: function(event, ui){
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            }).load(formaction);
+            jQuery(this).closest('.ui-dialog-content').dialog('close');
+        });
+        jQuery('#faktura-ok').live('click',function(){
+            var dialogid=jQuery(this).parent().parent().parent();
+            jQuery('#broj-faktura').val(jQuery('#tbroj').val());
+            jQuery('#datum-faktura').val(jQuery('#tdatum').val());
+            jQuery('#klient-faktura').val(jQuery('#tklient').val());
+            //snimi vo tabela
+            jQuery('#fnumber').val(jQuery('#tbroj').val());
+            jQuery('#fkat-broj').val(jQuery('.tkatbroj').val());
+            jQuery('#fstavka').val(jQuery('.tstavka').val());
+            jQuery('#fkolicina').val(jQuery('.tkolicina').val());
+            //jQuery('#fedinicamerka').val(jQuery('#tklient').val());
+            jQuery('#fbezddv').val(jQuery('#tbezddv').val());
+            jQuery('#fsoddv').val(jQuery('#tsuma').val());
+            jQuery('#fddv').val(jQuery('#tklient').val());
+            jQuery('#fvkupno').val(jQuery('#tbezddv').val());
+            jQuery('#fvkupnoddv').val(jQuery('#tddv').val());
+            jQuery('#ftotal').val(jQuery('#tsuma').val());
+
+            dialogid.dialog("destroy").remove();
+
+        });
+    });
+</script>
+

@@ -1,0 +1,76 @@
+<?php
+
+class Proizvoditel_model extends CI_Model{
+
+
+    public function create_proizvoditel()
+    {
+        $new_field_insert_data = array(
+
+            'markerIme' => $this->input->post('markerIme')
+
+        );
+
+        $insert = $this->db->insert('marker', $new_field_insert_data);
+        return $insert;
+    }
+
+    public function getAll()
+    {
+        $query = $this->db->get('marker');
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+
+    public function delete_proizvoditel(){
+
+        $this->db->where('markerID', $this->uri->segment(4));
+        $this->db->delete('marker');
+    }
+
+    public function edit_proizvoditel(){
+
+        $this->db->where('markerID', $this->uri->segment(4));
+        $query = $this->db->get('marker');
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+
+    public function update_proizvoditel()
+    {
+        $field_update_data = array(
+
+            'markerIme' => $this->input->post('markerIme')
+        );
+
+        $this->db->where('markerID', $this->input->post('markerID'));
+        $update = $this->db->update('marker', $field_update_data);
+        return $update;
+    }
+
+    function get_proizvoditeli_dropdown()
+    {
+        $this->db->select('markerID, markerIme');
+        $this->db->from('marker');
+        $this->db->order_by('markerID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = 'select proizvoditel';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['markerID']] = $row['markerIme'];
+            }
+        }
+        return $dropdown;
+
+    }
+
+
+}

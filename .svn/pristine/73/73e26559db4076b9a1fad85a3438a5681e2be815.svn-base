@@ -1,0 +1,105 @@
+<div class="editfirma">
+    <form method="post" action="/index.php/start/firma/update_firma">
+        <fieldset>
+            <legend>Измени</legend>
+            <input type="hidden" name="id" value="<?php echo $id ?>"/>
+            <?php if ($tip == 'firma') { ?>
+                Име на Фирма:<br/>
+                <input type="text" value="<?php echo $imenafirma ?>" name="ime"><br/>
+                Шифра на Фирма:<br/>
+                <input type="text" value="<?php echo $sifranafirma ?>" name="sifra"><br/>
+                Адреса:<br/>
+                <input type="text" value="<?php echo $adresa ?>" name="adresa"><br/>
+                Даночен број:<br/>
+                <input type="text" value="<?php echo $danocenbroj; ?>" name="danocenbroj"><br/>
+                Матичен број:<br/>
+                <input type="text" value="<?php echo $embs; ?>" name="embs"><br/>
+                ДДВ Обврзник:<br/>
+                <select name="ddv_obvrznik">
+                    <option value="0" <?php echo ($ddv_obvrznik==0 ? "selected" : "" ) ?> >Не</option>
+                    <option value="1" <?php echo ($ddv_obvrznik==1 ? "selected" : "" ) ?>>Да</option>
+                </select><br/>
+                Град:<br/>
+                <select name="grad_id">
+                    <option value="0"></option>
+                    <?php foreach ($gradovi as $grad) { ?>
+                        <option
+                            value="<?php echo $grad->id ?>" <?php echo ($grad->id == $grad_id ? "selected" : "")  ?>><?php echo $grad->ime ?></option>
+                    <?php } ?>
+                </select>
+                <br/>
+                Телефон:<br/>
+                <input type="text" value="<?php echo $telefon; ?>" name="telefon"><br/>
+                Факс:<br/>
+                 <input type="text" value="<?php echo $faks; ?>" name="faks"><br/>
+            <?php } elseif ($tip == 'odel') { ?>
+
+                Име на Фирма: <?php echo $imenafirma ?><br/>
+                Шифра на Фирма: <?php echo $sifranafirma ?><br/><br/>
+
+                Име на Одел:<br/>
+                <input type="text" value="<?php echo $imenaodel ?>" name="ime"><br/>
+                Шифра на Одел:<br/>
+                <input type="text" value="<?php echo $sifranaodel ?>" name="sifra"><br/>
+                Адреса:<br/>
+                <input type="text" value="<?php echo $adresa ?>" name="adresa"><br/>
+                Даночен број:<br/>
+                <input type="text" value="<?php echo $danocenbroj ?>" name="danocenbroj"><br/>
+                ДДВ Обврзник:<br/>
+                <select name="ddv_obvrznik">
+                    <option value="0" <?php echo ($ddv_obvrznik==0 ? "selected" : "" ) ?> >Не</option>
+                    <option value="1" <?php echo ($ddv_obvrznik==1 ? "selected" : "" ) ?>>Да</option>
+                </select><br/>
+                Град:<br/>
+                <select name="grad_id">
+                    <option value="0"></option>
+                    <?php foreach ($gradovi as $grad) { ?>
+                        <option
+                            value="<?php echo $grad->id ?>" <?php echo ($grad->id == $grad_id ? "selected" : "")  ?>><?php echo $grad->ime ?></option>
+                    <?php } ?>
+                </select>
+                <br/>
+
+
+            <?php } elseif ($tip == 'pododel') { ?>
+                Име на Фирма: <?php echo $imenafirma ?><br/>
+                Шифра на Фирма: <?php echo $sifranafirma ?><br/><br/>
+                Име на Одел: <?php echo $imenaodel ?><br/>
+                Шифра на Одел: <?php echo $sifranaodel ?><br/><br/>
+
+                Име на Пододел:<br/>
+                <input type="text" value="<?php echo $imenapododel ?>" name="ime"><br/>
+                Шифра на Пододел:<br/>
+                <input type="text" value="<?php echo $sifranapododel ?>" name="sifra"><br/>
+                Адреса:<br/>
+                <input type="text" value="<?php echo $adresa ?>" name="adresa"><br/>
+                Даночен број:<br/>
+                <input type="text" value="<?php echo $danocenbroj ?>" name="danocenbroj"><br/>
+                Почетен број во дневник:<br/>
+                <input type="text" value="<?php echo $poceten_broj_vo_dnevnik ?>" name="poceten_broj_vo_dnevnik"><br/>
+                ДДВ Обврзник:<br/>
+                <select name="ddv_obvrznik">
+                    <option value="0" <?php echo ($ddv_obvrznik==0 ? "selected" : "" ) ?> >Не</option>
+                    <option value="1" <?php echo ($ddv_obvrznik==1 ? "selected" : "" ) ?>>Да</option>
+                </select>
+                <br/>
+                Град:<br/>
+                <select name="grad_id">
+                    <option value="0"></option>
+                    <?php foreach ($gradovi as $grad) { ?>
+                        <option
+                            value="<?php echo $grad->id ?>" <?php echo ($grad->id == $grad_id ? "selected" : "")  ?>><?php echo $grad->ime ?></option>
+                    <?php } ?>
+                </select>
+                <br/>
+
+
+
+            <?php } ?>
+        </fieldset>
+        <br/>
+
+
+        <input type="button" class="ajaxfirmiupdate button" value="Измени"><br/>
+    </form>
+</div>

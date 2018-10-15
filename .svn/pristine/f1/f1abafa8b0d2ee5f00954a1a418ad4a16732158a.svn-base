@@ -1,0 +1,57 @@
+<?php
+
+class Edmerki_model extends CI_Model
+{
+
+    public function getEdmerki()
+    {
+        //  $this->db->where("parent_id", 0);
+        $query = $this->db->get('bis_edmerki');
+        return $query->result();
+    }
+
+
+    public function getEdmerka($id)
+    {
+        $this->db->where("id", $id);
+        $query = $this->db->get('bis_edmerki');
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_edmerka()
+    {
+        $insert_data = $this->input->post();
+        $insert      = $this->db->insert('bis_edmerki', $insert_data);
+        return $insert;
+    }
+
+    public function delete_edmerka($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_edmerki');
+    }
+
+    public function update_edmerka()
+    {
+        $field_update_data =	$this->input->post();
+
+        $this->db->where('id',$field_update_data['id']);
+        unset($field_update_data['id']);
+        $this->db->update('bis_edmerki', $field_update_data);
+    }
+
+    function bis_edmerki_dropdown()
+    {
+        $query = $this->db->get('bis_edmerki');
+        if($query->num_rows() > 0){
+            $result = $query->result();
+            foreach($result as $key=>$row){
+                $result[$key]->id=str_replace(array("\n","'",'"'),"",$result[$key]->id);
+                $result[$key]->ime_skrateno=str_replace(array("\n","'",'"'),"",$result[$key]->ime_skrateno);
+            }
+            return $result;
+        }
+    }
+}

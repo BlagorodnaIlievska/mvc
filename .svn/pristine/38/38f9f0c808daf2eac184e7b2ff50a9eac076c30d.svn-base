@@ -1,0 +1,241 @@
+<div id="analiza_fakturi_form">
+    <h4>Finansiska analiza po grupi</h4>
+    <?php
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $pogled = array(
+        '0' => 'Osnova',
+        '1' => 'Osnova + ddv'
+    );
+    $fakturi = array(
+        '0' => 'Vlezni + Izlezni fakturi',
+        '10' => 'Vlezni fakturi',
+        '20' => 'Izlezni fakturi'
+    );
+    $klient = array(
+        'name'       => 'klient',
+        'class'      => 'klientsearch analizafakturi',
+        'value'      => 'Site',
+        'readonly'   => 'readonly',
+        'formaction' => '/index.php/raporti/menu/izberi_klient'
+    );
+    echo form_open('raporti/menu/get_analiza_fakturi');
+
+    echo form_label('Pogled: ', 'pogled');
+    echo form_dropdown('pogled', $pogled, 0, 'class="pogled analizafakturi"');
+    echo form_label('Pogled: ', 'fakturi');
+    echo form_dropdown('fakturi', $fakturi, 0, 'class="fakturi analizafakturi"');
+    echo br();
+    echo form_label('Klient: ', 'klient');
+    echo form_input($klient);
+    ?>
+    <input type='hidden' class='klientid' name='klientid' style='display: none;' />
+    <?php
+    echo form_close();
+    ?>
+    <br>
+    <div class="tab-fakturi">
+        <table class="t-fakturi" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th>Grupa</th>
+                <th>Prihod</th>
+                <th>Rashod</th>
+            </tr>
+            <?php
+            echo "<tr class='hiderow'>";
+            echo "<td> <input type='text' class='grupa medium' name='fgrupa' readonly> </td>";
+            echo "<td> <input type='text' class='prihod medium' name='fprihod' readonly> </td>";
+            echo "<td> <input type='text' class='rashod medium' name='frashod' readonly> </td>";
+            echo "</tr>";
+            ?>
+        </table>
+    </div><br><br>
+    <div class="lista">
+        <h4>Lista na uplati isplati</h4>
+        <table class="t-lista" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th></th>
+                <th>Tip</th>
+                <th>Broj</th>
+                <th>Datum</th>
+                <th>Klient</th>
+                <th>K</th>
+                <th>Prihod</th>
+                <th>Rashod</th>
+                <th>T</th>
+                <th>Zabeleska</th>
+            </tr>
+            <?php
+            echo "<tr class='hiderow'>";
+            echo "<td>". anchor("#", $edit, array('class' => 'edit-tr')) . "</td>";
+            echo "<td> <input type='text' class='tip big' name='ltip' readonly> </td>";
+            echo "<td> <input type='text' class='broj medium' name='lbroj' readonly> </td>";
+            echo "<td> <input type='text' class='datum medium' name='ldatum' readonly> </td>";
+            echo "<td> <input type='text' class='klient big' name='lklient' readonly> </td>";
+            echo "<td> <input type='text' class='k small' name='lk' readonly> </td>";
+            echo "<td> <input type='text' class='prihod medium' name='lprihod' readonly> </td>";
+            echo "<td> <input type='text' class='rashod medium' name='lrashod' readonly> </td>";
+            echo "<td> <input type='text' class='t small' name='lt' readonly> </td>";
+            echo "<td> <input type='text' class='zabeleska big' name='lzabeleska' readonly> </td>";
+            echo "</tr>";
+            ?>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        var klient = jQuery('.klientid').val();
+        var pogled = jQuery('.pogled :selected').val();
+        var fakturi = jQuery('.fakturi :selected').val();
+        var data = {
+            klient: klient,
+            pogled: pogled,
+            fakturi: fakturi
+        }
+        jQuery.ajax({
+            url: '/index.php/raporti/menu/get_analiza_fakturi',
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+                //console.log(response);
+                jQuery(".t-fakturi").find("tr:gt(1)").remove();
+                var tr = jQuery('.t-fakturi tr:last');
+                tr.removeClass('hiderow');
+                for ( var i = 0; i < response.length; i++ ) {
+                    //console.log(response[i].ZSID);
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    if(fakturi == 10) newrow.find('input[name=frashod]').val(response[i].suma);
+                    if(fakturi == 20) newrow.find('input[name=fprihod]').val(response[i].suma);
+                    if(fakturi == 0)
+                    {
+                        if(response[i].suma > 0)
+                        {
+                            newrow.find('input[name=fprihod]').val(response[i].suma);
+                        }
+                        else
+                        {
+                            newrow.find('input[name=frashod]').val(Math.abs(response[i].suma));
+                        }
+                    }
+                }
+                tr.addClass('hiderow');
+            }
+        });
+        jQuery.ajax({
+            url: '/index.php/raporti/menu/get_analiza_fakturi2',
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+                //console.log(response);
+                jQuery(".t-lista").find("tr:gt(1)").remove();
+                var tr = jQuery('.t-lista tr:last');
+                tr.removeClass('hiderow');
+                for ( var i = 0; i < response.length; i++ ) {
+                    //console.log(response[i].ZSID);
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.find('input[name=lbroj]').val(response[i].broj);
+                    newrow.find('input[name=ldatum]').val(response[i].datum);
+                    newrow.find('input[name=lklient]').val(response[i].firmaIme);
+                    newrow.find('input[name=lzabeleska]').val(response[i].zabeleska);
+                    if(response[i].tip == 10)
+                    {
+                        newrow.find('input[name=lrashod]').val(response[i].suma);
+                        newrow.find('input[name=ltip]').val('Vlez. fak.');
+                    }
+                    if(response[i].tip == 20)
+                    {
+                        newrow.find('input[name=lprihod]').val(response[i].suma);
+                        newrow.find('input[name=ltip]').val('Izlez. fak.');
+                    }
+                }
+                tr.addClass('hiderow');
+            }
+        });
+        jQuery('.klientsearch').live('click', function(){
+            var formaction=jQuery(this).attr('formaction');
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({ autoOpen: true, width: 800 }).load(formaction);
+        });
+        //jQuery('.prikazibutton').live('click', function(){
+        jQuery('.analizafakturi').live('change', function(){
+            var klient = jQuery('.klientid').val();
+            var pogled = jQuery('.pogled :selected').val();
+            var fakturi = jQuery('.fakturi :selected').val();
+            var data = {
+                klient: klient,
+                pogled: pogled,
+                fakturi: fakturi
+
+            }
+            jQuery.ajax({
+                url: '/index.php/raporti/menu/get_analiza_fakturi',
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery(".t-fakturi").find("tr:gt(1)").remove();
+                    var tr = jQuery('.t-fakturi tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        //console.log(response[i].ZSID);
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        if(fakturi == 10) newrow.find('input[name=frashod]').val(response[i].suma);
+                        if(fakturi == 20) newrow.find('input[name=fprihod]').val(response[i].suma);
+                        if(fakturi == 0)
+                        {
+                            if(response[i].suma > 0)
+                            {
+                                newrow.find('input[name=fprihod]').val(response[i].suma);
+                            }
+                            else
+                            {
+                                newrow.find('input[name=frashod]').val(Math.abs(response[i].suma));
+                            }
+                        }
+                    }
+                    tr.addClass('hiderow');
+                }
+            });
+            jQuery.ajax({
+                url: '/index.php/raporti/menu/get_analiza_fakturi2',
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery(".t-lista").find("tr:gt(1)").remove();
+                    var tr = jQuery('.t-lista tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        //console.log(response[i].ZSID);
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('input[name=lbroj]').val(response[i].broj);
+                        newrow.find('input[name=ldatum]').val(response[i].datum);
+                        newrow.find('input[name=lklient]').val(response[i].firmaIme);
+                        newrow.find('input[name=lzabeleska]').val(response[i].zabeleska);
+                        if(response[i].tip == 10)
+                        {
+                            newrow.find('input[name=lrashod]').val(response[i].suma);
+                            newrow.find('input[name=ltip]').val('Vlez. fak.');
+                        }
+                        if(response[i].tip == 20)
+                        {
+                            newrow.find('input[name=lprihod]').val(response[i].suma);
+                            newrow.find('input[name=ltip]').val('Izlez. fak.');
+                        }
+                    }
+                    tr.addClass('hiderow');
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,19 @@
+<div id="plati" class="sub-menu-tabs">
+    <ul>
+        <?php if (bis_check_access('planiranje_resursi_mesecni_parametri_tab')): ?>
+            <li><a href="/index.php/plati/mesecni_parametri/lista">Месечни параметри</a></li>
+                <?php endif ?>
+        <?php if (bis_check_access('planiranje_resursi_mesecni_promeni_vraboteni_tab')): ?>
+            <li><a href="/index.php/plati/vraboten_mesecni_promeni/lista">Месечни промени кај вработени</a></li>
+                <?php endif ?>
+        <?php if (bis_check_access('planiranje_resursi_krediti_tab')): ?>
+            <li><a href="/index.php/plati/krediti/lista">Кредити</a></li>
+                <?php endif ?>
+        <?php if (bis_check_access('planiranje_resursi_plati_tab')): ?>
+            <li><a href="/index.php/plati/plati/lista">Плати</a></li>
+                <?php endif ?>
+        <?php if (bis_check_access('planiranje_resursi_plati_tab')): ?>
+            <li><a href="/index.php/plati/plati/pecatenje">Печатење</a></li>
+        <?php endif ?>
+    </ul>
+</div>

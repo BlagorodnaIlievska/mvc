@@ -1,0 +1,12 @@
+.zirosmetka-glavna-lista .buttoncontainer {
+    margin-bottom: 10px;
+}
+.zirosmetka-glavna-lista .frimakolona ,
+.zirosmetka-glavna-lista .bankakolona ,
+.zirosmetka-glavna-lista .zirosmetkakolona {
+    width: 33%;
+}
+.zirosmetka-glavna-lista table.zirosmetka-tabela {
+
+}
+.novazirosmetka input {margin-left: 0;width: 175px;}

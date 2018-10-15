@@ -1,0 +1,27 @@
+<div class="novgrad">
+    <form action="/index.php/podatoci/gradovi/create_grad" method="post">
+        <fieldset>
+
+
+            <legend>Нов град</legend>
+
+
+            Име:<br/>
+            <input type="text" name="ime"/><br/>
+            Поштенски број:<br/>
+            <input type="text" name="postenski_br"/><br/>
+            Држава:<br/>
+            <input type="text" name="drzava"/><br/>
+
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="grad_popolnilista()" poraka_uspesno="Градот е успешно снимен"
+                poraka_neuspesno="Грешка при снимање на град"
+                ><span>Сними</span></button>
+
+
+        <br/>
+    </form>
+
+</div>

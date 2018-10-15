@@ -1,0 +1,97 @@
+<? $ddv=array(
+    '0'=>'0',
+    '5'=>'5',
+    '18'=>'18'
+);
+$k=$artikl->konto;
+?>
+<div class="nov-artikl">
+    <form action="/index.php/podatoci/artikl/update_artikl" method="post" enctype="multipart/form-data" target="_blank">
+        <div class="novartikal-levomeni">
+            <input type="hidden" name="SID" value="<?php echo $artikl->SID ?>">
+            Шифра: <br/>
+            <input type="text" name="sifra" class="sifra2" value="<?php echo $artikl->sifra ?>"><br/>
+
+
+            Име / Модел:<br/>
+            <input type="text" name="S1Ime" class="artikl" value="<?php echo $artikl->S1Ime ?>"><br/>
+
+
+            Баркод:<br/>
+            <input type="text" name="BarCode" class="barcode" value="<?php echo $artikl->BarCode ?>"><br/>
+
+
+            Каталошки група:<br/>
+            <select name="katBroj">
+                <option value="0"></option>
+				<?php foreach ($katbroj as $katid => $katvalue) { ?>
+                <option value="<?php  echo $katid  ?>" <?php echo ($katid == $artikl->katBroj ? "selected" : "") ?>  ><?php  echo $katvalue  ?></option>
+				<?php } ?>
+            </select><br/>
+
+
+            Каталошки подгрупа:<br/>
+            <input type="text" name="katPodBroj" class="kat-podbroj" value="<?php echo $artikl->katPodBroj ?>"><br/>
+
+
+            <label>Основно Конто: </label>
+
+
+            <?php
+            echo form_dropdown('konto',$konto,$k);
+            ?>
+
+            <label>ДДВ: </label>
+
+            <select name="ddv">
+                <option value="0"></option>
+                <?php foreach ($ddv as $ddvid => $ddvvalue) { ?>
+                <option value="<?php  echo $ddvid  ?>" <?php echo ($ddvid == $artikl->ddv ? "selected" : "") ?> ><?php  echo $ddvvalue  ?></option>
+                <?php } ?>
+            </select><br/>
+        </div>
+        <div class="novartikal-desnomeni">
+            Слика:<br/>
+	        <?php if (isset($sliki[0])) { ?>
+
+            <img src="<?php echo $sliki[0]['link'] ?>" title="<?php echo $sliki[0]['ime'] ?>" width="220" height="150" />
+
+            <?php } ?><br />
+	        Нова слика:
+            <input type="file" name="sliki[]"/><br/>
+            <label>Документи :</label><br/>
+	        <table class="docukumenti">
+		        <thead><th></th><th>Име</th></thead>
+		        <tbody>
+	        <?php foreach($dokumenti as $dokument) { ?>
+					<tr artikalid="<?php echo $artikl->SID ?>" ime="<?php echo $dokument['ime'] ?>">
+						<td class="izbrisidokumentodartikal"><img width="15" height="15" src="/images/delete.png" alt=""></td>
+						<td><a href="<?php echo $dokument['link'] ?>" target="_blank"><?php echo $dokument['ime'] ?></a></td>
+					</tr>
+			<?php } ?>
+                </tbody>
+            </table><br />
+	        Нов документ:<br/>
+            <input type="file" name="dokumenti[]"/><br/>
+
+
+        </div>
+
+
+        <div class="clear"></div>
+        <div class="novartikal-podmeni">
+
+            <label>Опис на артикл :</label>
+            <textarea style="overflow-y:scroll;width:99%;resize: none;" class="opis" name="opis_artikl"><?php echo $artikl->opis_artikl ?></textarea>
+
+        </div>
+
+        <br/>
+
+        <div class="addstavka floatright">
+            <button type="button" class="button snimi-forma" poraka_uspesno="Вашиот артикал е успешно снимен"
+                    poraka_neuspesno="Грешка при снимање" izvrsi="artikli_napolnilista()"><span>Сними</span></button>
+        </div>
+
+    </form>
+</div>

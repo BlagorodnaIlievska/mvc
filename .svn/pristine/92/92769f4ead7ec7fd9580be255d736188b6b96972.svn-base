@@ -1,0 +1,73 @@
+<div class="nov-vraboten-zapis">
+    <form action="/index.php/plati/vraboten_mesecni_promeni/create_vraboten_zapis" method="post">
+        <fieldset>
+        <legend>Нов запис</legend>
+        <div class="novvrabotenzapis-levomeni">
+            <input type="hidden" class="mesec" name="mesec"/>
+            <input type="hidden" class="godina" name="godina"/>
+            <input type="hidden" name="vraboten_id" value="<?= $vraboten->id ?>"/>
+            Вработен: <span class="vraboten"><strong><?= $vraboten->ime . " " . $vraboten->prezime; ?></strong></span><br/>
+            Бодови: <input type="text" name="bodovi"/><br/>
+            Службено патување: <input type="text" name="sluzbeno_patuvanje"/><br/>
+            Сменско работење: <input type="text" name="smensko_rabotenje"/><br/>
+            Ноќен труд: <input type="text" name="noken_trud"/><br/>
+            Државни празници: <input type="text" name="drzavni_praznici"/><br/>
+            Дежурство 1: <input type="text" name="dezurstvo_1"/><br/>
+            Дежурство 2: <input type="text" name="dezurstvo_2"/><br/>
+            Прекувремена работа 1: <input type="text" name="prekuvremena_rabota_1"/><br/>
+            Прекувремена работа 2: <input type="text" name="prekuvremena_rabota_2"/><br/>
+            Прекувремена работа 3: <input type="text" name="prekuvremena_rabota_3"/><br/>
+            Боледување 1, 70%: <input type="text" name="boleduvanje_1_70"/><br/>
+            Боледување 2, 80%: <input type="text" name="boleduvanje_2_80"/><br/>
+            Боледување 3, 90%: <input type="text" name="boleduvanje_3_90"/><br/>
+            Боледување над 30 дена: <input type="text" name="boleduvanje_nad_30_denovi"/><br/>
+            Боледување 4, 100%: <input type="text" name="boleduvanje_4_100"/><br/>
+            Годишен одмор: <input type="text" name="godisen_odmor"/><br/>
+            Ефективно работно време: <input type="text" name="efektivno_rabotno_vreme"/><br/>
+            Неплатено отсуство: <input type="text" name="neplateno_otsustvo"/><br/>
+            Заварување: <input type="text" name="zavaruvanje"/><br/>
+            Тежина на работа: <input type="text" name="tezina_na_rabota"/><br/>
+            Принуден одмор: <input type="text" name="prinuden_odmor"/><br/>
+            ВКУПНО ЧАСОВИ: <input type="text" name="vkupno_casovi"/><br/>
+        </div>
+        <div class="novvrabotenzapis-desnomeni">
+            Воена вежба: <input type="text" name="voena_vezba"/><br/>
+            Ненормирана режија: <input type="text" name="nenormirana_rezija"/><br/>
+            Касети: <input type="text" name="kaseti"/><br/>
+            Повеќе часови: <input type="text" name="poveke_casovi"/><br/>
+            Помалку часови: <input type="text" name="pomalku_casovi"/><br/>
+            Платено отсуство: <input type="text" name="plateno_otsustvo"/><br/>
+            Работа на норма: <input type="text" name="rabota_na_norma"/><br/>
+            Време на чекање: <input type="text" name="vreme_na_cekanje"/><br/>
+            Додаток 1: <input type="text" name="dodatok_1"/><br/>
+            Додаток 2: <input type="text" name="dodatok_2"/><br/>
+            Одбиток: <input type="text" name="odbitok"/><br/>
+            Наставен денар: <input type="text" name="nastaven_denar"/><br/>
+            Износ бол. од претх. месец: <input type="text" name="iznos_boled_prethoden_mesec"/><br/>
+            Патни сметки: <input type="text" name="patni_smetki"/><br/>
+            Помалку - повеќе бодови: <input type="text" name="razlika_bodovi"/><br/>
+            Заем: <input type="text" name="zaem"/><br/>
+            Индивидуален фактор: <input type="text" name="individualen_faktor"/><br/>
+            Процент на учинок: <input type="text" name="procent_na_ucinok"/><br/>
+            Комора задршка: <input type="text" name="komora_zadrska"/><br/>
+            Аконтација: <input type="text" name="akontacija"/><br/>
+            Задршки за телефон: <input type="text" name="zadrska_telefon"/><br/>
+            Корекција: <input type="text" name="korekcija"/><br/>
+        </div>
+        </fieldset>
+        <div class="addstavka floatright">
+        <button type="button" class="button snimi-forma" izvrsi="vraboteni_mp_polnilista()" poraka_uspesno="Записот е успешно снимен"
+                poraka_neuspesno="Грешка при снимање на запис">
+                <span>Зачувај</span></button>
+        </div>
+    </form>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        var currentDate = new Date();
+        var mesec = currentDate.getMonth();
+        var godina = currentDate.getFullYear();
+        jQuery(".mesec").val(mesec);
+        jQuery(".godina").val(godina);
+    });
+</script >

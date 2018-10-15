@@ -1,0 +1,78 @@
+<br/><br/><div style="text-align: center"><h2>Преглед по доспеаност</h2></div><br/><br/>
+
+<div class="idnina">
+
+    <div class="predtabela">
+        <table class="tabelaidnina" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="rok">Рок до</th>
+                <th class="broj">Број</th>
+                <th class="datum">Датум</th>
+                <th class="klient">Клиент</th>
+                <th class="iznos">Износ</th>
+                <th class="uplati">Уплати</th>
+                <th class="dolg">Долг</th>
+                <th class="zabeleska">Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <?
+            $fak_vkupno = $dosp_idnina_konto[0]->p_vkupno;
+            $fak_uplati =$dosp_idnina_konto[0]->uplati;
+            $fak_dolg = $fak_vkupno - $fak_uplati;
+            ?>
+
+            <tr>
+                <td class='rok'><?php echo $dosp_idnina_konto[0]->rok; ?></td>
+                <td class="number"><?php echo $dosp_idnina_konto[0]->textBroj; ?></td>
+                <td class="datum"><?php echo $dosp_idnina_konto[0]->datum; ?></td>
+                <td class="klient"><?php echo $dosp_idnina_konto[0]->firma; ?></td>
+                <td class="suma"><?php echo $fak_vkupno; ?></td>
+                <td class="uplati"><?php echo $fak_uplati; ?></td>
+                <td class="vkupno"><?php echo $fak_dolg; ?></td>
+                <td class="zabeleska"><?php echo $dosp_idnina_konto[0]->komentar; ?></td>
+            </tr>
+
+
+
+            </tbody>
+
+        </table>
+    </div>
+    <br/>
+    <br/>
+    <table class="tabelaidnina" border="1" cellspacing="2" cellpadding="2">
+        <thead>
+
+        <tr>
+            <th class="konto">Конто</th>
+            <th class="opis">Опис на конто</th>
+            <th class="suma">Сума</th>
+
+        </tr>
+        </thead>
+        <tbody>
+
+          <?
+        foreach($dosp_idnina_konto as $row){
+
+            ?>
+
+        <tr>
+            <td class='konto'><?php echo $row->konto; ?></td>
+            <td class="opis"><?php echo $row->opis; ?></td>
+            <td class="suma"><?php echo $row->cenaDdv; ?></td>
+
+        </tr>
+
+          <?}?>
+
+        </tbody>
+
+    </table>
+</div>
+<style type="text/css">
+    th {background-color: transparent !important;}
+</style>

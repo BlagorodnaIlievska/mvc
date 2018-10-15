@@ -1,0 +1,8 @@
+<div id="edit_izlez_roba_form" class="pop-menu-tabs">
+    <ul>
+        <li><a href="#ispratnica">Испратница</a></li>
+<!--        <li><a href="#faktura">Фактура</a></li>-->
+    </ul>
+    <div id="ispratnica"></div>
+<!--    <div id="faktura"></div>-->
+</div>

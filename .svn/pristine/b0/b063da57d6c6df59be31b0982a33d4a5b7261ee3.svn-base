@@ -1,0 +1,17 @@
+<h1>Create a new Role</h1>
+
+<fieldset>
+    <legend>Role Information</legend>
+
+    <?php
+    echo form_open('users/roles/create_role');
+    echo form_input('role_name', set_value('role_name', 'Role Name'));
+    //echo form_submit('submit', 'Submit');
+    ?>
+    <input type="button" value="Submit" class="ajaxcreateform"><br>
+
+    <?php
+    echo validation_errors('<p class="error">');
+    echo form_close();
+    ?>
+</fieldset>

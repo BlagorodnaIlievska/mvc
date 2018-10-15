@@ -1,0 +1,113 @@
+.novmesecen-desnomeni, .novvrabotenzapis-levomeni {
+    float: left;
+    width: 460px;
+}
+.novmesecen-levomeni, .novvrabotenzapis-desnomeni {
+    float: left;
+    width: 400px;
+    margin-right: 5px;
+}
+/*EDIT*/
+.mesecen-parametar .buttoncontainer, .krediti .buttoncontainer, .barajbutton,
+.presmetajplatabutton, .novapresmetkabutton, .buttonplata, .kreirajnov-mp
+{
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+/*ORGINAL*/
+/*}.mesecen-parametar .buttoncontainer, .krediti .buttoncontainer, .barajbutton,*/
+/*.presmetajplatabutton, .baraj, .novapresmetkabutton, .buttonplata, .kreirajnov-mp*/
+/*{*/
+    /*margin-bottom: 10px;*/
+    /*margin-top: 10px;*/
+/*}*/
+.buttonprintaj { margin-bottom: 10px; }
+.novmesecen-levomeni input , .novmesecen-levomeni select {margin-bottom: 5px;width:150px; }
+.zapisi-tabela { clear: both; }
+.platabutton {clear: both;}
+.naslovplata, .naslovmesecnipromeni, .naslovkrediti {background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;padding: 1px;margin: 5px 0 0 0;}
+/*.novmesecen-levomeni select , .novmesecen-levomeni input {float: right;}*/
+.nov_mesecen_parametar input {text-align: right;}
+.izmeni-mesecen-parametar li {clear: both;height: 25px;margin: 1px 0;}
+.izmeni-mesecen-parametar input {
+    float: right;
+    margin-right: 10px;
+    text-align: right;
+}
+.izmeni-mesecen-parametar select {
+    margin-right: 10px;  float: right;}
+fieldset.max-minat-trud input {margin-right: 0;}
+.izmeni-vraboten-zapis li {height: 25px;}
+.izmeni-vraboten-zapis .novvrabotenzapis-levomeni input ,
+.izmeni-vraboten-zapis .novvrabotenzapis-levomeni span ,
+.izmeni-vraboten-zapis .novvrabotenzapis-desnomeni input {float: right;}
+.izmeni-vraboten-zapis .novvrabotenzapis-levomeni span {margin-right: 10px;}
+.novvrabotenzapis-desnomeni li {
+    padding-left: 5px;
+}
+.novkredit-levomeni input {float: right;}
+.novkredit-levomeni li {
+    height: 30px;
+}
+.prikazinfo-plata li {height: 25px; clear: both; }
+.prikazinfo-plata li.duploli {width: 100%;}
+.prikazinfo-plata li.duploli input , .prikazinfo-plata li.duploli select {float: left;clear: both;width: 100%;}
+.prikazinfo-plata li input {float: right;}
+.prikazinfo-plata li select {float: right;}
+
+.prikazinfo-plata .novvraboten-podmeni li {height: 31px;}
+.prikazinfo-plata .novvraboten-podmeni li label {float: left; line-height: 31px;}
+.prikazinfo-plata li .nacionalnapripadnost {width: 220px;}
+.novvraboten-podmeni label {line-height: 1.7;}
+.novvraboten-levomeni .duploli.nacpripadnost input {width: 240px; float: right;}
+.novvraboten-podmeni li {width: 420px; margin-top: 5px;}
+.prikazinfo-plata .novvraboten-podmeni {width: 420px;}
+.prikazinfo-plata .novvraboten-desnomeni .duploli input {clear: none !important; float: right !important; width: auto !important;}
+.prikazinfo-plata .novvraboten-podmeni ul li.vazi-od {float: left;}
+.prikazinfo-plata .novvraboten-podmeni ul li.vazi-do {float: right;}
+.prikazinfo-plata .novvraboten-podmeni input.brojlicenca {width: auto !important;}
+.prikazinfo-plata .novvraboten-desnomeni li select.smenagrupa {margin-top: 2px;}
+.kreirajpresmetka {margin-top: 10px;}
+.vlez-form-plata .buttonprintaj {margin-top: 10px;}
+.novkredit-levomeni label , .novkredit-levomeni select  {float: left;}
+.novkredit-levomeni .zir input {float: left !important}
+.novkredit-levomeni .zir label {float: left !important;width: 214px;}
+
+/*Meschni Parametri*/
+.mesecen-parametar-lista .mesecen-parametar .tabela-mesecni-parametri {table-layout: fixed;}
+.mesecen-parametar-lista .mesecen-parametar .tabela-mesecni-parametri tr td {overflow: hidden;}
+.mesecen-parametar-lista .mesecen-parametar .tabela-mesecni-parametri th.edit {width: 20px; }
+.mesecen-parametar-lista .mesecen-parametar .tabela-mesecni-parametri th.redenbroj {width: 20px;}
+.mesecen-parametar-lista .mesecen-parametar .tabela-mesecni-parametri th.mesec {width: 50px;}
+.mesecen-parametar-lista .mesecen-parametar .tabela-mesecni-parametri th.godina {width: 50px;}
+.mesecen-parametar-lista .mesecen-parametar .tabela-mesecni-parametri th.maksimum-chasovi {width: 150px;}
+
+/*Mesechni promeni kaj vraboteni*/
+
+.zapisi-tabela .predtabela .tabela-vraboteni-mp {table-layout: fixed;}
+.zapisi-tabela .predtabela .tabela-vraboteni-mp tr td {overflow: hidden;}
+.zapisi-tabela .predtabela .tabela-vraboteni-mp th.redenbroj {width: 20px; }
+.zapisi-tabela .predtabela .tabela-vraboteni-mp th.vkupno-chasovi {width: 105px;}
+.zapisi-tabela .predtabela .tabela-vraboteni-mp th.mesec {width: 60px;}
+.zapisi-tabela .predtabela .tabela-vraboteni-mp th.godina {width: 50px;}
+.zapisi-tabela .predtabela .tabela-vraboteni-mp th.bodovi {width: 55px;}
+
+/*Krediti*/
+
+.krediti-lista .kredititabela .tabela-krediti {table-layout: fixed;}
+.krediti-lista .kredititabela .tabela-krediti tr td {overflow: hidden;}
+.krediti-lista .kredititabela .tabela-krediti th.edit {width: 20px;}
+.krediti-lista .kredititabela .tabela-krediti th.redenbroj {width: 20px;}
+.krediti-lista .kredititabela .tabela-krediti th.iznos-rata {width: 100px;}
+.krediti-lista .kredititabela .tabela-krediti th.iznos-kredit {width: 115px;}
+.pecatenje-index-form { margin: 10px 0;}
+.pecatenje-index-form .pecati-plata-buttons { margin: 10px 0;}
+
+/* baraj */
+.parametar{
+    margin-right: 5px;
+}
+.filtermenu-mesecniparametri .filter-mesec , .filtermenu-mesec .filter-mesec , .filtermenu-mesec .kreirajpresmetka ,
+.filtermenu-mesecniparametri .buttoncontainer {display: inline-block;}
+.kreirajpresmetka2 , .podeliplatabutton {float: right;margin-top: 10px;}
+.nov_kredit .ui-autocomplete-input {width: 165px !important;}

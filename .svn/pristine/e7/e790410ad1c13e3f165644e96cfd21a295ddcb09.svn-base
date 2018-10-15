@@ -1,0 +1,45 @@
+<html>
+<head>
+</head>
+<body>
+
+<p align='center'>Pregled na top klienti</p>
+
+<table  border='1'   width='150' height='60' align='center'>
+    <tr>
+        <th>No.</th>
+        <th>Klient</th>
+        <th>Suma</th>
+    </tr>
+
+    <?php
+    $reden=1;
+
+    if(isset($q)){
+        foreach($q as $row){
+
+            echo "<tr>" ;
+
+            echo "<td width='20'>" . $reden . "</td>";
+            echo "<td width='100'>" . $row->firmaIme. "</td>";
+            echo "<td width='100'>" . $row->suma. "</td>";
+            $reden=$reden+1;
+            echo " </tr>";
+        }
+    }
+    else {echo 'Vo momentov nema kasi';}
+    ?>
+
+</table>
+<br>
+<br>
+<br>
+<!--<p class="doleLevo">
+    <?//echo 'Osnova vkupno  :'.$o;?>
+    <br>
+    <?//echo 'Ddv vkupno :'.$d;?>
+    <br>
+    <? //echo 'Vkupno :'.$v;?>
+</p>-->
+</body>
+</html>

@@ -1,0 +1,57 @@
+<html>
+<head>
+
+</head>
+<body>
+<p align='center'>Листа на клиенти</p>
+<table  border='1'   width='150' height='60' align='center' >
+    <tr>
+        <td>Ред.Бр.</td>
+        <td>Шифра</td>
+        <td>Клиент</td>
+        <td>Контакт</td>
+        <td>Телефон</td>
+        <td>Адреса</td>
+
+
+    </tr>
+
+    <?php
+    $reden=1;
+
+    if(isset($q)){
+        foreach($q as $row){
+
+            echo "<tr>" ;
+            echo "<td width='20'>" . $reden . "</td>";
+            echo "<td width='100'>" . $row->sifrall . "</td>";
+            echo "<td width='60'>" .$row->ime."</td>";
+            echo "<td width='60'>" .$row->kontakt."</td>";
+            echo "<td width='60'>" .$row->phone1."</td>";
+            echo "<td width='60'>".$row->adresa. "</td>";
+
+
+            $reden=$reden+1;
+
+
+            //$b+=$bezddv;
+            echo " </tr>";
+
+        }
+    }
+
+    ?>
+
+</table>
+<br>
+<br>
+<br>
+<!--<p class="doleLevo">
+    <? //echo 'Osnova vkupno  :'.$o;?>
+    <br>
+    <?//echo 'Ddv vkupno :'.$d;?>
+    <br>
+    <?//echo 'Vkupno :'.$v;?>
+</p>-->
+</body>
+</html>

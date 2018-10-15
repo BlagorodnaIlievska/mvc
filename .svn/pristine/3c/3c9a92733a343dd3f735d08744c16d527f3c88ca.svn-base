@@ -1,0 +1,16 @@
+<div id="main_menu" class="main-menu-tabs">
+    <ul>
+        <?php if (bis_check_access('sistemsko_podesuvanje_pocetno_firmi_tab')): ?>
+            <li><a href="/index.php/start/podesuvanja/firma">Фирми</a></li>
+                <?php endif ?>
+        <?php if (bis_check_access('sistemsko_podesuvanje_pocetno_ziro_smetki_tab')): ?>
+            <li><a href="/index.php/start/podesuvanja/zirosmetki_tabs">Жиро сметки</a></li>
+                <?php endif ?>
+        <?php if (bis_check_access('sistemsko_podesuvanje_pocetno_kasi_tab')): ?>
+            <li><a href="/index.php/start/podesuvanja/kasi">Каси</a></li>
+                <?php endif ?>
+        <?php if (bis_check_access('sistemsko_podesuvanje_pocetno_magacini_tab')): ?>
+            <li><a href="/index.php/start/podesuvanja/magacin">Магацини</a></li>
+                <?php endif ?>
+    </ul>
+</div>

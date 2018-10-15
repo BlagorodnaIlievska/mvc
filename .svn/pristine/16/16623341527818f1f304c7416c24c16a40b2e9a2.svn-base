@@ -1,0 +1,17 @@
+.magacin-glavna-lista {
+    margin-top: 10px;
+}
+.magacin-glavna-lista .magacin-tabela{
+
+    width: 100%;
+}
+.magacin-glavna-lista .magacin-tabela .kopcinjakolona {
+    width: 35px;
+}
+.magacin-glavna-lista .tablecontainer {
+    margin-top: 10px;
+    max-height: 450px;
+    overflow-y: auto;
+
+}
+.magacin-tabela th.tip {width: 100px;}

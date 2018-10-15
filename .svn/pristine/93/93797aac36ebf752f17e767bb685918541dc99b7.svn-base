@@ -1,0 +1,34 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Javni_nabavki extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function dogovori()
+    {
+
+        $this->load->view('javni_nabavki/dogovori');
+    }
+    public function baranja()
+    {
+
+        $this->load->view('javni_nabavki/baranja');
+    }
+    public function dogovor_baranje()
+    {
+
+        $this->load->view('javni_nabavki/dogovor_baranje');
+    }
+    public function dogovor_vlezna_faktura()
+    {
+
+        $this->load->view('javni_nabavki/dogovor_vlezna_faktura');
+    }
+    public function baranje_vlezna_faktura(){
+
+        $this->load->view('javni_nabavki/baranje_vlezna_faktura');
+    }
+}

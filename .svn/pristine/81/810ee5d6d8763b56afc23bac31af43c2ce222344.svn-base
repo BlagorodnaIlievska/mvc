@@ -1,0 +1,85 @@
+<?php
+?>
+<div class="stavka">
+    <p class="naslovvleznifakturi" > ( <span class="vkupnostavki">0</span> ) <span class="status">Договор-Примена количина</span></p>
+    <div class="predtabela">
+        <table class="dogovor-vf" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="reden">РБ</th>
+                <th class="broj_dogovor">Број на договор</th>
+                <th class="kolicinad">Количина по договор</th>
+                <th class="kolicinap">Примена количина</th>
+
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='hiderow trow' >
+
+
+                <td class="rb"></td>
+                <td class="brojd"></td>
+                <td class="kold"></td>
+                <td class="kolp"></td>
+
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="naslovvleznifakturi" > ( <span class="vkupnostavki">0</span> ) <span class="status">Договор-Барање</span></p>
+    <div class="predtabela">
+        <table class="dogovor-baranje" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="reden">РБ</th>
+                <th class="broj_dogovor">Број на договор</th>
+                <th class="kolicinad">Количина по договор</th>
+                <th class="kolicinap">Побарана количина</th>
+
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='hiderow trow' >
+
+
+                <td class="rb"></td>
+                <td class="brojd"></td>
+                <td class="kold"></td>
+                <td class="kolp"></td>
+
+
+            </tr>
+            </tbody>
+        </table>
+        <p class="naslovvleznifakturi" > ( <span class="vkupnostavki">0</span> ) <span class="status">Барање - Примена количина</span></p>
+        <div class="predtabela">
+            <table class="dogovor-vf" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th class="reden">РБ</th>
+                    <th class="broj_dogovor">Број на барање</th>
+                    <th class="kolicinapo">Побарана количина</th>
+                    <th class="kolicinapr">Примена количина</th>
+
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr class='hiderow trow' >
+
+
+                    <td class="rb"></td>
+                    <td class="brojb"></td>
+                    <td class="kolpo"></td>
+                    <td class="kolpr"></td>
+
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

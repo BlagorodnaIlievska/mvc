@@ -1,0 +1,5 @@
+.podatoci-plata {
+    font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;
+    font-size: 14px;
+}
+.podatoci-plata  .buttoncontainer { margin-top:10px; margin-bottom:10px; }

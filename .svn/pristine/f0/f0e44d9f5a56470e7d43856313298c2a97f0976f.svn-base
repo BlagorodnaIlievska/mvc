@@ -1,0 +1,250 @@
+<div id="analiza_pari_form">
+    <h4>Finansiska analiza po grupi</h4>
+    <?php
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $pogled = array(
+        '0' => 'Ziro smetka + Kasa',
+        '1' => 'Ziro smetka',
+        '2' => 'Kasa'
+    );
+    $klient = array(
+        'name'       => 'klient',
+        'class'      => 'klientsearch analizapari',
+        'value'      => 'Site',
+        'readonly'   => 'readonly'
+    );
+    echo form_open('raporti/menu/izberi_klient');
+
+    echo form_label('Pogled: ', 'pogled');
+    echo form_dropdown('pogled', $pogled, 0, 'class="pogled analizapari"');
+    echo br();
+    echo form_label('Klient: ', 'klient');
+    echo form_input($klient);
+    ?>
+    <input type="hidden" name="klientid" class="klientid">
+    <?php
+    echo form_close();
+    ?>
+    <br>
+    <div class="tab-grupa">
+        <table class="t-grupa" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th>Grupa</th>
+                <th>Prihod</th>
+                <th>Rashod</th>
+            </tr>
+            <?php
+            echo "<tr class='trow hiderow'>";
+            echo "<td><input type='hidden' class='grupaid' name='ggrupaid' style='display: none;' /> <input type='text' class='grupa medium' name='ggrupa' readonly></td>";
+            echo "<td><input type='text' class='prihod medium' name='gprihod' readonly></td>";
+            echo "<td><input type='text' class='rashod medium' name='grashod' readonly></td>";
+            echo "</tr>";
+            ?>
+        </table>
+    </div><br><br>
+    <div class="lista">
+        <h4>Lista na uplati isplati</h4>
+        <table class="t-lista" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th></th>
+                <th>Tip</th>
+                <th>Broj</th>
+                <th>Datum</th>
+                <th>Klient</th>
+                <th>K</th>
+                <th>Prihod</th>
+                <th>Rashod</th>
+                <th>T</th>
+                <th>Zabeleska</th>
+            </tr>
+            <?php
+            echo "<tr class='hiderow'>";
+            echo "<td>". anchor("#", $edit, array('class' => 'edit-tr')) . "</td>";
+            echo "<td> <input type='hidden' name='dbid' class='dbid'> <input type='hidden' name='pogledtip' class='pogledtip'>
+                       <input type='text' class='tip medium' name='ltip' readonly> </td>";
+            echo "<td> <input type='text' class='broj medium' name='lbroj' readonly> </td>";
+            echo "<td> <input type='text' class='datum big' name='ldatum' readonly> </td>";
+            echo "<td> <input type='text' class='klient big' name='lklient' readonly> </td>";
+            echo "<td> <input type='text' class='k small' name='lk' readonly> </td>";
+            echo "<td> <input type='text' class='prihod medium' name='lprihod' readonly> </td>";
+            echo "<td> <input type='text' class='rashod medium' name='lrashod' readonly> </td>";
+            echo "<td> <input type='text' class='t medium' name='lt' readonly> </td>";
+            echo "<td> <input type='text' class='zabeleska big' name='lzabeleska' readonly> </td>";
+            echo "</tr>";
+            ?>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        var data = { data: 1 }
+        jQuery('.klientsearch').live('click', function(){
+            var formaction=jQuery(this).parent().attr('action');
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({ autoOpen: true, width: 800 }).load(formaction);
+        });
+        jQuery('.t-grupa tr').live("dblclick", function(){
+            //jQuery('.edit-tr').live("click", function(){
+            var id = jQuery(this).find('input[name=dbid]').val();
+            var tip = jQuery(this).find('input[name=pogledtip]').val();
+            //console.log("clicked: ", id);
+//            if(tip == 1)  var formaction= "/index.php/izvodi/menu/editStavkaIzvod?id=" + id;
+//            if(tip == 2)  var formaction= "/index.php/kasa/menu/editVlezIzlezKasa?id=" + id;
+//            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+//            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+//            jQuery('div.'+tempdialog).dialog({ autoOpen: true, width: 800 }).load(formaction);
+        });
+        jQuery('.t-lista tr').live("dblclick", function(){
+        //jQuery('.edit-tr').live("click", function(){
+            var id = jQuery(this).find('input[name=dbid]').val();
+            var tip = jQuery(this).find('input[name=pogledtip]').val();
+            //console.log("clicked: ", id);
+            if(tip == 1)  var formaction= "/index.php/izvodi/menu/editStavkaIzvod?id=" + id;
+            if(tip == 2)  var formaction= "/index.php/kasa/menu/editVlezIzlezKasa?id=" + id;
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({ autoOpen: true, width: 800 }).load(formaction);
+        });
+        jQuery.ajax({
+            url: '/index.php/raporti/menu/getAnalizaGrupi',
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+                //console.log(response);
+                jQuery(".t-lista").find("tr:gt(1)").remove();
+                jQuery(".t-grupa").find("tr:gt(1)").remove();
+                var tr = jQuery('.t-grupa tr:last');
+                tr.removeClass('hiderow');
+                for ( var i = 0; i < response.length; i++ ) {
+                    //console.log(response[i].ZSID);
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.find('input[name=ggrupa]').val(response[i].tipIme);
+                    newrow.find('input[name=ggrupaid]').val(response[i].tipID);
+                    if(response[i].tipID == 1)
+                    {
+                        newrow.find('input[name=gprihod]').val(response[i].uplata);
+                    }
+                    if(response[i].tipID == 2)
+                    {
+                        newrow.find('input[name=grashod]').val(response[i].uplata);
+                    }
+                    if(response[i].tipID == 3)
+                    {
+                        if(response[i].tip == 40)  newrow.find('input[name=grashod]').val(response[i].uplata);
+                        if(response[i].tip == 50)  newrow.find('input[name=gprihod]').val(response[i].uplata);
+                    }
+                }
+                tr.addClass('hiderow');
+            }
+        });
+        jQuery('.analizapari').live('change',function(){
+            var smetkakasa = jQuery('.pogled option:selected').val();
+            var klientid = jQuery('.klientid').val();
+            var formaction = jQuery(this).parent().attr('action');
+            //console.log(klient, grupa, kasa, formaction);
+            var data = {
+                zsid: smetkakasa,
+                klientid: klientid
+            }
+            jQuery.ajax({
+                url: '/index.php/raporti/menu/getAnalizaGrupi',
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery(".t-lista").find("tr:gt(1)").remove();
+                    jQuery(".t-grupa").find("tr:gt(1)").remove();
+                    var tr = jQuery('.t-grupa tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        //console.log(response[i].ZSID);
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('input[name=ggrupa]').val(response[i].tipIme);
+                        newrow.find('input[name=ggrupaid]').val(response[i].tipID);
+                        if(response[i].tipID == 1)
+                        {
+                            newrow.find('input[name=gprihod]').val(response[i].uplata);
+                        }
+                        if(response[i].tipID == 2)
+                        {
+                            newrow.find('input[name=grashod]').val(response[i].uplata);
+                        }
+                        if(response[i].tipID == 3)
+                        {
+                            if(response[i].tip == 40)  newrow.find('input[name=grashod]').val(response[i].uplata);
+                            if(response[i].tip == 50)  newrow.find('input[name=gprihod]').val(response[i].uplata);
+                        }
+                    }
+                    tr.addClass('hiderow');
+                }
+            });
+        });
+        jQuery(".t-grupa").delegate("tr.trow", "click", function(){
+           var tipID = jQuery(this).find('input[name=ggrupaid]').val();
+           var smetkakasa = jQuery('.pogled option:selected').val();
+           var klientid = jQuery('.klientid').val();
+           var data = {
+                tipID: tipID,
+                zsid: smetkakasa,
+                klientid: klientid
+           }
+                jQuery.ajax({
+                    url: "/index.php/raporti/menu/getStavkaByTipID",
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        //console.log(response);
+                        jQuery(".t-lista").find("tr:gt(1)").remove();
+                        var tr = jQuery('.t-lista tr:last');
+                        tr.removeClass('hiderow');
+                        for ( var i = 0; i < response.length; i++ ) {
+                            //console.log(response[i].ZSID);
+                            var newrow = jQuery(tr).clone().insertAfter(tr);
+                            newrow.find('input[name=dbid]').val(response[i].dbid);
+                            if(response[i].tip == 40 || response[i].tip == 50)
+                            {
+                                newrow.find('input[name=ltip]').val('Ziro');
+                                newrow.find('input[name=pogledtip]').val(1);
+                            }
+                            if(response[i].tip == 540 || response[i].tip == 550)
+                            {
+                                newrow.find('input[name=ltip]').val('Kasa');
+                                newrow.find('input[name=pogledtip]').val(2);
+                            }
+                            newrow.find('input[name=lbroj]').val(response[i].textBroj);
+                            newrow.find('input[name=ldatum]').val(response[i].datum);
+                            newrow.find('input[name=lklient]').val(response[i].firma);
+                            newrow.find('input[name=lzabeleska]').val(response[i].zabeleska);
+                            if(response[i].tipID == 1)
+                            {
+                                newrow.find('input[name=lprihod]').val(response[i].uplata);
+                                //newrow.find('input[name=priliv]').val('');
+                            }
+                            if(response[i].tipID == 2)
+                            {
+                                newrow.find('input[name=lrashod]').val(response[i].uplata);
+                                //newrow.find('input[name=odliv]').val('');
+                            }
+                            if(response[i].tipID == 3)
+                            {
+                                if(response[i].tip == 40)  newrow.find('input[name=lrashod]').val(response[i].uplata);
+                                if(response[i].tip == 50)  newrow.find('input[name=lprihod]').val(response[i].uplata);
+                            }
+                        }
+                        //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                        tr.addClass('hiderow');
+                    }
+                });
+        });
+    });
+</script>

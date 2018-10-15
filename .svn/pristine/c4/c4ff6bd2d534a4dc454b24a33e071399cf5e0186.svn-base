@@ -1,0 +1,65 @@
+<?php
+
+class Membership_model extends CI_Model{
+
+    public function validate()
+    {
+        $this->db->where('username', $this->input->post('username'));
+        $this->db->where('password', sha1($this->input->post('password')));
+        $query = $this->db->get('users');
+        $data = $query->result_array();
+
+        if($query->num_rows == 1)
+        {
+            $role = $data[0]['role_id'];
+            return $role;
+            //return true;
+        }
+    }
+
+    public function create_member($data)
+    {
+        $insert = $this->db->insert('bis_korisnici', $data);
+        return $insert;
+    }
+
+    public function update_member($id, $data)
+    {
+        $this->db->where("id", $id);
+        $insert = $this->db->update('bis_korisnici', $data);
+        return $insert;
+    }
+
+    function get_roles_dropdown()
+    {
+        $this->db->select('ulogi_id, uloga_ime');
+        $this->db->from('bis_korisnici_ulogi');
+        $this->db->order_by('ulogi_id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = 'избери улога';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['ulogi_id']] = $row['uloga_ime'];
+            }
+        }
+        return $dropdown;
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

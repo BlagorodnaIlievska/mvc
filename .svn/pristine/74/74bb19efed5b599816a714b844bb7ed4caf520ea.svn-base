@@ -1,0 +1,174 @@
+<div class="vlez-form matvlezform">
+    <div class="buttoncontainer">
+        <?php if (bis_check_access('materijalno_vlez_izlez_vlez_nova_priemnica')): ?>
+        <button type="button" class="button" onclick="mat_vlez_nov()"><span>Нова Приемница</span></button>
+        <?php endif ?>
+    </div>
+    <div class="filterformmat">
+        <?php if (bis_check_access('materijalno_vlez_izlez_vlez_filter_po_magacin')): ?>
+        <span>Магацин:</span>
+        <select name="magacin_id" class="magacin_id searchvlez">
+            <option value="0">Сите</option>
+            <?php foreach ($magacini as $magacin) { ?>
+                <option value="<?php echo $magacin->id ?>"><?php echo $magacin->ime ?></option>
+            <?php } ?>
+            <?php endif ?>
+        </select>
+    </div>
+
+    <div class="filter2-vlez filterformmat">
+        <?php if (bis_check_access('materijalno_vlez_izlez_vlez_filter_po_komitent')): ?>
+        <span>Коминтент:</span>
+        <span>
+        <select name="magacin_id" class="klient searchvlez">
+            <option value="0">Сите</option>
+            <?php foreach ($klienti as $klient) { ?>
+                <option value="<?php echo $klient->firmaID ?>"><?php echo $klient->ime ?></option>
+            <?php } ?>
+        </select>
+            </span>
+            <?php endif ?>
+        <?php if (bis_check_access('materijalno_vlez_izlez_vlez_filter_po_faktura')): ?>
+         <span>
+        Фактура:
+         </span>
+              <span>
+        <select name="pogled_id" class="pogled searchvlez">
+            <option value="0">Сите</option>
+            <option value="1">Со фактура</option>
+            <option value="2">Без фактура</option>
+        </select>
+                  </span>
+        <?php endif ?>
+    </div>
+    <div class="tabela">
+        <p class="naslovpriemnici" > ( <span class="vkupnostavki">0</span> )  Приемници</p>
+        <div class="predtabela">
+            <table class="vleznaroba">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th class="broj">Број</th>
+                    <th class="datum">Датум</th>
+                    <th class="klient">Комитент</th>
+                    <th class="faktura">Фактура</th>
+                    <th class="zabeleska">Забелешка</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+     <!--  <button type="button" class="cmd-printlink-vlez"><span>Печати</span></button> -->
+<?php if (bis_check_access('materijalno_vlez_izlez_vlez_pecati_priemnica')): ?>
+   <a href="" target="_blank" class="cmd-printlink-vlez">
+            <button type="button" class="pecatikartica print"><span>Печати</span></button>
+        </a>
+       <?php endif ?>
+    </div>
+    <div class="stavkadetail">
+        <p class="naslovpriemnicidetali" > ( <span class="vkupnostavki">0</span> ) Ставки во документот - детално</p>
+        <div class="predtabela">
+            <table class="tstavkadetail matstavki" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+<!--                    <th></th>-->
+                    <th>Бр.</th>
+                    <th>Шифра</th>
+                    <th>Кат. Број</th>
+                    <th>Ставка</th>
+                    <th>Кол</th>
+                    <th>ЕМ</th>
+                    <th>Магацин</th>
+                    <th>Гарантен рок</th>
+                    <th>Употребливо до</th>
+                    <th>Сер. Бр.</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+        </div>
+
+<?php if (bis_check_access('materijalno_vlez_izlez_vlez_pecati_priemnica_stavki_vo_dokument')): ?>
+        <div style="margin-top: 5px;">
+            <a href="" target="_blank" class="cmd-printlink">
+                <button type="button" class="print"><span>Печати</span></button>
+            </a>
+        </div>
+
+        <?php endif ?>
+    </div>
+</div>
+
+
+<script>
+    function priemnica_getSelektirana(){
+        if ( jQuery(".vleznaroba tbody tr.active").attr("priemnica_id") > 0 ) {
+            return jQuery(".vleznaroba tbody tr.active").attr("priemnica_id") ;
+        } else {
+            return 0;
+        }
+    }
+    jQuery(document).ready(function () {
+        var priemnicataId;
+        jQuery('.magacin_id.searchvlez').combobox();
+        jQuery('.klient.searchvlez').combobox();
+        jQuery("table.vleznaroba").tablesorter();
+        jQuery("table.matstavki").tablesorter();
+        mat_vlez_popolnilista();
+
+        jQuery('.vleznaroba tbody tr').live("dblclick", function () {
+            mat_vlez_izmeni(jQuery(this).attr("priemnica_id"));
+        });
+        jQuery('.vleznaroba tbody tr .edit-tr').live("click", function () {
+            mat_vlez_izmeni(jQuery(this).parent().parent().attr("priemnica_id"));
+        });
+        jQuery('.searchvlez').live('change', function () {
+            var klientid = jQuery('.klient option:selected').val();
+            var pogledid = jQuery('.pogled option:selected').val();
+            mat_vlez_popolnilista(klientid, pogledid);
+
+        });
+        jQuery('.vleznaroba tbody tr').live("click", function () {
+            jQuery('.vleznaroba tbody tr').removeClass("active");
+            jQuery(this).addClass("active");
+            jQuery(".matvlezform .tstavkadetail.matstavki tbody").html('');
+            mat_vlez_popolnilista_artikli_podokument(jQuery(this).attr("priemnica_id"),".tstavkadetail.matstavki");
+            priemnicataId = jQuery(this).attr("priemnica_id");
+//            console.log(priemnicataId);
+        });
+        jQuery('.searchvlez').live('change', function () {
+            var magacinid = jQuery('.magacin_id option:selected').val();
+            var klientid = jQuery('.klient option:selected').val();
+            var pogledid = jQuery('.pogled option:selected').val();
+            mat_vlez_popolnilista(klientid, pogledid, magacinid);
+        });
+
+        jQuery(".cmd-printlink-vlez").click(function(){
+            if (typeof klientid == "undefined") klientid = 0;
+            if (typeof pogledid == "undefined") pogledid = 0;
+            if (typeof magacinid == "undefined") magacinid = 0;
+            var magacinid = jQuery('.magacin_id option:selected').val();
+            var klientid = jQuery('.klient option:selected').val();
+            var pogledid = jQuery('.pogled option:selected').val();
+           jQuery(".cmd-printlink-vlez").attr("href","/index.php/print/pdf?view=/index.php/materijalno/vlez_izlez/pecati_site_priemnici&magacinid="+ magacinid + "&klientid=" + klientid + "&pogledid=" + pogledid);
+        });
+
+        jQuery(".cmd-printlink").click(function(){
+             if (typeof magacinid == "undefined") magacinid = 0;
+            var magacinid = jQuery('.magacin_id option:selected').val();
+            if (priemnicataId>0){
+                jQuery(".cmd-printlink").attr("href","/index.php/print/pdf?view=/index.php/materijalno/vlez_izlez/print_stavkiInPriemnica&magacinid="+ magacinid + "&id=" + priemnicataId);
+            } else {
+                alert("Ве молиме одберете приемница");
+                // e.preventDefault();
+                return false;
+            }
+        });
+
+    });
+</script>

@@ -1,0 +1,58 @@
+<div id="uplata_form">
+    <?php
+    if(isset($id)) echo '<input type="hidden" class="fakturaid" name="fakturaid" value="'.$id.'">';
+    ?>
+    <p>Pregled na uplati po faktura</p>
+    <div class="uplata">
+        <table class="tuplata" border="1" cellspacing="2" cellpadding="2">
+            <th>Smetka</th>
+            <th>Datum</th>
+            <th>Naziv na primac-nalogodavac</th>
+            <th>Odliv</th>
+            <th>Priliv</th>
+            <th>Zabeleska</th>
+            <?php
+            echo "<tr class='hiderow trow'>";
+            echo "<td><input type='hidden' class='dbid' name='dbid'><input type='text' class='smetka medium' name='smetka' readonly></td>";
+            echo "<td><input type='text' class='datum medium' name='datum' readonly></td>";
+            echo "<td><input type='text' class='naziv big' name='naziv' readonly></td>";
+            echo "<td><input type='text' class='odliv medium' name='odliv' readonly></td>";
+            echo "<td><input type='text' class='priliv medium' name='priliv' readonly></td>";
+            echo "<td><input type='text' class='zabeleska big'name='zabeleska' readonly> </td>";
+            echo "</tr>";
+            ?>
+        </table>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        var fakturaid = jQuery('.fakturaid').val();
+        var data = {
+            fakturaid: fakturaid
+        }
+        jQuery.ajax({
+            url: "/index.php/izlezni_fakturi/faktura/getUplataFaktura",
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                jQuery(".tuplata").find("tr:gt(1)").remove();
+                var tr = jQuery('.tuplata tr:last');
+                tr.removeClass('hiderow');
+                for ( var i = 0; i < response.length; i++ ) {
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.find('.dbid').val(response[i].dbid);
+                    newrow.find('.smetka').val(response[i].smetka);
+                    newrow.find('.datum').val(response[i].datum + " : " + response[i].broj);
+                    newrow.find('.naziv').val(response[i].firmaIme + " : " + response[i].firmaSmetka);
+                    newrow.find('.odliv').val(response[i].suma);
+                    newrow.find('.priliv').val();
+                    newrow.find('.zabeleska').val(response[i].zabeleska);
+                }
+                tr.addClass('hiderow');
+            }
+        });
+    });
+</script>

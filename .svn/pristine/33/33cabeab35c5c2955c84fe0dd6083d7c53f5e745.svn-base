@@ -1,0 +1,28 @@
+.listagrupipaket  {
+    width: 300px;
+    float: left;
+}
+.listapodgrupi  {
+    width: 300px;
+    float: left;
+    margin-left: 10px;
+}
+.grupipaket{ width: 300px}
+.podgrupi{width: 300px;}
+.idsodrzina{ width: 36px;}
+.idpaket{ width: 36px;}
+.listapaketi  {
+    float: left;
+    margin-right: 15px;;
+}
+.listasodrzini  {
+    width: 700px;
+    float: left;
+    margin-top: 10px;
+}
+.buttoncontainerpaketi {margin-bottom: 10px;}
+.buttoncontainerpaketi .cmdnovasodrzina {margin-bottom: 10px;}
+listapaketi.buttoncontainerpaketi{width: 600px;}
+.pregledpaketinaziv{width: 120px;}
+.listaklasi .podatoci-konta {margin-top: 0px;}
+.buttoncontainerpaketi .cmdnovasodrzina_spec {margin-bottom: 10px;}

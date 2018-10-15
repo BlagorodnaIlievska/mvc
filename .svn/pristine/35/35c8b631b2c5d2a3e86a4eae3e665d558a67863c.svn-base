@@ -1,0 +1,161 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Menu extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function index()
+    {
+        $data['main_content'] = 'kasa/index_form';
+        $this->load->view('includes/template', $data);
+    }
+
+    public function vlez_izlez()
+    {
+        $this->load->model('kasa/kasa_model');
+        $data['kasa'] = $this->kasa_model->kasa_dropdown();
+                // print_r( $this->kasa_model->kasa_dropdown()); die();
+        $this->load->view('kasa/vlez_izlez_form', $data);
+    }
+
+    public function pregled_kasa()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('kasa/kasa_model');
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $data['kasa'] = $this->kasa_model->kasa_dropdown();
+        $data['grupa'] = $this->kasa_model->grupa_dropdown();
+        $this->load->view('kasa/pregled_form', $data);
+    }
+
+    public function getPregledKasa()
+    {
+        $klientid = $this->input->post('klientid');
+        $grupaid = $this->input->post('grupaid');
+        $kasaid = $this->input->post('kasaid');
+        $this->load->model('kasa/kasa_model');
+        $query = $this->kasa_model->getPregledKasa($klientid, $grupaid, $kasaid);
+        echo json_encode($query);
+    }
+
+    public function fin_grupiranje()
+    {
+        $this->load->view('kasa/fin_grupiranje_form');
+    }
+
+    public function nov_vlez_izlez()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('kasa/kasa_model');
+        //$data['klient'] = $this->materijalno_model->klient_dropdown();
+        $data['kasa'] = $this->kasa_model->kasa_dropdown();
+        $data['grupa'] = $this->kasa_model->grupa_dropdown();
+        $this->load->view('kasa/nov_vlezizlez_form', $data);
+    }
+   public function getKasa(){
+       $id = $this->input->post('kasaid');
+       $period1=$this->input->post('period1');
+       $period2=$this->input->post('period2');
+       $this->load->model('kasa/kasa_model');
+       $query = $this->kasa_model->getKasa($id,$period1,$period2);
+       echo json_encode($query);
+   }
+
+    public function editVlezIzlezKasa()
+    {
+        $id = $this->input->get('id');
+        //$this->load->model('materijalno/materijalno_model');
+        $this->load->model('kasa/kasa_model');
+        $query = $this->kasa_model->getKasaById($id);
+        $data['query'] = $query;
+        $data['grupa'] = $this->kasa_model->grupa_dropdown();
+        $this->load->view('kasa/edit_kasa_form', $data);
+    }
+
+    public function createNovVlezIzlez()
+    {
+        $this->load->model('kasa/kasa_model');
+        $query = $this->kasa_model->createNovVlezIzlez();
+        echo json_encode($query);
+    }
+
+    public function getLastKasaBroj()
+    {
+        $this->load->model('kasa/kasa_model');
+        $query = $this->kasa_model->getLastKasaBroj();
+        echo json_encode($query);
+    }
+
+    public function deleteStavkaKasa()
+    {
+        $id = $this->input->post('id');
+        $this->load->model('kasa/kasa_model');
+        $query = $this->kasa_model->deleteStavkaKasa($id);
+        echo json_encode($query);
+    }
+
+    public function updateVlezIzlez()
+    {
+        $id = $this->input->post('dbid');
+        $this->load->model('kasa/kasa_model');
+        $query = $this->kasa_model->updateVlezIzlez($id);
+        echo json_encode($query);
+    }
+
+    public function getSiteKasi()
+    {
+        $this->load->model('kasa/kasa_model');
+        $d=date("Y-m-d");
+        $query = $this->kasa_model->getSiteKasi($d);;
+        echo json_encode($query);
+    }
+
+    public function proveri_firma()
+    {
+        $firma = $this->input->post('firma');
+        $this->load->model('kasa/kasa_model');
+        $query = $this->kasa_model->proveri_firma($firma);
+        echo json_encode($query);
+    }
+
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+    public function pecati_kasa(){
+        $this->load->helper('to_pdf');
+        $this->load->model('kasa/kasa_model');
+        $q = $this->kasa_model->getSiteKasi();
+
+        $data['q']=$q;
+        $html = $this->load->view('kasa/pecatenje/pecati_site_kasi', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+    }
+    public function pecati_pregled(){
+        $this->load->helper('to_pdf');
+        $this->load->model('kasa/kasa_model');
+        $klientid=$this->input->post('pdfklientid');
+        $grupaid=$this->input->post('pdfgrupaid');
+        $kasaid=$this->input->post('pdfkasaid');
+        $q = $this->kasa_model->getPregledKasa($klientid,$grupaid,$kasaid);
+       // print_r($q); die();
+        $data['q']=$q;
+        $html = $this->load->view('kasa/pecatenje/pecati_pregled', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+    }
+}

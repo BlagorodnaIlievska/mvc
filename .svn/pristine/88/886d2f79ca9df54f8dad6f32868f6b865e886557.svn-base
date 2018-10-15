@@ -1,0 +1,81 @@
+   <? $ddv=array(
+       '0'=>'0',
+       '5'=>'5',
+       '18'=>'18'
+   );?>
+
+<div class="nov-artikl">
+    <form action="/index.php/podatoci/artikl/create_artikl" method="post" enctype="multipart/form-data" target="_blank">
+        <div class="novartikal-levomeni">
+
+            Шифра: <br/>
+            <input type="text" name="sifra" class="sifra2"><br/>
+
+
+            Име / Модел:<br/>
+            <input type="text" name="S1Ime" class="artikl"><br/>
+
+
+            Баркод:<br/>
+            <input type="text" name="BarCode" class="barcode"><br/>
+
+
+            Каталошки група:<br/>
+            <select name="katBroj">
+                <option value="0"></option>
+				<?php foreach ($katalogmodel->getGlavniKatalozi() as $glavenkatalog) { ?>
+                <option value="<?php  echo $glavenkatalog->id  ?>"><?php  echo $glavenkatalog->ime  ?></option>
+                    <?php foreach ($katalogmodel->getPodKatalozi($glavenkatalog->id )as $podkatalog) { ?>
+                        <option value="<?php  echo $podkatalog->id  ?>"><?php  echo $podkatalog->ime  ?></option>
+                    <?php } ?>
+				<?php } ?>
+            </select><br/>
+            Единица Мерка:<br/>
+            <select name="EdMerka">
+                <option value="0"></option>
+                <?php foreach ($edmerkimodel->getEdmerki() as $edinicamerka) { ?>
+                    <option value="<?php  echo $edinicamerka->id  ?>"><?php  echo $edinicamerka->ime_dolgo  ?> ( <?php  echo $edinicamerka->ime_skrateno  ?> ) </option>
+                <?php } ?>
+            </select><br/>
+           <label>ДДВ</label>
+           <? echo form_dropdown('ddv',$ddv)?>
+           <br>
+          <br>
+            <label>Основно Конто: </label>
+
+
+
+				<?php
+                      echo form_dropdown('konto',$konto);
+            ?>
+
+
+            </select><br/>
+
+        </div>
+        <div class="novartikal-desnomeni">
+            Слика:<br/>
+            <input type="file" name="sliki[]"/><br/>
+            <label>Документи:</label><br/>
+            <input type="file" name="dokumenti[]"/><br/>
+            <input type="file" name="dokumenti[]"/><br/>
+            <input type="file" name="dokumenti[]"/><br/>
+
+        </div>
+
+        <div class="novartikal-podmeni">
+
+            <label>Опис на артикл :</label>
+            <textarea style="overflow-y:scroll;width:99%;resize: none;" class="opis" name="opis_artikl"></textarea>
+
+        </div>
+
+        <br/>
+
+        <div class="addstavka floatright">
+            <button type="button" class="button snimi-forma" poraka_uspesno="Вашиот артикал е успешно снимен"
+                    poraka_neuspesno="Грешка при снимање" izvrsi="artikli_napolnilista()"><span>Сними</span></button>
+        </div>
+
+    </form>
+</div>

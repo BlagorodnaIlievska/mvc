@@ -1,0 +1,338 @@
+<div id="result" class="container-fluid">
+<?php if(isset($smenskiK) && ($smenskiK != array())){ ?>
+    <div class="row-fluid noprint ligneInfos">
+        <?php if(isset($smenskiK) && ($smenskiK != array())){ ?>
+            <table id="tabPlanning " class="smeni-poime" border="0"  cellspacing="0">
+            <thead>
+                <tr>
+                    <th class="imepr-plan">Име/Презиме</th>
+                        <?php
+                        if(isset($month) && ($month != '')){
+                            date_default_timezone_set('Europe/Skopje');
+                            //setlocale(LC_ALL, 'Portuguese_Portugal.1252');
+                            $days = cal_days_in_month(CAL_GREGORIAN, $month, 2013);
+                            $days = $days+1;
+                            for($i = 1; $i < $days; $i++){
+                                $date = '2013/'.$month.'/'.$i;
+                                //$date = $i.'/'.$month.'/2013';
+
+                                $weekday = date('D', strtotime($date)); // note: first arg to date() is lower-case L
+                                //echo $weekday;
+                                ?>
+                                <th class="denoviHead">
+                                    <?php echo $i; ?>
+                                    <br/>
+                                    <?php
+                                    switch ($weekday) {
+                                        case 'Mon':
+                                            echo "По";
+                                            break;
+                                        case 'Tue':
+                                            echo "Вт";
+                                            break;
+                                        case 'Wed':
+                                            echo "Ср";
+                                            break;
+                                        case 'Thu':
+                                            echo "Че";
+                                            break;
+                                        case 'Fri':
+                                            echo "Пе";
+                                            break;
+                                        case 'Sat':
+                                            echo "Са";
+                                            break;
+                                        case 'Sun':
+                                            echo "Не";
+                                            break;
+                                    }
+                                    ?>
+                                </th>
+                                <?php
+                            }
+                        }
+                        ?>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            if(isset($smenskiK) && ($smenskiK != array())){
+//                bis_debug(count($smenskiK), "vkupno");
+                foreach($smenskiK as $ss){
+            ?>
+                                    <tr id="loadingLayerPersonnes" user_id="<?= $ss->id; ?>">
+                                        <td align="center" class="entete" nowrap="nowrap"><?php echo $ss->ime." ".$ss->prezime; ?></td>
+                                        <?php
+                                        if(isset($month) && ($month != '')){
+                                            date_default_timezone_set('Europe/Skopje');
+                                            //setlocale(LC_ALL, 'Portuguese_Portugal.1252');
+                                            $days = cal_days_in_month(CAL_GREGORIAN, $month, 2013);
+                                            $days = $days+1;
+                                            for($i = 1; $i < $days; $i++){
+                                                $date = '2013/'.$month.'/'.$i;
+                                                $weekday = date('D', strtotime($date)); // note: first arg to date() is lower-case L
+                                                if(($weekday == 'Sat') || ($weekday == 'Sun')){ ?>
+                                                    <td class="clickField weekend">
+                                                    <?php }
+                                                else{ ?>
+                                                <td class="clickField">
+                                                <?php } ?>
+                                                    <input type="hidden" class="userId" value="<?php echo $ss->id; ?>" />
+                                                    <input type="hidden" class="date" value="<?php echo $date; ?>" />
+                                                    <input type="hidden" class="dayNo" value="<?php echo $i; ?>" />
+                                                    <p class="smen">
+                                                    <?php
+                                                    if(isset($ss->denovi[0]))
+                                                    {
+                                                        $za_den = 'day'.$i;
+                                                        $smena_za_den = $ss->denovi[0]->$za_den;
+                                                        if(!isset($smena_za_den)) echo "";
+                                                        elseif($smena_za_den == 0) echo "Fr";
+                                                        elseif($smena_za_den == 1) echo "С1";
+                                                        elseif($smena_za_den == 2) echo "С2";
+                                                        elseif($smena_za_den == 3) echo "С3";
+                                                        elseif($smena_za_den == 4) echo "Д1";
+                                                        elseif($smena_za_den == 5) echo "Д2";
+                                                        elseif($smena_za_den == 6) echo "Od";
+                                                    }
+                                                    ?>
+                                                    </p>
+                                                </td>
+                                                <?php
+                                            }
+                                            //end for days
+                                        }
+                                        ?>
+                                    </tr>
+                                    <?php
+                                }
+                            }
+                            ?>
+                </tbody>
+            </table>
+        <div class="smeni-tabela">
+            <table>
+                <tr>
+                    <th>С1</th>
+                    <th>С2</th>
+                    <th>С3</th>
+                    <th>Д1</th>
+                    <th>Д2</th>
+                    <th>Ч</th>
+                </tr>
+                <?php
+                if(isset($smenskiK) && ($smenskiK != array())){
+                    foreach($smenskiK as $ss){
+                        $s1 = 0; $s2 = 0; $s3 = 0; $s4 = 0; $s5 = 0;
+                        if(count($ss->smenaDen) > 0)
+                        {
+                            $smena_za_vraboten = $ss->smenaDen;
+                            foreach($smena_za_vraboten[0] as $smenaDen){
+                                if($smenaDen == 1) $s1++;
+                                elseif($smenaDen == 2) $s2++;
+                                elseif($smenaDen == 3) $s3++;
+                                elseif($smenaDen == 4) $s4++;
+                                elseif($smenaDen == 5) $s5++;
+                            }
+                        }
+                        ?>
+                        <tr>
+                            <td><?= $s1; ?></td>
+                            <td><?= $s2; ?></td>
+                            <td><?= $s3; ?></td>
+                            <td><?= $s4; ?></td>
+                            <td><?= $s5; ?></td>
+                            <td>
+                                <?php
+                                $sum = ($s1+$s2+$s3+$s4+$s5) * 8;
+                                echo $sum;
+                                ?>
+                            </td>
+                        </tr>
+                <?php
+                    }
+                }
+                ?>
+            </table>
+        </div>
+        <?php } ?>
+    </div>
+    <p class="naslov smenskagrupa-naslov">Сменска група</p>
+    <div class="row-fluid noprint ligneInfos smenskagrupa-tabela">
+        <?php if(isset($smena) && ($smena != '')){ ?>
+        <table id="tabPlanning1" border="0" cellpadding="0" cellspacing="0">
+            <tr style="display: none;">
+
+                <?php
+                if(isset($month) && ($month != '')){
+                    date_default_timezone_set('Europe/Skopje');
+                    //setlocale(LC_ALL, 'Portuguese_Portugal.1252');
+                    $days = cal_days_in_month(CAL_GREGORIAN, $month, 2013);
+                    $days = $days+1;
+                    for($i = 1; $i < $days; $i++){
+                        // $date = '2013/'.$month.'/'.$i;
+                        $date = $i.'/'.$month.'/2013';
+                        $weekday = date('D', strtotime($date)); // note: first arg to date() is lower-case L
+                        //echo $weekday;
+                        ?>
+                        <td style="display:none;">
+
+                        </td>
+                        <?php
+                    }
+                }
+                ?>
+            </tr>
+            <tr>
+                <th class="filterod-smeni">
+                    <?php
+                    switch ($smena) {
+                        case 0:
+                            echo "Сите";
+                            break;
+                        case 1:
+                            echo "Доктори";
+                            break;
+                        case 2:
+                            echo "Сестри";
+                            break;
+                        case 3:
+                            echo "Чистачки";
+                            break;
+                    }
+                    ?>
+                </th>
+                <?php
+                if(isset($month) && ($month != '')){
+                    date_default_timezone_set('Europe/Skopje');
+                    //setlocale(LC_ALL, 'Portuguese_Portugal.1252');
+                    $days3 = cal_days_in_month(CAL_GREGORIAN, $month, 2013);
+                    $days3 = $days3+1;
+                    for($l = 1; $l < $days3; $l++){
+                        $date3 = '2013/'.$month.'/'.$l;
+                        //$date = $i.'/'.$month.'/2013';
+                        $weekdayl = date('D', strtotime($date3)); // note: first arg to date() is lower-case L
+                        ?>
+                        <th class="denoviHead">
+                            <?php echo $l; ?>
+                            <br/>
+                            <?php
+                            switch ($weekdayl) {
+                                case 'Mon':
+                                    echo "По";
+                                    break;
+                                case 'Tue':
+                                    echo "Вт";
+                                    break;
+                                case 'Wed':
+                                    echo "Ср";
+                                    break;
+                                case 'Thu':
+                                    echo "Че";
+                                    break;
+                                case 'Fri':
+                                    echo "Пе";
+                                    break;
+                                case 'Sat':
+                                    echo "Са";
+                                    break;
+                                case 'Sun':
+                                    echo "Не";
+                                    break;
+                            }
+                            ?>
+                        </th>
+                        <?php
+                    }
+                    ?>
+                    <td style="display:none;">
+
+                    </td>
+                    <?php
+                }
+                ?>
+            </tr>
+            <?php for($u = 0; $u<5; $u++){ ?>
+                <tr>
+                    <td class="smenskagrupa">
+                        <?php
+                        if($u == '0'){
+                        echo "С1";
+                        } else if($u == '1'){
+                        echo "С2";
+                        } else if($u == '2'){
+                        echo "С3";
+                        } else if($u == '3'){
+                        echo "Д1";
+                        } else if($u == '4'){
+                        echo "Д2";
+                        }
+                    ?>
+                    </td>
+                    <?php
+                    if(isset($month) && ($month != '')){
+                     //   date_default_timezone_set('Europe/Skopje');
+                        //setlocale(LC_ALL, 'Portuguese_Portugal.1252');
+                       // $days = cal_days_in_month(CAL_GREGORIAN, $month, 2013);
+                      //  $days = $days+1;
+                        //for($i = 1; $i < $days; $i++){
+                            //$date = '2013/'.$month.'/'.$i;
+                            //$date = $i.'/'.$month.'/2013';
+                            //$weekday = date('D', strtotime($date)); // note: first arg to date() is lower-case L
+                            //echo $weekday;
+                            ?>
+                            <!--<td> -->
+                                <?php
+                        $first = date('D', mktime(0, 0, 0, $month, 1, '2013'));
+
+                        if($first == 'Mon') $prv = '1';
+                        elseif($first == 'Tue') $prv = '2';
+                        elseif($first == 'Wed') $prv = '3';
+                        elseif($first == 'Thu') $prv = '4';
+                        elseif($first == 'Fri') $prv = '5';
+                        elseif($first == 'Sat') $prv = '6';
+                        elseif($first == 'Sun') $prv = '7';
+
+                                if($u == '0')$sum_uni=$sumPrvaSmena;
+                                else if($u == '1') $sum_uni= $sumVtoraSmena;
+                                else if($u == '2')$sum_uni=$sumTretaSmena;
+                                else if($u == '3') $sum_uni=$dez1Smena;
+                                else if($u == '4') $sum_uni= $dez2Smena;
+
+                        $cl = $prv;
+
+                        foreach($sum_uni as $suma){
+;
+                            if(fmod($cl,7)==0 || fmod($cl,7)==6 ){
+                                ?>
+                                            <td class="dayfield weekend">
+                                        <?php
+                            }else{
+                                ?>
+                                            <td class="dayfield">
+                                        <?php } ?>
+                            <?= $suma;?>
+                                         </td>
+                                         <?php
+                            $cl++;
+                            //  $cll++;
+                        }
+
+                        ?>
+                            <!-- </td> -->
+                            <?php
+                    }
+                    ?>
+                </tr>
+            <?php } ?>
+        </table>
+        <?php } ?>
+    </div>
+<?php } else{
+    if(isset($error)){
+        echo $error;
+    }
+}
+?>
+</div>
+

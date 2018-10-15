@@ -1,0 +1,155 @@
+<?php
+$priem = array(
+    '0' => 'Сите',
+    '1' => 'Тековни',
+    '2' => 'Завршени'
+);
+?>
+<!--<button class="button zatvoripriembutton" type="button"><span>Рецепта ТЕСТ</span></button>-->
+    <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_baraj_button')): ?>
+            <div class="buttoncontainer">
+
+                <button class="button barajpriem" type="button"><span>Барај</span></button>
+
+            </div>
+    <?php endif ?>
+<div class="clear"></div>
+<div class="filtermenupriem" style="display: none;">
+    <div class="pacienti-lista">
+        <label>Пациент: </label>
+        <select class="pacienti-dropdown baraj-priem" name="pacienti"></select>
+    </div>
+    <div class="priem-parametar">
+        <label>Број на лекување:</label>
+        <input type="text" class="broj baraj-priem" name="broj">
+    </div>
+    <div class="priem-parametar">
+        <?php
+        echo form_label('Вид на лекување: ', 'priem');
+        echo form_dropdown('priem', $priem, '1', 'class="priem baraj-priem"');
+        ?>
+    </div>
+    <div class="priem-parametar">
+        <label>Упатна дијагноза:</label>
+        <input class="upatna-dijagnoza baraj-priem" />
+        <input type="hidden" class="dijagnoza_upatna_id" />
+    </div>
+    <div class="priem-parametar">
+        <label>Период од:</label>
+        <input type="text" class="periodod baraj-priem" />
+        <label style="margin: 0 5px;">до:</label>
+        <input type="text" class="perioddo baraj-priem" />
+    </div>
+</div>
+<div class="clear"></div>
+<br/>
+<div class="pacienti-priem-lista notacordion" id="pacienti-priem-lista-id">
+    <h3><a href="">Евиденција на лекување</a></h3>
+    <div class="pacienti-priem-lista-aktivni">
+        <div class="predtabela">
+        <table class="pacienti-priem-lista-aktivni-tabela">
+            <thead>
+                <th class="action"></th>
+                <th class="broj-lekuvanje">Број на лекување</th>
+                <th class="datum">Датум</th>
+                <th class="vreme">Време</th>
+                <th class="vaznost-upat">Упат</th>
+                <th class="pacient">Пациент ( Име, Татково Име, Презиме )</th>
+                <th class="roden">Роден/а на</th>
+                <th class="broj-legitimacija">Бр. Легитимација</th>
+                <th class="oddel">Оддел</th>
+                <th class="tip">Тип</th>
+                <th class="tip-na-osiguruvanje">Тип на осигурување</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    <h3><a href="">Записи</a></h3>
+    <div class="pacienti-pregledi-lista">
+        <div class="predtabela">
+        <table class="pacienti-pregledi-lista-tabela">
+                <thead>
+                <th class="action"></th>
+                <th class="dokument">Документ</th>
+                <th class="datum">Датум</th>
+                <th class="vreme">Време</th>
+<!--                <th class="datum">&nbsp;&nbsp;</th>-->
+                <th class="opis">Опис</th>
+                <th class="izgotvil">Изготвил</th>
+                <th class="oddel">Оддел</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function(){
+        jQuery(".pacienti-priem-lista-aktivni-tabela").tablesorter();
+        jQuery(".pacienti-pregledi-lista-tabela").tablesorter();
+        jQuery('.pacienti-dropdown').combobox();
+        jQuery('.periodod').datepicker({dateFormat:'dd-mm-yy'});
+        jQuery('.periodod').datepicker('setDate', new Date(2013,00,01));
+        jQuery('.perioddo').datepicker({dateFormat:'dd-mm-yy'});
+        jQuery('.perioddo').datepicker('setDate', new Date());
+
+        pacientiDropdown();
+        autocomplete_upatnadijagnoza_search();
+
+        jQuery(".pacienti-priem-lista.notacordion").addClass("ui-accordion ui-accordion-icons ui-widget ui-helper-reset")
+            .find("h3")
+            .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
+            .hover(function () {
+                jQuery(this).toggleClass("ui-state-hover");
+            })
+            .prepend('<span class="ui-icon ui-icon-triangle-1-e"></span>')
+            .click(function () {
+                jQuery(this)
+                    .toggleClass("ui-accordion-header-active ui-state-active ui-state-default ui-corner-bottom")
+                    .find("> .ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
+                    .next().toggleClass("ui-accordion-content-active").slideToggle();
+                return false;
+            })
+            .next()
+            .addClass("ui-accordion-content  ui-helper-reset ui-widget-content ui-corner-bottom")
+            .hide();
+        jQuery(".notacordion").find("a").click();
+        lekuvanja_lista_priem();
+
+        jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr").live('click', function () {
+            jQuery(".pacienti-priem-lista-aktivni-tabela tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+            lekuvanja_listasozapisi(jQuery(this).attr("priem_id"));
+        });
+        jQuery(".baraj-priem").live("change", function () {
+            lekuvanja_lista_priem_criteria();
+        });
+        jQuery(".broj").live("keyup", function () {
+            lekuvanja_lista_priem_criteria();
+        });
+        jQuery(".barajpriem").live("click", function () {
+            if (jQuery(".filtermenupriem").hasClass("prikazano")) {
+                jQuery(".filtermenupriem").hide(500);
+                jQuery(".filtermenupriem").removeClass("prikazano");
+            } else {
+                jQuery(".filtermenupriem").show(500);
+                jQuery(".filtermenupriem").addClass("prikazano");
+            }
+        });
+        jQuery(".zatvoripriembutton").live("click",function(){
+            testrecepta();
+        });
+        jQuery(".pacienti-pregledi-lista-tabela tbody .info-tr").live("click",function(){
+            lekuvanja_infodokument(jQuery(this).parent().parent().attr("dok_id"),jQuery(this).parent().parent().attr("doktype"), 2);
+        });
+        jQuery(".pacienti-pregledi-lista-tabela tbody .edit-tr").live("click",function(){
+            lekuvanja_editdokument(jQuery(this).parent().parent().attr("dok_id"),jQuery(this).parent().parent().attr("doktype"), 1);
+        });
+        jQuery(".pacienti-pregledi-lista-tabela tbody .delete-tr").live("click", function(){
+            lekuvanja_deletedokument(jQuery(this).parent().parent().attr("dok_id"), jQuery(this).parent().parent().attr("doktype"));
+        });
+    });
+</script>

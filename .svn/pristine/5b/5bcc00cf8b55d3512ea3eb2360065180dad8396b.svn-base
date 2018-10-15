@@ -1,0 +1,79 @@
+<?php
+
+class Komerc_model extends CI_Model{
+
+
+    public function create_komerc()
+    {
+        $new_field_insert_data = array(
+
+            'komercName' => $this->input->post('komercName'),
+            'aktiven' => $this->input->post('aktiven')
+
+        );
+
+        $insert = $this->db->insert('komerc', $new_field_insert_data);
+        return $insert;
+    }
+
+    public function getAll()
+    {
+        $query = $this->db->get('komerc');
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+
+    public function delete_komerc(){
+
+        $this->db->where('komercID', $this->uri->segment(4));
+        $this->db->delete('komerc');
+    }
+
+    public function edit_komerc(){
+
+        $this->db->where('komercID', $this->uri->segment(4));
+        $query = $this->db->get('komerc');
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+
+    public function update_komerc()
+    {
+        $field_update_data = array(
+
+            'komercName' => $this->input->post('komercName'),
+
+            'aktiven' => $this->input->post('aktiven')
+        );
+
+        $this->db->where('komercID', $this->input->post('komercID'));
+        $update = $this->db->update('komerc', $field_update_data);
+        return $update;
+    }
+    function get_komerc_dropdown()
+    {
+        $this->db->select('komercID, komercName');
+        $this->db->from('komerc');
+        $this->db->order_by('komercID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = 'select komercijalist';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['komercID']] = $row['komercName'];
+            }
+        }
+        return $dropdown;
+
+    }
+
+
+
+}

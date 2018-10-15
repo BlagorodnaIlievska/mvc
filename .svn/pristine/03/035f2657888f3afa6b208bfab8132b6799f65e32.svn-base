@@ -1,0 +1,60 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+
+class Sindikat extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function nov_sindikat()
+    {
+        $this->load->view('plata_podatoci/sindikat/nov_sindikat');
+    }
+
+    public function izmeni()
+    {
+        $this->load->model('plata_podatoci/sindikat_model');
+        $sindikat = $this->sindikat_model->getSindikat($this->input->get("id"));
+        $data['sindikat']     = $sindikat;
+        $this->load->view('plata_podatoci/sindikat/izmeni', $data);
+    }
+
+    public function lista()
+    {
+        $this->load->view('plata_podatoci/sindikat/lista');
+    }
+
+    public function polnilista()
+    {
+        $this->load->model('plata_podatoci/sindikat_model');
+        $return = $this->sindikat_model->getSindikati();
+        echo json_encode($return);
+    }
+
+    public function create_sindikat()
+    {
+        $this->load->model('plata_podatoci/sindikat_model');
+        $this->sindikat_model->create_sindikat();
+        echo "ok";
+    }
+
+    public function update_sindikat()
+    {
+        $this->load->model('plata_podatoci/sindikat_model');
+        $this->sindikat_model->update_sindikat() ;
+        echo 'ok';
+
+    }
+
+    public function delete_sindikat()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('plata_podatoci/sindikat_model');
+        $this->sindikat_model->delete_sindikat($id);
+        echo "ok";
+    }
+}

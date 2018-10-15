@@ -1,0 +1,1091 @@
+<?php
+
+class Nalog_model extends CI_Model{
+
+
+    public function create_nalog() {
+
+             $tip=$this->input->post('tip');
+             $id_dok=$this->input->post('id_dok');
+             $insert_data = array(
+            'datum' => $this->input->post('datum'),
+            'oddel'=>$this->input->post('oddel'),
+            'broj'=>$this->input->post('broj'),
+            'tip_na_nalog'=>$tip
+
+                 );
+
+     $insert = $this->db->insert('nalog', $insert_data);
+     if($insert){
+
+             $id = $this->db->insert_id();
+             $lastbroj = $this->getLastNalogBroj();
+             $newbroj =$lastbroj[0]->broj +1;
+             $this->incrementNalogBroj($newbroj);
+
+     }
+     else $id = false;
+        $konto = $this->input->post('konto');
+        foreach($konto as $index => $value)
+        {
+            $new_konto = $this->input->post('konto');
+            $new_opis = $this->input->post('stavka');
+            $new_pretkolona = $this->input->post('pretkolona');
+            $new_dolzi = $this->input->post('dolzi');
+            $new_pobaruva = $this->input->post('pobaruva');
+            $new_komintent= $this->input->post('komintent');
+            $new_dokument=$this->input->post('koj_dokument');
+            $new_broj_dok=$this->input->post('broj_dok');
+            $za_promena=$this->input->post('za_promena');
+            $zsid=$this->input->post('zsid');
+            $konto_id=$this->input->post('konto1');
+            $firma_id=$this->input->post('firma');
+            $tip_komintent=$this->input->post('kk');
+            $detali_data = array(
+                'nalog_id' => $id,
+                'konto' => $new_konto[$index],
+                'opis_na_dokument' => $new_opis[$index],
+                'pretkolona' => $new_pretkolona[$index],
+                'dolzi' => $new_dolzi[$index],
+                'pobaruva' => $new_pobaruva[$index],
+                'komintent'=>$new_komintent[$index],
+                'za_dok_id'=>$new_dokument[$index],
+                'broj_dok' => $new_broj_dok[$index],
+                'za_promena_konto'=>$za_promena[$index],
+                'zsid'=>$zsid[$index],
+                'tip_komintent'=>$tip_komintent[$index],
+                'konto_id'=>$konto_id[$index],
+                'firma_id'=>$firma_id[$index]
+            );
+
+            $detali = $this->db->insert('nalog_detali', $detali_data);
+            if($detali) $nalog_detali_id= $this->db->insert_id();
+            $this->update_stavka($id,$new_dokument[$index],$nalog_detali_id);
+        }
+
+      return $id;
+    }
+    public function site_otpis(){
+        $this->db->select('stavka.*');
+        $this->db->from('stavka');
+        $this->db->where('stavka.tip',90);
+        $this->db->order_by('stavka.ID', 'desc');
+        $query=$this->db->get();
+        return $query->result();
+
+    }
+    public function update_stavka($id_nalog,$id_dok,$nalog_detali_id)
+    {
+        $field_update_data = array(
+
+            'broj_na_nalog_knizenje' => $id_nalog,
+            'nalog_detali_id'=>$nalog_detali_id
+
+        );
+
+        $this->db->where('ID', $id_dok);
+        $update = $this->db->update('stavka', $field_update_data);
+        return $update;
+    }
+    public function getNalozi()
+    {
+        //  $this->db->where("parent_id", 0);
+        $this->db->select('nalog.*, bis_firmi.ime as oddel');
+        $this->db->from('nalog');
+        $this->db->join('bis_firmi','bis_firmi.id=nalog.oddel');
+        $query = $this->db->get();
+        return $query->result();
+    }
+    public function getNalog($id)
+    {
+
+        $this->db->where('id',$id);
+        $query = $this->db->get('nalog');
+        return $query->result();
+    }
+    public function pregled_po_konto(){
+    $this->db->select_sum('nalog_detali.dolzi');
+    $this->db->select_sum('nalog_detali.pobaruva');
+    $this->db->select('nalog_detali.konto as konto,konta.opis');
+    $this->db->from('nalog_detali');
+    $this->db->join('konta','konta.sifra=nalog_detali.konto');
+    $this->db->group_by('nalog_detali.konto');
+    $query = $this->db->get();
+
+    if($query->num_rows() > 0)
+    {
+        $result = $query->result();
+    }
+    else
+    {
+        $result = false;
+    }
+    return $result;
+}
+    public function pregled_po_konto_so_konto($konto,$datum1,$datum2){
+        $this->db->select_sum('nalog_detali.dolzi');
+        $this->db->select_sum('nalog_detali.pobaruva');
+        $this->db->select('nalog_detali.konto,konta.opis');
+        $this->db->from('nalog_detali');
+        $this->db->join('konta','konta.sifra=nalog_detali.konto');
+        $this->db->join('nalog','nalog.id=nalog_detali.nalog_id');
+        $this->db->like('nalog_detali.konto',$konto,'after');
+        $this->db->where('nalog.datum >',bis_convert_date_usa_to_mk($datum1));
+        $this->db->where('nalog.datum <',bis_convert_date_usa_to_mk($datum2));
+        $this->db->group_by('nalog_detali.konto');
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function promena_na_konta(){
+
+        $this->db->select('nalog_detali.konto as konto,konta.opis,nalog_detali.dolzi,nalog_detali.pobaruva,nalog_detali.komintent');
+        $this->db->from('nalog_detali');
+        $this->db->join('konta','konta.sifra=nalog_detali.konto');
+        //if($konto!=1)$this->db->where('nalog_detali.konto',$konto);
+       // if($komintent!=1) $this->db->like('nalog_detali.komintent',$komintent);
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function promena_spored_dvata_atributi($konto,$komintent){
+
+        $this->db->select('nalog_detali.konto,konta.opis,nalog_detali.dolzi,nalog_detali.pobaruva,nalog_detali.komintent');
+        $this->db->from('nalog_detali');
+        $this->db->join('konta','konta.sifra=nalog_detali.konto');
+        if($konto!=1)$this->db->where('nalog_detali.konto',$konto);
+        if($komintent!=1) $this->db->where('nalog_detali.firma_id',$komintent);
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function promena_samo_na_konto($konto){
+
+        $this->db->select('nalog_detali.konto,konta.opis,nalog_detali.dolzi,nalog_detali.pobaruva,nalog_detali.komintent');
+        $this->db->from('nalog_detali');
+        $this->db->join('konta','konta.sifra=nalog_detali.konto');
+        $this->db->like('nalog_detali.konto',$konto,'after');
+        // if($komintent!=1) $this->db->like('nalog_detali.komintent',$komintent);
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function promena_samo_na_komintent($komintent){
+
+        $this->db->select('nalog_detali.konto,konta.opis,nalog_detali.dolzi,nalog_detali.pobaruva,nalog_detali.komintent');
+        $this->db->from('nalog_detali');
+        $this->db->join('konta','konta.sifra=nalog_detali.konto');
+        $this->db->like('nalog_detali.komintent',$komintent);
+        // if($komintent!=1) $this->db->like('nalog_detali.komintent',$komintent);
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function promena_na_konta_celosno($konto,$komintent){
+
+        $this->db->select('nalog_detali.konto,konta.opis,nalog_detali.dolzi,nalog_detali.pobaruva,nalog_detali.komintent');
+        $this->db->from('nalog_detali');
+        $this->db->join('konta','konta.sifra=nalog_detali.konto');
+       // if($konto!=1)$this->db->where('nalog_detali.konto',$konto);
+        //if($komintent!=1) $this->db->like('nalog_detali.komintent',$komintent);
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function getNalogDetali($id)
+    {
+        $this->db->select('
+                    nalog_detali.nalog_id as nalogid,
+                    nalog_detali.komintent as komintent,
+                    nalog_detali.konto as konto,
+                    nalog_detali.opis_na_dokument as opis,
+                    nalog_detali.dolzi as dolzi,
+                    nalog_detali.pobaruva as pobaruva,
+                    nalog_detali.broj_dok as broj_dok,
+                    nalog_detali.za_dok_id as dokid,
+                    nalog_detali.zsid as zsid,
+                    nalog.tip_na_nalog as tip,
+                    nalog_detali.tip_komintent as tip_komintent
+
+                    ');
+        $this->db->from('nalog_detali');
+        $this->db->join('nalog','nalog.id=nalog_detali.nalog_id');
+        $this->db->where('nalog_detali.nalog_id',$id);
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function getKasa_prihod($id){
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.textBroj as broj,
+                    stavka.kasa,
+                    stavka.tip as tip,
+                    stavka.zaDokID,
+                    stavka.z_uplata as suma,
+                    bis_pacienti.ime as pacient_ime,
+                    bis_pacienti.prezime as pacient_prezime,
+                    stavka.tip as tip,
+                    konta.materijalno_konto as konto_stavka,
+                    konta.opis as opis,
+                    konta.id as konto_id,
+                    firma.ime as firma,
+                    firma.firmaID as firma_id
+
+
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('konta','konta.id=stavka.tipID');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->where('stavka.ID',$id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+
+
+    }
+    public function rasknizuvanje_materijali($id){
+        $this->db->select_sum('det.cena * det.kolicina');
+        $this->db->select('konta.sifra as konto,konta.id as konto_id,konta.opis as opis,bis_pacienti.ime as pacient_ime, bis_pacienti.prezime as pacient_prezime,stavka.textBroj as broj,stavka.fzom_status');
+        $this->db->from('det');
+        $this->db->join('stavka','stavka.ID=det.ID');
+       // $this->db->join('firma','stavka.firmaID=firma.firmaID');
+        $this->db->join('konta','konta.id=det.konto');
+        $this->db->join('bis_pacienti','bis_pacienti.id=stavka.pacient_id');
+     //   $this->db->join('firma','firma.firmaID=stavka.firmaID');
+        $this->db->where('stavka.zaDokID',$id);
+        $this->db->group_by('det.konto');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function rasknizuvanje_materijali_so_otpis($id){
+        $this->db->select_sum('det.cena *det.kolicina');       //treba sredna cena
+        $this->db->select('konta.sifra as konto,konta.id as konto_id,konta.opis as opis,stavka.textBroj as broj,stavka.fzom_status,stavka.tip as tip');
+        $this->db->from('det');
+        $this->db->join('stavka','stavka.ID=det.ID');
+        // $this->db->join('firma','stavka.firmaID=firma.firmaID');
+        $this->db->join('konta','konta.id=det.konto');
+       // $this->db->join('bis_pacienti','bis_pacienti.id=stavka.pacient_id');
+        //   $this->db->join('firma','firma.firmaID=stavka.firmaID');
+       $this->db->where('stavka.ID',$id);
+        $this->db->group_by('det.konto');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function rasknizuvanje_materijali_zatvoranje($id){
+        $this->db->select_sum('det.cena * det.kolicina');
+        $this->db->select('konta.materijalno_zatvoranje as konto,konta.opis as opis,bis_pacienti.ime as pacient_ime, bis_pacienti.prezime as pacient_prezime,konta.id as konto_id, stavka.textBroj as broj,stavka.fzom_status');
+        $this->db->from('det');
+        $this->db->join('stavka','stavka.ID=det.ID');
+       // $this->db->join('firma','firma.firmaID=stavka.firmaID');
+        $this->db->join('konta','konta.id=det.konto');
+         $this->db->join('bis_pacienti','bis_pacienti.id=stavka.pacient_id');
+     //   $this->db->join('firma','firma.firmaID=stavka.firmaID');
+       $this->db->where('stavka.zaDokID',$id);
+        $this->db->group_by('det.konto');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function rasknizuvanje_materijali_zatvoranje_so_otpis($id){
+        $this->db->select_sum('det.cena *det.kolicina');    //treba sredna cena
+        $this->db->select('konta.materijalno_zatvoranje as konto,konta.opis as opis,konta.id as konto_id,stavka.textBroj as broj,stavka.fzom_status,stavka.tip as tip');
+        $this->db->from('det');
+        $this->db->join('stavka','stavka.ID=det.ID');
+        // $this->db->join('firma','firma.firmaID=stavka.firmaID');
+        $this->db->join('konta','konta.id=det.konto');
+        //$this->db->join('bis_pacienti','bis_pacienti.id=stavka.pacient_id');
+        //   $this->db->join('firma','firma.firmaID=stavka.firmaID');
+        $this->db->where('stavka.ID',$id);
+        $this->db->group_by('det.konto');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getKasa($id){
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.textBroj as broj,
+                    stavka.kasa,
+                    stavka.tip as tip,
+                    stavka.zaDokID,
+                    stavka.z_uplata as suma,
+                    bis_kasi.konto,
+                    bis_pacienti.ime as pacient_ime,
+                    bis_pacienti.prezime as pacient_prezime,
+                    stavka.tip as tip,
+                    konta.sifra as konto_stavka,
+                    konta.opis as opis,
+                    firma.ime as firma
+
+
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('konta','stavka.tipID=konta.id');
+        $this->db->join('bis_kasi','stavka.kasa=bis_kasi.id');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->where('stavka.ID',$id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+
+
+    }
+ public function kasa_faktura1($id){
+     $this->db->select('stavka.presmetana_participacija as suma,stavka.tip as tip,stavka.ID as dbid,stavka.textBroj as broj,stavka.zaDokID,konta.sifra as konto,konta.id as konto_id,konta.opis as naziv,bis_pacienti.ime as pacient_ime,bis_pacienti.prezime as pacient_prezime');
+     $this->db->from('stavka');
+     $this->db->join('konta','konta.id=stavka.tipID');
+   //  $this->db->join('firma','firma.firmaID=stavka.firmaID');
+     $this->db->join('bis_pacienti','bis_pacienti.id=stavka.pacient_id');
+     $this->db->where('stavka.ID',$id);
+     $query = $this->db->get();
+     if($query->num_rows() > 0)
+     {
+         $result = $query->result();
+     }
+     else
+     {
+         $result = false;
+     }
+     return $result;
+
+ }
+    public function kasa_faktura2($id){
+        $this->db->select('stavka.presmetana_participacija as suma,stavka.tip as tip,stavka.ID as dbid,stavka.textBroj as broj,stavka.zaDokID,konta.trosok_konto as konto,konta.opis as naziv,konta.id as konto_id,bis_pacienti.ime as pacient_ime,bis_pacienti.prezime as pacient_prezime');
+        $this->db->from('stavka');
+        $this->db->join('konta','konta.id=stavka.tipID');
+       // $this->db->join('firma','firma.firmaID=stavka.firmaID');
+        $this->db->join('bis_pacienti','bis_pacienti.id=stavka.pacient_id');
+        $this->db->where('stavka.ID',$id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+
+    }
+
+    public function getKasa_detali($id){
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.kasa,
+                    stavka.tip,
+                    stavka.firmaID as firma_id,
+                    stavka.z_uplata as suma,
+                    stavka.textBroj as broj,
+                    stavka.zaDokID,
+                    stavka.tip as tip,
+                    konta.sifra as konto_kasa,
+                    konta.id as konto_id,
+                    konta.opis as opis
+
+
+                    ');
+        $this->db->from('bis_kasi');
+        $this->db->join('konta','konta.id=bis_kasi.konto');
+        $this->db->join('stavka','stavka.kasa=bis_kasi.id');
+        $this->db->where('stavka.ID',$id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+
+
+    }
+    public function getIzvod_detali1($id){
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.z_uplata as suma,
+                    stavka.intBroj as broj,
+                    stavka.zaDokID,
+                    stavka.ZSID as zsid,
+                    stavka.tip as tip,
+                    konta.sifra as konto_izvod,
+                    konta.opis as opis,
+                    konta.id as konto_id,
+                    firma.ime as firma,
+                    firma.firmaID as firma_id
+
+
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('konta','konta.id=stavka.tipID');
+        $this->db->join('firma','stavka.firmaID=firma.firmaID');
+        $this->db->where('stavka.ID',$id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+
+
+    }
+    public function izvod_ziro_smetka($id){
+        $this->db->select('
+
+                    stavka.z_uplata as suma,
+                    stavka.intBroj as broj,
+                    stavka.zaDokID,
+                    stavka.ZSID as zsid,
+                    stavka.tip as tip,
+                    konta.sifra as konto,
+                    konta.id as konto_id,
+                    konta.opis as opis,
+                    firma.ime as firma,
+                    firma.firmaID as firma_id');
+        $this->db->from('stavka');
+        $this->db->join('bis_zirosmetki','stavka.ZSID=bis_zirosmetki.id');
+        $this->db->join('konta','konta.id=bis_zirosmetki.konto');
+        $this->db->join('firma','stavka.firmaID=firma.firmaID');
+
+        $this->db->where('stavka.ID',$id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+
+
+    }
+    public function getIzvod_detali2($id){
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.z_uplata as suma,
+                    stavka.zaDokID,
+                    stavka.ZSID as zsid,
+                    stavka.intBroj as broj,
+                    stavka.tip as tip,
+                    konta.sifra as k,
+                    konta.trosok_konto as konto_izvod_trosok,
+                    konta.id as konto_id,
+                    konta.opis as opis,
+                    firma.ime as firma,
+                    firma.firmaID as firma_id,
+
+
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('konta','konta.id=stavka.tipID');
+        $this->db->join('firma','stavka.firmaID=firma.firmaID');
+        $this->db->where('stavka.ID',$id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+
+
+    }
+    public function getIzvod_po_faktura($id){
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.z_uplata as suma,
+                    stavka.intBroj as broj,
+                    stavka.zaDokID,
+                    stavka.ZSID as zsid,
+                    stavka.tip as tip,
+                    konta.trosok_konto as konto,
+                    konta.opis as opis,
+                    konta.id as konto_id,
+                    firma.ime as firma,
+                    firma.firmaID as firma_id
+
+
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('konta','konta.id=stavka.tipID');
+        $this->db->join('firma','stavka.firmaID=firma.firmaID');
+        $this->db->where('stavka.ID',$id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+//        $this->db->select_sum('stavkadetali.cenaDdv');
+//        $this->db->select('stavka.zaDokID,stavka.ZSID as zsid, stavka.intBroj as broj,stavka.ID as dbid,stavka.tip,stavka.z_uplata as suma,konta.materijalno_konto as konto,konta.id as konto_id,konta.opis as opis,firma.ime as firma,firma.firmaID as firma_id,stavka.tip');
+//        $this->db->from('stavka');
+//     //   $this->db->join('konta','konta.id=stavka.tipID');
+//        $this->db->join('stavkadetali','stavka.zaDokID=stavkadetali.ID');
+//        $this->db->join('firma','stavka.firmaID=firma.firmaID');
+//        $this->db->join('konta','stavkadetali.konto=konta.id');
+//      //$this->db->where('stavkadetali.ID','stavka.zaDokID');
+//        $this->db->where('stavka.ID',$id);
+//        $this->db->group_by('stavkadetali.konto');
+//        $query = $this->db->get();
+//        if($query->num_rows() > 0)
+//        {
+//            $result = $query->result();
+//        }
+//        else
+//        {
+//            $result = false;
+//        }
+//        return $result;
+//
+
+    }
+
+    public function getIzvod_po_faktura_konto_faktura($id){
+        $this->db->select('stavka.zaDokID,stavka.z_uplata,stavka.ZSID,stavka.intBroj,stavka.ID ,stavka.tip,firma.ime,firma.firmaID');
+        $this->db->from('stavka');
+        $this->db->where('stavka.ID',$id);
+        $this->db->join('firma','stavka.firmaID=firma.firmaID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+       $fakturaid=$result[0]->zaDokID;
+
+        $data['zaDokID']=$result[0]->zaDokID;
+        $data['suma']=$result[0]->z_uplata;
+        $data['zsid']=$result[0]->ZSID;
+        $data['broj']=$result[0]->intBroj;
+        $data['tip']=$result[0]->tip;
+        $data['dbid']=$result[0]->ID;
+        $data['firma']=$result[0]->ime;
+        $data['firma_id']=$result[0]->firmaID;
+
+        $this->db->select('konta.sifra,konta.id,konta.opis as opis');
+        $this->db->from('stavka');
+        $this->db->where('stavka.ID',$fakturaid);
+        $this->db->join('konta','stavka.tipID=konta.id');
+        $q = $this->db->get();
+        if($q->num_rows() > 0)
+        {
+            $res = $q->result();
+        }
+        else
+        {
+            $res = false;
+        }
+
+        $data['konto']=$res[0]->sifra;
+        $data['konto_id']=$res[0]->id;
+        $data['opis']=$res[0]->opis;
+         return $data;
+//        $this->db->select('stavka.z_uplata as suma,stavka.ZSID as zsid,stavka.intBroj as broj,stavka.ID as dbid,stavka.tip,konta.sifra as konto,konta.id as konto_id,firma.ime as firma,firma.firmaID as firma_id,stavka.zaDokID, konta.opis as opis,stavka.tip');
+//        $this->db->from('stavka');
+//        //   $this->db->join('konta','konta.id=stavka.tipID');
+//        $this->db->join('firma','stavka.firmaID=firma.firmaID');
+//        $this->db->join('konta','firma.konto_dobavuvac=konta.id');
+//
+//
+//        $this->db->where('stavka.ID',$id);
+//
+//        $query = $this->db->get();
+//        if($query->num_rows() > 0)
+//        {
+//            $result = $query->result();
+//        }
+//        else
+//        {
+//            $result = false;
+//        }
+//        return $result;
+
+
+    }
+    public function getIzvod_po_faktura_konto_faktura2($id){
+        $this->db->select('stavka.zaDokID,stavka.z_uplata,stavka.ZSID,stavka.ID,stavka.intBroj,stavka.tip,,firma.ime,firma.firmaID');
+        $this->db->from('stavka');
+        $this->db->where('stavka.ID',$id);
+        $this->db->join('firma','stavka.firmaID=firma.firmaID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        $fakturaid=$result[0]->zaDokID;
+        $data['fakturaid']=$result[0]->zaDokID;
+        $data['suma']=$result[0]->z_uplata;
+        $data['zsid']= $result[0]->ZSID;
+        $data['dbid']=$result[0]->ID;
+        $data['broj']=$result[0]->intBroj;
+        $data['tip']=$result[0]->tip;
+        $data['firma']=$result[0]->ime;
+        $data['firma_id']=$result[0]->firmaID;
+
+
+        $this->db->select('konta.sifra,konta.id,konta.opis');
+        $this->db->from('stavka');
+        $this->db->where('stavka.ID',$fakturaid);
+        $this->db->join('konta','konta.id=stavka.tipID');
+
+
+        $q = $this->db->get();
+        if($q->num_rows() > 0)
+        {
+            $res = $q->result();
+        }
+        else
+        {
+            $res = false;
+        }
+        $data['konto']=$res[0]->sifra;
+        $data['konto_id']=$res[0]->id;
+        $data['opis'] =$res[0]->opis;
+
+        return $data;
+
+//        $this->db->select('stavka.z_uplata as suma,stavka.ZSID as zsid,stavka.ID as dbid,stavka.intBroj as broj,stavka.tip,konta.sifra as konto,konta.id as konto_id,firma.ime as firma,firma.firmaID as firma_id,stavka.zaDokID, konta.opis as opis,stavka.tip');
+//        $this->db->from('stavka');
+//        //   $this->db->join('konta','konta.id=stavka.tipID');
+//        $this->db->join('firma','stavka.firmaID=firma.firmaID');
+//        $this->db->join('konta','firma.konto_kupuvac=konta.id');
+//
+//
+//        $this->db->where('stavka.ID',$id);
+
+
+
+
+
+    }
+    public function getIzvod_po_faktura_konto_faktura22($id){
+        $this->db->select('stavka.zaDokID,stavka.z_uplata,stavka.ZSID,stavka.ID,stavka.intBroj,stavka.tip,,firma.ime,firma.firmaID');
+        $this->db->from('stavka');
+        $this->db->where('stavka.ID',$id);
+        $this->db->join('firma','stavka.firmaID=firma.firmaID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        $fakturaid=$result[0]->zaDokID;
+        $data['fakturaid']=$result[0]->zaDokID;
+        $data['suma']=$result[0]->z_uplata;
+        $data['zsid']= $result[0]->ZSID;
+        $data['dbid']=$result[0]->ID;
+        $data['broj']=$result[0]->intBroj;
+        $data['tip']=$result[0]->tip;
+        $data['firma']=$result[0]->ime;
+        $data['firma_id']=$result[0]->firmaID;
+
+
+        $this->db->select('konta.trosok_konto,konta.id');
+        $this->db->from('stavka');
+        $this->db->where('stavka.ID',$fakturaid);
+        $this->db->join('konta','konta.id=stavka.tipID');
+
+
+        $q = $this->db->get();
+        if($q->num_rows() > 0)
+        {
+            $res = $q->result();
+        }
+        else
+        {
+            $res = false;
+        }
+        $data['konto']=$res[0]->trosok_konto;
+        $data['konto_id']=$res[0]->id;
+        $trosok=$res[0]->trosok_konto;
+        $this->db->select('konta.opis');
+        $this->db->from('konta');
+        $this->db->like('konta.sifra',$trosok);
+        $qu = $this->db->get();
+        if($qu->num_rows() > 0)
+        {
+            $r = $qu->result();
+        }
+        else
+        {
+            $r = false;
+        }
+        $data['opis'] =$r[0]->opis;
+
+        return $data;
+
+//        $this->db->select('stavka.z_uplata as suma,stavka.ZSID as zsid,stavka.ID as dbid,stavka.intBroj as broj,stavka.tip,konta.trosok_konto as konto,konta.id as konto_id,firma.ime as firma,firma.firmaID as firma_id,stavka.zaDokID, konta.opis as opis,stavka.tip');
+//        $this->db->from('stavka');
+//        //   $this->db->join('konta','konta.id=stavka.tipID');
+//        $this->db->join('firma','stavka.firmaID=firma.firmaID');
+//        $this->db->join('konta','firma.konto_kupuvac=konta.id');
+//
+//
+//        $this->db->where('stavka.ID',$id);
+//
+//        $query = $this->db->get();
+//        if($query->num_rows() > 0)
+//        {
+//            $result = $query->result();
+//        }
+//        else
+//        {
+//            $result = false;
+//        }
+//        return $result;
+
+
+    }
+    public function getIzvod_po_faktura_konto_faktura222($id){
+        $this->db->select('stavka.zaDokID,stavka.z_uplata,stavka.ZSID,stavka.ID,stavka.intBroj,stavka.tip,,firma.ime,firma.firmaID,konta.sifra,konta.id,konta.opis');
+        $this->db->from('stavka');
+        $this->db->where('stavka.ID',$id);
+        $this->db->join('firma','stavka.firmaID=firma.firmaID');
+        $this->db->join('konta','konta.id=stavka.tipID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        $fakturaid=$result[0]->zaDokID;
+        $data['fakturaid']=$result[0]->zaDokID;
+        $data['suma']=$result[0]->z_uplata;
+        $data['zsid']= $result[0]->ZSID;
+        $data['dbid']=$result[0]->ID;
+        $data['broj']=$result[0]->intBroj;
+        $data['tip']=$result[0]->tip;
+        $data['firma']=$result[0]->ime;
+        $data['firma_id']=$result[0]->firmaID;
+        $data['konto']=$result[0]->sifra;
+        $data['konto_id']=$result[0]->id;
+
+
+        $data['opis'] =$result[0]->opis;
+
+        return $data;
+//        $this->db->select('stavka.z_uplata as suma,stavka.ZSID as zsid,stavka.ID as dbid,stavka.tip,stavka.intBroj as broj,konta.materijalno_konto as konto,konta.id as konto_id,firma.ime as firma,firma.firmaID as firma_id,stavka.zaDokID, konta.opis as opis,stavka.tip');
+//        $this->db->from('stavka');
+//        //   $this->db->join('konta','konta.id=stavka.tipID');
+//        $this->db->join('firma','stavka.firmaID=firma.firmaID');
+//        $this->db->join('konta','firma.konto_kupuvac=konta.id');
+//
+//
+//        $this->db->where('stavka.ID',$id);
+//
+//        $query = $this->db->get();
+//        if($query->num_rows() > 0)
+//        {
+//            $result = $query->result();
+//        }
+//        else
+//        {
+//            $result = false;
+//        }
+//        return $result;
+
+
+    }
+    public function getIzvod_po_faktura_trosok_konto($id){
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.z_uplata as suma,
+                    stavka.intBroj as broj,
+                    stavka.zaDokID,
+                    stavka.ZSID as zsid,
+                    stavka.tip as tip,
+                    konta.sifra as konto,
+                    konta.opis as opis,
+                    konta.id as konto_id,
+                    firma.ime as firma,
+                    firma.firmaID as firma_id
+
+
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('konta','konta.id=stavka.tipID');
+        $this->db->join('firma','stavka.firmaID=firma.firmaID');
+        $this->db->where('stavka.ID',$id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+//        $this->db->select_sum('stavkadetali.cenaDdv');
+//        $this->db->select('stavka.zaDokID,stavka.ZSID as zsid,stavka.tip,stavka.ID as dbid,stavka.intBroj as broj,stavka.z_uplata as suma,konta.trosok_konto as konto,konta.id as konto_id,firma.ime as firma,firma.firmaID as firma_id,stavka.tip,konta.opis as opis');
+//        $this->db->from('stavka');
+//        //   $this->db->join('konta','konta.id=stavka.tipID');
+//        $this->db->join('firma','stavka.firmaID=firma.firmaID');
+//        $this->db->join('stavkadetali','stavka.zaDokID=stavkadetali.ID');
+//        $this->db->join('konta','stavkadetali.konto=konta.id');
+//        //$this->db->where('stavkadetali.ID','stavka.zaDokID');
+//        $this->db->where('stavka.ID',$id);
+//        $this->db->group_by('stavkadetali.konto');
+//        $query = $this->db->get();
+//        if($query->num_rows() > 0)
+//        {
+//            $result = $query->result();
+//        }
+//        else
+//        {
+//            $result = false;
+//        }
+//        return $result;
+
+
+    }
+
+    public function getIzvodi_dropdown()
+    {
+        $tipniza = array(40, 50);
+        $this->db->select('stavka.ID, stavka.intBroj,stavka.ZSID, bis_zirosmetki.zirosmetka as zirosmetka,');
+        $this->db->from('stavka');
+//        $this->db->where('MFID', 1);
+
+
+        $this->db->join('bis_zirosmetki', 'stavka.ZSID = bis_zirosmetki.id', 'left');
+
+        $this->db->where_in('tip', $tipniza);
+        $this->db->group_by('zirosmetka, intBroj');
+        $query = $this->db->get();
+        //$this->db->order_by('ID');
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[] = '';
+            foreach($query->result_array() as $row){
+                $p=     $row['intBroj'] .'.'. $row['ZSID'];
+
+                $dropdown[$p] = $row['intBroj'] .' . '.$row['zirosmetka'];
+            }
+            // $dropdown[0] = 'Definiraj nova Smetka';
+        }
+        return $dropdown;
+
+}
+    public function getLastNalogBroj()
+    {
+        $this->db->select('broj');
+        $this->db->from('autoincrement');
+        $this->db->where('id',8);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result;
+    }
+    public function incrementNalogBroj($newbroj)
+    {
+        $newbroj = array(
+            'broj' => $newbroj
+        );
+        $this->db->where('id', 8);
+        $query = $this->db->update('autoincrement', $newbroj);
+        return $query;
+    }
+    public function info_nalog($id)
+    {
+        $this->db->select('
+                    nalog.*
+
+                    ');
+        $this->db->from('nalog');
+     //   $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+     //   $this->db->join('konta', 'stavka.tipID = konta.id', 'left');
+        $this->db->where('nalog.id', $id);
+        $query = $this->db->get();
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            $result[0]->stavki = $this->getNalogDetali($id);
+            return $result;
+        } else {
+            $result = false;
+            return $result;
+        }
+    }
+    public function konto_dropdown()
+    {
+        $this->db->select('sifra, opis');
+        $this->db->from('konta');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown['1'] ='----------';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['sifra']] = $row['sifra'];
+            }
+        }
+        return $dropdown;
+    }
+    public function komintent_dropdown()
+    {
+        $this->db->select('ime,firmaID');
+        $this->db->from('firma');
+        $this->db->order_by('firmaID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown['1'] = '---------';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['firmaID']] = $row['ime'];
+            }
+        }
+        return $dropdown;
+    }
+    public function delete_nalog($id)
+    {
+        $this->db->where('id', $id);
+        $delete = $this->db->delete('nalog');
+
+        if ($delete) {
+            $this->db->where('nalog_id', $id);
+            $this->db->delete('nalog_detali');
+
+           // $updatedokument = array(
+             //   'zaDokID' => 0,
+             //   'fzom_status' => 0
+          //  );
+         //   $this->db->where('zaDokID', $id);
+         //   $this->db->update('stavka', $updatedokument);
+        }
+        return $delete;
+    }
+}

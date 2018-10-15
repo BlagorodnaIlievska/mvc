@@ -1,0 +1,76 @@
+<?php  if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class Proizvoditeli extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+    }
+
+    public function nov()
+    {
+        $data['tip']          = 'proizvoditeli';
+        $this->load->view('podatoci/proizvoditeli/nov', $data);
+    }
+
+
+    public function izmeni()
+    {
+        $this->load->model('podatoci/proizvoditeli_model');
+        $data['main_content'] = 'podatoci/proizvoditeli/izmeni';
+        $data['proizvoditel']      = $this->proizvoditeli_model->getProizvoditel($this->input->get("id"));
+        $this->load->view('podatoci/proizvoditeli/izmeni', $data);
+    }
+
+
+
+    public function lista()
+    {
+
+        $data['main_content'] = 'podatoci/proizvoditeli/lista';
+
+        $data['ajax'] = 1;
+        $this->load->view('includes/template', $data);
+    }
+
+    public function popolnilista()
+    {
+
+        //$data['main_content'] = 'podatoci/katalog/popolnilista';
+        $this->load->model('podatoci/proizvoditeli_model');
+        $return = $this->proizvoditeli_model->getProizvoditeli();
+        echo json_encode($return);
+    }
+
+
+
+
+
+    public function create_proizvoditel()
+    {
+        $this->load->model('podatoci/proizvoditeli_model');
+        $this->proizvoditeli_model->create_proizvoditel();
+        echo "ok";
+    }
+
+
+
+    public function update_proizvoditel()
+    {
+        $this->load->model('podatoci/proizvoditeli_model');
+        $this->proizvoditeli_model->update_proizvoditel();
+        echo "ok";
+    }
+
+    public function delete_proizvoditel()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('podatoci/proizvoditeli_model');
+        $this->proizvoditeli_model->delete_proizvoditel($id);
+        echo "ok";
+    }
+}

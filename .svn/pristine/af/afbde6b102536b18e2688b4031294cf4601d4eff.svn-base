@@ -1,0 +1,167 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: HP
+ * Date: 4/12/13
+ * Time: 12:16 AM
+ * To change this template use File | Settings | File Templates.
+ */
+class Dnbol_model extends CI_Model{
+
+
+    public  function sifra_dropdown()
+    {
+        $this->db->select('id, sifra');
+        $this->db->from('dnevnaBol_uslugi');
+        $this->db->order_by('id');
+        // $this->db->where('parent_grupa !=',0);
+        //    $this->db->where('parent_podgrupa !=',0);
+
+        $query    = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[''] = 'избери шифра';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['id']] = $row['sifra'];
+            }
+        }
+
+        return $dropdown;
+
+    }
+
+    public  function naziv_dropdown()
+    {
+        $this->db->select('id, naziv');
+        $this->db->from('dnevnaBol_uslugi');
+        //   $this->db->where('parent_grupa !=',0);
+        // $this->db->where('parent_podgrupa !=',0);
+        $this->db->order_by('id');
+        $query    = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[''] = 'избери';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['id']] = $row['naziv'];
+            }
+        }
+
+        return $dropdown;
+
+    }
+
+    public function getUslugi_nova()
+    {
+
+        $this->db->select('*');
+        $this->db->from('dnevnaBol_uslugi');
+
+        //  $this->db->where("parent_podgrupa",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+    public function getGrupa($id)
+    {
+        $this->db->select("*");
+        $this->db->where('id', $id);
+
+        $query = $this->db->get('dnevnaBol_uslugi');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+
+    public function update_paket()
+    {
+        $field_update_data = $this->input->post();
+        $this->db->where('id', $this->input->post('id'));
+        $update = $this->db->update('dnevnaBol_uslugi', $field_update_data);
+
+        return $update;
+    }
+
+
+
+    public function create_paket(){
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('dnevnaBol_uslugi', $new_field_insert_data);
+        return $insert;
+    }
+    public function create_sodrzina(){
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('dnevnaBol_uslugi', $new_field_insert_data);
+        return $insert;
+    }
+
+    public function delete_grupa($id)
+    {
+        $this->db->where('id',$id );
+        $this->db->delete('dnevnaBol_uslugi');
+    }
+
+    public function getPaket($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('dnevnaBol_uslugi');
+        $this->db->where("id",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function getSodrzini($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('dnevnaBol_uslugi');
+
+        $this->db->where("id",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+
+    public function prebaruvanje_paketi_posifra($sifraid){
+        $this->db->from('dnevnaBol_uslugi');
+        //   $this->db->where('parent_grupa !=',0);
+
+        //  $this->db->where('id',0);
+        //   $this->db->where('parent_podgrupa !=',0);
+        $this->db->where('id',$sifraid);
+        $this->db->order_by('id');
+        $query    = $this->db->get();
+        return $query->result();
+    }
+    public function prebaruvanje_paketi_ponaziv($nazivid){
+        $this->db->from('dnevnaBol_uslugi');
+        //   $this->db->where('parent_grupa !=',0);
+
+        //  $this->db->where('id',0);
+        //  $this->db->where('parent_podgrupa !=',0);
+        $this->db->where('id',$nazivid);
+        $this->db->order_by('id');
+        $query    = $this->db->get();
+        return $query->result();
+    }
+
+}

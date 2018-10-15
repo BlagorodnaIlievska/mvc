@@ -1,0 +1,157 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Menu extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function index()
+    {
+        $data['main_content'] = 'kartici/index_form';
+        $this->load->view('includes/template', $data);
+    }
+
+    public function kartica_klient()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('kartici/kartica_klient_form', $data);
+    }
+
+public function pecati_pregled_po_klienti(){
+    $this->load->helper('to_pdf');
+
+
+    $this->load->model('kartici/kartici_model');
+    $q = $this->kartici_model->getPodatociKlienti();
+
+    $data['q']=$q;
+    // print_r($q); die();
+    $html = $this->load->view('kartici/pecatenje/pecati_pregled_po_klienti', $data, true);
+    pdf_create($html, 'filename')
+        or
+        $data = pdf_create($html, '', false);
+    write_file('name', $data);
+}
+    public function pecati_kartica(){
+
+        $klientid = $this->input->get('klientid');
+
+
+
+
+
+
+        $izborid = $this->input->get('izborid');
+        $this->load->model('kartici/kartici_model');
+        $klient_ime = $this->kartici_model->getKlient($klientid);
+        $data['klient_ime'] = $klient_ime['ime'];
+if($izborid == 0){
+    $query = $this->kartici_model->getCelaKarticaKlient($klientid);
+}elseif($izborid == 1){
+    $query = $this->kartici_model->getVleznaKarticaKlient($klientid);
+}
+    elseif($izborid == 2){
+        $query = $this->kartici_model->getIzleznaKarticaKlient($klientid);
+    }else{
+    $query = $this->kartici_model->getCelaKarticaKlient($klientid);
+}
+        $data['izbor'] = $izborid;
+$data['kartici'] = $query;
+        $data['klient_ime'] = $klient_ime;
+        $data['main_content'] = 'kartici/pecatenje/pecati_kartica';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+
+    }
+
+    public function getCelaKarticaKlient()
+    {
+        $klientid = $this->input->post('klientid');
+        $this->load->model('kartici/kartici_model');
+        $query = $this->kartici_model->getCelaKarticaKlient($klientid);
+        echo json_encode($query);
+    }
+
+    public function getVleznaKarticaKlient()
+    {
+        $klientid = $this->input->post('klientid');
+        //$tip = $this->input->post('tip');
+        $this->load->model('kartici/kartici_model');
+        $query = $this->kartici_model->getVleznaKarticaKlient($klientid);
+        echo json_encode($query);
+    }
+
+    public function getIzleznaKarticaKlient()
+    {
+        $klientid = $this->input->post('klientid');
+        //$tip = $this->input->post('tip');
+        $this->load->model('kartici/kartici_model');
+        $query = $this->kartici_model->getIzleznaKarticaKlient($klientid);
+        echo json_encode($query);
+    }
+
+    public function pregled_klienti()
+    {
+        $this->load->model('kartici/kartici_model');
+        $data['komercijalist'] = $this->kartici_model->komercijalist_dropdown();
+        $this->load->view('kartici/pregled_klienti_form', $data);
+    }
+
+    public function getPregledKlienti()
+    {
+        $pogled = $this->input->post('pogled');
+        $komercijalist = $this->input->post('komercijalist');
+        $this->load->model('kartici/kartici_model');
+        $query = $this->kartici_model->getPregledKlienti($pogled, $komercijalist);
+        echo json_encode($query);
+    }
+
+    public function getVlezIzlezZaKlient()
+    {
+        $vlezizlez = $this->input->post('vlezizlez');
+        $klientid = $this->input->post('klientid');
+        $this->load->model('kartici/kartici_model');
+        $query = $this->kartici_model->getVlezIzlezZaKlient($klientid, $vlezizlez);
+        echo json_encode($query);
+    }
+
+    public function getPodatociKlienti()
+    {
+        $this->load->model('kartici/kartici_model');
+        $query = $this->kartici_model->getPodatociKlienti();;
+        echo json_encode($query);
+    }
+
+    public function dospeanost()
+    {
+        $this->load->view('kartici/dospeanost_form');
+    }
+
+    public function promet()
+    {
+        $this->load->model('kartici/kartici_model');
+        $data['komercijalist'] = $this->kartici_model->komercijalist_dropdown();
+        $this->load->view('kartici/promet_form', $data);
+    }
+
+    public function getPrometKlienti()
+    {
+        $this->load->model('kartici/kartici_model');
+        $query = $this->kartici_model->getPrometKlienti();;
+        echo json_encode($query);
+    }
+
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+}

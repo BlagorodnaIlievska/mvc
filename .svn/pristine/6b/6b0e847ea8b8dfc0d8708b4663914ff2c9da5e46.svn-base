@@ -1,0 +1,286 @@
+<div class="period_klient">
+
+  <?php if (bis_check_access('vlezni_fakturi_period_klient_komitent_data')): ?>
+    <div class="period-klient-filter">
+        <form class="priodklientfilterforma" action="/index.php/vlezni_fakturi/period_klient/getAllKlienti">
+            <div class="grupafilter-pk">
+                <div class="periodkonto">
+                    <label>Коминтент: </label>
+                    <?php echo form_dropdown('klientid', $klient, '', 'class="pkklient parametar"'); ?>
+                </div>
+                <div class="perioddatum">
+                    <span>Период од:</span>
+                    <input type="text" class="periodod2 parametar" name="periodod"/>
+                    <span style="margin: 0 5px;">до:</span>
+                    <input type="text" class="perioddo2 parametar" name="perioddo"/>
+                </div>
+                <div class="reset-baraj">
+                    <button type="button" value="" class="button resetbarajpolinja">
+                        <span>Ресетирај</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <?php endif ?>
+
+    <div class="prikaz">
+        <p class="naslovperiod"> ( <span class="vkupnostavki">0</span> ) Листа на износ по клиенти</p>
+
+        <div class="predtabela">
+            <table class="tperiodklienti" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th>Клиент</th>
+                    <th class="osnova">Основица</th>
+                    <th class="ddv">ДДВ</th>
+                    <th class="vkupno">Вкупно</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class='hiderow trow'>
+                    <td class="klient"></td>
+                    <td class="klientid hide"></td>
+                    <td class="osnova"></td>
+                    <td class="ddv"></td>
+                    <td class="vkupno"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <table class="sumiranje sumklienti">
+            <tfoot>
+            <tr>
+                <td class="vkupnolabel" style="width:auto;">Вкупно:</td>
+                <td class="osnovasum" style="width:105px;"></td>
+                <td class="vkupnoddv" style="width:104px;"></td>
+                <td class="vkupnovkupno" style="width:104px;"></td>
+            </tr>
+            </tfoot>
+        </table>
+        <?php if (bis_check_access('vlezni_fakturi_period_klient_pecati_button')): ?>
+        <a href="" target="_blank" class="cmd-printlink-site">
+            <button type="button" class="pecatikartica print"><span>Печати</span></button>
+        </a>
+            <?php endif ?>
+    </div>
+    <div class="detali">
+        <p class="naslovperioddetali"> ( <span class="vkupnostavki">0</span> ) Листа на фактури</p>
+
+        <div class="predtabela">
+            <table class="tklientfakturi" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th class="datum">Датум</th>
+                    <th class="broj">Број</th>
+                    <th class="osnova">Основица</th>
+                    <th class="ddv">ДДВ</th>
+                    <th class="vkupno">Вкупно</th>
+                    <th>Група</th>
+                    <th>Забелешка</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class='hiderow'>
+                    <td class="dbid hide"></td>
+                    <td class="datum"></td>
+                    <td class="broj"></td>
+                    <td class="osnova"></td>
+                    <td class="ddv"></td>
+                    <td class="vkupno"></td>
+                    <td class="grupa"></td>
+                    <td class="zabeleska"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <table class="sumiranje sumfakturi sumvlezni-pk">
+            <tfoot>
+            <tr>
+                <td class="vkupnolabel" style="width:169px;">Вкупно:</td>
+                <td class="osnovasum" style="width:105px;"></td>
+                <td class="vkupnoddv" style="width:103px;"></td>
+                <td class="vkupnovkupno" style="width:104px;"></td>
+<!--                <td class="ddgrupa" style=""></td>-->
+                <td class=""></td>
+            </tr>
+            </tfoot>
+        </table>
+        <?php if (bis_check_access('vlezni_fakturi_period_klient_pecati_button')): ?>
+        <a href="" target="_blank" class="cmd-printlink-detali">
+            <button type="button" class="pecatikartica print"><span>Печати детално</span></button>
+        </a>
+        <?php endif ?>
+    </div>
+</div>
+<script>
+    function period_klient_ispraznifakturitabela() {
+        jQuery(".tklientfakturi tbody tr").each(function () {
+            if (jQuery(this).hasClass("hiderow")) {
+
+            } else {
+                jQuery(this).remove();
+            }
+        });
+    }
+    function period_klient_isprazniklientitabela() {
+        jQuery(".tperiodklienti tbody tr").each(function () {
+            if (jQuery(this).hasClass("hiderow")) {
+
+            } else {
+                jQuery(this).remove();
+            }
+        });
+        jQuery(".naslovperiod .vkupnostavki").html("0 во листа");
+        jQuery(".sumklienti .osnovasum").html(formatnumbermkd(0));
+        jQuery(".sumklienti .vkupnoddv").html(formatnumbermkd(0));
+        jQuery(".sumklienti .vkupnovkupno").html(formatnumbermkd(0));
+    }
+    function period_klient_lista() {
+        jQuery.ajax({
+            url: "/index.php/vlezni_fakturi/period_klient/getAllKlienti",
+            data: jQuery(".priodklientfilterforma").serialize(),
+            type: 'POST',
+            dataType: 'json',
+            success: function (response) {
+//                console.log(response);
+                if (response == null) {
+                    period_klient_isprazniklientitabela();
+                    return true;
+                }
+                var vkupnostavki = response.length;
+                jQuery(".tperiodklienti").find("tr:gt(1)").remove();
+                var tr = jQuery('.tperiodklienti tr:last');
+                tr.removeClass('hiderow');
+                var klientosnova = 0, klientddv = 0, klientvkupno = 0;
+                for (var i = 0; i < response.length; i++) {
+                    //console.log(response[i].ZSID);
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.find('.klientid').html(response[i].firmaID);
+                    newrow.find('.klient').html(response[i].firmaIme);
+                    newrow.find('.osnova').html(formatnumbermkd(response[i].osnova));
+                    newrow.find('.ddv').html(response[i].ddv);
+                    newrow.find('.vkupno').html(formatnumbermkd(response[i].vkupno));
+                    klientosnova = 1 * klientosnova + 1 * response[i].osnova;
+                    klientddv = 1 * klientddv + 1 * response[i].ddv;
+                    klientvkupno = 1 * klientvkupno + 1 * response[i].vkupno;
+                }
+                tr.addClass('hiderow');
+                jQuery(".naslovperiod .vkupnostavki").html(vkupnostavki + " во листа");
+                jQuery(".sumklienti .osnovasum").html(formatnumbermkd(klientosnova));
+                jQuery(".sumklienti .vkupnoddv").html(formatnumbermkd(klientddv));
+                jQuery(".sumklienti .vkupnovkupno").html(formatnumbermkd(klientvkupno));
+                jQuery(".tperiodklienti").trigger("update");
+            }
+        });
+    }
+
+
+    function period_klient_fakturipoklient(klient_id) {
+        var data = {
+            klientid:klient_id,
+            periodod:jQuery(".priodklientfilterforma .periodod2").val(),
+            perioddo:jQuery(".priodklientfilterforma .perioddo2").val()
+        };
+        jQuery.ajax({
+            url: "/index.php/vlezni_fakturi/period_klient/getFakturaKlientKlientDatum",
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function (response) {
+               // console.log(response);
+                if (response == null) {
+                    period_klient_ispraznifakturitabela();
+                    return true;
+                }
+                var fakturiosnova = 0, fakturiddv = 0, fakturivkupno = 0;
+                var vkupnostavki = response.length;
+                jQuery(".tklientfakturi").find("tr:gt(1)").remove();
+                var tr = jQuery('.tklientfakturi tr:last');
+                tr.removeClass('hiderow');
+                for (var i = 0; i < response.length; i++) {
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.find('.datum').html(response[i].datum);
+                    newrow.find('.broj').html(response[i].broj);
+                    newrow.find('.osnova').html(formatnumbermkd(response[i].osnova));
+                    newrow.find('.ddv').html(formatnumbermkd(response[i].ddv));
+                    newrow.find('.vkupno').html(formatnumbermkd(response[i].vkupno));
+                    newrow.find('.grupa').html(response[i].grupa);
+                    newrow.find('.zabeleska').html(response[i].zabeleska);
+                    fakturiosnova = 1 * fakturiosnova + 1 * response[i].osnova;
+                    fakturiddv = 1 * fakturiddv + 1 * response[i].ddv;
+                    fakturivkupno = 1 * fakturivkupno + 1 * response[i].vkupno;
+                }
+                tr.addClass('hiderow');
+                jQuery(".naslovperioddetali .vkupnostavki").html(vkupnostavki + " во листа");
+                jQuery(".sumfakturi .osnovasum").html(formatnumbermkd(fakturiosnova));
+                jQuery(".sumfakturi .vkupnoddv").html(formatnumbermkd(fakturiddv));
+                jQuery(".sumfakturi .vkupnovkupno").html(formatnumbermkd(fakturivkupno));
+                jQuery(".tklientfakturi").trigger("update");
+            }
+        });
+    }
+    jQuery(document).ready(function () {
+        jQuery(".pkklient").combobox();
+var klientime = '';
+var klientID;
+        jQuery(".pkklient").change(function(){
+            var n = jQuery(this).val();
+            klientime = $(this).text();
+            if(n != '' && n != 0){
+                $(".cmd-printlink-site").hide();
+            }else
+            if(n == '' || n == 0){
+                $(".cmd-printlink-site").show();
+            }
+  });
+
+        jQuery('.periodod2').datepicker();
+        jQuery('.periodod2').datepicker('setDate', new Date(2013, 00, 01));
+        jQuery('.perioddo2').datepicker();
+        jQuery('.perioddo2').datepicker('setDate', new Date());
+        jQuery(".tperiodklienti").tablesorter();
+        jQuery(".tklientfakturi").tablesorter();
+        period_klient_lista();
+
+        jQuery(".tperiodklienti").delegate("tr.trow", "click", function () {
+            jQuery(".tperiodklienti .trow").removeClass("active");
+            jQuery(this).addClass('active');
+            klientime = jQuery(this).find(".klient").html().trim();
+            klientID = jQuery(this).find(".klientid").html().trim();
+            period_klient_fakturipoklient(jQuery(this).find(".klientid").html().trim());
+
+        });
+        jQuery('.parametar').live('change', function () {
+            klientime = jQuery(".pkklient option:selected").text();
+            klientID = jQuery(".pkklient option:selected").val();
+            period_klient_lista();
+            period_klient_ispraznifakturitabela();
+        });
+        jQuery('.period_klient .resetbarajpolinja').click(function () {
+            jQuery('.period_klient .periodod2').datepicker('setDate', new Date(2013, 00, 01));
+            jQuery('.period_klient .perioddo2').datepicker('setDate', new Date());
+            jQuery('.period_klient .filterbrojfaktura').val('');
+            jQuery('.period_klient .ui-combobox-input').val("Сите");
+            jQuery('.period_klient .pkklient').val(0);
+            period_klient_lista();
+            period_klient_ispraznifakturitabela();
+        });
+
+        $(".cmd-printlink-site").on("click", function(){
+            var periodod = $(".periodod2").val();
+            var perioddo = $(".perioddo2").val();
+           $(".cmd-printlink-site").attr("href","/index.php/print/pdf?view=/index.php/vlezni_fakturi/period_klient/pecati_site_klienti_iznos&periodod=" + periodod + "&perioddo=" + perioddo + "&klientid=0");
+            // $(".cmd-printlink-site").attr("href","/index.php/print/pdf?view=/index.php/vlezni_fakturi/period_klient/pecati_site_klienti_iznos_osnova?periodod=" + periodod + "perioddo=" + perioddo + "klientid=0");
+
+        });
+        $(".cmd-printlink-detali").click(function(){
+            var periodod = $(".periodod2").val();
+            var perioddo = $(".perioddo2").val();
+           // var klientid = jQuery(".tperiodklienti.trow.active").find(".klientid").html().trim();
+        $(".cmd-printlink-detali").attr("href","/index.php/print/pdf?view=/index.php/vlezni_fakturi/period_klient/pecati_fakturi_po_klient&periodod=" + periodod + "&perioddo=" + perioddo + "&klientid=" + klientID + "&klientime=" + klientime);
+
+        });
+
+    });
+</script>

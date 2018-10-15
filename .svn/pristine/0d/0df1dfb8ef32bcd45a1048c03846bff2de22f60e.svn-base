@@ -1,0 +1,680 @@
+<?php
+
+class Paket_model extends CI_Model
+{
+
+
+    public function create_grupa(){
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('paketi', $new_field_insert_data);
+        return $insert;
+    }
+    public function create_podgrupa(){
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('paketi', $new_field_insert_data);
+        return $insert;
+    }
+    public function create_paket(){
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('paketi', $new_field_insert_data);
+        return $insert;
+    }
+    public function create_sodrzina(){
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('paketi', $new_field_insert_data);
+        return $insert;
+    }
+
+    public function delete_grupa($id)
+    {
+        $this->db->where('id',$id );
+        $this->db->delete('paketi');
+    }
+    public function update_paket()
+    {
+        $field_update_data = $this->input->post();
+        $this->db->where('id', $this->input->post('id'));
+        $update = $this->db->update('paketi', $field_update_data);
+
+        return $update;
+    }
+
+
+
+    public function getAll_grupa()
+    {
+        $this->db->select('*');
+        $this->db->from('paketi');
+        $this->db->where("parent_grupa",0);
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function getAll_podgrupa()
+    {
+        $this->db->select('*');
+        $this->db->from('paketi');
+        $this->db->where("parent_podgrupa",0);
+        $this->db->where("parent_grupa!=",0);
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+    public function getAll_paket()
+    {
+        $this->db->select('*');
+        $this->db->from('paketi');
+
+        $this->db->where("parent_podgrupa !=",0);
+        $this->db->where("parent_grupa !=",0);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+    public function getPodgrupi($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('paketi');
+        $this->db->where("parent_grupa",$id);
+        $this->db->where("parent_podgrupa",0);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function getPodgrupa($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('paketi');
+        $this->db->where("id",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+    public function getPaketi($id)
+{
+
+    $this->db->select('*');
+    $this->db->from('paketi');
+
+    $this->db->where("parent_podgrupa",$id);
+    $query = $this->db->get();
+    if ($query->num_rows() > 0) {
+        $result = $query->result();
+    } else {
+        $result = false;
+    }
+
+    return $result;
+}
+    public function getPaketi_nova()
+    {
+
+        $this->db->select('*');
+        $this->db->from('paketi');
+
+      //  $this->db->where("parent_podgrupa",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+    public function getPaket($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('paketi');
+        $this->db->where("id",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+    public function getSodrzini($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('paketi');
+
+        $this->db->where("id",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+
+
+    public function getGrupa($id)
+    {
+        $this->db->select("*");
+        $this->db->where('id', $id);
+
+        $query = $this->db->get('paketi');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+    public function getGrupi()
+{
+    $this->db->select("*");
+    $this->db->where('parent_grupa', 0);
+    $this->db->where('parent_grupa', 0);
+    $query = $this->db->get('paketi');
+
+    if ($query->num_rows > 0) {
+        return $query->result();
+    }
+
+}
+
+    public function getZirosmetki()
+    {
+        $this->db->select("*");
+        $query = $this->db->get('bis_zirosmetki');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+    function get_firma_dropdown()
+    {
+        $this->db->select('MFID, Ime');
+        $this->db->from('xmf');
+        $this->db->order_by('MFID');
+        $query    = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[''] = 'избери фирма';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['MFID']] = $row['Ime'];
+            }
+        }
+
+        return $dropdown;
+
+    }
+   public  function sifra_dropdown()
+    {
+        $this->db->select('id, sifra');
+        $this->db->from('paketi');
+        $this->db->order_by('id');
+       // $this->db->where('parent_grupa !=',0);
+    //    $this->db->where('parent_podgrupa !=',0);
+
+        $query    = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[''] = 'сите';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['id']] = $row['sifra'];
+            }
+        }
+
+        return $dropdown;
+
+    }
+    public function prebaruvanje_paketi_posifra($sifraid){
+        $this->db->from('paketi');
+     //   $this->db->where('parent_grupa !=',0);
+
+      //  $this->db->where('id',0);
+    //   $this->db->where('parent_podgrupa !=',0);
+        $this->db->where('id',$sifraid);
+        $this->db->order_by('id');
+        $query    = $this->db->get();
+        return $query->result();
+    }
+    public function prebaruvanje_paketi_ponaziv($nazivid){
+        $this->db->from('paketi');
+     //   $this->db->where('parent_grupa !=',0);
+
+        //  $this->db->where('id',0);
+      //  $this->db->where('parent_podgrupa !=',0);
+        $this->db->where('id',$nazivid);
+        $this->db->order_by('id');
+        $query    = $this->db->get();
+        return $query->result();
+    }
+    public  function naziv_dropdown()
+    {
+        $this->db->select('id, naziv');
+        $this->db->from('paketi');
+     //   $this->db->where('parent_grupa !=',0);
+       // $this->db->where('parent_podgrupa !=',0);
+        $this->db->order_by('id');
+        $query    = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[''] = 'сите';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['id']] = $row['naziv'];
+            }
+        }
+
+        return $dropdown;
+
+    }
+
+    public function create_zirosmetka()
+    {
+        $new_field_insert_data =  $this->input->post();
+
+        $insert = $this->db->insert('bis_zirosmetki', $new_field_insert_data);
+
+        return $insert;
+    }
+
+    public function getAll_smetka()
+    {
+        $this->db->select('
+                   zirosmetki.TZSID as id,
+                   zirosmetki.tzsBroj as broj,
+                   banka.BankaIme as banka_ime,
+                   xmf.Ime as firma_ime,
+                   Oddel.imeOddel as oddel,
+                   Pododdel.pododdelIme as pododdel
+                   ');
+        $this->db->from('zirosmetki');
+        $this->db->join('xmf', 'zirosmetki.MFID=xmf.MFID');
+        $this->db->join('banka', 'zirosmetki.bankaID=banka.BankaID');
+        $this->db->join('Pododdel', 'zirosmetki.pododdelID=Pododdel.pododdelID');
+        $this->db->join('Oddel', 'zirosmetki.oddelID=Oddel.oddelID');
+        //$this->db->join('komerc','firma.komercID=komerc.komercID');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function delete_smetka()
+    {
+
+        $this->db->where('TZSID', $this->uri->segment(4));
+        $this->db->delete('zirosmetki');
+    }
+
+    public function edit_smetka()
+    {
+
+        $this->db->where('TZSID', $this->uri->segment(4));
+        $query = $this->db->get('zirosmetki');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+
+    public function update_smetka()
+    {
+        $field_update_data = array(
+
+            'tzsBroj' => $this->input->post('tzsBroj'), 'bankaID' => $this->input->post('bankaID'), 'pocetnaSos' => 0, 'order' => 0, 'firmaID' => 1, 'MFID' => $this->input->post('MFID'), 'oddelID' => $this->input->post('oddelID'), 'pododdelID' => $this->input->post('pododdelID')
+
+        );
+
+        $this->db->where('TZSID', $this->input->post('TZSID'));
+        $update = $this->db->update('zirosmetki', $field_update_data);
+
+        return $update;
+    }
+
+    public function create_kasa()
+    {
+        $new_field_insert_data = array(
+
+            'kasaName' => $this->input->post('kasaName'), 'MFID' => $this->input->post('MFID'), 'order' => 0, 'oddelID' => $this->input->post('oddelID'), 'pododdelID' => $this->input->post('pododdelID')
+
+
+        );
+
+        $insert = $this->db->insert('kasi', $new_field_insert_data);
+
+        return $insert;
+    }
+
+    public function getAll_kasa()
+    {
+
+        $this->db->select('
+                   kasi.kasaId as id,
+                   kasi.kasaName as kasa_ime,
+                   xmf.Ime as firma_ime,
+                   Oddel.imeOddel as oddel,
+                   Pododdel.pododdelIme as pododdel
+                   ');
+        $this->db->from('kasi');
+        $this->db->join('xmf', 'kasi.MFID=xmf.MFID');
+
+        $this->db->join('Pododdel', 'kasi.pododdelID=Pododdel.pododdelID');
+        $this->db->join('Oddel', 'kasi.oddelID=Oddel.oddelID');
+        //$this->db->join('komerc','firma.komercID=komerc.komercID');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function delete_kasa()
+    {
+
+        $this->db->where('kasaId', $this->uri->segment(4));
+        $this->db->delete('kasi');
+    }
+
+    public function edit_kasa()
+    {
+
+        $this->db->where('kasaId', $this->uri->segment(4));
+        $query = $this->db->get('kasi');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+
+    public function update_kasa()
+    {
+        $field_update_data = array(
+
+
+            'kasaName' => $this->input->post('kasaName'), 'MFID' => $this->input->post('MFID'), 'order' => 0, 'oddelID' => $this->input->post('oddelID'), 'pododdelID' => $this->input->post('pododdelID')
+
+        );
+
+        $this->db->where('kasaId', $this->input->post('kasaId'));
+        $update = $this->db->update('kasi', $field_update_data);
+
+        return $update;
+    }
+
+    public function create_magacin()
+    {
+        $new_field_insert_data = array(
+
+
+            'MFID' => $this->input->post('firma'), 'magTip' => $this->input->post('magTip'), 'magIme' => $this->input->post('magIme'), 'magLokacija' => $this->input->post('magLokacija'), 'oddelID' => $this->input->post('oddelID'), 'pododdelID' => $this->input->post('pododdelID')
+
+
+        );
+
+        $insert = $this->db->insert('magacin', $new_field_insert_data);
+
+        return $insert;
+    }
+
+    public function getAll_magacin()
+    {
+        $this->db->select('
+                   magacin.magacinID as id,
+                   magacin.magLokacija as lokacija,
+                   magacin.magIme as magacin_ime,
+                   magacin.magTip as tip,
+                   xmf.Ime as firma_ime,
+                   Oddel.imeOddel as oddel,
+                   Pododdel.pododdelIme as pododdel
+                   ');
+        $this->db->from('magacin');
+        $this->db->join('xmf', 'magacin.MFID=xmf.MFID');
+
+        $this->db->join('Pododdel', 'magacin.pododdelID=Pododdel.pododdelID');
+        $this->db->join('Oddel', 'magacin.oddelID=Oddel.oddelID');
+        //$this->db->join('komerc','firma.komercID=komerc.komercID');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function delete_magacin()
+    {
+
+        $this->db->where('magacinID', $this->uri->segment(4));
+        $this->db->delete('magacin');
+    }
+
+    public function edit_magacin()
+    {
+
+        $this->db->where('magacinID', $this->uri->segment(4));
+        $query = $this->db->get('magacin');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+
+    public function update_magacin()
+    {
+        $field_update_data = array(
+
+
+            'MFID' => $this->input->post('firma'), 'magTip' => $this->input->post('magTip'), 'magIme' => $this->input->post('magIme'), 'magLokacija' => $this->input->post('magLokacija'), 'oddelID' => $this->input->post('oddelID'), 'pododdelID' => $this->input->post('pododdelID'));
+
+        $this->db->where('magacinID', $this->input->post('magacinID'));
+        $update = $this->db->update('magacin', $field_update_data);
+
+        return $update;
+    }
+    public function smeni_p(){
+
+        $this->db->select('id, cena');
+        $this->db->from('paketi');
+        $ceni = $this->db->get();
+        if($ceni->num_rows()>0){
+            foreach ($ceni->result_array() as $row) {
+                switch (true){
+                    case ($row['cena'] <= 100):
+                        $nova=0;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case($row['cena'] >= 101 && $row['cena'] <= 300):
+                        $nova = 20;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= 301 && $row['cena'] <= 500):
+
+                        $nova = 40;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case($row['cena'] >= 501 && $row['cena'] <= 700):
+
+                        $nova = 60;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= 701 && $row['cena'] <= 1000):
+
+                        $nova = 80;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= '1,001' && $row['cena'] <= '2,000'):
+
+                        $nova = 150;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= '2,001' && $row['cena'] <= '3,000'):
+
+                        $nova = 250;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case(floatval($row['cena']) >= 3001 && floatval($row['cena']) <= 4000):
+                        $nova = 350;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case(floatval($row['cena']) >= 4001 && floatval($row['cena']) <= 5000):
+
+
+                        $nova = 450;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case(floatval($row['cena']) >= 5001 && floatval($row['cena']) <= 6000):
+
+                        $nova = 550;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case(floatval($row['cena']) >= 6001 && floatval($row['cena']) <= 8000):
+
+                        $nova = 700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case(floatval($row['cena']) >= 8001 && floatval($row['cena']) <= 10000):
+
+                        $nova = 900;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case(floatval($row['cena']) >= 10001 && floatval($row['cena']) <= 15000):
+
+                        $nova = 1250;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case(floatval($row['cena']) >= 15001 && floatval($row['cena']) <= 20000):
+                        $nova = 1700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 20001 && floatval($row['cena']) <= 25000):
+                        $nova = 2200;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 25001 && floatval($row['cena']) <= 30000):
+                        $nova = 2700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 30001 && floatval($row['cena']) <= 35000):
+                        $nova = 3200;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 35001 && floatval($row['cena']) <= 40000):
+                        $nova = 3700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 40001 && floatval($row['cena']) <= 45000):
+                        $nova = 4200;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 45001 && floatval($row['cena']) <= 50000):
+                        $nova = 4700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 50001 && floatval($row['cena']) <= 55000):
+                        $nova = 5200;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 55001 && floatval($row['cena']) <= 60000):
+                        $nova = 5700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) > 60000):
+                        $nova = 6000;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                }
+            }
+        }
+
+    }
+    public function update_cena($id, $nova){
+        $pole=array(
+            'participacija'=>$nova
+        );
+
+        $this->db->where('id', $id);
+        $this->db->update('paketi', $pole);
+    }
+}

@@ -1,0 +1,66 @@
+<html>
+<head>
+
+</head>
+<body>
+<p align='center'>Листа на артикли</p>
+<table  border='1'   width='150' height='60' align='center' >
+    <tr>
+
+
+        <td>Ред.Бр.</td>
+        <td>Име на артикл</td>
+        <td>Баркод</td>
+
+        <td>ддв(%)</td>
+        <td>малопродажна цена</td>
+
+
+
+        <td>каталошки број 2</td>
+
+
+    </tr>
+
+    <?php
+    $reden=1;
+
+    if(isset($q)){
+        foreach($q as $row){
+
+            echo "<tr>" ;
+            echo "<td>" . $reden. "</td>";
+            echo "<td>" . $row->S1Ime. "</td>";
+            echo "<td>" . $row->BarCode. "</td>";
+
+            echo "<td>" . $row->SDDV. "</td>";
+            echo "<td>" . $row->Cen0. "</td>";
+
+            echo "<td>" . $row->katBroj. "</td>";
+
+
+
+            $reden=$reden+1;
+
+
+            //$b+=$bezddv;
+            echo " </tr>";
+
+        }
+    }
+
+    ?>
+
+</table>
+<br>
+<br>
+<br>
+<!--<p class="doleLevo">
+    <? //echo 'Osnova vkupno  :'.$o;?>
+    <br>
+    <?//echo 'Ddv vkupno :'.$d;?>
+    <br>
+    <?//echo 'Vkupno :'.$v;?>
+</p>-->
+</body>
+</html>

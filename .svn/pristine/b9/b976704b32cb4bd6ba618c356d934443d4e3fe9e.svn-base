@@ -1,0 +1,49 @@
+<h1>Izberi ...</h1>
+
+<fieldset>
+    <legend>Drzava ...</legend><br>
+
+    <?php
+    echo form_open('users/site/create_field');
+    $drzava_id = 'id="drzavaDrop"';
+    echo form_label('Drzava', 'drzava');
+    echo form_dropdown('drzava', $drzavi, isset($jobData->drzava) ? $jobData->drzava : $this->input->post('drzava'), $drzava_id );
+
+    ?><br>
+    <?php
+    $grad_id = 'id="gradDrop"';
+    echo form_label('Grad', 'grad');
+    echo form_dropdown('grad', $gradovi, isset($jobData->grad) ? $jobData->grad : $this->input->post('grad'), $grad_id );
+    ?><br><br>
+    <?php
+
+    echo form_submit('submit', 'Submit');
+
+    echo validation_errors('<p class="error">');
+    echo form_close();
+    ?>
+</fieldset>
+
+<script>
+    jQuery(function() {
+        jQuery('#drzavaDrop').change(function() {
+            jQuery.ajax({
+                type: 'POST',
+                url: "<?php echo site_url('users/ajax/getGradOdDrzava'); ?>",
+                data: "drzava=" + jQuery('#drzavaDrop').val(),
+                dataType: 'json',
+                success: function(data){
+                    console.log(data);
+                    jQuery('#gradDrop').empty();
+                    //jQuery('ul.test').text(data);
+                    var options = '';
+                    for (var i = 0; i < data.length; i++)
+                    {
+                        options += '<option value="' + data[i].name + '">' + data[i].name + '</option>';
+                    }
+                    jQuery('#gradDrop').html(options);
+                }
+            });
+        });
+    });
+</script>

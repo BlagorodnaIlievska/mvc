@@ -1,0 +1,21 @@
+<div id="update_roles_form">
+
+<h2>Update Role Information</h2>
+
+<?php
+foreach($roles as $row) {
+    $f0=$row->id;
+    $f1=$row->name;
+}
+?>
+
+<h1>Role</h1>
+<?php echo form_open('users/roles/update_role');?>
+<?php echo form_hidden('row_id', $f0);?>
+<?php echo form_label('Role Name:', 'role_name');?>
+<?php echo form_input('role_name', $f1, 'role_name');?>
+<input type="button" value="Update" class="ajaxsubmitform"><br>
+
+<?php echo form_close(); ?>
+
+</div>

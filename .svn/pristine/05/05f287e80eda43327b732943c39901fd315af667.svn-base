@@ -1,0 +1,52 @@
+<h1>Create an Account</h1>
+
+<fieldset>
+    <legend>Personal Information</legend>
+
+    <?php
+        echo form_open('users/login/create_member');
+        echo form_input('email_address', set_value('email_address', 'Email Address'));
+       // echo form_input('role', set_value('role', 'Role'));
+        echo form_dropdown('role', $roles );
+    ?>
+
+    <br><legend>Login Info</legend>
+
+    <span class="checkUser"></span><br>
+    <?php
+    echo form_input('username', set_value('username', 'Username'), 'id="username"');
+    echo form_input('password', set_value('password', 'Password'), 'id="password"');
+    echo form_input('password2', set_value('password2', 'Confirm Password'), 'id="password2"');
+    //echo form_submit('submit', 'Create Account');
+    ?>
+    <input type="button" value="Create Account" class="ajaxcreateform"><br>
+
+    <?php echo validation_errors('<p class="error">');
+          echo form_close();
+    ?>
+</fieldset>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#username').blur(function(){
+            if( $('#username').val().length >= 3 ) {
+                var data = {
+                    username: $('#username').val()
+                }
+                $('.checkUser').addClass('preloader');
+                $.ajax({
+                    url: "<?php echo site_url('users/ajax/checkUsername'); ?>",
+                    type: 'POST',
+                    data: data,
+                    success: function(response) {
+                        $('.checkUser').removeClass('preloader');
+                        if(response == 'userOk') $('.checkUser').removeClass('not_available').addClass('available');
+                        else $('.checkUser').removeClass('available').addClass('not_available');
+                    }
+                });
+            }
+            return false;
+        });
+    });
+</script>
+

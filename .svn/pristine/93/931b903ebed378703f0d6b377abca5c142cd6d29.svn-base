@@ -1,0 +1,465 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Nalog extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+    public function pregled_nalozi()
+    {
+        $this->load->view('knizenje/lista_nalozi');
+    }
+    public function pregled_konta()
+    {
+        ///print_r($data['konto']); die();
+        $this->load->model('knizenje/nalog_model');
+        $data['konto'] = $this->nalog_model->konto_dropdown();
+        $this->load->view('knizenje/pregled_po_konto', $data);
+    }
+    public function site_otpis()
+{
+    // $brojfaktura = $this->input->post('brojfaktura');
+    // $firmaid     = $this->input->post('firmaid');
+    $this->load->model('knizenje/nalog_model');
+    $query = $this->nalog_model->site_otpis();
+   // print_r($query); die();
+    echo json_encode($query);
+}
+
+    public function promena_konta()
+    {
+        $this->load->model('knizenje/nalog_model');
+        $data['konto'] = $this->nalog_model->konto_dropdown();
+        $data['komintent'] = $this->nalog_model->komintent_dropdown();
+
+        $this->load->view('knizenje/promena_konta');
+    }
+
+    public function popolnilista()
+    {
+
+        //$data['main_content'] = 'podatoci/katalog/popolnilista';
+        $this->load->model('knizenje/nalog_model');
+        $return = $this->nalog_model->getNalozi();
+        echo json_encode($return);
+    }
+
+    public function pregled_po_konto()
+    {
+
+        //$data['main_content'] = 'podatoci/katalog/popolnilista';
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->pregled_po_konto();
+       // print_r($query); die();
+        echo json_encode($query);
+    }
+    public function pregled_po_konto_so_konto()
+    {
+
+        //$data['main_content'] = 'podatoci/katalog/popolnilista';
+        $konto=$this->input->get('konto');
+        $datum1=$this->input->get('datum1');
+        $datum2=$this->input->get('datum2');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->pregled_po_konto_so_konto($konto,$datum1,$datum2);
+        // print_r($query); die();
+        echo json_encode($query);
+    }
+    public function promena_na_konta()
+{
+
+    // $konto=$this->input->get('konto');
+    // $komintent=$this->input->get('komintent');
+    $this->load->model('knizenje/nalog_model');
+    $query = $this->nalog_model->promena_na_konta();
+    //   print_r($query); die();
+    echo json_encode($query);
+}
+    public function promena_spored_dvata_atributi()
+    {
+
+        $konto=$this->input->post('konto');
+        $komintent=$this->input->post('komintent');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->promena_spored_dvata_atributi($konto,$komintent);
+         // print_r($query); die();
+        echo json_encode($query);
+    }
+    public function promena_samo_na_konto()
+    {
+
+         $konto=$this->input->post('konto');
+        // $komintent=$this->input->get('komintent');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->promena_samo_na_konto($konto);
+         // print_r($query); die();
+        echo json_encode($query);
+    }
+    public function promena_samo_na_komintent()
+    {
+
+        $komintent=$this->input->post('komintent');
+        // $komintent=$this->input->get('komintent');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->promena_samo_na_komintent($komintent);
+        //print_r($query); die();
+        echo json_encode($query);
+    }
+    public function promena_na_konta_celosno()
+    {
+
+
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->promena_na_konta_celosno();
+        // print_r($query); die();
+        echo json_encode($query);
+    }
+    public function izmeni_nalog()
+    {
+
+        $id = $this->input->get('id');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->getNalogDetali($id);
+        $data['nalog']=$this->nalog_model->getNalog($id);
+      //  print_r($data['nalog']); die();
+        $data['nalog_detali']= $query;
+       // echo json_encode($query);
+        $this->load->view('knizenje/izmeni_nalog', $data);
+        bis_debug($query, "Nalog");
+    }
+    public function info_nalog()
+    {
+
+        $id = $this->input->get('id');
+        $this->load->model('knizenje/nalog_model');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->nalog_model->getNalogDetali($id);
+        $data['nalog']=$this->nalog_model->getNalog($id);
+        //  print_r($data['nalog']); die();
+        $data['oddel']=$this->vlezni_fakturi_model->oddel_dropdown();
+      //  print_r( $data['oddel']); die();
+        $data['nalog_detali']= $query;
+        // echo json_encode($query);
+        $this->load->view('knizenje/info_nalog', $data);
+        bis_debug($query, "Nalog");
+    }
+
+
+    public function nov_nalog()
+    {
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        // $data['tip']          = 'proizvodit
+         $data['oddel']=$this->vlezni_fakturi_model->oddel_dropdown();
+
+        $this->load->view('knizenje/nov_nalog', $data);
+    }
+    public function povrzi_dokument(){
+        $this->load->model('kasi/kasi_model');
+        $this->load->model('knizenje/nalog_model');
+        $this->load->model('materijalno/materijalno_model');
+        $data['magacin'] = $this->materijalno_model->magacin_dropdown();
+        $data['klient'] = $this->materijalno_model->klient_site_dropdown();
+        $data['kasa']=$this->kasi_model->kasa_dropdown();
+        $data['izvodi']=$this->nalog_model->getIzvodi_dropdown();
+
+    //   print_r($data['izvodi']); die();
+        $this->load->view('knizenje/dokumenti', $data);
+
+    }
+    public function povrzi_postoecka()
+    {
+       $this->load->view('knizenje/povrzi_postoecka');
+    }
+
+    public function prenesi_vo_nalog()
+    {
+        $fakturaid = $this->input->post('dbid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getFaktura($fakturaid);
+     //   print_r($query); die();
+        echo json_encode($query);
+    }
+    public function prenesi_vo_nalog_izlezni()
+    {
+        $fakturaid = $this->input->post('dbid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->getFaktura($fakturaid);
+        //   print_r($query); die();
+        echo json_encode($query);
+    }
+    public function prenesi_vo_nalog_izlezni_pobaruva()
+    {
+        $fakturaid = $this->input->post('dbid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->getFaktura_pobaruva($fakturaid);
+        //   print_r($query); die();
+        echo json_encode($query);
+    }
+    public function rasknizuvanje_materijali(){
+        $fakturaid = $this->input->post('dbid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->rasknizuvanje_materijali($fakturaid);
+    //    print_r($query); die();
+        echo json_encode($query);
+    }
+    public function rasknizuvanje_materijali_so_otpis(){
+        $fakturaid = $this->input->post('dbid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->rasknizuvanje_materijali_so_otpis($fakturaid);
+        // print_r($query); die();
+        echo json_encode($query);
+    }
+    public function rasknizuvanje_materijali_zatvoranje_so_otpis(){
+        $fakturaid = $this->input->post('dbid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->rasknizuvanje_materijali_zatvoranje_so_otpis($fakturaid);
+       //print_r($query); die();
+        echo json_encode($query);
+    }
+
+    public function rasknizuvanje_materijali_zatvoranje(){
+        $fakturaid = $this->input->post('dbid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->rasknizuvanje_materijali_zatvoranje($fakturaid);
+       // print_r($query); die();
+        echo json_encode($query);
+    }
+    public function prenesi_vo_nalog_kasa_prihod()
+    {
+        $kasaid = $this->input->post('kasaid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+       $query = $this->nalog_model->getKasa_prihod($kasaid);
+      // print_r($query); die();
+        echo json_encode($query);
+    }
+    public function prenesi_vo_nalog_kasa()
+    {
+        $kasaid = $this->input->post('kasaid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->getKasa_detali($kasaid);
+      //  print_r($query); die();
+        echo json_encode($query);
+    }
+    public function kasa_detali()
+    {
+        $kasaid = $this->input->post('kasaid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->getKasa($kasaid);
+       //print_r($query); die();
+        echo json_encode($query);
+    }
+    public  function kasa_faktura1(){
+        $zaDokID = $this->input->post('zaDokID');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->kasa_faktura1($zaDokID);
+      // print_r($query); die();
+        echo json_encode($query);
+    }
+    public  function kasa_faktura2(){
+        $zaDokID = $this->input->post('zaDokID');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->kasa_faktura2($zaDokID);
+    //  print_r($query); die();
+        echo json_encode($query);
+    }
+    public function izvod_detali1()
+    {
+        $izvodid = $this->input->post('izvodid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->getIzvod_detali1($izvodid);
+      print_r($query); die();
+        echo json_encode($query);
+
+    }
+    public function izvod_detali2()
+    {
+        $izvodid = $this->input->post('izvodid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->getIzvod_detali2($izvodid);
+       print_r($query); die();
+        echo json_encode($query);
+    }
+    public function izvod_po_faktura()
+    {
+        $izvodid = $this->input->post('izvodid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->getIzvod_po_faktura($izvodid);
+         //print_r($query); die();
+        echo json_encode($query);
+    }
+    public function izvod_po_faktura_konto_faktura()  //220ka
+    {
+        $izvodid = $this->input->post('izvodid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->getIzvod_po_faktura_konto_faktura($izvodid);
+        // print_r($query); die();
+        echo json_encode($query);
+    }
+    public function izvod_po_faktura_trosok_konto()
+    {
+        $izvodid = $this->input->post('izvodid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->getIzvod_po_faktura_trosok_konto($izvodid);
+        //print_r($query); die();
+        echo json_encode($query);
+    }
+    public function izvod_po_faktura_konto_faktura2()
+    {
+        $izvodid = $this->input->post('izvodid');
+
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->getIzvod_po_faktura_konto_faktura2($izvodid);
+       //  print_r($query); die();
+        echo json_encode($query);
+    }
+    public function izvod_po_faktura_konto_faktura22()
+    {
+        $izvodid = $this->input->post('izvodid');
+
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->getIzvod_po_faktura_konto_faktura22($izvodid);
+         //print_r($query); die();
+        echo json_encode($query);
+    }
+    public function izvod_po_faktura_konto_faktura222()
+    {
+        $izvodid = $this->input->post('izvodid');
+
+        //$firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->getIzvod_po_faktura_konto_faktura222($izvodid);
+        //print_r($query); die();
+        echo json_encode($query);
+    }
+
+    public function izvod_ziro_smetka()
+    {
+        $izvodid = $this->input->post('izvodid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->izvod_ziro_smetka($izvodid);
+      //  print_r($query); die();
+        echo json_encode($query);
+    }
+    public function get_ddv_5()
+{
+    $fakturaid = $this->input->post('dbid');
+    // $firmaid     = $this->input->post('firmaid');
+    $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+    $query = $this->vlezni_fakturi_model->get_ddv_5($fakturaid);
+    //   print_r($query); die();
+    echo json_encode($query);
+}
+    public function get_ddv_18()
+    {
+        $fakturaid = $this->input->post('dbid');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->get_ddv_18($fakturaid);
+        //   print_r($query); die();
+        echo json_encode($query);
+    }
+    public function create_nalog()
+    {
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->create_nalog();
+        echo json_encode($query);
+    }
+    public function getNalogDetali()
+    {
+        $id = $this->input->post('nalogid');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->getNalogDetali($id);
+        //  print_r($query); die();
+        echo json_encode($query);
+    }
+    public function izlistaj_kasi(){
+        $id = $this->input->post('kasaid');
+
+        $this->load->model('kasi/kasi_model');
+        $query = $this->kasi_model->izlistaj_kasi($id);
+       // print_r($query); die();
+        echo json_encode($query);
+    }
+    public function izlistaj_izvodi(){
+        $id = $this->input->post('izvodid');
+        $z=$this->input->post('ziroid');
+        $this->load->model('izvodi/izvodi_model');
+        $query = $this->izvodi_model->getStavkaByIzvodBroj($id,$z);
+     // print_r($query); die();
+        echo json_encode($query);
+    }
+    public function getVleznaDetali_po_konta()
+    {
+        $id = $this->input->post('dbid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getVleznaDetali_po_konta($id);
+        // print_r($query); die();
+        echo json_encode($query);
+    }
+    public function getVleznaDetali_po_materijalni_konta()
+{
+    $id = $this->input->post('dbid');
+    $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+    $query = $this->vlezni_fakturi_model->getVleznaDetali_po_materijalni_konta($id);
+    //  print_r($query); die();
+    echo json_encode($query);
+
+}
+    public function getVleznaDetali_po_materijalno_zatvoranje()
+    {
+        $id = $this->input->post('dbid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getVleznaDetali_po_materijalno_zatvoranje($id);
+        // print_r($query); die();
+        echo json_encode($query);
+    }
+    public function getLastNalogBroj()
+    {
+        $this->load->model('knizenje/nalog_model');
+
+        $query = $this->nalog_model->getLastNalogBroj();
+        echo json_encode($query);
+    }
+    public function print_nalog()
+    {
+        $this->load->model('knizenje/nalog_model');
+
+        $id = $this->input->get("id");
+        $nalog=(array)$this->nalog_model->info_nalog($id);
+        $data['main_content'] = 'knizenje/pecati_form';
+        $data['id'] = $id;
+        $data['nalog'] = $nalog;
+  //   print_r($nalog); die();
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$nalog);
+    }
+    public function delete_nalog()
+    {
+        $id = $this->input->get('id');
+        $this->load->model('knizenje/nalog_model');
+        $query = $this->nalog_model->delete_nalog($id);
+        echo json_encode($query);
+    }
+
+}

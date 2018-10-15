@@ -1,0 +1,66 @@
+<?php
+
+class Mkb_model extends CI_Model
+{
+
+    public function getMkbi()
+    {
+        //  $this->db->where("parent_id", 0);
+       // $this->db->limit(100); // dodadeno za da ne pravi problem so skriptata zasega ...
+        $query = $this->db->get('bis_mkb_10');
+        return $query->result();
+    }
+
+
+    public function getMkb($id)
+    {
+        $this->db->where("id", $id);
+        $query = $this->db->get('mkb');
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_mkb()
+    {
+        $insert_data = $this->input->post();
+        $insert      = $this->db->insert('mkb', $insert_data);
+        return $insert;
+    }
+
+
+    public function delete_mkb($id)
+    {
+
+        $this->db->where('id', $id);
+        $this->db->delete('mkb');
+
+
+    }
+
+    public function update_mkb()
+    {
+        $field_update_data =	$this->input->post();
+
+        $this->db->where('id',$field_update_data['id']);
+        unset($field_update_data['id']);
+        $this->db->update('mkb', $field_update_data);
+    }
+
+
+  public function mkb_glavna_dropdown(){
+      $this->db->select('id, opis');
+      $this->db->from('mkb_glavna');
+      $this->db->order_by('id');
+      $query = $this->db->get();
+      $dropdown = array();
+      if($query->num_rows() > 0){
+          $dropdown[''] = 'избери';
+          foreach($query->result_array() as $row){
+              $dropdown[$row['id']] = $row['opis'];
+          }
+      }
+      return $dropdown;
+
+  }
+}

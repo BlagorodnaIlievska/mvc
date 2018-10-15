@@ -1,0 +1,411 @@
+<div id="kartica_klient_form">
+    <?php
+
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $options = array(
+        '0' => 'Влез-Излез',
+        '1' => 'Влез',
+        '2' => 'Излез'
+    );
+    ?>
+    <div class="filter-karticki">
+        <div class="komitent-filter">
+        <?php
+        echo form_open('izvodi/menu/baraj_izvod','class="kartica"');
+        if (bis_check_access('karticki_kartica_klient_form_filter_po_komitent')):
+        echo form_label('Коминтент: ', 'klient');
+        echo form_dropdown('klient', $klient, '', 'class="klient karticaklient" formaction="/index.php/kartici/menu/getCelaKarticaKlient"');
+        endif; ?>
+        </div>
+        <?
+        if (bis_check_access('karticki_kartica_klient_form_filter_po_vlez_izlez')):
+        echo form_label('Влез/Излез: ', 'klient');
+        echo form_dropdown('vlezizlez', $options, 0, 'class="vlezizlez karticaklient"');
+        endif;
+        echo form_close();
+        ?>
+    </div>
+
+    <div class="karticivlezizlez">
+    <p class="naslovvikartici" > ( <span class="vkupnostavki">0</span> ) Картици влез/излез</p>
+    <div class="predtabela">
+        <table class="tabelavleznoizlezni" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="datum">Датум</th>
+                <th class="dokument">Документ</th>
+                <th class="odliv">Одлив</th>
+                <th class="vleznafaktura">Влезна Фактура</th>
+                <th class="izleznafaktura">Излезна Фактура</th>
+                <th class="priliv">Прилив</th>
+                <th class="zabeleska">Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr  class='telo hiderow'>
+                <td class="datum"></td>
+                <td class="tipdokument hide"></td>
+                <td class="dokument"></td>
+                <td class="odliv"></td>
+                <td class="vleznafaktura"></td>
+                <td class="izleznafaktura"></td>
+                <td class="priliv"></td>
+                <td class="zabeleska"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+        <table class="sumiranje hidetable">
+            <tfoot>
+            <tr class="eden">
+                <td class="vkupno">Вкупно:</td>
+                <td class="dokument"></td>
+                <td class="odliv"></td>
+                <td class="vleznafaktura"></td>
+                <td class="izleznafaktura"></td>
+                <td class="priliv"></td>
+                <td class="zabeleska"></td>
+            </tr>
+            <tr class="dva">
+                <td class="datum"></td>
+                <td class="dokument"></td>
+                <td></td>
+                <td class="razlika1"></td>
+                <td class="razlika2"></td>
+                <td></td>
+                <td class="zabeleska"></td>
+            </tr>
+            <tr class="tri">
+                <td>Состојба:</td>
+                <td></td>
+                <td></td>
+                <td class="sostojba"></td>
+                <td class="razlika1"></td>
+                <td class="razlika2"></td>
+                <td class="zabeleska"></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="karticivlez hide">
+    <p class="naslovvkartici" > ( <span class="vkupnostavki">0</span> ) Картици влез</p>
+    <div class="predtabela">
+        <table class="tabelavlezni" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="datum">Датум</th>
+                <th class="valuta">Валута</th>
+                <th class="dokument">Документ</th>
+                <th class="odliv">Одлив</th>
+                <th class="vleznafaktura">Влезна Фактура</th>
+                <th class="sostojba">Состојба</th>
+                <th class="status">Статус</th>
+                <th class="zabeleska">Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='telo'>
+                <td class="datum"></td>
+                <td class="valuta"></td>
+                <td class="tipdokument hide"></td>
+                <td class="dokument"></td>
+                <td class="odliv"></td>
+                <td class="vleznafaktura"></td>
+                <td class="sostojba"></td>
+                <td class="status"></td>
+                <td class="zabeleska"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+        <table class="sumiranjevlez hidetable">
+            <tfoot>
+            <tr class="eden">
+                <td class="datum"></td>
+                <td></td>
+                <td class="dokument""></td>
+                <td class="odliv"></td>
+                <td class="vleznafaktura"></td>
+                <td></td>
+                <td></td>
+                <td class="zabeleska"></td>
+            </tr>
+            <tr class="dva">
+                <td class="datum"></td>
+                <td></td>
+                <td class="dokument"></td>
+                <td></td>
+                <td class="razlika1"></td>
+                <td></td>
+                <td></td>
+                <td class="zabeleska"></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="karticiizlez hide">
+    <p class="naslovikartici" > ( <span class="vkupnostavki">0</span> ) Картици излез</p>
+    <div class="predtabela">
+        <table class="tabelaizlezni" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="datum">Датум</th>
+                <th class="valuta">Валута</th>
+                <th class="dokument">Документ</th>
+                <th class="priliv">Прилив</th>
+                <th class="izleznafaktura">Излезна Фактура</th>
+                <th class="sostojba">Состојба</th>
+                <th class="status">Статус</th>
+                <th class="zabeleska">Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr  class='telo'>
+               <td class="datum"></td>
+               <td class="valuta"></td>
+               <td class="tipdokument hide"></td>
+               <td class="dokument"></td>
+               <td class="priliv"></td>
+               <td class="izleznafaktura"></td>
+               <td class="sostojba"></td>
+               <td class="status"></td>
+               <td class="zabeleska"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+        <table class="sumiranjeizlez hidetable">
+            <tfoot>
+            <tr class="eden">
+                <td class="datum"></td>
+                <td></td>
+                <td class="dokument"></td>
+                <td class="priliv"></td>
+                <td class="izleznafaktura"></td>
+                <td></td>
+                <td></td>
+                <td class="zabeleska"></td>
+            </tr>
+            <tr class="dva">
+                <td class="datum">Состојба:</td>
+                <td></td>
+                <td class="dokument"></td>
+                <td></td>
+                <td></td>
+                <td class="razlika1"></td>
+                <td></td>
+                <td class="zabeleska"></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+<?php if (bis_check_access('karticki_kartica_klient_form_pecati_kartica')): ?>
+    <a href="" target="_blank" class="cmd-printlink-kartici">
+        <button type="button" class="pecatikartica print"><span>Печати</span></button>
+    </a>
+        <?php endif ?>
+
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.karticaklient').combobox();
+        jQuery(".tabelavleznoizlezni").tablesorter();
+        jQuery(".tabelavlezni").tablesorter();
+        jQuery(".tabelaizlezni").tablesorter();
+        jQuery('.karticaklient').live('change',function(){
+            var klient = jQuery('.klient option:selected').val();
+           // jQuery('.pdfklientid').val(klient);
+            var izbor = jQuery('.vlezizlez option:selected').val();
+            var formaction = jQuery(this).attr('formaction');
+            if(izbor == 0)
+            {
+                var data = {
+                    klientid: klient
+                }
+                jQuery.ajax({
+                    url: "/index.php/kartici/menu/getCelaKarticaKlient",
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        //console.log(response);
+                        jQuery('.karticivlezizlez').removeClass('hide');
+                        jQuery('.karticivlez').addClass('hide');
+                        jQuery('.karticiizlez').addClass('hide');
+                        var vkupnostavki = response.length;
+                        var odliv= 0, priliv = 0, vleznafaktura = 0, izleznafaktura = 0;
+                        jQuery(".tabelavleznoizlezni").find("tr:gt(1)").remove();
+                        var tr = jQuery('.tabelavleznoizlezni tr:last');
+                        tr.removeClass('hiderow');
+                        for ( var i = 0; i < response.length; i++ ) {
+                            var newrow = jQuery(tr).clone().insertAfter(tr);
+                            newrow.find('.datum').html(response[i].datum);
+                            newrow.find('.zabeleska').html(response[i].komentar);
+                            if(response[i].tip == 10)
+                            {
+                                newrow.find('.dokument').html("Со ф-ра број " + response[i].textBroj);
+                                newrow.find('.tipdokument').html(1);
+                                newrow.find('.vleznafaktura').html(formatnumbermkd(response[i].suma));
+                                vleznafaktura = vleznafaktura + parseFloat(response[i].suma);
+                            }
+                            if(response[i].tip == 20)
+                            {
+                                newrow.find('.dokument').html("Со ф-ра број " + response[i].textBroj);
+                                newrow.find('.tipdokument').html(2);
+                                newrow.find('.izleznafaktura').html(formatnumbermkd(response[i].suma));
+                                izleznafaktura = izleznafaktura + parseFloat(response[i].suma);
+                            }
+                            if(response[i].tip == 40)
+                            {
+                                newrow.find('.dokument').html("По извод " + response[i].textBroj);
+                                newrow.find('.tipdokument').html(1);
+                                newrow.find('.odliv').html(formatnumbermkd(response[i].suma));
+                                odliv = odliv + parseFloat(response[i].suma);
+                            }
+                            if(response[i].tip == 50)
+                            {
+                                newrow.find('.dokument').html("По извод " + response[i].textBroj);
+                                newrow.find('.tipdokument').html(2);
+                                newrow.find('.priliv').html(formatnumbermkd(response[i].suma));
+                                priliv = priliv + parseFloat(response[i].suma);
+                            }
+                        }
+                        tr.addClass('hiderow');
+                        var razlika1 = parseFloat(odliv).toFixed(2) - parseFloat(vleznafaktura).toFixed(2);
+                        var razlika2 = parseFloat(izleznafaktura).toFixed(2) - parseFloat(priliv).toFixed(2);
+                        var sostojba = parseFloat(Math.abs(razlika1)).toFixed(2) - parseFloat(razlika2).toFixed(2);
+                        jQuery(".sumiranje").removeClass("hidetable");
+                        jQuery(".sumiranje tfoot tr.eden .odliv").html(formatnumbermkd(parseFloat(odliv).toFixed(2)));
+                        jQuery(".sumiranje tfoot tr.eden .priliv").html(formatnumbermkd(parseFloat(priliv).toFixed(2)));
+                        jQuery(".sumiranje tfoot tr.eden .vleznafaktura").html(formatnumbermkd(parseFloat(vleznafaktura).toFixed(2)));
+                        jQuery(".sumiranje tfoot tr.eden .izleznafaktura").html(formatnumbermkd(parseFloat(izleznafaktura).toFixed(2)));
+                        jQuery(".sumiranje tfoot tr.dva .razlika1").html("Побарува: " + formatnumbermkd(parseFloat(razlika1).toFixed(2)));
+                        jQuery(".sumiranje tfoot tr.dva .razlika2").html("Долгува: " + formatnumbermkd(parseFloat(razlika2).toFixed(2)));
+                        jQuery(".sumiranje tfoot tr.tri .razlika1").html(formatnumbermkd(parseFloat(sostojba).toFixed(2)));
+                        jQuery(".naslovvikartici .vkupnostavki").html(vkupnostavki);
+                        jQuery(".tabelavleznoizlezni").trigger("update");
+                     }
+                 });
+            }
+            if(izbor == 1)
+            {
+                var tipniza = [10,40];
+                var data = {
+                    klientid: klient
+                }
+                jQuery.ajax({
+                    url: "/index.php/kartici/menu/getVleznaKarticaKlient",
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        //console.log(response);
+                        jQuery('.karticivlezizlez').addClass('hide');
+                        jQuery('.karticivlez').removeClass('hide');
+                        jQuery('.karticiizlez').addClass('hide');
+                        jQuery(".tabelavlezni").find("tr:gt(1)").remove();
+                        var odliv= 0, vleznafaktura = 0;
+                        var tr = jQuery('.tabelavlezni tr:last');
+                        tr.removeClass('hiderow');
+                        for ( var i = 0; i < response.length; i++ ) {
+                            var newrow = jQuery(tr).clone().insertAfter(tr);
+                            newrow.find('.datum').html(response[i].datum);
+                            newrow.find('.valuta').html(response[i].datum);
+                            newrow.find('.status').html(response[i].status);
+                            newrow.find('.zabeleska').html(response[i].komentar);
+                            if(response[i].tip == 10)
+                            {
+                                newrow.find('.dokument').html("Со ф-ра број " + response[i].textBroj);
+                                newrow.find('.tipdokument').html(1);
+                                newrow.find('.vleznafaktura').html(formatnumbermkd(response[i].suma));
+                                vleznafaktura = vleznafaktura + parseFloat(response[i].suma);
+                            }
+                            if(response[i].tip == 40)
+                            {
+                                newrow.find('.dokument').html("По извод " + response[i].textBroj);
+                                newrow.find('.tipdokument').html(1);
+                                newrow.find('.odliv').html(formatnumbermkd(response[i].suma));
+                                odliv = odliv + parseFloat(response[i].suma);
+                            }
+                        }
+                        tr.addClass('hiderow');
+                        var razlika1 = parseFloat(odliv).toFixed(2) - parseFloat(vleznafaktura).toFixed(2);
+                        jQuery(".sumiranjevlez").removeClass("hidetable");
+                        jQuery(".sumiranjevlez tfoot tr.eden .odliv").html(formatnumbermkd(parseFloat(odliv).toFixed(2)));
+                        jQuery(".sumiranjevlez tfoot tr.eden .vleznafaktura").html(formatnumbermkd(parseFloat(vleznafaktura).toFixed(2)));
+                        jQuery(".sumiranjevlez tfoot tr.dva .razlika1").html(formatnumbermkd(parseFloat(razlika1).toFixed(2)));
+                        jQuery(".naslovvkartici .vkupnostavki").html(response.length);
+                        jQuery(".tabelavlezni").trigger("update");
+                    }
+                });
+            }
+            if(izbor == 2)
+            {
+                var tipniza = [20,50];
+                var data = {
+                    klientid: klient
+                }
+                jQuery.ajax({
+                    url: "/index.php/kartici/menu/getIzleznaKarticaKlient",
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+//                        console.log(response);
+                        jQuery('.karticivlezizlez').addClass('hide');
+                        jQuery('.karticivlez').addClass('hide');
+                        jQuery('.karticiizlez').removeClass('hide');
+                        jQuery(".tabelaizlezni").find("tr:gt(1)").remove();
+                        var priliv= 0, izleznafaktura = 0;
+                        var tr = jQuery('.tabelaizlezni tr:last');
+                        tr.removeClass('hiderow');
+                        for ( var i = 0; i < response.length; i++ ) {
+                            var newrow = jQuery(tr).clone().insertAfter(tr);
+                            newrow.find('.datum').html(response[i].datum);
+                            newrow.find('.valuta').html(response[i].datum);
+                            newrow.find('.status').html(response[i].status);
+                            newrow.find('.zabeleska').html(response[i].komentar);
+                            if(response[i].tip == 20)
+                            {
+                                newrow.find('.dokument').html("Со ф-ра број " + response[i].textBroj);
+                                newrow.find('.tipdokument').html(2);
+                                newrow.find('.izleznafaktura').html(formatnumbermkd(response[i].suma));
+                                izleznafaktura = izleznafaktura + parseFloat(response[i].suma);
+                            }
+                            if(response[i].tip == 50)
+                            {
+                                newrow.find('.dokument').html("По извод " + response[i].textBroj);
+                                newrow.find('.tipdokument').html(2);
+                                newrow.find('.priliv').html(formatnumbermkd(response[i].suma));
+                                priliv = priliv + parseFloat(response[i].suma);
+                            }
+                        }
+                        tr.addClass('hiderow');
+                        var razlika1 = parseFloat(izleznafaktura).toFixed(2) - parseFloat(priliv).toFixed(2);
+                        jQuery(".sumiranjeizlez").removeClass("hidetable");
+                        jQuery(".sumiranjeizlez tfoot tr.eden .priliv").html(formatnumbermkd(parseFloat(priliv).toFixed(2)));
+                        jQuery(".sumiranjeizlez tfoot tr.eden .izleznafaktura").html(formatnumbermkd(parseFloat(izleznafaktura).toFixed(2)));
+                        jQuery(".sumiranjeizlez tfoot tr.dva .razlika1").html(formatnumbermkd(parseFloat(razlika1).toFixed(2)));
+                        jQuery(".naslovikartici .vkupnostavki").html(response.length);
+                        jQuery(".tabelaizlezni").trigger("update");
+                    }
+                });
+            }
+        });
+        jQuery(".cmd-printlink-kartici").click(function(){
+            var klient = jQuery('.klient option:selected').val();
+            var izbor = jQuery('.vlezizlez option:selected').val();
+
+                jQuery(".cmd-printlink-kartici").attr("href","/index.php/print/pdf?view=/index.php/kartici/menu/pecati_kartica&klientid="+ klient + "&izborid="  + izbor);
+
+});
+
+    });
+
+
+</script>

@@ -1,0 +1,58 @@
+.kasalista { width: 100%; float: left; margin-top: 10px;}
+.kasa-glavnalista .buttoncontainer { margin-top:3px; margin-bottom:10px; }
+td.datumkasa{ width: 90px;}
+td.namenakasa{ width: 250px;}
+td.zabeleskakasa{ width: 250px;}
+td.brojkasa{ width: 80px;}
+td.firmakasa{ width: 90px;}
+td.odlivkasa{ width: 40px; text-align: right;}
+td.prilivkasa{ width: 40px; text-align: right;}
+td.idkasa{ width: 50px;}
+.tabela-pregledkasa { margin-top: 10px;}
+td.imekasa{ width: 80px;}
+.naslovkasapregled, .naslovpreglednakasa {background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;padding: 1px;margin: 5px 0 0 0;}
+.kasatabela .predtabela {overflow-x: auto;}
+.tabela-kasalista {table-layout: fixed;}
+.tabela-kasalista tr td {overflow: hidden;}
+.tabela-kasalista .ac {width: 15px;}
+.tabela-kasalista .datum {width: 72px;}
+.tabela-kasalista .broj {width: 105px;}
+.tabela-kasalista .klient {width: 200px;}
+.tabela-kasalista .odliv {width: 80px;}
+.tabela-kasalista .priliv {width: 80px;}
+.tabela-kasalista .povik-broj {width: 80px;}
+.tabela-kasalista .namena {width: auto;}
+.tabela-kasalista .zabeleska {width: auto;}
+.tabela-pregledkasa .kasa {width: 80px;}
+.tabela-pregledkasa .datum {width: 72px;}
+.tabela-pregledkasa .broj {width: 105px;}
+.tabela-pregledkasa .klient {width: 200px;}
+.tabela-pregledkasa .odliv {width: 80px;}
+.tabela-pregledkasa .priliv {width: 80px;}
+.tabela-pregledkasa .zabeleska {width: auto;}
+.tabela-pregledkasa {table-layout: fixed;}
+.tabela-pregledkasa tr td {overflow: hidden}
+
+.novakasa form {margin: 10px;}
+.nov-odliv-priliv .s-kasa {width: 30px !important;}
+.kasi-uplatapofak {clear: both;}
+.nov-odliv-priliv label {float: left;}
+.tabela-kasalista .sostojbakasa {text-align: right;}
+.novakasa .ui-combobox-input.ui-autocomplete-input {width: 87% !important;}
+.novakasa .ui-combobox a.ui-button {padding-bottom: 9px !important;}
+
+.vlez-nova-priemnica-tabela {table-layout: fixed;}
+.vlez-nova-priemnica-tabela tr td {overflow: hidden;}
+.vlez-nova-priemnica-tabela th.ac {width: 17px;}
+.vlez-nova-priemnica-tabela th.broj {width: 35px;}
+.vlez-nova-priemnica-tabela th.sifra {width: 100px;}
+.vlez-nova-priemnica-tabela th.stavka {width: auto;}
+.vlez-nova-priemnica-tabela th.kolicina {width: 80px;}
+.vlez-nova-priemnica-tabela th.edinica-merka {width: 100px;}
+.vlez-nova-priemnica-tabela th.thmagacin {width: 100px;}
+.vlez-nova-priemnica-tabela th.garanten-rok {width: 100px;}
+.vlez-nova-priemnica-tabela th.upotreblivo-do {width: 100px;}
+.vlez-nova-priemnica-tabela th.seriski-broj {width: 100px;}
+
+.vlez-nova-priemnica-tabela .ui-combobox-input {width: 57% !important;}
+.datumnova-priemnica {float: right !important;}

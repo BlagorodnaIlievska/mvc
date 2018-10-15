@@ -1,0 +1,219 @@
+<div class="pacienti-glavno">
+    <div class="pacienti-filter-nov">
+        <form class="pacient-filter-nov-forma">
+            <div class="grupa">
+                <div class="levakolona">ЕМБГ:</div>
+                <div class="desnakolona"><input name="embg" value="" class="pacient-embg"/></div>
+                <div class="levakolona"> ЕЗБО:</div>
+                <div class="desnakolona"><input name="ezbo" value="" class="pacient-ezbo"/></div>
+                <div class="levakolona">Тип на осигурување:</div>
+                <div class="desnakolona">
+                    <!--                    <select name="tip_na_osiguruvanje" class="pacient-tip_na_osiguruvanje">-->
+                    <select class="pacient-tip_na_osiguruvanje">
+                        <option value="0"></option>
+                        <option value="1">Лично</option>
+                        <option value="2">Сродство</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grupa">
+                <div class="levakolona">Име:</div>
+                <div class="desnakolona"><input name="ime" value="" class="pacient-ime"/></div>
+                <div class="levakolona">Татково Име:</div>
+                <div class="desnakolona"><input name="tatkovoime" value="" class="pacient-tatkovoime"/></div>
+                <div class="levakolona">Презиме:</div>
+                <div class="desnakolona"><input name="prezime" value="" class="pacient-prezime"/></div>
+            </div>
+            <div class="grupa">
+                <div class="levakolona">Бр.Легитимација:</div>
+                <div class="desnakolona"><input name="br_zdravstvena_legitimacija" value=""
+                                                class="pacient-br_zdravstvena_legitimacija"/></div>
+                <div class="levakolona">Роден/а:</div>
+                <div class="desnakolona"><input name="datum_na_raganje" value="" class="pacient-datum_na_raganje"/>
+                </div>
+                <div class="levakolona">Пол:</div>
+                <div class="desnakolona"><select name="pol">
+                        <option></option>
+                        <option>Машки</option>
+                        <option>Женски</option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="grupa-kopcinja-pacienti">
+                <div class="levakolona">
+                    <button type="button" class="button vnesinovpacient"><span>Внеси како нов</span></button>
+                </div>
+                <div class="levakolona">
+                    <button type="button" class="button ispraznipolinja"><span>Испразни полиња</span></button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="clear"></div>
+    <div class="tabs-pacienti">
+        <ul>
+            <?php if (bis_check_access('bolnicko_rabotenje_pacienti_lista_tab')): ?>
+                <li><a href="#pacienti-lista">Листа</a></li>
+            <?php endif ?>
+            <?php if (bis_check_access('bolnicko_rabotenje_pacienti_priem_tab')): ?>
+                <li><a href="#pacienti-priem">Прием</a></li>
+            <?php endif ?>
+        </ul>
+        <div class="pacienti-lista" id="pacienti-lista">
+            <table class="pacienti-lista-tabela">
+                <thead>
+                <th class="alatki"></th>
+                <th>Име</th>
+                <th>Татково Име</th>
+                <th>Презиме</th>
+                <th>бр.Легитимација</th>
+                <th>Роден/а</th>
+                <th>Пол</th>
+                <th>ЕМБГ</th>
+                <th>ЕЗБО</th>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+        <div id="pacienti-priem" class="notacordion">
+            <h3><a href="javascript:">Прием кај доктор</a></h3>
+            <?php include('priem_includes/podatoci_za_priemkajdoktor.php') ?>
+            <div class="clear"></div>
+            <h3><a href="javascript:">Податоци за Контакт</a></h3>
+            <?php include('priem_includes/podatoci_za_kontakt.php') ?>
+            <div class="clear"></div>
+<!--            <h3><a href="javascript:">Податоци за осигурување</a></h3>-->
+<!--            --><?php //include('priem_includes/podatoci_za_osig.php') ?>
+            <h3><a href="javascript:">Податоци за придружник</a></h3>
+            <?php include('priem_includes/podatoci_za_pridruznik.php') ?>
+        </div>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function () {
+//        console.log("lista so pacienti fdiu");
+        pacienti_popolnilista();
+        jQuery(".pacienti-lista-tabela tbody tr").live("click", function () {
+            jQuery(".pacienti-lista-tabela tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+        // jQuery("select.pacient-doktor_id").combobox();
+        jQuery(".notacordion").addClass("ui-accordion ui-accordion-icons ui-widget ui-helper-reset")
+            .find("h3")
+            .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
+            .hover(function () {
+                jQuery(this).toggleClass("ui-state-hover");
+            })
+            .prepend('<span class="ui-icon ui-icon-triangle-1-e"></span>')
+            .click(function () {
+                jQuery(this)
+                    .toggleClass("ui-accordion-header-active ui-state-active ui-state-default ui-corner-bottom")
+                    .find("> .ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
+                    .next().toggleClass("ui-accordion-content-active").slideToggle();
+                return false;
+            })
+            .next()
+            .addClass("ui-accordion-content  ui-helper-reset ui-widget-content ui-corner-bottom")
+            .hide();
+        jQuery("#pacienti-priem.notacordion").find("a:first").click();
+        jQuery("#pacienti-priem-lista-id.notacordion").find("a:first").click();
+
+
+        jQuery(".pacient-datum_na_raganje").mask("99-99-9999");
+        jQuery(".pacient-embg").keyup(function(){
+            var embg = jQuery(this).val();
+            if(embg.length == 13)
+            {
+                var day = embg.substr(0,2);
+                var month = embg.substr(2,2);
+                var year = 1+embg.substr(4,3);
+                var datum_raganje = day+"-"+month+"-"+year;
+                jQuery(".pacient-datum_na_raganje").val(datum_raganje);
+            }
+            else jQuery(".pacient-datum_na_raganje").val("");
+        });
+        jQuery(".tabs-pacienti").tabs({
+            select: function (event) {
+                // You need Firebug or the developer tools on your browser open to see these
+                if (event.currentTarget.innerHTML == "Листа") {
+                    jQuery(".ispraznipolinja").click();
+                    jQuery(".vnesinovpacient").show();
+                    jQuery(".ispraznipolinja").show();
+                    jQuery(".pacienti-filter-nov input, .pacienti-filter-nov select").removeAttr("readonly");
+                    pacienti_popolnilista(jQuery(".pacient-filter-nov-forma").serialize());
+
+                } else if (event.currentTarget.innerHTML == "Прием") {
+
+                    return pacienti_priemlista();
+                } else if (event.currentTarget.innerHTML == "Инфо") {
+
+                    return pacienti_pacientinfo();
+                } else if (event.currentTarget.innerHTML == "Листа со приеми") {
+
+                    return pacienti_listasopriemi();
+                }
+                // This will get you the index of the tab you selected
+                // console.log(event.options.selected);
+                // And this will get you it's name
+                //  console.log(event.tab.text);
+            }
+        });
+        jQuery(".pacienti-lista-tabela").tablesorter();
+
+        jQuery(".pacienti-filter-nov input, .pacienti-filter-nov select").val('');
+        jQuery(".pacienti-filter-nov input, .pacienti-filter-nov select").change(function () {
+            clearTimeout(window.listatimeout);
+            window.listatimeout = setTimeout("pacienti_popolnilistasotimeout()", 600);
+        });
+        jQuery(".pacienti-filter-nov input, .pacienti-filter-nov select").keyup(function () {
+            clearTimeout(window.listatimeout);
+            window.listatimeout = setTimeout("pacienti_popolnilistasotimeout()", 600);
+        });
+
+        jQuery(".vnesinovpacient").click(function () {
+            var sitepolinja = true;
+            var sitepolinjab = true;
+            sitepolinja = jQuery(".pacienti-filter-nov input").each(function () {
+                if (jQuery(this).val() == "") {
+                    alert("Сите полиња се задолжителни");
+                    return false;
+                }
+            });
+            sitepolinjab = jQuery(".pacienti-filter-nov select").each(function () {
+                if (jQuery(this).val() == "") {
+                    alert("Сите полиња се задолжителни");
+                    return false;
+                }
+            });
+            if (sitepolinja && sitepolinjab) {
+                pacienti_nov(jQuery('.pacient-filter-nov-forma').serialize());
+            }
+        });
+        jQuery(".pacienti-lista-tabela .delete-tr").live("click", function () {
+            var pacient_id = jQuery(this).parent().parent().attr("pacient_id");
+            var prvc = confirm("Дали сакате да го избришете пациентот ?");
+            if (prvc) {
+                var vtroc = confirm("Дали сте сигурни ?");
+                if (vtroc) {
+                    pacienti_izbrisi(pacient_id);
+                }
+            }
+        });
+        jQuery(".ispraznipolinja").click(function () {
+            jQuery(".pacienti-filter-nov input, .pacienti-filter-nov select").val('');
+            pacienti_popolnilista();
+        });
+        jQuery(".pacienti-lista-tabela .edit-tr").live("click", function () {
+            lekuvanja_editdokument(jQuery(this).parent().parent().attr("pacient_id"),"pacient");
+        });
+        jQuery(".pacienti-lista-tabela .info-tr").live("click", function () {
+            lekuvanja_infodokument(jQuery(this).parent().parent().attr("pacient_id"),"pacient");
+        });
+    });
+</script>
+
+

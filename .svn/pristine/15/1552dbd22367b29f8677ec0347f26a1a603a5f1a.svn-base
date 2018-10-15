@@ -1,0 +1,12 @@
+<div class="novaklasa">
+    <fieldset>
+        <legend>Ново конто</legend>
+        <form accept-charset="utf-8" method="post" action="/index.php/konta/konta/create_klasa">
+
+            Конто:<input class="novokonto-novokonto" style="margin-left: 62px;margin-bottom: 10px;" type="text" value="" name="sifra">  <br />
+            Опис на конто:<input type="text" value="" name="opis">
+            <br /><br />
+            <input type="button" class="ajaxcreatеklasa button" value="Додади"><br />
+        </form>
+    </fieldset>
+</div>

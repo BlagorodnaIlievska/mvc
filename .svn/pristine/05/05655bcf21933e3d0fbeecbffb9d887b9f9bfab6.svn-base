@@ -1,0 +1,107 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Popis extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function index()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $this->load->model('start/start_model');
+        $data['magacini'] = $this->start_model->getMagacini();
+        $data['artikli']=$this->artikl_model->getAll();
+        $this->load->view('materijalno/popis/index', $data);
+    }
+
+    public function polnilista()
+    {
+        $this->load->model('materijalno/popis_model');
+        $return = $this->popis_model->getSitePopisi();
+        echo json_encode($return);
+    }
+
+    public function nov_popis()
+    {
+        $this->load->model('materijalno/popis_model');
+        $this->load->model('start/start_model');
+        $data['magacini'] = $this->start_model->getMagacini();
+        $data['vraboteni'] = $this->popis_model->getvraboteni();
+        $this->load->view('materijalno/popis/nov_popis', $data);
+    }
+
+    public function create_nov_popis()
+    {
+        $this->load->model('materijalno/popis_model');
+        $this->popis_model->create_nov_popis();
+        echo "ok";
+    }
+
+    public function izmeni()
+    {
+        $popis_id = $this->input->get("id");
+        $this->load->model('materijalno/popis_model');
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('start/start_model');
+        $this->load->model('podatoci/artikl_model');
+        $popis = $this->popis_model->getPopis($popis_id);
+        $data['popis'] = $popis;
+        $data['magacini'] = $this->materijalno_model->magacin_dropdown();
+        $data['vraboteni'] = $this->popis_model->vraboteni_dropdown();
+        $data['clenovi'] = $this->popis_model->get_clenovi_popis($popis_id);
+        $data['artikli'] = $this->artikl_model->getAll();
+        $data['sifri'] = $this->artikl_model->getAllKatBroj();
+        $data['stavki'] = $this->popis_model->get_stavki_popis($popis_id);
+        $this->load->view('materijalno/popis/izmeni_popis', $data);
+    }
+
+    public function update_popis()
+    {
+        $this->load->model('materijalno/popis_model');
+        $this->popis_model->update_popis() ;
+        echo 'ok';
+
+    }
+
+    public function delete_popis()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('materijalno/popis_model');
+        $this->popis_model->delete_popis($id);
+        echo "ok";
+    }
+
+    public function vraboteni_dropdown()
+    {
+        $this->load->model('materijalno/popis_model');
+        $return = $this->popis_model->getvraboteni();
+        echo json_encode($return);
+    }
+
+    public function get_clenovi_popis()
+    {
+        $popis_id = $this->input->get("id");
+        $this->load->model('materijalno/popis_model');
+        $return = $this->popis_model->get_clenovi_popis($popis_id);
+        echo json_encode($return);
+    }
+
+    public function get_stavki_popis()
+    {
+        $popis_id = $this->input->get("id");
+        $this->load->model('materijalno/popis_model');
+        $return = $this->popis_model->get_stavki_popis($popis_id);
+        echo json_encode($return);
+    }
+
+    public function create_stavki_popis()
+    {
+        $this->load->model('materijalno/popis_model');
+        $this->popis_model->create_stavki_popis();
+        echo "ok";
+    }
+}

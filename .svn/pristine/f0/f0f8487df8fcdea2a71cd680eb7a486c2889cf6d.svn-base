@@ -1,0 +1,3583 @@
+<?php
+
+class Upiti_statistika_model extends CI_Model {
+
+
+public function traumatologija_a_vkbr_lekuvani_p(){
+
+    $this->db->select('count(id) as count_value');
+    $this->db->where('firma_id', 41);
+    $this->db->or_where('firma_id', 43);
+    $query = $this->db->get('bis_pacienti_priem');
+    if($query->num_rows > 0){
+    $result = $query->row();
+    return $result->count_value;
+    }
+    else
+        return false;
+    }
+    public function karil_vkbr_lekuvani_p(){
+        //$this->db->select('count(*)');
+        $this->db->select('count(id) as count_value');
+        $this->db->where('firma_id', 42);
+
+        $query = $this->db->get('bis_pacienti_priem');
+        if($query->num_rows > 0){
+            $result = $query->row();
+            return $result->count_value;
+        }
+        else
+            return false;
+    }
+public function traum_ortop_denovi_blecenje(){
+
+
+}
+
+    public function traum_ort_a3(){
+
+
+        $firmi = array(41, 43);
+
+        $this->db->select('priem_id, count(bis_pregledi_paketi.paket_id) as broj_operacii1, bis_pacienti_priem.priem_datum as priem_datum_nov');
+        $this->db->from('bis_pregledi_paketi');
+        $this->db->join('bis_pacienti_priem', 'bis_pregledi_paketi.priem_id = bis_pacienti_priem.id','left');
+
+        $this->db->where('bis_pregledi_paketi.cenovnik', 2);
+        $this->db->where_in('bis_pacienti_priem.firma_id', $firmi);
+        $this->db->group_by('bis_pregledi_paketi.priem_id');
+        $query1 = $this->db->get();
+        $join1 = $this->db->last_query();
+
+        // 2ra tabela
+        $this->db->select('priem_id, count(bis_pregledi_paketi_2.paket_id) as broj_operacii1, bis_pacienti_priem.priem_datum as priem_datum_nov');
+        $this->db->from('bis_pregledi_paketi_2');
+        $this->db->join('bis_pacienti_priem', 'bis_pregledi_paketi_2.priem_id = bis_pacienti_priem.id','left');
+
+        $this->db->where('bis_pregledi_paketi_2.cenovnik', 2);
+        $this->db->where_in('bis_pacienti_priem.firma_id', $firmi);
+        $this->db->group_by('bis_pregledi_paketi_2.priem_id');
+
+        $query2 = $this->db->get();
+     $join2 = $this->db->last_query();
+
+
+
+//za 3ta tabela
+        $this->db->select('priem_id, count(bis_pregledi_paketi_dopolnitelni.paket_id) as broj_operacii1, bis_pacienti_priem.priem_datum as priem_datum_nov');
+        $this->db->from('bis_pregledi_paketi_dopolnitelni');
+        $this->db->join('bis_pacienti_priem', 'bis_pregledi_paketi_dopolnitelni.priem_id = bis_pacienti_priem.id','left');
+
+        $this->db->where('bis_pregledi_paketi_dopolnitelni.cenovnik', 2);
+        $this->db->where_in('bis_pacienti_priem.firma_id', $firmi);
+        $this->db->group_by('bis_pregledi_paketi_dopolnitelni.priem_id');
+        $query3 = $this->db->get();
+$join3 = $this->db->last_query();
+
+$joined = $this->db->query( $join1 . ' UNION ' . $join2 . ' UNION ' . $join3);
+        //$this->db->get();
+//$joined = $this->db->query('((' . $join1.') UNION ('.$join2. ') UNION (' . $join3 . ')) as Tabela1' );
+  // $joined_q = $this->db->last_query();
+
+        //$this->db->select('priem_id, sum(broj_operacii1) as br_operacii, priem_datum_nov');
+        //$this->db->group_by('priem_id');
+ //  $query_result = $this->db->get($joined_q);
+       if($joined->num_rows > 0){
+           return $joined->result();
+       }else
+       {
+           return false;
+       }
+
+    }
+
+public function traum_ortop_a3(){
+
+
+$query = $this->db->query("(SELECT priem_id, sum(broj_operacii1) as br_op, priem_datum from ((SELECT bis_pregledi_paketi_2.priem_id AS priem_id, COUNT( bis_pregledi_paketi_2.priem_id ) AS broj_operacii1, bis_pacienti_priem.priem_datum AS priem_datum
+FROM bis_pregledi_paketi_2, bis_pacienti_priem
+WHERE bis_pregledi_paketi_2.priem_id = bis_pacienti_priem.id
+AND bis_pregledi_paketi_2.cenovnik =2
+AND (
+bis_pacienti_priem.firma_id =41
+OR bis_pacienti_priem.firma_id =43
+)
+GROUP BY bis_pregledi_paketi_2.priem_id) UNION
+(
+SELECT bis_pregledi_paketi_dopolnitelni.priem_id AS priem_id, COUNT( bis_pregledi_paketi_dopolnitelni.priem_id ) AS broj_operacii1, bis_pacienti_priem.priem_datum AS priem_datum
+FROM bis_pregledi_paketi_dopolnitelni, bis_pacienti_priem
+WHERE bis_pregledi_paketi_dopolnitelni.priem_id = bis_pacienti_priem.id
+AND bis_pregledi_paketi_dopolnitelni.cenovnik =2
+AND (
+bis_pacienti_priem.firma_id =41
+OR bis_pacienti_priem.firma_id =43
+)
+GROUP BY bis_pregledi_paketi_dopolnitelni.priem_id
+) UNION
+(
+SELECT bis_pregledi_paketi.priem_id AS priem_id, COUNT( bis_pregledi_paketi.priem_id ) AS broj_operacii1, bis_pacienti_priem.priem_datum AS priem_datum
+FROM bis_pregledi_paketi, bis_pacienti_priem
+WHERE bis_pregledi_paketi.priem_id = bis_pacienti_priem.id
+AND bis_pregledi_paketi.cenovnik =2
+AND (
+bis_pacienti_priem.firma_id =41
+OR bis_pacienti_priem.firma_id =43
+)
+GROUP BY bis_pregledi_paketi.priem_id
+)) as Tabela1
+group by priem_id
+)");
+
+    if($query->num_rows > 0){
+        return $query->result();
+    }else
+    {
+        return false;
+    }
+
+}
+
+
+    public function traum_ort_a5(){
+
+$query = $this->db->query("(select priem_id, count(id)
+FROM
+(SELECT *
+FROM bis_upat
+WHERE `tip_upat`
+IN (
+'interklinicki',  'interbolnicki'
+)
+and
+`sifra_dijagnoza` not in (select sifra from bis_mkb_10 where opis like '%РЕХА%')
+) as Tabela1
+group by priem_id)");
+
+        if($query->num_rows > 0){
+
+            return $query->result();
+        }
+        else
+
+            return false;
+    }
+
+    public function zemi_datumi_upati_do_druga_ZU_a5(){
+        $this->db->select("bis_upat.id as upat_id, datum");
+        $this->db->from("bis_upat");
+        $this->db->where("naziv_zdravstvena_ustanova != do_zdravstvena_ustanova");
+        $this->db->where("sifra_dijagnoza NOT IN (select sifra from bis_mkb_10 where opis like '%РЕХА%')");
+        $this->db->join("bis_pacienti_priem", "bis_upat.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where_in("bis_pacienti_priem.firma_id", array(41, 43));
+$query = $this->db->get();
+        if($query->num_rows > 0){
+
+            return $query->result();
+        }
+        else
+
+            return false;
+    }
+
+
+    public function traum_ort_a6(){
+        $firmi = array(41, 43);
+    $this->db->query("(select * from bis_pacienti_pregledi_dijagnoza, bis_pacienti_priem where bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id)");
+        $this->db->select("*");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $this->db->where_in("bis_pacienti_pregledi_dijagnoza.dijagnoza_upatna");
+
+    }
+
+
+    public function traum_ort_a9(){
+        $firmi = array(41, 43);
+     $query =   $this->db->query("(SELECT DISTINCT bis_pacienti_priem.id, bis_pacienti_priem.priem_datum
+FROM bis_pacienti_priem, bis_pacienti_pregledi_dijagnoza, bis_pregledi_dijagnoza
+WHERE bis_pacienti_priem.id = bis_pacienti_pregledi_dijagnoza.priem_id
+AND bis_pacienti_priem.id = bis_pregledi_dijagnoza.priem_id
+AND bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+AND bis_pacienti_pregledi_dijagnoza.dijagnoza_upatna
+IN (
+
+SELECT id
+FROM `bis_mkb_10`
+WHERE `opis` LIKE '%спинална и епидурална анестезија%'
+)
+AND bis_pregledi_dijagnoza.dijagnoza
+IN (
+
+SELECT id
+FROM `bis_mkb_10`
+WHERE `opis` LIKE '%спинална и епидурална анестезија%'
+))");
+
+        if($query->num_rows > 0){
+           // print_r($query->result()); die();
+            return $query->result();
+        }else
+            //print_r("false"); die();
+            return false;
+    }
+
+
+    public function zemi_datum_med_sestri(){
+        $this->db->select("id, pocetok_raboten_odnos, kraj_raboten_odnos");
+        $this->db->from('covecki_resursi');
+$this->db->where("klasifikacija", 8);
+        $this->db->or_where("rabotno_mesto like '%медицинска сестра%'");
+        $this->db->where_in("oddel", array(41, 43));
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+           // print_r($query->result()); die();
+            return $query->result();
+        }else
+            return false;
+
+    }         /////////////////////////////posleeeeeeeeeeeee
+
+
+    public function zemi_datum_zatvoranje_priem_za_ispisanji(){
+
+        $firmi = array(41, 43);
+        $this->db->select("id, priem_datum_zavrsen");
+        $this->db->from("bis_pacienti_priem");
+        $this->db->where_in("firma_id", $firmi);
+        $this->db->where("priem_datum_zavrsen !=", '');
+$query = $this->db->get();
+        if($query->num_rows > 0){
+            return $query->result();
+        }else
+            return false;
+
+    }
+//ispisani pacienti u odreden period
+
+    public function zemi_datum_zatvoranje_otpusna_za_ispisani(){
+        $firmi = array(41, 43);
+        $this->db->select("priem_id, priem_datum, ispisan");
+        $this->db->from('bis_otpusna_lista');
+        $this->db->join('bis_pacienti_priem', 'bis_otpusna_lista.priem_id = bis_pacienti_priem.id');
+        $this->db->where_in('bis_pacienti_priem.firma_id', $firmi);
+  $query = $this->db->get();
+        if($query->num_rows > 0){
+           // print_r($query->result()); die();
+            return $query->result();
+        }else
+            //print_r('false'); die();
+            return false;
+    } ////////////posleeeeeeeee e
+
+
+    public function num_medSestri($mesec){
+        $d = date("Y-m-d"); $r = "2013-06-30";
+$dd = strtotime($d);  $rr = strtotime($r);
+        $brojmedSestri = 0;
+        switch($mesec){
+            case 1: {
+                $m1 = "01-01-2013"; $m2 = "31-01-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-07-2013"; $n2 = "31-07-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                foreach($this->zemi_datum_msestri() as $row){
+                    $tmp1 = strtotime($row->pocetok_raboten_odnos); $tmp2 = strtotime($row->kraj_raboten_odnos);
+                    if($tmp1 <= $m1d && $tmp2 >= $m2d){
+                        $brojmedSestri ++;
+                    }
+                }
+                }else if($dd > $rr){
+                    foreach($this->zemi_datum_msestri() as $row){
+                        $tmp1 = strtotime($row->pocetok_raboten_odnos); $tmp2 = strtotime($row->kraj_raboten_odnos);
+                        if($tmp1 < $n1d && $tmp2 > $n2d){
+                            $brojmedSestri ++;
+                        }
+                    }
+                }
+break;
+            }
+            case 2: {
+                $m1 = "01-02-2013"; $m2 = "28-02-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-08-2013"; $n2 = "31-08-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->zemi_datum_msestri() as $row){
+                        $tmp1 = strtotime($row->pocetok_raboten_odnos); $tmp2 = strtotime($row->kraj_raboten_odnos);
+                        if($tmp1 <= $m1d && $tmp2 >= $m2d){
+                            $brojmedSestri ++;
+                        }
+                    }
+                }else if($dd > $rr){
+                    foreach($this->zemi_datum_msestri() as $row){
+                        $tmp1 = strtotime($row->pocetok_raboten_odnos); $tmp2 = strtotime($row->kraj_raboten_odnos);
+                        if($tmp1 <= $n1d && $tmp2 >= $n2d){
+                            $brojmedSestri ++;
+                        }
+                    }
+                }
+
+                break;
+            }
+
+            case 3: {
+                $m1 = "01-03-2013"; $m2 = "31-03-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-09-2013"; $n2 = "31-09-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->zemi_datum_msestri() as $row){
+                        $tmp1 = strtotime($row->pocetok_raboten_odnos); $tmp2 = strtotime($row->kraj_raboten_odnos);
+                        if($tmp1 <= $m1d && $tmp2 >= $m2d){
+                            $brojmedSestri ++;
+                        }
+                    }
+                }else if($dd > $rr){
+                    foreach($this->zemi_datum_msestri() as $row){
+                        $tmp1 = strtotime($row->pocetok_raboten_odnos); $tmp2 = strtotime($row->kraj_raboten_odnos);
+                        if($tmp1 <= $n1d && $tmp2 >= $n2d){
+                            $brojmedSestri ++;
+                        }
+                    }
+                }
+                break;
+            }
+            case 4: {
+                $m1 = "01-04-2013"; $m2 = "30-04-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-10-2013"; $n2 = "31-10-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->zemi_datum_msestri() as $row){
+                        $tmp1 = strtotime($row->pocetok_raboten_odnos); $tmp2 = strtotime($row->kraj_raboten_odnos);
+                        if($tmp1 <= $m1d && $tmp2 >= $m2d){
+                            $brojmedSestri ++;
+                        }
+                    }
+                }else if($dd > $rr){
+                    foreach($this->zemi_datum_msestri() as $row){
+                        $tmp1 = strtotime($row->pocetok_raboten_odnos); $tmp2 = strtotime($row->kraj_raboten_odnos);
+                        if($tmp1 <= $n1d && $tmp2 >= $n2d){
+                            $brojmedSestri ++;
+                        }
+                    }
+                }
+                break;
+            }
+
+            case 5: {
+                $m1 = "01-05-2013"; $m2 = "31-05-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-11-2013"; $n2 = "30-11-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->zemi_datum_msestri() as $row){
+                        $tmp1 = strtotime($row->pocetok_raboten_odnos); $tmp2 = strtotime($row->kraj_raboten_odnos);
+                        if($tmp1 <= $m1d && $tmp2 >= $m2d){
+                            $brojmedSestri ++;
+                        }
+                    }
+                }else if($dd > $rr){
+                    foreach($this->zemi_datum_msestri() as $row){
+                        $tmp1 = strtotime($row->pocetok_raboten_odnos); $tmp2 = strtotime($row->kraj_raboten_odnos);
+                        if($tmp1 <= $n1d && $tmp2 >= $n2d){
+                            $brojmedSestri ++;
+                        }
+                    }
+                }
+                break;
+            }
+            case 6: {
+                $m1 = "01-06-2013"; $m2 = "30-06-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-12-2013"; $n2 = "31-12-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->zemi_datum_msestri() as $row){
+                        $tmp1 = strtotime($row->pocetok_raboten_odnos); $tmp2 = strtotime($row->kraj_raboten_odnos);
+                        if($tmp1 <= $m1d && $tmp2 >= $m2d){
+                            $brojmedSestri ++;
+                        }
+                    }
+                }else if($dd > $rr){
+                    foreach($this->zemi_datum_msestri() as $row){
+                        $tmp1 = strtotime($row->pocetok_raboten_odnos); $tmp2 = strtotime($row->kraj_raboten_odnos);
+                        if($tmp1 <= $n1d && $tmp2 >= $n2d){
+                            $brojmedSestri ++;
+                        }
+                    }
+                }
+                break;
+            }
+                default: {
+                    break;
+                }
+        }
+
+        return $brojmedSestri;
+
+    }                     //vidi
+
+// gleda ispisani pac po daum od otpisnata lista
+
+    public function num_ispisani_pacienti($mesec){
+        $d = date("Y-m-d"); $r = "2013-06-30";
+        $dd = strtotime($d);  $rr = strtotime($r);
+        $broj_ispisaniPac = 0;
+        switch($mesec){
+            case 1: {
+                $m1 = "01-01-2013"; $m2 = "31-01-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-07-2013"; $n2 = "31-07-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->zemi_datum_zatvoranje_otpusna_za_ispisani() as $row){
+                        $tmp1 = strtotime($row->priem_datum); $tmp2 = strtotime($row->ispisan);
+                        if($tmp1 < $tmp2){
+                            if($tmp2 >= $m1d && $tmp2 <= $m2d){
+                                $broj_ispisaniPac ++;
+                            }
+                        }
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->zemi_datum_zatvoranje_otpusna_za_ispisani() as $row){
+                        $tmp1 = strtotime($row->priem_datum); $tmp2 = strtotime($row->ispisan);
+                        if($tmp1 < $tmp2){
+                            if($tmp2 >= $n1d && $tmp2 <= $n2d){
+                                $broj_ispisaniPac ++;
+                            }
+                        }
+
+                    }
+                }
+                break;
+            }
+            case 2: {
+                $m1 = "01-02-2013"; $m2 = "28-02-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-08-2013"; $n2 = "31-08-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->zemi_datum_zatvoranje_otpusna_za_ispisani() as $row){
+                        $tmp1 = strtotime($row->priem_datum); $tmp2 = strtotime($row->ispisan);
+                        if($tmp1 < $tmp2){
+                            if($tmp2 >= $m1d && $tmp2 <= $m2d){
+                                $broj_ispisaniPac ++;
+                            }
+                        }
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->zemi_datum_zatvoranje_otpusna_za_ispisani() as $row){
+                        $tmp1 = strtotime($row->priem_datum); $tmp2 = strtotime($row->ispisan);
+                        if($tmp1 < $tmp2){
+                            if($tmp2 >= $n1d && $tmp2 <= $n2d){
+                                $broj_ispisaniPac ++;
+                            }
+                        }
+
+                    }
+                }
+
+                break;
+            }
+
+            case 3: {
+                $m1 = "01-03-2013"; $m2 = "31-03-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-09-2013"; $n2 = "31-09-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->zemi_datum_zatvoranje_otpusna_za_ispisani() as $row){
+                        $tmp1 = strtotime($row->priem_datum); $tmp2 = strtotime($row->ispisan);
+                        if($tmp1 < $tmp2){
+                            if($tmp2 >= $m1d && $tmp2 <= $m2d){
+                                $broj_ispisaniPac ++;
+                            }
+                        }
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->zemi_datum_zatvoranje_otpusna_za_ispisani() as $row){
+                        $tmp1 = strtotime($row->priem_datum); $tmp2 = strtotime($row->ispisan);
+                        if($tmp1 < $tmp2){
+                            if($tmp2 >= $n1d && $tmp2 <= $n2d){
+                                $broj_ispisaniPac ++;
+                            }
+                        }
+
+                    }
+                }
+                break;
+            }
+            case 4: {
+                $m1 = "01-04-2013"; $m2 = "30-04-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-10-2013"; $n2 = "31-10-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->zemi_datum_zatvoranje_otpusna_za_ispisani() as $row){
+                        $tmp1 = strtotime($row->priem_datum); $tmp2 = strtotime($row->ispisan);
+                        if($tmp1 < $tmp2){
+                            if($tmp2 >= $m1d && $tmp2 <= $m2d){
+                                $broj_ispisaniPac ++;
+                            }
+                        }
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->zemi_datum_zatvoranje_otpusna_za_ispisani() as $row){
+                        $tmp1 = strtotime($row->priem_datum); $tmp2 = strtotime($row->ispisan);
+                        if($tmp1 < $tmp2){
+                            if($tmp2 >= $n1d && $tmp2 <= $n2d){
+                                $broj_ispisaniPac ++;
+                            }
+                        }
+
+                    }
+                }
+                break;
+            }
+
+            case 5: {
+                $m1 = "01-05-2013"; $m2 = "31-05-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-11-2013"; $n2 = "30-11-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->zemi_datum_zatvoranje_otpusna_za_ispisani() as $row){
+                        $tmp1 = strtotime($row->priem_datum); $tmp2 = strtotime($row->ispisan);
+                        if($tmp1 < $tmp2){
+                            if($tmp2 >= $m1d && $tmp2 <= $m2d){
+                                $broj_ispisaniPac ++;
+                            }
+                        }
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->zemi_datum_zatvoranje_otpusna_za_ispisani() as $row){
+                        $tmp1 = strtotime($row->priem_datum); $tmp2 = strtotime($row->ispisan);
+                        if($tmp1 < $tmp2){
+                            if($tmp2 >= $n1d && $tmp2 <= $n2d){
+                                $broj_ispisaniPac ++;
+                            }
+                        }
+
+                    }
+                }
+                break;
+            }
+            case 6: {
+                $m1 = "01-06-2013"; $m2 = "30-06-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-12-2013"; $n2 = "31-12-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->zemi_datum_zatvoranje_otpusna_za_ispisani() as $row){
+                        $tmp1 = strtotime($row->priem_datum); $tmp2 = strtotime($row->ispisan);
+                        if($tmp1 < $tmp2){
+                            if($tmp2 >= $m1d && $tmp2 <= $m2d){
+                                $broj_ispisaniPac ++;
+                            }
+                        }
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->zemi_datum_zatvoranje_otpusna_za_ispisani() as $row){
+                        $tmp1 = strtotime($row->priem_datum); $tmp2 = strtotime($row->ispisan);
+                        if($tmp1 < $tmp2){
+                            if($tmp2 >= $n1d && $tmp2 <= $n2d){
+                                $broj_ispisaniPac ++;
+                            }
+                        }
+
+                    }
+                }
+                break;
+            }
+            default: {
+            break;
+            }
+        }
+
+        return $broj_ispisaniPac;
+
+    }          //vidi
+
+
+   // public function datum_ispisani_
+
+    public function datum_umreni_pacienti48(){
+        $firmi = array(41, 43);
+        $this->db->select("priem_id, priem_datum, priem_vreme, data-na-smrtta as data_smrt, cas-na-smrtta as cas_smrt");
+        $this->db->from("bis_potvrda_za_smrt");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id = bis_potvrda_za_smrt.priem_id", "left");
+        $this->db->where_in("firma_id", $firmi);
+        $query = $this->db->get();
+        $result = $query->result();
+        if($query->num_rows > 0){
+            return $result;
+        }else{
+            return 0;
+        }
+
+}
+
+
+
+
+    public function dali_smrt_pod48($datum, $vreme, $datum1, $vreme1){
+
+        $datum_plus48 = preg_split('/[-]/', $datum);
+            $den_int = (int)$datum_plus48[0];
+            $den_int += 2;
+            $datum_plus48[0] = $den_int;
+            $joined_datum =  join("-", $datum_plus48);
+            $datum_vreme = ($joined_datum . " " . $vreme);
+            $datum_vreme1 = ($datum1 . " " . $vreme1);
+
+            $datum_vreme_primen_plus48 = strtotime($datum_vreme);
+            $datum_vreme_smrt = strtotime($datum_vreme1);
+            if($datum_vreme_primen_plus48 >= $datum_vreme_smrt)
+                return true;
+        else
+            return false;
+    }
+
+
+
+    public function traum_ort_b1($mesec){
+        $d = date("Y-m-d"); $r = "2013-06-30";
+        $dd = strtotime($d);  $rr = strtotime($r);
+        $count = 0;
+        switch($mesec){
+            case 1: {
+                $m1 = "01-01-2013"; $m2 = "31-01-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-07-2013"; $n2 = "31-07-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datum_umreni_pacienti48() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+
+                            if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                                $datum = $row->priem_datum;
+                                $vreme = $row->priem_vreme;
+                                $datum1 = $row->data_smrt;
+                                $vreme1 = $row->cas_smrt;
+                                if($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $count++;
+                            }
+
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->datum_umreni_pacienti48() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+
+                            if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                                $datum = $row->priem_datum;
+                                $vreme = $row->priem_vreme;
+                                $datum1 = $row->data_smrt;
+                                $vreme1 = $row->cas_smrt;
+                                if($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $count++;
+                            }
+
+
+                    }
+                }
+                break;
+            }
+            case 2: {
+                $m1 = "01-02-2013"; $m2 = "28-02-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-08-2013"; $n2 = "31-08-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datum_umreni_pacienti48() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $datum = $row->priem_datum;
+                            $vreme = $row->priem_vreme;
+                            $datum1 = $row->data_smrt;
+                            $vreme1 = $row->cas_smrt;
+                            if($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $count++;
+                        }
+
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->datum_umreni_pacienti48() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $datum = $row->priem_datum;
+                            $vreme = $row->priem_vreme;
+                            $datum1 = $row->data_smrt;
+                            $vreme1 = $row->cas_smrt;
+                            if($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $count++;
+                        }
+
+
+                    }
+                }
+
+                break;
+            }
+
+            case 3: {
+                $m1 = "01-03-2013"; $m2 = "31-03-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-09-2013"; $n2 = "31-09-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datum_umreni_pacienti48() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $datum = $row->priem_datum;
+                            $vreme = $row->priem_vreme;
+                            $datum1 = $row->data_smrt;
+                            $vreme1 = $row->cas_smrt;
+                            if($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $count++;
+                        }
+
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->datum_umreni_pacienti48() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $datum = $row->priem_datum;
+                            $vreme = $row->priem_vreme;
+                            $datum1 = $row->data_smrt;
+                            $vreme1 = $row->cas_smrt;
+                            if($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $count++;
+                        }
+
+
+                    }
+                }
+                break;
+            }
+            case 4: {
+                $m1 = "01-04-2013"; $m2 = "30-04-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-10-2013"; $n2 = "31-10-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datum_umreni_pacienti48() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $datum = $row->priem_datum;
+                            $vreme = $row->priem_vreme;
+                            $datum1 = $row->data_smrt;
+                            $vreme1 = $row->cas_smrt;
+                            if($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $count++;
+                        }
+
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->datum_umreni_pacienti48() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $datum = $row->priem_datum;
+                            $vreme = $row->priem_vreme;
+                            $datum1 = $row->data_smrt;
+                            $vreme1 = $row->cas_smrt;
+                            if($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $count++;
+                        }
+
+
+                    }
+                }
+                break;
+            }
+
+            case 5: {
+                $m1 = "01-05-2013"; $m2 = "31-05-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-11-2013"; $n2 = "30-11-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datum_umreni_pacienti48() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $datum = $row->priem_datum;
+                            $vreme = $row->priem_vreme;
+                            $datum1 = $row->data_smrt;
+                            $vreme1 = $row->cas_smrt;
+                            if($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $count++;
+                        }
+
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->datum_umreni_pacienti48() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $datum = $row->priem_datum;
+                            $vreme = $row->priem_vreme;
+                            $datum1 = $row->data_smrt;
+                            $vreme1 = $row->cas_smrt;
+                            if($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $count++;
+                        }
+
+
+                    }
+                }
+                break;
+            }
+            case 6: {
+                $m1 = "01-06-2013"; $m2 = "30-06-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-12-2013"; $n2 = "31-12-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datum_umreni_pacienti48() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $datum = $row->priem_datum;
+                            $vreme = $row->priem_vreme;
+                            $datum1 = $row->data_smrt;
+                            $vreme1 = $row->cas_smrt;
+                            if($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $count++;
+                        }
+
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->datum_umreni_pacienti48() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $datum = $row->priem_datum;
+                            $vreme = $row->priem_vreme;
+                            $datum1 = $row->data_smrt;
+                            $vreme1 = $row->cas_smrt;
+                            if($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $count++;
+                        }
+
+
+                    }
+                }
+                break;
+            }
+            default: {
+            break;
+            }
+        }
+
+        return $count;
+
+    }           //vidi
+
+
+
+    public function datum_obdukcija(){
+        $firmi = array(41, 43);
+        $this->db->select("obdukcionen-naod-data as obdukcija_datum");
+        $this->db->from("bis_potvrda_za_smrt");
+        $this->db->join("bis_pacienti_priem", "bis_potvrda_za_smrt.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where_in("firma_id", $firmi);
+        $this->db->where("obdukcionen-naod-br !=", "");
+        $this->db->or_where("obdukcionen-naod-br !=", 0);
+        $query = $this->db->get();
+        if($query->num_rows > 0){
+            return $query->result();
+        }else
+            return false;
+    }
+
+
+
+    public function traum_ort_b4($mesec){
+        $d = date("Y-m-d"); $r = "2013-06-30";
+        $dd = strtotime($d);  $rr = strtotime($r);
+        $count = 0;
+        switch($mesec){
+            case 1: {
+                $m1 = "01-01-2013"; $m2 = "31-01-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-07-2013"; $n2 = "31-07-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datum_obdukcija() as $row){
+                        $tmp1 = strtotime($row->obdukcija_datum);
+                            if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+                }else if($dd > $rr){
+                    foreach($this->datum_obdukcija() as $row){
+                        $tmp1 = strtotime($row->obdukcija_datum);
+
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                             $count++;
+                        }
+
+
+                    }
+                }
+                break;
+            }
+            case 2: {
+                $m1 = "01-02-2013"; $m2 = "28-02-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-08-2013"; $n2 = "31-08-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datum_obdukcija() as $row){
+                        $tmp1 = strtotime($row->obdukcija_datum);
+
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                             $count++;
+                        }
+
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->datum_obdukcija() as $row){
+                        $tmp1 = strtotime($row->obdukcija_datum);
+
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                             $count++;
+                        }
+
+
+                    }
+                }
+
+                break;
+            }
+
+            case 3: {
+                $m1 = "01-03-2013"; $m2 = "31-03-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-09-2013"; $n2 = "31-09-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datum_obdukcija() as $row){
+                        $tmp1 = strtotime($row->obdukcija_datum);
+
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                             $count++;
+                        }
+
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->datum_obdukcija() as $row){
+                        $tmp1 = strtotime($row->obdukcija_datum);
+
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                             $count++;
+                        }
+
+
+                    }
+                }
+                break;
+            }
+            case 4: {
+                $m1 = "01-04-2013"; $m2 = "30-04-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-10-2013"; $n2 = "31-10-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datum_obdukcija() as $row){
+                        $tmp1 = strtotime($row->obdukcija_datum);
+
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->datum_obdukcija() as $row){
+                        $tmp1 = strtotime($row->obdukcija_datum);
+
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                           $count++;
+                        }
+
+
+                    }
+                }
+                break;
+            }
+
+            case 5: {
+                $m1 = "01-05-2013"; $m2 = "31-05-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-11-2013"; $n2 = "30-11-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datum_obdukcija() as $row){
+                        $tmp1 = strtotime($row->obdukcija_datum);
+
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->datum_obdukcija() as $row){
+                        $tmp1 = strtotime($row->obdukcija_datum);
+
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                           $count++;
+                        }
+
+
+                    }
+                }
+                break;
+            }
+            case 6: {
+                $m1 = "01-06-2013"; $m2 = "30-06-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-12-2013"; $n2 = "31-12-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datum_obdukcija() as $row){
+                        $tmp1 = strtotime($row->obdukcija_datum);
+
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                           $count++;
+                        }
+
+
+                    }
+                }else if($dd > $rr){
+                    foreach($this->datum_obdukcija() as $row){
+                        $tmp1 = strtotime($row->obdukcija_datum);
+
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                             $count++;
+                        }
+
+
+                    }
+                }
+                break;
+            }
+            default: {
+            break;
+            }
+        }
+
+        return $count;
+
+    }                //vidi
+
+
+
+   public function intenzivna_traum_ort_paketi(){
+       $firmi = array(41, 43);
+     $this->db->select("bis_pregledi_paketi.pregled_id, bis_pacienti_pregledi_dijagnoza.primen_datum");
+       $this->db->from("bis_pregledi_paketi");
+       $this->db->join("bis_pacienti_pregledi_dijagnoza", "bis_pregledi_paketi.pregled_id = bis_pacienti_pregledi_dijagnoza.id", "left");
+       $this->db->join("paketi", "bis_pregledi_paketi.paket_id = paketi.id", "left");
+       $this->db->like("paketi.naziv", "интензивна", "both");
+       $this->db->where_in("bis_pacienti_pregledi_dijagnoza.firma_id", $firmi);
+       $query = $this->db->get();
+       if($query->num_rows > 0){
+           return $query->result();
+       }else
+           return false;
+   }
+
+
+    public function intenzivna_traum_ort_paketi2(){
+        $firmi = array(41, 43);
+        $this->db->select("bis_pregledi_paketi_2.pregled_id, bis_pacienti_pregledi_dijagnoza.primen_datum");
+        $this->db->from("bis_pregledi_paketi_2");
+        $this->db->join("bis_pacienti_pregledi_dijagnoza", "bis_pregledi_paketi_2.pregled_id = bis_pacienti_pregledi_dijagnoza.id", "left");
+        $this->db->join("paketi", "bis_pregledi_paketi_2.paket_id = paketi.id", "left");
+        $this->db->like("paketi.naziv", "интензивна", "both");
+        $this->db->where_in("bis_pacienti_pregledi_dijagnoza.firma_id", $firmi);
+        $query = $this->db->get();
+        if($query->num_rows > 0){
+            return $query->result();
+        }else
+            return false;
+    }
+
+
+    public function traum_ort_v2($mesec){
+        $d = date("Y-m-d"); $r = "2013-06-30";
+        $dd = strtotime($d);  $rr = strtotime($r);
+        $count = 0;
+        switch($mesec){
+            case 1: {
+                $m1 = "01-01-2013"; $m2 = "31-01-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-07-2013"; $n2 = "31-07-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->intenzivna_traum_ort_paketi() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+}
+                    foreach($this->intenzivna_traum_ort_paketi2() as $row){
+                        $tmp11 = strtotime($row->primen_datum);
+                        if($tmp11 >= $m1d && $tmp11 <= $m2d){
+                            $count++;
+                        }
+                    }
+     }          else if($dd > $rr){
+                     foreach($this->intenzivna_traum_ort_paketi() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+                    foreach($this->intenzivna_traum_ort_paketi2() as $row){
+                        $tmp11 = strtotime($row->primen_datum);
+                        if($tmp11 >= $n1d && $tmp11 <= $n2d){
+                            $count++;
+                        }
+                    }
+                }
+                break;
+            }
+            case 2: {
+                $m1 = "01-02-2013"; $m2 = "28-02-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-08-2013"; $n2 = "31-08-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->intenzivna_traum_ort_paketi() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+                    foreach($this->intenzivna_traum_ort_paketi2() as $row){
+                        $tmp11 = strtotime($row->primen_datum);
+                        if($tmp11 >= $m1d && $tmp11 <= $m2d){
+                            $count++;
+                        }
+                    }
+                }          else if($dd > $rr){
+                    foreach($this->intenzivna_traum_ort_paketi() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+                    foreach($this->intenzivna_traum_ort_paketi2() as $row){
+                        $tmp11 = strtotime($row->primen_datum);
+                        if($tmp11 >= $n1d && $tmp11 <= $n2d){
+                            $count++;
+                        }
+                    }
+                }
+                break;
+            }
+
+            case 3: {
+                $m1 = "01-03-2013"; $m2 = "31-03-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-09-2013"; $n2 = "31-09-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->intenzivna_traum_ort_paketi() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+                    foreach($this->intenzivna_traum_ort_paketi2() as $row){
+                        $tmp11 = strtotime($row->primen_datum);
+                        if($tmp11 >= $m1d && $tmp11 <= $m2d){
+                            $count++;
+                        }
+                    }
+                }          else if($dd > $rr){
+                    foreach($this->intenzivna_traum_ort_paketi() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+                    foreach($this->intenzivna_traum_ort_paketi2() as $row){
+                        $tmp11 = strtotime($row->primen_datum);
+                        if($tmp11 >= $n1d && $tmp11 <= $n2d){
+                            $count++;
+                        }
+                    }
+                }
+                break;
+            }
+            case 4: {
+                $m1 = "01-04-2013"; $m2 = "30-04-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-10-2013"; $n2 = "31-10-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->intenzivna_traum_ort_paketi() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+                    foreach($this->intenzivna_traum_ort_paketi2() as $row){
+                        $tmp11 = strtotime($row->primen_datum);
+                        if($tmp11 >= $m1d && $tmp11 <= $m2d){
+                            $count++;
+                        }
+                    }
+                }          else if($dd > $rr){
+                    foreach($this->intenzivna_traum_ort_paketi() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+                    foreach($this->intenzivna_traum_ort_paketi2() as $row){
+                        $tmp11 = strtotime($row->primen_datum);
+                        if($tmp11 >= $n1d && $tmp11 <= $n2d){
+                            $count++;
+                        }
+                    }
+                }
+                break;
+            }
+
+            case 5: {
+                $m1 = "01-05-2013"; $m2 = "31-05-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-11-2013"; $n2 = "30-11-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->intenzivna_traum_ort_paketi() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+                    foreach($this->intenzivna_traum_ort_paketi2() as $row){
+                        $tmp11 = strtotime($row->primen_datum);
+                        if($tmp11 >= $m1d && $tmp11 <= $m2d){
+                            $count++;
+                        }
+                    }
+                }          else if($dd > $rr){
+                    foreach($this->intenzivna_traum_ort_paketi() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+                    foreach($this->intenzivna_traum_ort_paketi2() as $row){
+                        $tmp11 = strtotime($row->primen_datum);
+                        if($tmp11 >= $n1d && $tmp11 <= $n2d){
+                            $count++;
+                        }
+                    }
+                }
+                break;
+            }
+            case 6: {
+                
+
+                $m1 = "01-06-2013"; $m2 = "30-06-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-12-2013"; $n2 = "31-12-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->intenzivna_traum_ort_paketi() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+                    foreach($this->intenzivna_traum_ort_paketi2() as $row){
+                        $tmp11 = strtotime($row->primen_datum);
+                        if($tmp11 >= $m1d && $tmp11 <= $m2d){
+                            $count++;
+                        }
+                    }
+                }          else if($dd > $rr){
+                    foreach($this->intenzivna_traum_ort_paketi() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+                    foreach($this->intenzivna_traum_ort_paketi2() as $row){
+                        $tmp11 = strtotime($row->primen_datum);
+                        if($tmp11 >= $n1d && $tmp11 <= $n2d){
+                            $count++;
+                        }
+                    }
+                }
+                break;
+            }
+            default: {
+            break;
+            }
+        }
+
+        return $count;
+
+    }              ////////vidi
+
+    function datumi_urinaren_kateter(){
+        $this->db->select("pregled_id")->from("bis_pregledi_dijagnoza")->join("bis_mkb_10", "dijagnoza = bis_mkb_10.id", "left");
+        $this->db->where("opis LIKE '%уринар%катетер%'");
+        $query = $this->db->get();
+        $sub_query = array();
+        if($query->num_rows > 0){
+            $query2 = $query->result();
+        }
+        foreach($query2 as $row){
+            $sub_query[] = $row->pregled_id;
+        }
+
+        $firmi = array(41, 43);
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query1 = $this->db->get();
+        if($query1->num_rows > 0){
+
+            return $query1->result();
+        }else
+        {
+
+            return false;
+        }
+    }
+
+
+    function datumi_inf_urinar(){
+
+        $this->db->select("pregled_id")->from("bis_pregledi_dijagnoza")->join("bis_mkb_10", "bis_pregledi_dijagnoza.dijagnoza = bis_mkb_10.id", "left");
+        $this->db->where("opis LIKE '%ИНФ%УРИНАР%'");
+        $this->db->or_where("opis LIKE '%УРИНАР%ИНФЕКЦИ%'");
+        $query = $this->db->get();
+        $sub_query = array();
+        if($query->num_rows > 0){
+            $query1 = $query->result();
+        }
+        foreach($query1 as $row){
+            $sub_query[] = $row->pregled_id;
+        }
+
+           $firmi = array(41, 43);
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query1 = $this->db->get();
+        if($query1->num_rows > 0){
+
+            return $query1->result();
+        }else
+        {
+
+            return false;
+        }
+    }
+
+
+    function datumi_dekubitalni_rani(){
+
+        $this->db->select("pregled_id")->from("bis_pregledi_dijagnoza")->join("bis_mkb_10", "bis_pregledi_dijagnoza.dijagnoza = bis_mkb_10.id", "left");
+        $this->db->where("opis LIKE '%декубит%'");
+        $this->db->or_where("opis LIKE '%ДЕКУБИТ%'");
+        $query = $this->db->get();
+        $sub_query = array();
+        if($query->num_rows > 0){
+            $query1 = $query->result();
+        }
+        foreach($query1 as $row){
+            $sub_query[] = $row->pregled_id;
+        }
+
+        //print_r(array(41, 43)); die();
+        //print_r($sub_query); die();
+        $firmi = array(41, 43);
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query1 = $this->db->get();
+        if($query1->num_rows > 0){
+            // print_r($query1->result()); die();
+            return $query1->result();
+        }else
+        {
+            // print_r("false"); die();
+            return false;
+        }
+    }
+
+    function datumi_komplik_od_anest(){
+
+        $this->db->select("pregled_id")->from("bis_pregledi_dijagnoza")->join("bis_mkb_10", "bis_pregledi_dijagnoza.dijagnoza = bis_mkb_10.id", "left");
+        $this->db->where("opis LIKE '%компликац%анест%'");
+        $this->db->or_where("opis LIKE '%КОМПЛИКАЦ%АНЕСТ%'");
+        $query = $this->db->get();
+        $sub_query = array();
+        if($query->num_rows > 0){
+            $query1 = $query->result();
+        }
+        foreach($query1 as $row){
+            $sub_query[] = $row->pregled_id;
+        }
+
+        //print_r(array(41, 43)); die();
+        //print_r($sub_query); die();
+        $firmi = array(41, 43);
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query1 = $this->db->get();
+        if($query1->num_rows > 0){
+            // print_r($query1->result()); die();
+            return $query1->result();
+        }else
+        {
+            // print_r("false"); die();
+            return false;
+        }
+    }
+
+   public  function datumi_kompl_emboli(){
+
+        $this->db->select("pregled_id")->from("bis_pregledi_dijagnoza")->join("bis_mkb_10", "bis_pregledi_dijagnoza.dijagnoza = bis_mkb_10.id", "left");
+        $this->db->where("opis LIKE '%КОМПЛИ%ЕМБОЛИ%'");
+        $this->db->or_where("opis LIKE '%ЕМБОЛИ%КОМПЛИ%'");
+        $query = $this->db->get();
+        $sub_query = array();
+        if($query->num_rows > 0){
+            $query1 = $query->result();
+        }
+        foreach($query1 as $row){
+            $sub_query[] = $row->pregled_id;
+        }
+
+        //print_r(array(41, 43)); die();
+        //print_r($sub_query); die();
+        $firmi = array(41, 43);
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query1 = $this->db->get();
+        if($query1->num_rows > 0){
+            // print_r($query1->result()); die();
+            return $query1->result();
+        }else
+        {
+             //print_r("false"); die();
+         return false;
+        }
+    }
+
+
+    public function datumi_priemiso_intklin(){
+        $this->db->select("id, priem_datum, ima_upat")->from("bis_pacienti_priem");
+        $this->db->where("ima_upat", 2);
+        $this->db->where_in("firma_id", array(41, 43));
+        $query = $this->db->get();
+        if($query->num_rows > 0){
+            return $query->result();
+        }else
+            return false;
+    }
+
+    public function datumi_pregledi_po_lekar(){
+        $firmi = array(41, 43);
+        $this->db->select("primen_datum, za_doktor_id, faksimil, ime, prezime, priem_id");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->join("bis_lekari_site", "bis_pacienti_priem.za_doktor_id = bis_lekari_site.id", "left");
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query = $this->db->get();
+        if($query->num_rows > 0){
+
+           return $query->result();
+        }else
+
+           return false;
+    }
+
+    function datumi_pregledi_po_paketi_92($datum1 = '2013-05-01', $datum2 = '2013-05-31'){
+    $query = $this->db->query("SELECT COUNT( pregled_id ) as Broj , Paket_Id, paketi.naziv as Naziv, cenovnik FROM (
+
+SELECT pregled_id, bis_pregledi_paketi.paket_id AS Paket_Id, cenovnik, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_paketi
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_paketi.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+AND cenovnik =1
+ORDER BY Paket_Id, cenovnik
+) AS Tbl, paketi
+WHERE Tbl.Paket_Id = paketi.id
+AND (
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' )
+)
+GROUP BY Paket_Id, cenovnik;");
+
+
+        if($query->num_rows > 0){
+            return $query->result();
+
+
+        }else
+
+            return false;
+    }
+
+
+    public function datumi_pregledi_po_paketi_dsg($datum1 = '2013-05-01', $datum2 = '2013-05-31'){
+
+        $query = $this->db->query("(SELECT COUNT( pregled_id ) as Broj , Paket_Id, dsg_uslugi.naziv as Naziv, cenovnik
+FROM (
+
+SELECT pregled_id, bis_pregledi_paketi.paket_id AS Paket_Id, cenovnik, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_paketi
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_paketi.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+AND cenovnik =2
+ORDER BY Paket_Id, cenovnik
+) AS Tbl, dsg_uslugi
+WHERE Tbl.Paket_Id = dsg_uslugi.id
+AND (
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' )
+)
+GROUP BY Paket_Id, cenovnik)");
+
+
+        if($query->num_rows > 0){
+           //print_r($query->result()); die();
+           return $query->result();
+        }else
+         //   print_r("false"); die();
+        return false;
+    }
+
+    public function datumi_pregledi_po_paketi_spec($datum1 = '2013-05-01', $datum2 = '2013-05-31'){
+
+        $query = $this->db->query("(SELECT COUNT( pregled_id ) as Broj, Paket_Id, spec_kon_prev_zz.naziv as Naziv, cenovnik
+FROM (
+
+SELECT pregled_id, bis_pregledi_paketi.paket_id AS Paket_Id, cenovnik, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_paketi
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_paketi.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+AND cenovnik =4
+ORDER BY Paket_Id, cenovnik
+) AS Tbl, spec_kon_prev_zz
+WHERE Tbl.Paket_Id = spec_kon_prev_zz.id
+AND (
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' )
+)
+GROUP BY Paket_Id, cenovnik)");
+
+        if($query->num_rows > 0){
+           // print_r($query->result()); die();
+            return $query->result();
+        }else
+           // print_r("false"); die();
+        return false;
+    }
+
+    public function datumi_pregledi_po_paketi_dnevna($datum1 = '2013-05-01', $datum2 = '2013-05-31'){
+
+        $query = $this->db->query("(SELECT COUNT( pregled_id ) as Broj, Paket_Id, dnevnaBol_uslugi.naziv as Naziv, cenovnik
+FROM (
+
+SELECT pregled_id, bis_pregledi_paketi.paket_id AS Paket_Id, cenovnik, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_paketi
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_paketi.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+AND cenovnik =3
+ORDER BY Paket_Id, cenovnik
+) AS Tbl, dnevnaBol_uslugi
+WHERE Tbl.Paket_Id = dnevnaBol_uslugi.id
+AND (
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' )
+)
+GROUP BY Paket_Id, cenovnik)");
+
+        if($query->num_rows > 0){
+            //print_r($query->result()); die();
+            return $query->result();
+        }else
+            //print_r("false"); die();
+        return false;
+    }
+
+
+    public function uslugi_vo_mesec_naplateni($datum1 = '2013-05-01', $datum2 = '2013-05-31'){
+
+        $query = $this->db->query("(SELECT COUNT( Paket_Id ) as num_uslugi
+FROM (
+
+SELECT pregled_id, bis_pregledi_paketi.paket_id AS Paket_Id, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_paketi
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_paketi.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+ORDER BY Paket_Id
+) AS Tbl
+WHERE
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' )
+)"
+);
+
+        if($query->num_rows > 0){
+            $result = $query->result();
+            return $result[0];
+        }else
+
+            return false;
+    }
+
+
+    function datumi_pregledi_po_dijagnozi($datum1 = '2013-05-01', $datum2 = '2013-05-31'){
+        $query = $this->db->query("SELECT COUNT( pregled_id ) as Broj , Dijagnoza, bis_mkb_10.opis as Naziv FROM (
+
+SELECT pregled_id, bis_pregledi_dijagnoza.dijagnoza AS Dijagnoza, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_dijagnoza
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_dijagnoza.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+
+ORDER BY Dijagnoza
+) AS Tbl, bis_mkb_10
+WHERE Tbl.Dijagnoza = bis_mkb_10.id
+AND (
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' )
+)
+GROUP BY Dijagnoza;");
+
+
+        if($query->num_rows > 0){
+            return $query->result();
+
+
+        }else
+
+            return false;
+    }
+
+    function datumi_pregledi_po_grupni_dijag($datum1 = '2013-05-01', $datum2 = '2013-05-31'){
+        $query = $this->db->query("SELECT COUNT( pregled_id ) as Broj , bis_mkb_10.glavna_dijagnosticka_kategorija as grupna_dija FROM (
+
+SELECT pregled_id, bis_pregledi_dijagnoza.dijagnoza AS Dijagnoza, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_dijagnoza
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_dijagnoza.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+
+ORDER BY Dijagnoza
+) AS Tbl, bis_mkb_10
+WHERE Tbl.Dijagnoza = bis_mkb_10.id
+AND (
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' )
+)
+GROUP BY bis_mkb_10.glavna_dijagnosticka_kategorija;");
+
+
+        if($query->num_rows > 0){
+
+            return $query->result();
+
+
+        }else
+
+            return false;
+    }
+
+    public function MKB10_vo_mesec($datum1 = '2013-05-01', $datum2 = '2013-05-31'){
+
+        $query = $this->db->query("(SELECT COUNT( Dijagnoza ) as num_mkb10  FROM (
+
+SELECT bis_pregledi_dijagnoza.dijagnoza AS Dijagnoza, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_dijagnoza
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_dijagnoza.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+
+ORDER BY Dijagnoza
+) AS Tbl
+WHERE
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' ))");
+
+        if($query->num_rows > 0){
+
+            $result = $query->result();
+
+            return $result[0];
+        }else
+
+            return false;
+    }
+
+    public function datumi_priemi_po_mesec(){
+        $firmi = array(41, 43);
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, za_doktor_id, faksimil, ime, prezime");
+        $this->db->from("bis_pacienti_priem"); $this->db->join("bis_lekari_site", "bis_pacienti_priem.za_doktor_id = bis_lekari_site.id", "left");
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+$query = $this->db->get();
+        if($query->num_rows > 0){
+          // print_r($query->result()); die();
+            return $query->result();
+        }else
+            return false;
+    }
+
+    public function traum_ort_v8($mesec){
+    $d = date("Y-m-d"); $r = "2013-06-30";
+    $dd = strtotime($d);  $rr = strtotime($r);
+    $count_kateter = 0;
+    $count_infekcii = 0;
+    switch($mesec){
+        case 1: {
+            $m1 = "01-01-2013"; $m2 = "31-01-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+            $n1 = "01-07-2013"; $n2 = "31-07-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+            if($dd < $rr){
+                foreach($this->datumi_urinaren_kateter() as $row){
+                    $tmp1 = strtotime($row->primen_datum);
+                    if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                        $count_kateter++;
+                    }
+                }
+                foreach($this->datumi_inf_urinar() as $row){
+                    $tmp11 = strtotime($row->primen_datum);
+                    if($tmp11 >= $m1d && $tmp11 <= $m2d){
+                        $count_infekcii++;
+                    }
+                }
+            }          else if($dd > $rr){
+                foreach($this->datumi_urinaren_kateter() as $row){
+                    $tmp1 = strtotime($row->primen_datum);
+                    if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                        $count_kateter++;
+                    }
+                }
+                foreach($this->datumi_inf_urinar() as $row){
+                    $tmp11 = strtotime($row->primen_datum);
+                    if($tmp11 >= $n1d && $tmp11 <= $n2d){
+                        $count_infekcii++;
+                    }
+                }
+            }
+            break;
+        }
+        case 2: {
+            $m1 = "01-02-2013"; $m2 = "28-02-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+            $n1 = "01-08-2013"; $n2 = "31-08-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+            if($dd < $rr){
+                foreach($this->datumi_urinaren_kateter() as $row){
+                    $tmp1 = strtotime($row->primen_datum);
+                    if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                        $count_kateter++;
+                    }
+                }
+                foreach($this->datumi_inf_urinar() as $row){
+                    $tmp11 = strtotime($row->primen_datum);
+                    if($tmp11 >= $m1d && $tmp11 <= $m2d){
+                        $count_infekcii++;
+                    }
+                }
+            }          else if($dd > $rr){
+                foreach($this->datumi_urinaren_kateter() as $row){
+                    $tmp1 = strtotime($row->primen_datum);
+                    if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                        $count_kateter++;
+                    }
+                }
+                foreach($this->datumi_inf_urinar() as $row){
+                    $tmp11 = strtotime($row->primen_datum);
+                    if($tmp11 >= $n1d && $tmp11 <= $n2d){
+                        $count_infekcii++;
+                    }
+                }
+            }
+            break;
+        }
+
+        case 3: {
+            $m1 = "01-03-2013"; $m2 = "31-03-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+            $n1 = "01-09-2013"; $n2 = "31-09-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+            if($dd < $rr){
+                foreach($this->datumi_urinaren_kateter() as $row){
+                    $tmp1 = strtotime($row->primen_datum);
+                    if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                        $count_kateter++;
+                    }
+                }
+                foreach($this->datumi_inf_urinar() as $row){
+                    $tmp11 = strtotime($row->primen_datum);
+                    if($tmp11 >= $m1d && $tmp11 <= $m2d){
+                        $count_infekcii++;
+                    }
+                }
+            }          else if($dd > $rr){
+                foreach($this->datumi_urinaren_kateter() as $row){
+                    $tmp1 = strtotime($row->primen_datum);
+                    if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                        $count_kateter++;
+                    }
+                }
+                foreach($this->datumi_inf_urinar() as $row){
+                    $tmp11 = strtotime($row->primen_datum);
+                    if($tmp11 >= $n1d && $tmp11 <= $n2d){
+                        $count_infekcii++;
+                    }
+                }
+            }
+            break;
+        }
+        case 4: {
+            $m1 = "01-04-2013"; $m2 = "30-04-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+            $n1 = "01-10-2013"; $n2 = "31-10-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+            if($dd < $rr){
+                foreach($this->datumi_urinaren_kateter() as $row){
+                    $tmp1 = strtotime($row->primen_datum);
+                    if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                        $count_kateter++;
+                    }
+                }
+                foreach($this->datumi_inf_urinar() as $row){
+                    $tmp11 = strtotime($row->primen_datum);
+                    if($tmp11 >= $m1d && $tmp11 <= $m2d){
+                        $count_infekcii++;
+                    }
+                }
+            }          else if($dd > $rr){
+                foreach($this->datumi_urinaren_kateter() as $row){
+                    $tmp1 = strtotime($row->primen_datum);
+                    if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                        $count_kateter++;
+                    }
+                }
+                foreach($this->datumi_inf_urinar() as $row){
+                    $tmp11 = strtotime($row->primen_datum);
+                    if($tmp11 >= $n1d && $tmp11 <= $n2d){
+                        $count_infekcii++;
+                    }
+                }
+            }
+            break;
+        }
+
+        case 5: {
+            $m1 = "01-05-2013"; $m2 = "31-05-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+            $n1 = "01-11-2013"; $n2 = "30-11-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+            if($dd < $rr){
+                foreach($this->datumi_urinaren_kateter() as $row){
+                    $tmp1 = strtotime($row->primen_datum);
+                    if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                        $count_kateter++;
+                    }
+                }
+                foreach($this->datumi_inf_urinar() as $row){
+                    $tmp11 = strtotime($row->primen_datum);
+                    if($tmp11 >= $m1d && $tmp11 <= $m2d){
+                        $count_infekcii++;
+                    }
+                }
+            }          else if($dd > $rr){
+                foreach($this->datumi_urinaren_kateter() as $row){
+                    $tmp1 = strtotime($row->primen_datum);
+                    if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                        $count_kateter++;
+                    }
+                }
+                foreach($this->datumi_inf_urinar() as $row){
+                    $tmp11 = strtotime($row->primen_datum);
+                    if($tmp11 >= $n1d && $tmp11 <= $n2d){
+                        $count_infekcii++;
+                    }
+                }
+            }
+            break;
+        }
+        case 6: {
+
+
+            $m1 = "01-06-2013"; $m2 = "30-06-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+            $n1 = "01-12-2013"; $n2 = "31-12-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+            if($dd < $rr){
+                foreach($this->datumi_urinaren_kateter() as $row){
+                    $tmp1 = strtotime($row->primen_datum);
+                    if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                        $count_kateter++;
+                    }
+                }
+                foreach($this->datumi_inf_urinar() as $row){
+                    $tmp11 = strtotime($row->primen_datum);
+                    if($tmp11 >= $m1d && $tmp11 <= $m2d){
+                        $count_infekcii++;
+                    }
+                }
+            }          else if($dd > $rr){
+                foreach($this->datumi_urinaren_kateter() as $row){
+                    $tmp1 = strtotime($row->primen_datum);
+                    if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                        $count_kateter++;
+                    }
+                }
+                foreach($this->datumi_inf_urinar() as $row){
+                    $tmp11 = strtotime($row->primen_datum);
+                    if($tmp11 >= $n1d && $tmp11 <= $n2d){
+                        $count_infekcii++;
+                    }
+                }
+            }
+            break;
+        }
+        default: {
+        break;
+        }
+    }
+
+    $counts = array($count_kateter, $count_infekcii);
+    return $counts;
+
+}      ////////////////////////   vidi
+
+    public function traum_ort_v11($mesec){
+        $d = date("Y-m-d"); $r = "2013-06-30";
+        $dd = strtotime($d);  $rr = strtotime($r);
+        $count = 0;
+
+        switch($mesec){
+            case 1: {
+                $m1 = "01-01-2013"; $m2 = "31-01-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-07-2013"; $n2 = "31-07-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_kompl_emboli() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+
+                }          else if($dd > $rr){
+                    foreach($this->datumi_kompl_emboli() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+
+                }
+                break;
+            }
+            case 2: {
+                $m1 = "01-02-2013"; $m2 = "28-02-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-08-2013"; $n2 = "31-08-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_kompl_emboli() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+
+                }          else if($dd > $rr){
+                    foreach($this->datumi_kompl_emboli() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+
+                }
+                break;
+            }
+
+            case 3: {
+                $m1 = "01-03-2013"; $m2 = "31-03-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-09-2013"; $n2 = "31-09-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_kompl_emboli() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+
+                }          else if($dd > $rr){
+                    foreach($this->datumi_kompl_emboli() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+
+                }
+                break;
+            }
+            case 4: {
+                $m1 = "01-04-2013"; $m2 = "30-04-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-10-2013"; $n2 = "31-10-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_kompl_emboli() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+
+                }          else if($dd > $rr){
+                    foreach($this->datumi_kompl_emboli() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+
+                }
+                break;
+            }
+
+            case 5: {
+                $m1 = "01-05-2013"; $m2 = "31-05-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-11-2013"; $n2 = "30-11-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_kompl_emboli() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+
+                }          else if($dd > $rr){
+                    foreach($this->datumi_kompl_emboli() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+
+                }
+                break;
+            }
+            case 6: {
+
+
+                $m1 = "01-06-2013"; $m2 = "30-06-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-12-2013"; $n2 = "31-12-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_kompl_emboli() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+
+                }          else if($dd > $rr){
+                    foreach($this->datumi_kompl_emboli() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+
+                }
+                break;
+            }
+            default: {
+            break;
+            }
+        }
+
+        return $count;
+
+    }       ////////////////////           vidi
+
+    public function traum_ort_v13($mesec){
+        $d = date("Y-m-d"); $r = "2013-06-30";
+        $dd = strtotime($d);  $rr = strtotime($r);
+        $count = 0;
+
+        switch($mesec){
+            case 1: {
+                $m1 = "01-01-2013"; $m2 = "31-01-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-07-2013"; $n2 = "31-07-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_priemiso_intklin() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+
+                }          else if($dd > $rr){
+                    foreach($this->datumi_priemiso_intklin() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+
+                }
+                break;
+            }
+            case 2: {
+                $m1 = "01-02-2013"; $m2 = "28-02-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-08-2013"; $n2 = "31-08-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_priemiso_intklin() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+
+                }          else if($dd > $rr){
+                    foreach($this->datumi_priemiso_intklin() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+
+                }
+                break;
+            }
+
+            case 3: {
+                $m1 = "01-03-2013"; $m2 = "31-03-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-09-2013"; $n2 = "31-09-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_priemiso_intklin() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+
+                }          else if($dd > $rr){
+                    foreach($this->datumi_priemiso_intklin() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+
+                }
+                break;
+            }
+            case 4: {
+                $m1 = "01-04-2013"; $m2 = "30-04-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-10-2013"; $n2 = "31-10-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_priemiso_intklin() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+
+                }          else if($dd > $rr){
+                    foreach($this->datumi_priemiso_intklin() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+
+                }
+                break;
+            }
+
+            case 5: {
+                $m1 = "01-05-2013"; $m2 = "31-05-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-11-2013"; $n2 = "30-11-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_priemiso_intklin() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+
+                }          else if($dd > $rr){
+                    foreach($this->datumi_priemiso_intklin() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+
+                }
+                break;
+            }
+            case 6: {
+
+
+                $m1 = "01-06-2013"; $m2 = "30-06-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-12-2013"; $n2 = "31-12-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_priemiso_intklin() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $count++;
+                        }
+                    }
+
+                }          else if($dd > $rr){
+                    foreach($this->datumi_priemiso_intklin() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $count++;
+                        }
+                    }
+
+                }
+                break;
+            }
+            default: {
+            break;
+            }
+        }
+
+        return $count;
+
+    }         /////// vidi
+
+
+    public function traum_ort_v16($mesec){
+        $d = date("Y-m-d"); $r = "2013-06-30";
+        $dd = strtotime($d);  $rr = strtotime($r);
+        $count = 0;
+        $count_niza = array();
+        $id_lekari = array();
+        $q = "bis_pacienti_priem.id as priem_id, priem_datum, za_doktor_id, faksimil, ime, prezime";
+        switch($mesec){
+            case 1: {
+                $m1 = "01-01-2013"; $m2 = "31-01-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-07-2013"; $n2 = "31-07-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_priemi_po_mesec() as $row){
+
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                            // za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        } }
+
+                }      else if($dd > $rr){
+                    foreach($this->datumi_priemi_po_mesec() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+// za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                break;
+
+            }
+            case 2: {
+                $m1 = "01-02-2013"; $m2 = "28-02-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-08-2013"; $n2 = "31-08-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_priemi_po_mesec() as $row){
+
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                            // za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        } }
+
+                }      else if($dd > $rr){
+                    foreach($this->datumi_priemi_po_mesec() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+// za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                break;
+
+            }
+
+            case 3: {
+                $m1 = "01-03-2013"; $m2 = "31-03-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-09-2013"; $n2 = "31-09-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_priemi_po_mesec() as $row){
+
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                    // za 1 slucaj
+                    $niza_ids = array();
+                    $niza_ids[0] = $id_lekari[0][0];
+                    $count_niza[0][0] = 1;
+                    $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                    for($a = 0; $a < count($id_lekari[0]); $a++){
+                        if(in_array($id_lekari[0][$a], $niza_ids)){
+                            continue;
+                        }
+                        $niza_ids[] = $id_lekari[0][$a];
+                        $count_niza[0][$a] = 1;
+                        $count_niza[1][$a] = $id_lekari[1][$a];
+                        for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                            if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                $count_niza[0][$a] ++;
+                        }
+                    }
+ } }
+
+                }      else if($dd > $rr){
+                    foreach($this->datumi_priemi_po_mesec() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+// za 1 slucaj
+                    $niza_ids = array();
+                    $niza_ids[0] = $id_lekari[0][0];
+                    $count_niza[0][0] = 1;
+                    $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                    for($a = 0; $a < count($id_lekari[0]); $a++){
+                        if(in_array($id_lekari[0][$a], $niza_ids)){
+                            continue;
+                        }
+                        $niza_ids[] = $id_lekari[0][$a];
+                        $count_niza[0][$a] = 1;
+                        $count_niza[1][$a] = $id_lekari[1][$a];
+                        for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                            if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                $count_niza[0][$a] ++;
+                        }
+                    }
+ }
+            }
+
+                }
+
+break;
+            }
+            case 4: {
+                $m1 = "01-04-2013"; $m2 = "30-04-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-10-2013"; $n2 = "31-10-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_priemi_po_mesec() as $row){
+
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                            // za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        } }
+
+                }      else if($dd > $rr){
+                    foreach($this->datumi_priemi_po_mesec() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+// za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                break;
+
+            }
+ case 5: {
+                $m1 = "01-05-2013"; $m2 = "31-05-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-11-2013"; $n2 = "30-11-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+     if($dd < $rr){
+         foreach($this->datumi_priemi_po_mesec() as $row){
+
+             $tmp1 = strtotime($row->priem_datum);
+             if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                 $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                 // za 1 slucaj
+                 $niza_ids = array();
+                 $niza_ids[0] = $id_lekari[0][0];
+                 $count_niza[0][0] = 1;
+                 $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                 for($a = 0; $a < count($id_lekari[0]); $a++){
+                     if(in_array($id_lekari[0][$a], $niza_ids)){
+                         continue;
+                     }
+                     $niza_ids[] = $id_lekari[0][$a];
+                     $count_niza[0][$a] = 1;
+                     $count_niza[1][$a] = $id_lekari[1][$a];
+                     for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                         if($id_lekari[0][$b] == $id_lekari[0][$a])
+                             $count_niza[0][$a] ++;
+                     }
+                 }
+             } }
+
+     }      else if($dd > $rr){
+         foreach($this->datumi_priemi_po_mesec() as $row){
+             $tmp1 = strtotime($row->priem_datum);
+             if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                 $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+// za 1 slucaj
+                 $niza_ids = array();
+                 $niza_ids[0] = $id_lekari[0][0];
+                 $count_niza[0][0] = 1;
+                 $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                 for($a = 0; $a < count($id_lekari[0]); $a++){
+                     if(in_array($id_lekari[0][$a], $niza_ids)){
+                         continue;
+                     }
+                     $niza_ids[] = $id_lekari[0][$a];
+                     $count_niza[0][$a] = 1;
+                     $count_niza[1][$a] = $id_lekari[1][$a];
+                     for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                         if($id_lekari[0][$b] == $id_lekari[0][$a])
+                             $count_niza[0][$a] ++;
+                     }
+                 }
+             }
+         }
+
+     }
+
+     break;
+
+ }
+            case 6: {
+                $m1 = "01-06-2013"; $m2 = "30-06-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-12-2013"; $n2 = "31-12-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_priemi_po_mesec() as $row){
+
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                            // za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        } }
+
+                }      else if($dd > $rr){
+                    foreach($this->datumi_priemi_po_mesec() as $row){
+                        $tmp1 = strtotime($row->priem_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+// za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                break;
+
+            }
+            default: {
+            break;
+            }
+        }
+
+        return $count_niza;
+
+    }                 //////////////vidi obavezno kako drugite e
+
+    public function traum_ort_v14($mesec){
+        $d = date("Y-m-d"); $r = "2013-06-30";
+        $dd = strtotime($d);  $rr = strtotime($r);
+        $count = 0;
+        $count_niza = array();
+        $id_lekari = array();
+        $q = "bis_pacienti_priem.id as priem_id, priem_datum, za_doktor_id, faksimil, ime, prezime";
+        switch($mesec){
+            case 1: {
+                $m1 = "01-01-2013"; $m2 = "31-01-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-07-2013"; $n2 = "31-07-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_pregledi_po_lekar() as $row){
+
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                            // za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        } }
+
+                }      else if($dd > $rr){
+                    foreach($this->datumi_pregledi_po_lekar() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+// za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                break;
+ }
+            case 2: {
+                $m1 = "01-02-2013"; $m2 = "28-02-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-08-2013"; $n2 = "31-08-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_pregledi_po_lekar() as $row){
+
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                            // za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        } }
+
+                }      else if($dd > $rr){
+                    foreach($this->datumi_pregledi_po_lekar() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+// za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                break;
+  }
+
+            case 3: {
+                $m1 = "01-03-2013"; $m2 = "31-03-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-09-2013"; $n2 = "31-09-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_pregledi_po_lekar() as $row){
+
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                            // za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        } }
+
+                }      else if($dd > $rr){
+                    foreach($this->datumi_pregledi_po_lekar() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+// za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                break;
+            }
+            case 4: {
+                $m1 = "01-04-2013"; $m2 = "30-04-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-10-2013"; $n2 = "31-10-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_pregledi_po_lekar() as $row){
+
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                            // za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        } }
+
+                }      else if($dd > $rr){
+                    foreach($this->datumi_pregledi_po_lekar() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+// za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                break;
+ }
+            case 5: {
+                $m1 = "01-05-2013"; $m2 = "31-05-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-11-2013"; $n2 = "30-11-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_pregledi_po_lekar() as $row){
+
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                            // za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        } }
+
+                }      else if($dd > $rr){
+                    foreach($this->datumi_pregledi_po_lekar() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+// za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                break;
+  }
+            case 6: {
+                $m1 = "01-06-2013"; $m2 = "30-06-2013"; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = "01-12-2013"; $n2 = "31-12-2013"; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    foreach($this->datumi_pregledi_po_lekar() as $row){
+
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $m1d && $tmp1 <= $m2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                            // za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        } }
+
+                }      else if($dd > $rr){
+                    foreach($this->datumi_pregledi_po_lekar() as $row){
+                        $tmp1 = strtotime($row->primen_datum);
+                        if($tmp1 >= $n1d && $tmp1 <= $n2d){
+                            $id_lekari[0][] = $row->za_doktor_id; $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+// za 1 slucaj
+                            $niza_ids = array();
+                            $niza_ids[0] = $id_lekari[0][0];
+                            $count_niza[0][0] = 1;
+                            $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                            for($a = 0; $a < count($id_lekari[0]); $a++){
+                                if(in_array($id_lekari[0][$a], $niza_ids)){
+                                    continue;
+                                }
+                                $niza_ids[] = $id_lekari[0][$a];
+                                $count_niza[0][$a] = 1;
+                                $count_niza[1][$a] = $id_lekari[1][$a];
+                                for($b = $a + 1; $b < count($id_lekari[0]); $b++){
+                                    if($id_lekari[0][$b] == $id_lekari[0][$a])
+                                        $count_niza[0][$a] ++;
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                break;
+ }
+            default: {
+            break;
+            }
+        }
+
+        return $count_niza;
+
+    }          /////////// vidi obavezno kako drugite e
+
+
+    public function traum_ort_v15($mesec){
+        $d = date("Y-m-d"); $r = "2013-06-30";
+        $dd = strtotime($d);  $rr = strtotime($r);
+        $count = 0;
+        $count_niza = array();
+ switch($mesec){
+            case 1: {
+                $m1 = '01-01-2013'; $m2 = '31-01-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-07-2013'; $n2 = '31-07-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+
+                    $result_92 = $this->datumi_pregledi_po_paketi_92($m1, $m2);
+                    $result_spec = $this->datumi_pregledi_po_paketi_spec($m1, $m2);
+                    $result_dnevna = $this->datumi_pregledi_po_paketi_dnevna($m1. $m2);
+                    $result_dsg = $this->datumi_pregledi_po_paketi_dsg($m1, $m2);
+                    $count_niza['92'] = $result_92; $count_niza['spec'] = $result_spec; $count_niza['dnevna'] = $result_dnevna; $count_niza['dsg'] = $result_dsg;
+
+
+                }      else if($dd > $rr){
+
+
+                    $result_92 = $this->datumi_pregledi_po_paketi_92($n1, $n2);
+                    $result_spec = $this->datumi_pregledi_po_paketi_spec($n1, $n2);
+                    $result_dnevna = $this->datumi_pregledi_po_paketi_dnevna($n1, $n2);
+                    $result_dsg = $this->datumi_pregledi_po_paketi_dsg($n1, $n2);
+                    $count_niza['92'] = $result_92; $count_niza['spec'] = $result_spec; $count_niza['dnevna'] = $result_dnevna; $count_niza['dsg'] = $result_dsg;
+                }
+
+                break;
+            }
+            case 2: {
+                $m1 = '01-02-2013'; $m2 = '28-02-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-08-2013'; $n2 = '31-08-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+
+                if($dd < $rr){
+
+                    $result_92 = $this->datumi_pregledi_po_paketi_92($m1, $m2);
+                    $result_spec = $this->datumi_pregledi_po_paketi_spec($m1, $m2);
+                    $result_dnevna = $this->datumi_pregledi_po_paketi_dnevna($m1. $m2);
+                    $result_dsg = $this->datumi_pregledi_po_paketi_dsg($m1, $m2);
+                    $count_niza['92'] = $result_92; $count_niza['spec'] = $result_spec; $count_niza['dnevna'] = $result_dnevna; $count_niza['dsg'] = $result_dsg;
+
+                }      else if($dd > $rr){
+
+
+                    $result_92 = $this->datumi_pregledi_po_paketi_92($n1, $n2);
+                    $result_spec = $this->datumi_pregledi_po_paketi_spec($n1, $n2);
+                    $result_dnevna = $this->datumi_pregledi_po_paketi_dnevna($n1, $n2);
+                    $result_dsg = $this->datumi_pregledi_po_paketi_dsg($n1, $n2);
+                    $count_niza['92'] = $result_92; $count_niza['spec'] = $result_spec; $count_niza['dnevna'] = $result_dnevna; $count_niza['dsg'] = $result_dsg;
+
+                }
+
+                break;
+
+            }
+
+            case 3: {
+                $m1 = '01-03-2013'; $m2 = '31-03-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-09-2013'; $n2 = '31-09-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+
+                    $result_92 = $this->datumi_pregledi_po_paketi_92($m1, $m2);
+                    $result_spec = $this->datumi_pregledi_po_paketi_spec($m1, $m2);
+                    $result_dnevna = $this->datumi_pregledi_po_paketi_dnevna($m1, $m2);
+                    $result_dsg = $this->datumi_pregledi_po_paketi_dsg($m1, $m2);
+                    $count_niza['92'] = $result_92; $count_niza['spec'] = $result_spec; $count_niza['dnevna'] = $result_dnevna; $count_niza['dsg'] = $result_dsg;
+
+
+                }      else if($dd > $rr){
+
+
+                    $result_92 = $this->datumi_pregledi_po_paketi_92($n1, $n2);
+                    $result_spec = $this->datumi_pregledi_po_paketi_spec($n1, $n2);
+                    $result_dnevna = $this->datumi_pregledi_po_paketi_dnevna($n1, $n2);
+                    $result_dsg = $this->datumi_pregledi_po_paketi_dsg($n1, $n2);
+                    $count_niza['92'] = $result_92; $count_niza['spec'] = $result_spec; $count_niza['dnevna'] = $result_dnevna; $count_niza['dsg'] = $result_dsg;
+
+                }
+                break;
+            }
+            case 4: {
+                $m1 = '01-04-2013'; $m2 = '30-04-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-10-2013'; $n2 = '31-10-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+
+                    $result_92 = $this->datumi_pregledi_po_paketi_92($m1, $m2);
+                    $result_spec = $this->datumi_pregledi_po_paketi_spec($m1, $m2);
+                    $result_dnevna = $this->datumi_pregledi_po_paketi_dnevna($m1. $m2);
+                    $result_dsg = $this->datumi_pregledi_po_paketi_dsg($m1, $m2);
+                    $count_niza['92'] = $result_92; $count_niza['spec'] = $result_spec; $count_niza['dnevna'] = $result_dnevna; $count_niza['dsg'] = $result_dsg;
+
+
+                }      else if($dd > $rr){
+
+
+                    $result_92 = $this->datumi_pregledi_po_paketi_92($n1, $n2);
+                    $result_spec = $this->datumi_pregledi_po_paketi_spec($n1, $n2);
+                    $result_dnevna = $this->datumi_pregledi_po_paketi_dnevna($n1, $n2);
+                    $result_dsg = $this->datumi_pregledi_po_paketi_dsg($n1, $n2);
+                    $count_niza['92'] = $result_92; $count_niza['spec'] = $result_spec; $count_niza['dnevna'] = $result_dnevna; $count_niza['dsg'] = $result_dsg;
+
+                }
+
+                break;
+            }
+            case 5: {
+                $m1 = '01-05-2013'; $m2 = '31-05-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-11-2013'; $n2 = '30-11-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+
+                    $result_92 = $this->datumi_pregledi_po_paketi_92($m1, $m2);
+                    $result_spec = $this->datumi_pregledi_po_paketi_spec($m1, $m2);
+                    $result_dnevna = $this->datumi_pregledi_po_paketi_dnevna($m1. $m2);
+                    $result_dsg = $this->datumi_pregledi_po_paketi_dsg($m1, $m2);
+                    $count_niza['92'] = $result_92; $count_niza['spec'] = $result_spec; $count_niza['dnevna'] = $result_dnevna; $count_niza['dsg'] = $result_dsg;
+
+
+                }      else if($dd > $rr){
+
+
+                    $result_92 = $this->datumi_pregledi_po_paketi_92($n1, $n2);
+                    $result_spec = $this->datumi_pregledi_po_paketi_spec($n1, $n2);
+                    $result_dnevna = $this->datumi_pregledi_po_paketi_dnevna($n1, $n2);
+                    $result_dsg = $this->datumi_pregledi_po_paketi_dsg($n1, $n2);
+                    $count_niza['92'] = $result_92; $count_niza['spec'] = $result_spec; $count_niza['dnevna'] = $result_dnevna; $count_niza['dsg'] = $result_dsg;
+
+                }
+
+                break;
+            }
+            case 6: {
+                $m1 = '2013-06-01'; $m2 = '2013-06-30'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '2013-12-01'; $n2 = '2013-01-31'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+
+                    $result_92 = $this->datumi_pregledi_po_paketi_92($m1, $m2);
+                    $result_spec = $this->datumi_pregledi_po_paketi_spec($m1, $m2);
+                    $result_dnevna = $this->datumi_pregledi_po_paketi_dnevna($m1, $m2);
+                  $result_dsg = $this->datumi_pregledi_po_paketi_dsg($m1, $m2);
+                   $count_niza['92'] = $result_92; $count_niza['spec'] = $result_spec; $count_niza['dnevna'] = $result_dnevna; $count_niza['dsg'] = $result_dsg;
+
+
+                }      else if($dd > $rr){
+
+
+                    $result_92 = $this->datumi_pregledi_po_paketi_92($n1, $n2);
+                    $result_spec = $this->datumi_pregledi_po_paketi_spec($n1, $n2);
+                    $result_dnevna = $this->datumi_pregledi_po_paketi_dnevna($n1, $n2);
+                    $result_dsg = $this->datumi_pregledi_po_paketi_dsg($n1, $n2);
+                    $count_niza['92'] = $result_92; $count_niza['spec'] = $result_spec; $count_niza['dnevna'] = $result_dnevna; $count_niza['dsg'] = $result_dsg;
+
+                }
+
+                break;
+            }
+            default: {
+            break;
+            }
+        }
+
+        return $count_niza;
+
+    }             ///////////// vidi
+
+
+
+    public function traum_ort_v20($mesec){
+        $d = date("Y-m-d"); $r = "2013-06-30";
+        $dd = strtotime($d);  $rr = strtotime($r);
+        $count = 0;
+        $count_niza = array();
+        switch($mesec){
+            case 1: {
+                $m1 = '01-01-2013'; $m2 = '31-01-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-07-2013'; $n2 = '31-07-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                $res_dijag = $this->datumi_pregledi_po_dijagnozi($m1, $m2);
+                $count_niza['dijagnoza'] = $res_dijag;
+ }      else if($dd > $rr){
+                    $res_dijag = $this->datumi_pregledi_po_dijagnozi($n1, $n2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }
+
+                break;
+            }
+            case 2: {
+                $m1 = '01-02-2013'; $m2 = '28-02-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-08-2013'; $n2 = '31-08-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+
+                if($dd < $rr){
+                    $res_dijag = $this->datumi_pregledi_po_dijagnozi($m1, $m2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }      else if($dd > $rr){
+
+                    $res_dijag = $this->datumi_pregledi_po_dijagnozi($n1, $n2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }
+
+                break;
+
+            }
+
+            case 3: {
+                $m1 = '01-03-2013'; $m2 = '31-03-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-09-2013'; $n2 = '31-09-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    $res_dijag = $this->datumi_pregledi_po_dijagnozi($m1, $m2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }      else if($dd > $rr){
+                    $res_dijag = $this->datumi_pregledi_po_dijagnozi($n1, $n2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }
+                break;
+            }
+            case 4: {
+                $m1 = '01-04-2013'; $m2 = '30-04-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-10-2013'; $n2 = '31-10-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+
+                    $res_dijag = $this->datumi_pregledi_po_dijagnozi($m1, $m2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }      else if($dd > $rr){
+
+                    $res_dijag = $this->datumi_pregledi_po_dijagnozi($n1, $n2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }
+
+                break;
+            }
+            case 5: {
+                $m1 = '01-05-2013'; $m2 = '31-05-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-11-2013'; $n2 = '30-11-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    $res_dijag = $this->datumi_pregledi_po_dijagnozi($m1, $m2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }      else if($dd > $rr){
+                    $res_dijag = $this->datumi_pregledi_po_dijagnozi($n1, $n2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }
+
+                break;
+            }
+            case 6: {
+                $m1 = '2013-06-01'; $m2 = '2013-06-30'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '2013-12-01'; $n2 = '2013-01-31'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    $res_dijag = $this->datumi_pregledi_po_dijagnozi($m1, $m2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }      else if($dd > $rr){
+                    $res_dijag = $this->datumi_pregledi_po_dijagnozi($n1, $n2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }
+
+                break;
+            }
+            default: {
+            break;
+            }
+        }
+
+        return $count_niza;
+
+    }
+
+
+
+    public function traum_ort_v21($mesec){
+        $d = date("Y-m-d"); $r = "2013-06-30";
+        $dd = strtotime($d);  $rr = strtotime($r);
+        $count = 0;
+        $count_niza = array();
+        switch($mesec){
+            case 1: {
+                $m1 = '01-01-2013'; $m2 = '31-01-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-07-2013'; $n2 = '31-07-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    $res_dijag = $this->datumi_pregledi_po_grupni_dijag($m1, $m2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }      else if($dd > $rr){
+                    $res_dijag = $this->datumi_pregledi_po_grupni_dijag($n1, $n2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }
+
+                break;
+            }
+            case 2: {
+                $m1 = '01-02-2013'; $m2 = '28-02-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-08-2013'; $n2 = '31-08-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+
+                if($dd < $rr){
+                    $res_dijag = $this->datumi_pregledi_po_grupni_dijag($m1, $m2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }      else if($dd > $rr){
+
+                    $res_dijag = $this->datumi_pregledi_po_grupni_dijag($n1, $n2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }
+
+                break;
+
+            }
+
+            case 3: {
+                $m1 = '01-03-2013'; $m2 = '31-03-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-09-2013'; $n2 = '31-09-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    $res_dijag = $this->datumi_pregledi_po_grupni_dijag($m1, $m2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }      else if($dd > $rr){
+                    $res_dijag = $this->datumi_pregledi_po_grupni_dijag($n1, $n2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }
+                break;
+            }
+            case 4: {
+                $m1 = '01-04-2013'; $m2 = '30-04-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-10-2013'; $n2 = '31-10-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+
+                    $res_dijag = $this->datumi_pregledi_po_grupni_dijag($m1, $m2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }      else if($dd > $rr){
+
+                    $res_dijag = $this->datumi_pregledi_po_grupni_dijag($n1, $n2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }
+
+                break;
+            }
+            case 5: {
+                $m1 = '01-05-2013'; $m2 = '31-05-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-11-2013'; $n2 = '30-11-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    $res_dijag = $this->datumi_pregledi_po_grupni_dijag($m1, $m2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }      else if($dd > $rr){
+                    $res_dijag = $this->datumi_pregledi_po_grupni_dijag($n1, $n2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }
+
+                break;
+            }
+            case 6: {
+                $m1 = '2013-06-01'; $m2 = '2013-06-30'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '2013-12-01'; $n2 = '2013-01-31'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    $res_dijag = $this->datumi_pregledi_po_grupni_dijag($m1, $m2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }      else if($dd > $rr){
+                    $res_dijag = $this->datumi_pregledi_po_grupni_dijag($n1, $n2);
+                    $count_niza['dijagnoza'] = $res_dijag;
+                }
+
+                break;
+            }
+            default: {
+            break;
+            }
+        }
+
+        return $count_niza['dijagnoza'];
+
+    }
+
+
+    public function traum_ort_v22($mesec){
+        $d = date("Y-m-d"); $r = "2013-06-30";
+        $dd = strtotime($d);  $rr = strtotime($r);
+        $count = 0;
+        $count_niza = array();
+        switch($mesec){
+            case 1: {
+                $m1 = '01-01-2013'; $m2 = '31-01-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-07-2013'; $n2 = '31-07-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    $num_uslugi = $this->uslugi_vo_mesec_naplateni($m1, $m2);
+                    $count_niza['num_uslugi'] = $num_uslugi;
+                }      else if($dd > $rr){
+                    $num_uslugi = $this->uslugi_vo_mesec_naplateni($n1, $n2);
+                    $count_niza['num_uslugi'] = $num_uslugi;
+                }
+
+                break;
+            }
+            case 2: {
+                $m1 = '01-02-2013'; $m2 = '28-02-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-08-2013'; $n2 = '31-08-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+
+                if($dd < $rr){
+                    $num_uslugi = $this->uslugi_vo_mesec_naplateni($m1, $m2);
+                    $count_niza['num_uslugi'] = $num_uslugi;
+                }      else if($dd > $rr){
+
+                    $num_uslugi = $this->uslugi_vo_mesec_naplateni($n1, $n2);
+                    $count_niza['num_uslugi'] = $num_uslugi;
+                }
+
+                break;
+
+            }
+
+            case 3: {
+                $m1 = '01-03-2013'; $m2 = '31-03-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-09-2013'; $n2 = '31-09-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    $num_uslugi = $this->uslugi_vo_mesec_naplateni($m1, $m2);
+                    $count_niza['num_uslugi'] = $num_uslugi;
+                }      else if($dd > $rr){
+                    $num_uslugi = $this->uslugi_vo_mesec_naplateni($n1, $n2);
+                    $count_niza['num_uslugi'] = $num_uslugi;
+                }
+                break;
+            }
+            case 4: {
+                $m1 = '01-04-2013'; $m2 = '30-04-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-10-2013'; $n2 = '31-10-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+
+                    $num_uslugi = $this->uslugi_vo_mesec_naplateni($m1, $m2);
+                    $count_niza['num_uslugi'] = $num_uslugi;
+                }      else if($dd > $rr){
+
+                    $num_uslugi = $this->uslugi_vo_mesec_naplateni($n1, $n2);
+                    $count_niza['num_uslugi'] = $num_uslugi;
+                }
+
+                break;
+            }
+            case 5: {
+                $m1 = '2013-05-01'; $m2 = '2013-05-31'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '2013-11-01'; $n2 = '2013-11-30'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    $num_uslugi = $this->uslugi_vo_mesec_naplateni($m1, $m2);
+                    $count_niza['num_uslugi'] = $num_uslugi;
+                }      else if($dd > $rr){
+                    $num_uslugi = $this->uslugi_vo_mesec_naplateni($n1, $n2);
+                    $count_niza['num_uslugi'] = $num_uslugi;
+                }
+
+                break;
+            }
+            case 6: {
+                $m1 = '2013-06-01'; $m2 = '2013-06-30'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '2013-12-01'; $n2 = '2013-01-31'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    $num_uslugi = $this->uslugi_vo_mesec_naplateni($m1, $m2);
+                    $count_niza['num_uslugi'] = $num_uslugi;
+                }      else if($dd > $rr){
+                    $num_uslugi = $this->uslugi_vo_mesec_naplateni($n1, $n2);
+                    $count_niza['num_uslugi'] = $num_uslugi;
+                }
+
+                break;
+            }
+            default: {
+            break;
+            }
+        }
+
+        return $count_niza['num_uslugi'];
+
+    }
+
+
+    public function traum_ort_v23($mesec){
+        $d = date("Y-m-d"); $r = "2013-06-30";
+        $dd = strtotime($d);  $rr = strtotime($r);
+        $count = 0;
+        $count_niza = array();
+        switch($mesec){
+            case 1: {
+                $m1 = '01-01-2013'; $m2 = '31-01-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-07-2013'; $n2 = '31-07-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    $num_mkb10 = $this->MKB10_vo_mesec($m1, $m2);
+                    $count_niza['num_mkb10'] = $num_mkb10;
+                }      else if($dd > $rr){
+                    $num_mkb10 = $this->MKB10_vo_mesec($n1, $n2);
+                    $count_niza['num_mkb10'] = $num_mkb10;
+                }
+
+                break;
+            }
+            case 2: {
+                $m1 = '01-02-2013'; $m2 = '28-02-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-08-2013'; $n2 = '31-08-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+
+                if($dd < $rr){
+                    $num_mkb10 = $this->MKB10_vo_mesec($m1, $m2);
+                    $count_niza['num_mkb10'] = $num_mkb10;
+                }      else if($dd > $rr){
+
+                    $num_mkb10 = $this->MKB10_vo_mesec($n1, $n2);
+                    $count_niza['num_mkb10'] = $num_mkb10;
+                }
+
+                break;
+
+            }
+
+            case 3: {
+                $m1 = '01-03-2013'; $m2 = '31-03-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-09-2013'; $n2 = '31-09-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    $num_mkb10 = $this->MKB10_vo_mesec($m1, $m2);
+                    $count_niza['num_mkb10'] = $num_mkb10;
+                }      else if($dd > $rr){
+                    $num_mkb10 = $this->MKB10_vo_mesec($n1, $n2);
+                    $count_niza['num_mkb10'] = $num_mkb10;
+                }
+                break;
+            }
+            case 4: {
+                $m1 = '01-04-2013'; $m2 = '30-04-2013'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '01-10-2013'; $n2 = '31-10-2013'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+
+                    $num_mkb10 = $this->MKB10_vo_mesec($m1, $m2);
+                    $count_niza['num_mkb10'] = $num_mkb10;
+                }      else if($dd > $rr){
+
+                    $num_mkb10 = $this->MKB10_vo_mesec($n1, $n2);
+                    $count_niza['num_mkb10'] = $num_mkb10;
+                }
+
+                break;
+            }
+            case 5: {
+                $m1 = '2013-05-01'; $m2 = '2013-05-31'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '2013-11-01'; $n2 = '2013-11-30'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    $num_mkb10 = $this->MKB10_vo_mesec($m1, $m2);
+                    $count_niza['num_mkb10'] = $num_mkb10;
+                }      else if($dd > $rr){
+                    $num_mkb10 = $this->MKB10_vo_mesec($n1, $n2);
+                    $count_niza['num_mkb10'] = $num_mkb10;
+                }
+
+                break;
+            }
+            case 6: {
+                $m1 = '2013-06-01'; $m2 = '2013-06-30'; $m1d = strtotime($m1); $m2d = strtotime($m2);
+                $n1 = '2013-12-01'; $n2 = '2013-01-31'; $n1d = strtotime($n1); $n2d = strtotime($n2);
+                if($dd < $rr){
+                    $num_mkb10 = $this->MKB10_vo_mesec($m1, $m2);
+                    $count_niza['num_mkb10'] = $num_mkb10;
+                }      else if($dd > $rr){
+                    $num_mkb10 = $this->MKB10_vo_mesec($n1, $n2);
+                    $count_niza['num_mkb10'] = $num_mkb10;
+                }
+
+                break;
+            }
+            default: {
+            break;
+            }
+        }
+
+        return $count_niza['num_mkb10'];
+
+    }
+
+
+}

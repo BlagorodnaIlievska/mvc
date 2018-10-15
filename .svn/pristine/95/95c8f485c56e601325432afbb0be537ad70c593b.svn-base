@@ -1,0 +1,109 @@
+<div class="faktura-form">
+
+    <div class="forma">
+        <div class="buttons">
+            <?php
+            echo form_open('materijalno/faktura/povrzi_postoecka');
+            ?>
+            <button type="button" class="newwindow button"><span>Поврзи постоечка</span></button>
+            <?php
+            echo form_close();
+            echo form_open('materijalno/vlez_izlez/nova_faktura');
+            ?>
+            <button type="button" class="magacinbutton button"><span>Креирај нова</span></button>
+            <?php
+            echo form_close();
+            ?>
+        </div>
+        <div class="left">
+            <label>Број</label><input type="text" id="broj-faktura" name="broj-faktura" readonly value="<?php echo $query[0]->brojfaktura; ?>">
+            <label>Датум</label><input type="text" id="datum-faktura" name="datum-faktura" readonly value="<?php echo $query[0]->datum; ?>">
+            <input type="hidden" class="fakturaid" name="fakturaid" value="<?php echo $query[0]->fakturaID; ?>">
+        </div>
+        <div class="right">
+            <label>Клиент</label><input type="text" id="klient-faktura" name="klient-faktura" readonly value="<?php echo $query[0]->firmaIme; ?>">
+        </div>
+    </div>
+    <div class="stavkadetail tabela">
+        <table class="tstavkadetail izmeni-priemnica-faktura" border="1" cellpadding="2">
+            <th>Бр.</th>
+            <th>Кат. Бр.</th>
+            <th>Ставка</th>
+            <th>Кол.</th>
+            <th>ЕМ</th>
+            <th>Без ДДВ</th>
+            <th>Со ДДВ</th>
+            <th>%</th>
+            <th>Вкупно</th>
+            <th>Вк. ДДВ</th>
+            <th>Вкупно</th>
+            <?php
+            echo "<tr class='hiderow'>";
+            echo "<td> <input type='text' class='1number small' name='number' readonly></td>";
+            echo "<td> <input type='text' class='1katbroj medium' name='katbroj' readonly></td>";
+            echo "<td> <input type='text' class='1stavka big' name='stavka' readonly></td>";
+            echo "<td> <input type='text' class='1kolicina small' name='kolicina' readonly></td>";
+            echo "<td> <input type='text' class='1em medium' name='em' readonly></td>";
+            echo "<td> <input type='text' class='1bezddv medium' name='bezddv' readonly></td>";
+            echo "<td> <input type='text' class='1soddv medium'name='soddv' readonly></td>";
+            echo "<td> <input type='text' class='1procent medium'name='procent' readonly></td>";
+            echo "<td> <input type='text' class='1vkupno medium'name='vkupno' readonly></td>";
+            echo "<td> <input type='text' class='1vkupnoddv medium'name='vkupnoddv' readonly></td>";
+            echo "<td> <input type='text' class='1sevkupno medium'name='sevkupno' readonly></td>";
+            echo "</tr>";
+            ?>
+        </table>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+            var fakturaid = jQuery('.fakturaid').val();
+            var data = {
+                dbid: fakturaid
+            }
+            jQuery.ajax({
+                url: "/index.php/vlezni_fakturi/pregled_vlezni/getVleznaDetali",
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery(".tstavkadetail").find("tr:gt(1)").remove();
+                    var tr = jQuery('.tstavkadetail tr:last');
+                    tr.removeClass('hiderow');
+                    var num = response.length;
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        var kolicina = response[i].kolicina;
+                        var cenabezddv = response[i].cena;
+                        var ddv = response[i].DDV;
+                        var vkupnobezddv = parseInt(cenabezddv) * parseInt(kolicina);
+                        var vkupnoddv = parseInt((vkupnobezddv*ddv)/100);
+                        var vkupnosoddv = parseInt(vkupnobezddv) + parseInt(vkupnoddv);
+                        newrow.find('input[name=number]').val("." + num);
+                        newrow.find('input[name=katbroj]').val(response[i].katBroj);
+                        newrow.find('input[name=stavka]').val(response[i].stavka);
+                        newrow.find('input[name=kolicina]').val(kolicina);
+                        newrow.find('input[name=em]').val(response[i].edmerka);
+                        newrow.find('input[name=bezddv]').val(cenabezddv);
+                        newrow.find('input[name=soddv]').val(response[i].cenaDDV);
+                        newrow.find('input[name=procent]').val(ddv);
+                        newrow.find('input[name=vkupno]').val(vkupnobezddv);
+                        newrow.find('input[name=vkupnoddv]').val(vkupnoddv);
+                        newrow.find('input[name=sevkupno]').val(vkupnosoddv);
+                        num--;
+                    }
+                    tr.addClass('hiderow');
+                }
+            });
+        jQuery('.newwindow').live('click',function(){
+            var formaction=jQuery(this).parent().attr('action');
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({
+                autoOpen: true, width: 700}).load(formaction);
+
+        });
+    });
+</script>

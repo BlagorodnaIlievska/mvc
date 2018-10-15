@@ -1,0 +1,219 @@
+<div id="lista_klienti_form">
+    <h4>Top lista na Klienti spored Uplati-Isplati</h4>
+    <?php
+    $pogled1 = array(
+        '0' => 'Suma',
+        '1' => 'Prihod',
+        '2' => 'Rashod'
+    );
+    $pogled2 = array(
+        '0' => 'Ziro smetka + Kasa',
+        '1' => 'Ziro smetka',
+        '2' => 'Kasa'
+    );
+    $tip = array(
+        '0' => 'Site',
+        '1' => 'Klienti',
+        '2' => 'Interni konta'
+    );
+    echo form_open('izvodi/menu/grupiraj_izvodi');
+
+    echo form_label('Pogled: ', 'pogled1');
+    echo form_dropdown('pogled1', $pogled1, 0, 'class="pogled1 listaklienti"');
+    echo form_label('Pogled: ', 'pogled2');
+    echo form_dropdown('pogled2', $pogled2, 0, 'class="pogled2 listaklienti"');
+    echo form_label('Tip: ', 'tip');
+    echo form_dropdown('tip', $tip, 0, 'class="tip listaklienti"');
+    echo form_close();
+    ?>
+    <br>
+
+    <div class="tab-listaklienti">
+        <h4>Lista na Klienti</h4>
+        <table class="t-listaklienti" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th>Klient</th>
+                <th>Suma</th>
+            </tr>
+            <?php
+            echo "<tr class='trow hiderow'>";
+            echo "<td><input type='hidden' class='klientid' name='lklientid' style='display: none;' /> <input type='text' class='klient big' name='lklient' readonly> </td>";
+            echo "<td> <input type='text' class='suma medium' name='lsuma' readonly> </td>";
+            echo "</tr>";
+            ?>
+        </table>
+        <?php echo form_open('raporti/menu/pecati_lista'); ?>
+        <input type="hidden" class="pdfpogled1id" name="pdfpogled1id"><br>
+        <input type="hidden" class="pdfpogled2id" name="pdfpogled2id"><br>
+        <input type="hidden" class="pdftipid" name="pdftipid"><br>
+        <input type="submit" value="Pecati" class="pecatikartica button" ><br>
+        <?php echo form_close(); ?>
+    </div><br><br>
+    <div class="lista">
+        <h4>Lista na Uplati-Isplati</h4>
+        <table class="t-uplati" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th>Tip</th>
+                <th>Datum</th>
+                <th>Broj</th>
+                <th>Prihod</th>
+                <th>Rashod</th>
+                <th>Grupa</th>
+                <th>Zabeleska</th>
+            </tr>
+            <?php
+            echo "<tr class='hiderow'>";
+            echo "<td> <input type='text' class='tip medium' name='utip' readonly> </td>";
+            echo "<td> <input type='text' class='datum big' name='udatum' readonly> </td>";
+            echo "<td> <input type='text' class='broj medium' name='ubroj' readonly> </td>";
+            echo "<td> <input type='text' class='prihod medium' name='uprihod' readonly> </td>";
+            echo "<td> <input type='text' class='rashod medium' name='urashod' readonly> </td>";
+            echo "<td> <input type='text' class='grupa medium' name='ugrupa' readonly> </td>";
+            echo "<td> <input type='text' class='zabeleska big' name='uzabeleska' readonly> </td>";
+            echo "</tr>";
+            ?>
+        </table>
+        <?php echo form_open('raporti/menu/pecati_lista_uplati_isplati'); ?>
+        <input type="hidden" class="pdfklientid" name="pdfklientid"><br>
+        <input type="hidden" class="pdfprihodrashodid" name="pdfprihodrashodid"><br>
+        <input type="hidden" class="pdfsmetkakasaid" name="pdfsmetkakasaid"><br>
+        <input type="hidden" class="pdftipid" name="pdftipid"><br>
+        <input type="submit" value="Pecati" class="pecatikartica button" ><br>
+        <?php echo form_close(); ?>
+    </div>
+
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        var startdata = {
+            tipid: jQuery('.pogled1 option:selected').val(),
+            zsid: jQuery('.pogled2 option:selected').val(),
+            konto: jQuery('.tip option:selected').val()
+
+
+        }
+
+
+        jQuery.ajax({
+            url: '/index.php/raporti/menu/getTopKlienti',
+            type: 'POST',
+            data: startdata,
+            dataType: 'json',
+            success: function(response) {
+                //console.log(response);
+                jQuery(".t-listaklienti").find("tr:gt(1)").remove();
+                var tr = jQuery('.t-listaklienti tr:last');
+                tr.removeClass('hiderow');
+                for ( var i = 0; i < response.length; i++ ) {
+                    //console.log(response[i].ZSID);
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.find('input[name=lklientid]').val(response[i].firmaID);
+                    newrow.find('input[name=lklient]').val(response[i].firmaIme);
+                    newrow.find('input[name=lsuma]').val(response[i].suma);
+                }
+                tr.addClass('hiderow');
+            }
+        });
+        jQuery('.listaklienti').live('change',function(){
+            var prihodrashod = jQuery('.pogled1 option:selected').val();
+            var smetkakasa = jQuery('.pogled2 option:selected').val();
+            var tip = jQuery('.tip option:selected').val();
+            jQuery('.pdfpogled1id').val(prihodrashod);
+            jQuery('.pdfpogled2id').val(smetkakasa);
+            jQuery('.pdftipid').val(tip);
+            var formaction = jQuery(this).parent().attr('action');
+            //console.log(klient, grupa, kasa, formaction);
+            var data = {
+                tipid: prihodrashod,
+                zsid: smetkakasa,
+                konto: tip
+            }
+            jQuery.ajax({
+                url: '/index.php/raporti/menu/getTopKlienti',
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery(".t-uplati").find("tr:gt(1)").remove();
+                    jQuery(".t-listaklienti").find("tr:gt(1)").remove();
+                    var tr = jQuery('.t-listaklienti tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        //console.log(response[i].ZSID);
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('input[name=lklientid]').val(response[i].firmaID);
+                        newrow.find('input[name=lklient]').val(response[i].firmaIme);
+                        newrow.find('input[name=lsuma]').val(response[i].suma);
+                    }
+                    tr.addClass('hiderow');
+                }
+            });
+        });
+        jQuery(".t-listaklienti").delegate("tr.trow", "click", function(){
+            var klientID = jQuery(this).find('input[name=lklientid]').val();
+            var prihodrashod = jQuery('.pogled1 option:selected').val();
+            var smetkakasa = jQuery('.pogled2 option:selected').val();
+            var tip = jQuery('.tip option:selected').val();
+            jQuery('.pdfklientid').val(klientID);
+            jQuery('.pdfprihodrashodid').val(prihodrashod);
+            jQuery('.pdfsmetkakasaid').val(smetkakasa);
+            jQuery('.pdftipid').val(tip);
+            var data = {
+                klientID: klientID,
+                tipid: prihodrashod,
+                zsid: smetkakasa,
+                konto: tip
+            }
+
+            jQuery.ajax({
+                url: "/index.php/raporti/menu/getStavkaByKlientID",
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery(".t-uplati").find("tr:gt(1)").remove();
+                    var tr = jQuery('.t-uplati tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        //console.log(response[i].ZSID);
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        if(response[i].tip == 40 || response[i].tip == 50) newrow.find('input[name=utip]').val('Ziro');
+                        if(response[i].tip == 540 || response[i].tip == 550) newrow.find('input[name=utip]').val('Kasa');
+                        newrow.find('input[name=ubroj]').val(response[i].textBroj);
+                        newrow.find('input[name=udatum]').val(response[i].datum);
+                        newrow.find('input[name=ugrupa]').val(response[i].tipIme);
+                        newrow.find('input[name=uzabeleska]').val(response[i].zabeleska);
+                        if(response[i].tipID == 1)
+                        {
+                            newrow.find('input[name=uprihod]').val(response[i].uplata);
+                            //newrow.find('input[name=priliv]').val('');
+                        }
+                        if(response[i].tipID == 2)
+                        {
+                            newrow.find('input[name=urashod]').val(response[i].uplata);
+                            //newrow.find('input[name=odliv]').val('');
+                        }
+                    }
+                    //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                    tr.addClass('hiderow');
+                }
+            });
+        });
+
+        //nav menu
+        jQuery('#dd_menu > li').hover(function() {
+            jQuery('> ul', this).toggle();
+        });
+        jQuery('#dd_menu > li > ul > li').hover(function() {
+            jQuery('> ul', this).toggle();
+        });
+        jQuery('#dd_menu li').live('click', function(){
+            console.log(jQuery(this)[0]);
+            console.log(jQuery(this).attr('class'));
+            //jQuery(this).css("background-color", "black");
+        });
+    });
+</script>

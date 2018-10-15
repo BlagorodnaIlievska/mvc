@@ -1,0 +1,67 @@
+<div id="update_klient_form">
+    <?php
+    foreach($klient as $row) {
+        $kl0=$row->firmaID;
+        $kl1=$row->ime;
+        $kl2=$row->sifrall;
+        $kl3=$row->adresa;
+        $kl4=$row->klTipID;
+        $kl5=$row->gradID;
+        $kl6=$row->phone1;
+        $kl7=$row->phone2;
+        $kl8=$row->phone3;
+        $kl9=$row->fax;
+        $kl10=$row->email;
+        $kl11=$row->kontakt;
+        $kl12=$row->ziroSka;
+        $kl13=$row->edb;
+        $kl14=$row->bankaDBroj;
+        $kl15=$row->kontFlag;
+        $kl16=$row->kojGoVodiID;
+        $kl17=$row->komentar;
+        $kl18=$row->komercID;
+    }
+    ?>
+
+    <h1>Клиент</h1>
+    <?php echo form_open('podatoci/klient/update_klient');?>
+    <?php echo form_hidden('firmaID', $kl0);?>
+    <?php echo form_label('Град:', 'grad_ime');?><br>
+    <?php echo form_dropdown('grad', $grad, $kl5 ); ?><br><br>
+    <?php echo form_label('Банка:', 'bankaDBroj');?>
+    <?php echo form_dropdown('banka', $banka, $kl14 ); ?><br><br>
+    <?php echo form_label('Комерцијалист:', 'komerc');?>
+    <?php echo form_dropdown('komerc', $komerc, $kl18 ); ?><br><br>
+    <?php echo form_label('Име:', 'ime');?>
+    <?php echo form_input('ime', $kl1, 'ime');?>
+    <?php echo form_label('Шифра:', 'sifrall');?>
+    <?php echo form_input('sifrall', $kl2, 'sifrall');?>
+    <?php echo form_label('Адреса:', 'adresa');?>
+    <?php echo form_input('adresa', $kl3, 'adresa');?>
+    <?php echo form_label('Тип на клиент:', 'klTipID');?>
+    <?php echo form_input('klTipID', $kl4, 'klTipID');?>
+    <?php echo form_label('Телефон1:', 'phone1');?>
+    <?php echo form_input('phone1', $kl6, 'phone1');?>
+    <?php echo form_label('Телефон2:', 'phone2');?>
+    <?php echo form_input('phone2', $kl7, 'phone2');?>
+    <?php echo form_label('Телефон3:', 'phone3');?>
+    <?php echo form_input('phone3', $kl8, 'phone3');?>
+    <?php echo form_label('Факс:', 'fax');?>
+    <?php echo form_input('fax', $kl9, 'fax');?>
+    <?php echo form_label('Емаил:', 'email');?>
+    <?php echo form_input('email', $kl10, 'email');?>
+    <?php echo form_label('Контакт:', 'kontakt');?>
+    <?php echo form_input('kontakt', $kl11, 'kontakt');?>
+    <?php echo form_label('Жиро сметка:', 'ziroSka');?>
+    <?php echo form_input('ziroSka', $kl12, 'ziroSka');?>
+    <?php echo form_label('ЕДБ:', 'edb');?>
+    <?php echo form_input('edb', $kl13, 'edb');?>
+    <?php echo form_label('Конт.:', 'kontFlag');?>
+    <?php echo form_input('kontFlag', $kl15, 'kontFlag');?>
+    <?php echo form_label('Кој го води:', 'kojGoVodiID');?>
+    <?php echo form_input('kojGoVodiID', $kl16, 'kojGoVodiID');?>
+    <input type="button" value="Промени" class="ajaxsubmitform"><br>
+
+    <?php echo form_close(); ?>
+
+</div>

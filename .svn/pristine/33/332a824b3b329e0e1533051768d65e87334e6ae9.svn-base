@@ -1,0 +1,249 @@
+<?php
+
+class Popis_model extends CI_Model
+{
+
+    public function getSitePopisi()
+    {
+        $this->db->select('
+                bis_popis.*,
+                bis_magacin.ime as magacinIme,
+                covecki_resursi.ime as vrabotenIme,
+                covecki_resursi.prezime as vrabotenPrezime
+        ');
+        $this->db->from('bis_popis');
+        $this->db->join('bis_magacin', 'bis_popis.magacin_id = bis_magacin.id', 'left');
+        $this->db->join('covecki_resursi', 'bis_popis.pretsedatel_komisija = covecki_resursi.id', 'left');
+        $query = $this->db->get();
+
+        $novresult= '';
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            foreach($result as $row){
+                $row->clen_popis=$this->get_clenovi_popis($row->id);
+                $novresult[]=$row;
+            }
+        }
+        return $novresult;
+    }
+
+
+    public function getPopis($id)
+    {
+        $this->db->where("id", $id);
+        $query = $this->db->get('bis_popis');
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_nov_popis()
+    {
+        $insert_data = $this->input->post();
+        $clenovi = (isset($insert_data['clenovi_popis']) ? $insert_data['clenovi_popis'] : "");
+        $stavka_popis = (isset($insert_data['stavka_popis']) ? $insert_data['stavka_popis'] : "");
+        unset($insert_data["clenovi_popis"]);
+        unset($insert_data["stavka_popis"]);
+        $insert      = $this->db->insert('bis_popis', $insert_data);
+        if($insert) $popis_id = $this->db->insert_id();
+
+        if (is_array($clenovi)) {
+            if (count($clenovi) > 0) {
+                foreach ($clenovi as $clen) {
+                    $this->zacuvajpopis_clenovi($popis_id, $clen);
+                }
+            }
+        }
+        if (is_array($stavka_popis)) {
+            if (count($stavka_popis) > 0) {
+                foreach ($stavka_popis as $stavka) {
+                    $this->zacuvajpopis_stavki($popis_id, $stavka);
+                }
+            }
+        }
+    }
+
+    public function zacuvajpopis_clenovi($popis_id, $data)
+    {
+        $data['popis_id'] = $popis_id;
+        $this->db->insert('bis_clenovi_popis', $data);
+    }
+
+    public function zacuvajpopis_stavki($popis_id, $data)
+    {
+        $data['popis_id'] = $popis_id;
+        $this->db->insert('bis_popis_stavki', $data);
+    }
+
+    public function delete_popis($id)
+    {
+        $this->db->where('id', $id);
+        $deleted = $this->db->delete('bis_popis');
+
+        if($deleted)
+        {
+            $this->db->where('popis_id', $id);
+            $this->db->delete('bis_clenovi_popis');
+
+            $this->db->where('popis_id', $id);
+            $this->db->delete('bis_popis_stavki');
+        }
+    }
+
+    public function update_popis()
+    {
+        $update_data =	$this->input->post();
+        $popis_id = $update_data['id'];
+        $clenovi = (isset($update_data['clenovi_popis']) ? $update_data['clenovi_popis'] : "");
+        $stavka_popis = (isset($update_data['stavka_popis']) ? $update_data['stavka_popis'] : "");
+        unset($update_data["clenovi_popis"]);
+        unset($update_data["stavka_popis"]);
+        unset($update_data["id"]);
+        $this->db->where('id',$popis_id);
+        $update = $this->db->update('bis_popis', $update_data);
+
+        if (is_array($clenovi)) {
+            if (count($clenovi) > 0) {
+                foreach ($clenovi as $clen) {
+                    if(isset($clen['id']))
+                    {
+                        $dbid=$clen["id"];
+                        unset($clen["id"]);
+                        $this->updatepopis_clenovi($dbid, $clen);
+                    }
+                    else $this->zacuvajpopis_clenovi($popis_id, $clen);
+                }
+            }
+        }
+        if (is_array($stavka_popis)) {
+            if (count($stavka_popis) > 0) {
+                foreach ($stavka_popis as $stavka) {
+                    if(isset($stavka['id']))
+                    {
+                        $dbid=$stavka["id"];
+                        unset($stavka["id"]);
+                        $this->updatepopis_stavki($dbid, $stavka);
+                    }
+                    else $this->zacuvajpopis_stavki($popis_id, $stavka);
+                }
+            }
+        }
+    }
+
+    public function updatepopis_clenovi($dbid, $data)
+    {
+        $this->db->where('id',$dbid);
+        $this->db->update('bis_clenovi_popis', $data);
+    }
+
+    public function updatepopis_stavki($dbid, $data)
+    {
+        $this->db->where('id',$dbid);
+        $this->db->update('bis_popis_stavki', $data);
+    }
+
+//    public function create_stavki_popis()
+//    {
+//        $stavka = $this->input->post('artikl_id');
+//        foreach($stavka as $index => $value)
+//        {
+//            $new_artikl_id = $this->input->post('artikl_id');
+//            $new_mera = $this->input->post('mera');
+//            $new_kolicina = $this->input->post('kolicina');
+//            $new_sredna_cena = $this->input->post('sredna_cena');
+//            $new_zabeleska = $this->input->post('zabeleska');
+//            $detali_data = array(
+//                'popis_id' => $popis_id,
+//                'artikl_id' => $new_artikl_id[$index],
+//                'mera' => $new_mera[$index],
+//                'kolicina' => $new_kolicina[$index],
+//                'sredna_cena' => $new_sredna_cena[$index],
+//                'zabeleska' => $new_zabeleska[$index]
+//            );
+//            $this->db->insert('bis_popis_stavki', $detali_data);
+//        }
+//    }
+
+    public function getvraboteni()
+    {
+        $this->db->select("id, ime, prezime");
+        $this->db->from("covecki_resursi");
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function vraboteni_dropdown()
+    {
+        $this->db->select('id, ime, prezime');
+        $this->db->from('covecki_resursi');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = 'Сите';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime']." ".$row['prezime'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function get_clenovi_popis($id)
+    {
+        $this->db->select('
+                        bis_clenovi_popis.*,
+                        covecki_resursi.id as vrabotenID,
+                        covecki_resursi.ime as vrabotenIme,
+                        covecki_resursi.prezime as vrabotenPrezime,
+        ');
+        $this->db->from("bis_clenovi_popis");
+        $this->db->join('covecki_resursi', 'bis_clenovi_popis.vraboten_id = covecki_resursi.id', 'left');
+        $this->db->where("bis_clenovi_popis.popis_id", $id);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function get_stavki_popis($id)
+    {
+        $this->db->select('
+                        bis_popis_stavki.*,
+                        bis_edmerki.ime_dolgo as edMerkaIme,
+                        s1.S1Ime as artiklIme,
+                        s1.sifra as artiklSifra
+        ');
+        $this->db->from("bis_popis_stavki");
+        $this->db->join('s1', 'bis_popis_stavki.artikl_id = s1.SID', 'left');
+        $this->db->join('bis_edmerki', 'bis_popis_stavki.mera = bis_edmerki.id', 'left');
+        $this->db->where("bis_popis_stavki.popis_id", $id);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+}

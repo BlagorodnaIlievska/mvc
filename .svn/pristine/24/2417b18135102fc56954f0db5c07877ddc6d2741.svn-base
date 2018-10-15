@@ -1,0 +1,25 @@
+<div class="novpaket">
+    <fieldset>
+        <legend>Нова содржина</legend>
+        <form accept-charset="utf-8" method="post" action="/index.php/paketi/paket/create_sodrzina">
+
+            <input type="hidden" name="parent_paket" value="<?php echo $idenpaket ?>" />
+
+
+
+
+            Содржина на пакет:<br />
+            <textarea  name="sodrzina"></textarea><br />
+
+
+
+            <br/>
+            <input type="button" class="ajaxsodrzinacreateform button" value="Додади"><br/>
+        </form>
+    </fieldset>
+</div>
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.vaziod').datepicker({dateFormat:'yy-mm-dd'});
+    });
+</script>

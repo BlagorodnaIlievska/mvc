@@ -1,0 +1,120 @@
+<div class="novakasa">
+    <form action="/index.php/kasi/kasi/update_odliv_priliv" method="post" flag="kasa">
+        <fieldset>
+            <input type="hidden" name="id" value="<?php echo $kasa->ID  ?>"/>
+            <input type="hidden" class="brojnalog_id" name="broj_na_nalog" value="<?echo $kasa->broj_na_nalog_knizenje;?>">
+            <input type="hidden" class="brojnalog_id" name="nalog_detali_id" value="<?echo $kasa->nalog_detali_id;?>">
+            <legend>Измени одлив/прилив</legend>
+            Каса : <span class="klasaIme"><? echo $kasa->kasaIme;?> </span><br/>
+            Комитент :<br/>
+            <select class="select-firmaid-izmenikasa" name="firmaID">
+                <option value="0"></option>
+                <?php foreach ($klientimodel->getKlienti() as $klient) { ?>
+                <option value="<?php  echo $klient->firmaID  ?>" <?php echo ($klient->firmaID == $kasa->firmaID ? "selected" : "") ?> ><?php  echo $klient->ime;  ?></option>
+                ?>
+                <?php } ?>
+            </select><br/><br>
+            Датум : <br/>
+            <input type="text" name="datum" class="datum1 big" value=<? echo $kasa->datum;?> > <br>
+            <label>Одлив</label>  <br>
+            <input type="text" name="odliv" class="odliv1 medium" value="<?php if($kasa->tip==540)echo $kasa->z_uplata; ?>" /> <br>
+            <label>Прилив</label>  <br>
+            <input type="text" name="priliv" class="priliv1 medium" value="<?php  if($kasa->tip==550)echo $kasa->z_uplata; ?>"/>   <br>
+            <div class="nov-odliv-priliv">
+                <label>Повикувачки број: </label>
+                <input type="checkbox" name="s-kasa" class="s-kasa" disabled="true" formaction="/index.php/kasi/kasi/povrzi_postoecka"> <label class="kasi-uplatapofak">- Уплата по фактура</label>
+                <input type="hidden" name="zadokument" class="zadokument" value="<?= $kasa->zaDokID ?>">
+                <input type="text" name="s-brojfaktura" class="s-brojfaktura" disabled="true" value="<?= $kasa->zaPovikBroj ?>">
+            </div><br />
+            Конто :<br/>
+            <select name="tipID" class="konto_izmeni_kasa">
+                <option value="0"></option>
+                <?php foreach ($planmodel->getKonta() as $konta) { ?>
+                <option value="<?php  echo $konta->id  ?>" <?php echo ($konta->id == $kasa->tipID ? "selected" : "") ?> ><?php  echo $konta->sifra;  ?></option>
+                ?>
+                <?php } ?>
+            </select><br/><br>
+            <label>Намена</label><br>
+            <textarea style="overflow-y:scroll;resize: none;" class="namena" name="namena">
+                <? echo  $kasa->namena;?>
+            </textarea>
+            <br/>
+            <label>Забелешка</label><br>
+            <textarea style="overflow-y:scroll;resize: none;" class="zabeleska" name="zabeleska">
+                <? echo $kasa->komentar;?>
+            </textarea>   <br/>
+        </fieldset>
+        <br/>
+        <button type="button" class="button snimi-forma" izvrsi="odliv_priliv_popolnilista()" poraka_uspesno="успешно изменето"
+                poraka_neuspesno="Грешка при снимање "
+                ><span>Сними</span></button>
+        <br/>
+    </form>
+</div>
+<script>
+    jQuery(document).ready(function() {
+        // var kasaid=jQuery('.kasaidbroj').val();
+        var kasaid = jQuery('.ddkasa option:selected').val();
+        var odliv = jQuery(this).find(".odliv1").val();
+        var priliv = jQuery(this).find(".priliv1").val();
+        if(odliv > 0) jQuery(this).find(".odliv1").val(formatnumbermkd(odliv));
+        if(priliv > 0) jQuery(this).find(".priliv1").val(formatnumbermkd(priliv));
+        jQuery('.konto_izmeni_kasa').combobox();
+        jQuery('.select-firmaid-izmenikasa').combobox();
+        jQuery('.datum1').datepicker({dateFormat:'yy-mm-dd'});
+        jQuery('.odliv1').blur(function(){
+            var elem = jQuery(this);
+            var odliv = elem.val();
+            if( odliv.length >= 1 )
+            {
+                elem.val(formatbrojjs(odliv));
+                var odlivtemp = elem.val();
+                jQuery('.priliv1').val("");
+                jQuery('.s-kasa').attr("disabled", false);
+                jQuery('.s-brojfaktura').attr("disabled", false);
+                elem.val(formatnumbermkd(odlivtemp));
+            }
+        });
+        jQuery('.priliv1').blur(function(){
+            var elem = jQuery(this);
+            var priliv = elem.val();
+            if( priliv.length >= 1 )
+            {
+                elem.val(formatbrojjs(priliv));
+                var prilivtemp = elem.val();
+                jQuery('.odliv1').val("");
+                jQuery('.s-kasa').attr("disabled", false);
+                jQuery('.s-brojfaktura').attr("disabled", false);
+                elem.val(formatnumbermkd(prilivtemp));
+            }
+        });
+        jQuery('.s-kasa').click(function(){
+            if(jQuery('.s-kasa').is(":checked"))
+            {
+                var formaction=jQuery(this).attr('formaction');
+                var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+                jQuery.ajax({
+                    url:formaction,
+                    success:function (response) {
+                        var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+                        jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                        jQuery("." + tempdialog).html(response);
+                        jQuery('div.' + tempdialog).dialog({
+                            autoOpen:true,
+                            width:"auto",
+                            //position:[20, 20],
+                            position:"center",
+                            modal:true,
+                            //dialogClass: 'dialogsotabovi',
+                            title:"Поврзи фактура",
+                            close:function (event, ui) {
+                                jQuery(this).dialog("destroy");
+                                jQuery(this).remove();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    } );
+</script>

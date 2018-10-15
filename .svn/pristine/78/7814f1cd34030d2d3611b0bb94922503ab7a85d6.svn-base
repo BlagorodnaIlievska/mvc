@@ -1,0 +1,93 @@
+<?php
+
+class Katalog_model extends CI_Model
+{
+
+	public function getGlavniKatalozi()
+	{
+		$this->db->where("parent_id", 0);
+		$query = $this->db->get('bis_katalog');
+		return $query->result();
+	}
+
+	public function getPodKatalozi($id)
+	{
+		$this->db->where("parent_id", $id);
+		$query = $this->db->get('bis_katalog');
+		return $query->result();
+	}
+
+	public function getKatalogArtikli($id)
+	{
+		$arrayin     = array();
+		$arrayin[]   = $id;
+		$podkatalozi = $this->getPodKatalozi($id);
+		foreach ($podkatalozi as $podkatalog) {
+			$arrayin[] = $podkatalog->id;
+		}
+		$in = implode(",", $arrayin);
+		$this->db->where("katBroj IN ($in)");
+		$query = $this->db->get('s1');
+		return $query->result();
+	}
+
+	public function getKatalog($id)
+	{
+		$this->db->where("id", $id);
+		$query = $this->db->get('bis_katalog');
+		$return = $query->result();
+
+		return $return[0];
+	}
+
+	public function create_katalog()
+	{
+		$insert_data = $this->input->post();
+		$insert      = $this->db->insert('bis_katalog', $insert_data);
+		return $insert;
+	}
+
+	public function create_podkatalog()
+	{
+		$insert_data = $this->input->post();
+		$insert      = $this->db->insert('bis_katalog', $insert_data);
+		return $insert;
+	}
+	public function delete_katalog($id)
+	{
+
+
+		// POTREBNO DA SE IZBRISE KATEGORIJA ID OD PRODUKTITE ZA DA NE DOJDE KONFLIKT VO IDNIA
+		$arrayin     = array();
+		$arrayin[]   = $id;
+		$podkatalozi = $this->getPodKatalozi($id);
+		foreach ($podkatalozi as $podkatalog) {
+			$arrayin[] = $podkatalog->id;
+		}
+		$in = implode(",", $arrayin);
+		$this->db->where("katBroj IN ($in)");
+		$field_update_data = array("katBroj"=>0);
+		$this->db->update('s1', $field_update_data);
+
+
+		$this->db->where('id', $id);
+		$this->db->delete('bis_katalog');
+
+		$this->db->where('parent_id', $id);
+		$this->db->delete('bis_katalog');
+	}
+	public function update_artiklikategorija($id){
+
+	}
+	public function update_katalog()
+	{
+		$field_update_data =	$this->input->post();
+
+		$this->db->where('id',$field_update_data['id']);
+		unset($field_update_data['id']);
+		$this->db->update('bis_katalog', $field_update_data);
+	}
+
+
+
+}

@@ -1,0 +1,18 @@
+<div class="nov-samopridones">
+    <form action="/index.php/plata_podatoci/samopridonesi/update_samopridonesi" method="post">
+        <fieldset>
+            <input type="hidden" name="id" value="<?php echo $samopridones->id  ?>"/>
+            <legend>Измени самопридонес</legend>
+            Назив:<br/>
+            <input type="text" name="naziv" value="<?php echo $samopridones->naziv ?>"/><br/>
+            Процент:<br/>
+            <input type="text" name="procent" value="<?php echo $samopridones->procent ?>"/><br/>
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="samopridonesi_polnilista()" poraka_uspesno="Успешно изменетo"
+                poraka_neuspesno="Грешка при снимање"
+                ><span>Сними</span></button>
+        <br/>
+    </form>
+</div>

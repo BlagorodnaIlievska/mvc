@@ -1,0 +1,121 @@
+<div id="fin_grupiranje_form">
+    <?php
+    $delete = img(array(
+        'src' => 'images/delete.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $add = img(array(
+        'src' => 'images/add.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $options = array(
+        '0' => 'Bez Grupa',
+        '1' => 'Site'
+    ); ?>
+    <fieldset class="sostojba-izvod">
+    <?php echo form_open('izvodi/menu/grupiraj_izvodi'); ?>
+    <div class="smetka">
+        <div class="parametar-izvod">
+            <label>Поглед: </label>
+            <?php
+            echo form_dropdown('pogled', $options, 0, 'class="pogled"');
+            ?>
+        </div>
+    </div>
+    <?php echo form_close(); ?>
+    </fieldset>
+    <br>
+    <div class="prikaz">
+        <p class="naslovgrupiranje" > ( <span class="vkupnostavki">0</span> ) Поделба на ставки по групи за финансиска анализа:</p>
+        <table class="tabelagrupiranje" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th>Сметка</th>
+                <th>Број</th>
+                <th>Датум</th>
+                <th>Клиент</th>
+                <th>Одлив</th>
+                <th>Прилив</th>
+                <th>Фин. групи</th>
+                <th>#</th>
+                <th>Повик. број</th>
+                <th>Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='hiderow'>
+                <td class="dbid hide"></td>
+                <td class="smetka"></td>
+                <td class="broj"></td>
+                <td class="datum"></td>
+                <td class="klient"></td>
+                <td class="odliv"></td>
+                <td class="priliv"></td>
+                <td class="fingrupi"></td>
+                <td class="t"></td>
+                <td class="povikuvackibroj"></td>
+                <td class="zabeleska"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery(".tabelagrupiranje").tablesorter();
+        jQuery('.pogled').live('change',function(){
+            var grupa = jQuery('.pogled option:selected').val();
+            var formaction = jQuery(this).parent().parent().parent().attr('action');
+            if(grupa) {
+                var data = {
+                    izbor: grupa
+                }
+                jQuery.ajax({
+                    url: formaction,
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log(response);
+                        var vkupnostavki = response.length;
+                        jQuery(".tabelagrupiranje").find("tr:gt(1)").remove();
+                        var tr = jQuery('.tabelagrupiranje tr:last');
+                        tr.removeClass('hiderow');
+                        for ( var i = 0; i < response.length; i++ ) {
+                            var newrow = jQuery(tr).clone().insertAfter(tr);
+                            newrow.find('.smetka').text(response[i].zirosmetka);
+                            newrow.find('.dbid').text(response[i].dbid);
+                            newrow.find('.broj').text(response[i].textBroj);
+                            newrow.find('.datum').text(response[i].datum);
+                            newrow.find('.klient').text(response[i].firmaIme);
+                            newrow.find('.fingrupi').text(response[i].tipIme);
+                            newrow.find('.povikuvackibroj').text(response[i].povikBroj);
+                            newrow.find('.zabeleska').text(response[i].zabeleska);
+                            if(response[i].tipID == 1) newrow.find('.priliv').text(response[i].suma);
+                            if(response[i].tipID == 2) newrow.find('.odliv').text(response[i].suma);
+                        }
+                        jQuery(".naslovgrupiranje .vkupnostavki").html(vkupnostavki + " во листа");
+                        tr.addClass('hiderow');
+                        jQuery(".tabelagrupiranje").trigger("update");
+
+                    }
+                });
+            }
+        });
+        jQuery('.tabelagrupiranje tr:gt(1)').live("dblclick", function(){
+            var id = jQuery(this).find('.dbid').text();
+            var formaction= "/index.php/izvodi/menu/editStavkaIzvod?id=" + id;
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({ autoOpen: true, width: 800 }).load(formaction);
+        });
+    });
+</script>

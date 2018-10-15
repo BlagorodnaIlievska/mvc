@@ -1,0 +1,249 @@
+<div class="pacienti-pregled">
+    <!--<a href="javascript:"><img width="600" height="120" alt="" src="/images/jzulogo.png"></a>-->
+    <!--<h5 align='center'>Email : jzuuktoarilucskopje@gmail.com</h5>-->
+    <!--<br>-->
+    <form class="pacienti-pregled-forma">
+        <input type="hidden" name="priem_id" value="<?php echo $_POST['priem_id'] ?>"/>
+
+        <div class="opsti-info-pacient">
+            <h4 align='center'>ОСНОВЕН ПРОТОКОЛ</h4>
+            <label>Име:</label>
+            <input type="text" value="<?php echo $pacient->ime; ?>" name="ime" disabled=""> <br>
+            <label>Презиме:</label>
+            <input type="text" value="<?php echo $pacient->prezime; ?>" name="prezime" disabled=""> <br>
+            <label>Дата на раѓање:</label>
+            <input type="text" value="<?php echo $pacient->datum_na_raganje; ?>" name="datum_na_raganje" disabled=""> <br>
+            <label>Пол:</label>
+            <input type="text" value="<?php echo $pacient->pol; ?>" name="pol" disabled=""> <br>
+            <label>Адреса:</label>
+            <input type="text" value="<?php echo $pacient->ulica; ?>" name="ulica" disabled=""> <br>
+<!--            <label>Број:</label>-->
+<!--            <input type="text" value="--><?php //echo $pacient->broj_na_kuka; ?><!--" name="broj_na_kuka" disabled=""> <br>-->
+
+        </div>
+        <div class="status-pregledpacient">
+            <label>Моментален Статус:</label>
+            <input type="text" class="momstatus-pacienti" value="<?php echo $momentalenstatus ?>" readonly="readonly">
+        </div>
+        <div class="primen-pregled-pacienti">
+            <span>Примен на:</span>
+            <input class="datanapriem" type="text" name="primen_datum" readonly="readonly"
+                   value="<?php echo date("d-m-Y") ?>">
+            <span>во:</span>
+            <input type="text" class="primenvo-pacienti" name="primen_vreme" readonly="readonly"
+                   value="<?php echo date("H:i") ?>">
+            <!--    <span>од страна на:</span>-->
+            <!--    <input type="text" class="primil-pacienti" name="primen_datum">-->
+            <!--    <span>на оддел:</span>-->
+            <!--    <input type="text" class="primil-naoddel-pacienti" name="primen_datum">-->
+        </div>
+        <div class="sostojba-pregled-pacienti">
+            <!-- <span>Состојба на пациентот при прием</span>
+             <select name="primen_sostojba">
+                 <option>Добра</option>
+             </select>    -->
+        </div>
+        <div class="upaten-prgled-pacienti">
+
+            <div class="primaten-pregled-pacienti">
+                <select name="primaren_pregled">
+                    <option>Да</option>
+                    <option>Не</option>
+                </select> Примарен преглед
+            </div>
+            <div class="upaten-pregled-pacienti">
+                <select name="upaten_od_druga_institucija">
+                    <option>Да</option>
+                    <option>Не</option>
+                </select> Упатен од друга институција
+            </div>
+
+        </div>
+        <div class="notacordion parametri-pregled-pacienti">
+            <!-- <h3><a href="javascript:">Општи информации за пациент</a></h3>
+
+             <div class="pregled-pacient-info">
+                 Општи информации за пациент
+             </div>    -->
+            <h3><a href="javascript:">Витални Параметри</a></h3>
+
+            <div class="vitalniparametri-pregled-pacienti">
+                <div class="vitalniparametri-1">
+                    <span>ТА:</span> <input type="text" name="vp_ta">
+                    <span>Пулс:</span> <input type="text" name="vp_puls">
+                    <span>СпО2:</span> <input type="text" name="vp_spo2">
+                    <span>ТТ:</span> <input type="text" name="vp_tt">
+                    <span>Зеници/САК:</span> <input type="text" name="vp_zenici">
+                </div>
+                <div class="vitalniparametri-2">
+                    <label class="gsk">ГСК</label>
+
+                    <div class="oci-vitalniparametri">
+                        <span>Отварање на очите: </span>
+                        <select name="vp_otvaranje_na_ocite">
+                            <option value="4">Спонтано = 4</option>
+                        </select>
+                    </div>
+                    <div class="odgovor-vitalniparametri">
+                        <span>Моторен Одговор: </span>
+                        <select name="vp_motoren_odgovor">
+                            <option value="6">Извршува налог = 6</option>
+                        </select>
+                    </div>
+                    <div class="odgovor-vitalniparametri">
+                        <span>Вербален одговор </span>
+                        <select name="vp_verbalen_odgovor">
+                            <option value="5">Орјетниран = 5</option>
+                        </select>
+                    </div>
+                    <div class="vkupno-vitalniparametri">
+                        <span>Вкупно:</span> <input class="vkupno-vitalniparametri-text" type="text" name="vp_vkupno"
+                                                    readonly="readonly">
+                    </div>
+                </div>
+
+            </div>
+            <div class="clear"></div>
+            <h3><a href="javascript:">Главни тегобии</a></h3>
+
+            <div class="vitalniparametri-pregled-pacienti">
+                <span><strong>Опис:</strong></span>
+                <textarea rows="3" class="" name="gt_opis"></textarea>
+                <span><strong>Познати алергии и важни коморбитети:</strong></span>
+                <textarea rows="3" class="" name="gt_poznati"></textarea>
+            </div>
+            <div class="clear"></div>
+            <h3><a href="javascript:">Статус</a></h3>
+
+            <div class="vitalniparametri-pregled-pacienti">
+                <span><strong>Глава, Врат:</strong></span>
+                <textarea rows="3" class="" name="status_glava_vrat"></textarea>
+                <span><strong>Торакс, Срце, Бели дробови:</strong></span>
+                <textarea rows="3" class="" name="status_t_s_bd"></textarea>
+                <span><strong>Абдомен:</strong></span>
+                <textarea rows="3" class="" name="status_abdomen"></textarea>
+                <span><strong>Екстремитети:</strong></span>
+                <textarea rows="3" class="" name="status_ekstremiteti"></textarea>
+            </div>
+            <div class="clear"></div>
+            <h3><a href="javascript:">РТГ Даб</a></h3>
+
+            <div class="vitalniparametri-pregled-pacienti">
+                <span><strong>Oпис:</strong></span>
+                <textarea rows="3" class="" name="rtg_dab_opis"></textarea>
+            </div>
+            <div class="clear"></div>
+
+
+
+            <br/><br/>
+
+            <div class="footer-pregled-pacienti">
+
+                <div class="actions-pregled-pacienti">
+                    <!--            <button type="button" class="button izbrisi"><span>Избриши</span></button>-->
+                    <!--            <button type="button" class="button promeni"><span>Промени</span></button>-->
+                    <button type="button" class="button zacuvajpregled"><span>Зачувај</span></button>
+                </div>
+
+            </div>
+    </form>
+</div>
+<script>
+    function presmetaj_vt_vkupno() {
+        var vt_vkupno = 0;
+        jQuery('.vitalniparametri-2 select').each(function () {
+            var vtvkupnoval = jQuery(this).val();
+            //console.log(vtvkupnoval);
+            vt_vkupno = vt_vkupno + 1 * vtvkupnoval;
+        });
+        jQuery('.vitalniparametri-2 [name="vp_vkupno"]').val(vt_vkupno);
+        jQuery('.vitalniparametri-2 select').change(function () {
+            presmetaj_vt_vkupno();
+        });
+    }
+
+    function lekuvanje_artikli_option_values() {
+        return '' +
+            '<?php foreach($artikli as $artikal) { echo '<option value="'.$artikal->SID.'">'.$artikal->S1Ime.' ( '.$artikal->sifra .' ) </option>'; } ?>';
+    }
+    jQuery(document).ready(function () {
+        jQuery(".parametri-pregled-pacienti.notacordion").addClass("ui-accordion ui-accordion-icons ui-widget ui-helper-reset")
+            .find("h3")
+            .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
+            .hover(function () {
+                jQuery(this).toggleClass("ui-state-hover");
+            })
+            .prepend('<span class="ui-icon ui-icon-triangle-1-e"></span>')
+            .click(function () {
+                jQuery(this)
+                    .toggleClass("ui-accordion-header-active ui-state-active ui-state-default ui-corner-bottom")
+                    .find("> .ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
+                    .next().toggleClass("ui-accordion-content-active").slideToggle();
+                return false;
+            })
+            .next()
+            .addClass("ui-accordion-content  ui-helper-reset ui-widget-content ui-corner-bottom")
+            .hide();
+
+        jQuery(".doktorid").combobox();
+        jQuery(".paketuslugi").combobox();
+        jQuery(".pregledtabs").tabs({cache: true});
+        jQuery(".zacuvajpregled").click(function () {
+            // console.log("click");
+            lekuvanja_zacuvajpregled(jQuery(this));
+        });
+
+
+        presmetaj_vt_vkupno();
+        jQuery(".dodadi-trapija").click(function () {
+            var redovi = jQuery(".lekovi-tabela tbody tr").length;
+            redovi = 1 * redovi + 1;
+            jQuery(".lekovi-tabela tbody").append('<tr>' +
+                '<td>' + redovi + '</td>' +
+                '<td><input type="text" name="lekovi[' + redovi + '][lek]" class="lekovi-lek" /></td>' +
+                '<td><input type="text" name="lekovi[' + redovi + '][doza]" class="lekovi-doza" /></td>' +
+                '<td><input type="text" name="lekovi[' + redovi + '][aplikacija]" class="lekovi-aplikacija" /></td>' +
+                '<td><input type="text" name="lekovi[' + redovi + '][period]" class="lekovi-period" /></td>' +
+                '<td><input type="text" name="lekovi[' + redovi + '][vreme]" class="lekovi-vreme" /></td>' +
+                '<td><input type="text" name="lekovi[' + redovi + '][zabeleska]" class="lekovi-zabeleska" /></td>' +
+                '</tr>');
+        });
+        jQuery(".dodadi-dijagnoza").click(function () {
+            var redovi = jQuery(".dijagnoza-tabela tbody tr").length;
+            console.log(redovi);
+            redovi = 1 * redovi + 1;
+            jQuery(".dijagnoza-tabela tbody").append('<tr>' +
+                '<td class="deletedijagnoza">' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' + '</td>' +
+                '<td class="redenbroj">' + redovi + '</td>' +
+                '<td><input type="text" name="dijagnoza[' + redovi + ']" class="dijagnoza" /></td>' +
+                '</tr>');
+        });
+        jQuery('.dijagnoza-tabela tbody tr .deletedijagnoza').live("click", function () {
+            var trow = jQuery(this).closest('tr');
+            trow.remove();
+            var i = 1;
+            jQuery('.dijagnoza-tabela tbody tr').each(function () {
+                jQuery(this).find('.redenbroj').html(i);
+                i = 1 * i + 1;
+            });
+        });
+        jQuery(".dodadi-potrosenmaterijal").click(function () {
+            var redovi = jQuery(".pregled-potrosenmaterijal-tabela tbody tr").length;
+            redovi = 1 * redovi + 1;
+            jQuery(".pregled-potrosenmaterijal-tabela tbody").append('<tr>' +
+                '<td>' + redovi + '</td>' +
+                '<td><input type="text" name="potrosenmaterijal[' + redovi + '][kolicina]" class="potrosenmaterijal-kolicina" /></td>' +
+                '<td><select name="potrosenmaterijal[' + redovi + '][artikal_id]" class="potrosenmaterijal-artikal"  >' + lekuvanje_artikli_option_values() + '</select></td>' +
+                '</tr>');
+        });
+        jQuery(".dodadi-recepti").click(function () {
+            var redovi = jQuery(".pregled-recepti-tabela tbody tr").length;
+            redovi = 1 * redovi + 1;
+            jQuery(".pregled-recepti-tabela tbody").append('<tr>' +
+                '<td>' + redovi + '</td>' +
+                '<td><input type="text" name="recepti[' + redovi + '][opis]" class="potrosenmaterijal-kolicina" /></td>' +
+                '</tr>');
+        });
+    });
+</script>

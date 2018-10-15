@@ -1,0 +1,101 @@
+function destroyparentdialog(htmlelement) {
+    var dialogclass = htmlelement.closest('.ui-dialog-content').attr("class");
+    var bbb = dialogclass.toString();
+    bbb = bbb.replace(" ", "").replace("ui-dialog-content", "").replace("ui-widget-content", "");
+    jQuery("." + bbb).dialog("close");
+    //  htmlelement.closest('.ui-dialog').remove();
+}
+function formatnumbermkd(testnumber) {
+
+    //console.log("bb-"+newstr+"-bb");
+
+    if (testnumber == null || testnumber == "null" || testnumber == "") {
+        return "0,00";
+    }
+    var newstr = testnumber.toString();
+    newstr = newstr.replace(".", ",");
+    return jQuery.number(newstr, 2, ',', '.');
+}
+function formatbrojjs(testnumber) {
+    if (testnumber == null || testnumber == "null" || testnumber == "") {
+        return "0.00";
+    }
+    var newstr = testnumber.toString();
+    newstr = newstr.replace(/\./g, "");
+    newstr = newstr.replace(",", ".");
+    return newstr;
+}
+jQuery(document).ready(function () {
+
+
+    jQuery('.main-menu-tabs').tabs({ cache: true,
+        beforeLoad: function (xhr, index, status, anchor) {
+            if (index.panel.hasClass("bojan")) {
+                return false;
+            } else {
+                index.panel.addClass("bojan");
+            }
+        },
+        load: function (event, ui) {
+            jQuery('.sub-menu-tabs').tabs({cache: true,
+                beforeLoad: function (xhr, index, status, anchor) {
+                    if (index.panel.hasClass("bojan")) {
+                        return false;
+                    } else {
+                        index.panel.addClass("bojan");
+                    }
+                }});
+        }
+    });
+
+
+    jQuery('.sub-menu-tabs').tabs({cache: true,
+        beforeLoad: function (xhr, index, status, anchor) {
+            if (index.panel.hasClass("bojan")) {
+                return false;
+            } else {
+                index.panel.addClass("bojan");
+            }
+        }});
+
+
+    jQuery('.ajaxsubmitform').live('click', function () {
+        var formaction = jQuery(this).parent().attr('action');
+        var formmethod = jQuery(this).parent().attr('method');
+        var dialogid = jQuery(this).parent().parent().parent();
+        //alert(jQuery(this).parent().serialize());
+        jQuery.ajax({
+            type: "post",
+            url: formaction,
+            data: jQuery(this).parent().serialize(),
+            success: function (data) {
+                //alert('uspesno');
+                dialogid.dialog("destroy").remove();
+                // var tabs = jQuery('.sub-menu-tabs');
+                // var selected = tabs.tabs('option', 'selected');
+                // jQuery(".sub-menu-tabs").tabs('load', selected);
+
+            }
+        });
+    });
+    jQuery('.ajaxcreateform').live('click', function () {
+        var formaction = jQuery(this).parent().attr('action');
+        var formmethod = jQuery(this).parent().attr('method');
+        //var dialogid=jQuery(this).parent().parent().parent();
+        //console.log(formaction);
+        // console.log(jQuery(this).parent().serialize());
+        jQuery.ajax({
+            type: "post",
+            url: formaction,
+            data: jQuery(this).parent().serialize(),
+            success: function (data) {
+                //var tabs = jQuery('.sub-menu-tabs');
+                // var selected = tabs.tabs('option', 'selected');
+                //jQuery(".sub-menu-tabs").tabs('load', selected);
+                //alert('Податоците се снимени !!!');
+                // dialogid.dialog("destroy");
+            }
+        });
+    });
+
+});

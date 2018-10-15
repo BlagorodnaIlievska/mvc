@@ -1,0 +1,12 @@
+<div class="novagrupapaket">
+    <fieldset>
+        <legend>Нова група</legend>
+        <form accept-charset="utf-8" method="post" action="/index.php/paketi/paket/create_grupa">
+
+
+            Група:<input type="text" value="" name="naziv">
+            <br /><br />
+            <input type="button" class="ajaxcreategrupa button" value="Додади"><br />
+        </form>
+    </fieldset>
+</div>

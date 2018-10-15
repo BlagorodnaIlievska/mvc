@@ -1,0 +1,10 @@
+.ulogalista  {
+    width: 365px;
+    float: left;
+
+}
+.uloga-glavnalista .buttoncontainer { margin-top:10px; margin-bottom:10px; }
+.idzemja { width: 20px;}
+.zemjilista{ width: 600px; margin-top: 10px;}
+.zemja-glavnalista .buttoncontainer { margin-top:10px; margin-bottom:10px; }
+.tip-osiguruvanje-lista .buttoncontainer { margin-top:10px; margin-bottom:10px; }

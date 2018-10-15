@@ -1,0 +1,14 @@
+<div class="listakorisnici content-bez-subtabs">
+    <div class="korisnicilista">
+        <div class="korisniciosnova">
+            <table class="tabela-osnova tabela-korisnici"></table>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+
+        bis_korisniciLista();
+
+    });
+</script>

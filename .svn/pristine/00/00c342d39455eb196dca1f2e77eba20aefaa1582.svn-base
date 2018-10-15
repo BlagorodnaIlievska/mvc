@@ -1,0 +1,395 @@
+<?php
+$SitePermisii = acl_SitePermisii();
+$UlogaPermisii = unserialize($uloga->access);
+$UlogaFirmiPermisii = unserialize($uloga->firmi);
+$UlogaMagaciniPermisii = unserialize($uloga->magacini);
+$UlogaKasiPermisii = unserialize($uloga->kasi);
+
+$firmi = $start_model->getFirmi();
+$magacini= $start_model->getMagacini();
+$kasi= $start_model->getKasi();
+?>
+<div class="novproizvoditel">
+    <form action="/index.php/korisnici/ulogi/update_uloga" method="post">
+        <fieldset>
+            <input type="hidden" name="ulogi_id" value="<?php echo $uloga->ulogi_id ?>"/>
+
+            <legend>Измени улога</legend>
+            Име на улогата:<br/>
+            <input type="text" name="uloga_ime" value="<?php echo $uloga->uloga_ime ?>"/><br/>
+
+        </fieldset>
+        <fieldset>
+            <legend>Забранет пристап до</legend>
+            <div class="zabrani-pristap-do-select-div">
+                <select class="zabrani-pristap-do-select"><?php
+
+
+
+                    foreach ($SitePermisii as $value) {
+                        if (in_array($value, $UlogaPermisii)) continue;
+
+                        ?>
+                        <option value="<?= $value ?>"><?= $value ?></option><?php
+                    }
+                    ?></select>
+                <button type="button" class="button cmd-dodadi-korisnik-zabrana"><span>Додади</span></button>
+            </div>
+            <br/>
+
+            <div class="korisnik-zabrana-do">
+                <table class="korisnik-zabrana-do-tabela">
+                    <?php
+                    if (is_array($UlogaPermisii)) {
+                        foreach ($UlogaPermisii as $value) {
+                            ?>
+                            <tr>
+                                <td class="izbrisi-zabrana-do"><img height="15" width="15" src="/images/delete.png"
+                                                                    alt=""></td>
+                                <td class="izbrisi-value" vrednost="<?= $value ?>"><input type="hidden" name="access[]"
+                                                                                          value="<?= $value ?>"><?= $value ?>
+                                </td>
+                            </tr>
+                        <?php
+                        }
+                    }
+                    ?>
+                </table>
+            </div>
+
+
+        </fieldset>
+        <br/>
+        <div class="zabrani-pristap-do-firma-select-div">
+            <select class="zabrani-pristap-do-firma-select"><?php
+                foreach ($firmi as $row) {
+                    if (!in_array($row->id, $UlogaFirmiPermisii)) {
+
+
+                        ?>
+                        <option value="<?= $row->id ?>"><?= $row->ime ?></option><?php
+                    }
+                    $odeli = $start_model->getOdeli($row->id);
+                    foreach ($odeli as $rowodel) {
+
+                        if (!in_array($rowodel->id, $UlogaFirmiPermisii)) {
+                            ?>
+                            <option value="<?= $rowodel->id ?>"><?= $row->ime ?> : <?= $rowodel->ime ?> </option>
+                        <?php
+                        }
+                        $pododeli = $start_model->getPodOdeli($rowodel->id);
+                        foreach ($pododeli as $rowpododel) {
+
+                            if (!in_array($rowpododel->id, $UlogaFirmiPermisii)) {
+                                ?>
+                                <option value="<?= $rowpododel->id ?>"><?= $row->ime ?> : <?= $rowodel->ime ?> : <?= $rowpododel->ime ?> </option>
+                            <?php
+                            }
+                        }
+                    }
+
+                }
+                ?>
+            </select>
+            <button type="button" class="button cmd-dodadi-korisnik-zabrana-firma"><span>Додади</span></button>
+        </div>  <br/>
+        <fieldset>
+            <legend>Дозволен пристап до Фирма</legend>
+
+
+
+            <div class="korisnik-zabrana-do-firma">
+                <table class="korisnik-zabrana-do-firma-tabela">
+                    <?php
+
+                    foreach ($firmi as $row) {
+                        if (is_array($UlogaFirmiPermisii)) {
+
+
+                            if (in_array($row->id, $UlogaFirmiPermisii)) {
+
+
+                                ?>
+
+                                <tr>
+                                    <td class="izbrisi-zabrana-do-firma"><img height="15" width="15"
+                                                                              src="/images/delete.png" alt=""></td>
+                                    <td class="izbrisi-firma-value" vrednost="<?= $row->id ?>"><input type="hidden"
+                                                                                                      name="firmi[]"
+                                                                                                      value="<?= $row->id ?>"><span
+                                            class="tdvalue"><?= $row->ime ?></span></td>
+                                </tr>
+                            <?php
+                            }
+                            $odeli = $start_model->getOdeli($row->id);
+                            foreach ($odeli as $rowodel) {
+                                if (in_array($rowodel->id, $UlogaFirmiPermisii)) {
+                                    ?>
+
+                                    <tr>
+                                        <td class="izbrisi-zabrana-do-firma"><img height="15" width="15"
+                                                                                  src="/images/delete.png" alt=""></td>
+                                        <td class="izbrisi-firma-value" vrednost="<?= $rowodel->id ?>"><input
+                                                type="hidden" name="firmi[]" value="<?= $rowodel->id ?>"><span
+                                                class="tdvalue"><?= $row->ime ?> : <?= $rowodel->ime ?></span></td>
+                                    </tr>
+                                <?php
+                                    $pododeli = $start_model->getPodOdeli($rowodel->id);
+                                    foreach ($pododeli as $rowpododel) {
+                                        if (in_array($rowpododel->id, $UlogaFirmiPermisii)) {
+                                            ?>
+
+                                            <tr>
+                                                <td class="izbrisi-zabrana-do-firma"><img height="15" width="15"
+                                                                                          src="/images/delete.png" alt=""></td>
+                                                <td class="izbrisi-firma-value" vrednost="<?= $rowpododel->id ?>"><input
+                                                        type="hidden" name="firmi[]" value="<?= $rowpododel->id ?>"><span
+                                                        class="tdvalue"><?= $row->ime ?> : <?= $rowodel->ime ?> : <?= $rowpododel->ime ?></span></td>
+                                            </tr>
+                                        <?php
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                    ?>
+                </table>
+            </div>
+
+
+        </fieldset>
+        <br/>
+        <div class="zabrani-pristap-do-magacin-select-div">
+            <select class="zabrani-pristap-do-magacin-select"><?php
+                foreach ($magacini as $row) {
+                    if (!in_array($row->id, $UlogaMagaciniPermisii)) {
+
+
+                        ?>
+                        <option value="<?= $row->id ?>"><?= $row->firma ?> :  <?= $row->ime ?> (<?= $row->tipime ?>)</option><?php
+                    }
+
+
+                }
+                ?>
+            </select>
+            <button type="button" class="button cmd-dodadi-korisnik-zabrana-magacin"><span>Додади</span></button>
+        </div>  <br/>
+        <fieldset>
+            <legend>Дозволен пристап до Магацин</legend>
+
+
+
+            <div class="korisnik-zabrana-do-magacin">
+                <table class="korisnik-zabrana-do-magacin-tabela">
+                    <?php
+
+                    foreach ($magacini as $row) {
+                        if (is_array($UlogaMagaciniPermisii)) {
+
+
+                            if (in_array($row->id, $UlogaMagaciniPermisii)) {
+
+
+                                ?>
+
+                                <tr>
+                                    <td class="izbrisi-zabrana-do-magacin"><img height="15" width="15"
+                                                                              src="/images/delete.png" alt=""></td>
+                                    <td class="izbrisi-firma-value" vrednost="<?= $row->id ?>"><input type="hidden"
+                                                                                                      name="magacini[]"
+                                                                                                      value="<?= $row->id ?>"><span
+                                            class="tdvalue"><?= $row->ime ?></span></td>
+                                </tr>
+                            <?php
+                            }
+
+
+                        }
+                    }
+                    ?>
+                </table>
+            </div>
+
+
+        </fieldset>
+        <br/>
+        <div class="zabrani-pristap-do-kasa-select-div">
+            <select class="zabrani-pristap-do-kasa-select"><?php
+                foreach ($kasi as $row) {
+                    if (!in_array($row->id, $UlogaKasiPermisii)) {
+
+
+                        ?>
+                        <option value="<?= $row->id ?>"><?= $row->firma ?> :  <?= $row->ime ?></option><?php
+                    }
+
+
+                }
+                ?>
+            </select>
+            <button type="button" class="button cmd-dodadi-korisnik-zabrana-kasa"><span>Додади</span></button>
+        </div>  <br/>
+        <fieldset>
+            <legend>Дозволен пристап до Каса</legend>
+
+
+
+            <div class="korisnik-zabrana-do-kasa">
+                <table class="korisnik-zabrana-do-kasa-tabela">
+                    <?php
+
+                    foreach ($kasi as $row) {
+                        if (is_array($UlogaKasiPermisii)) {
+
+
+                            if (in_array($row->id, $UlogaKasiPermisii)) {
+
+
+                                ?>
+
+                                <tr>
+                                    <td class="izbrisi-zabrana-do-kasa"><img height="15" width="15"
+                                                                                src="/images/delete.png" alt=""></td>
+                                    <td class="izbrisi-kasa-value" vrednost="<?= $row->id ?>"><input type="hidden"
+                                                                                                      name="kasi[]"
+                                                                                                      value="<?= $row->id ?>"><span
+                                            class="tdvalue"><?= $row->ime ?></span></td>
+                                </tr>
+                            <?php
+                            }
+
+
+                        }
+                    }
+                    ?>
+                </table>
+            </div>
+
+
+        </fieldset>
+        <button type="button" class="button snimi-forma" izvrsi="uloga_popolnilista()"
+                poraka_uspesno="Улогата е успешно изменета"
+                poraka_neuspesno="Грешка при снимање на улогата"
+            ><span>Сними</span></button>
+
+        <br/>
+    </form>
+
+</div>
+<script>
+    jQuery(".zabrani-pristap-do-select").combobox();
+    jQuery(".korisnik-zabrana-do-tabela tr td.izbrisi-zabrana-do").click(function () {
+        var momentalna = jQuery(this);
+
+        jQuery(".zabrani-pristap-do-select").append('<option>' + momentalna.parent().find(".izbrisi-value").attr("vrednost") + '</option>');
+        jQuery(this).parent().remove();
+
+    });
+    jQuery(".korisnik-zabrana-do-firma-tabela tr td.izbrisi-zabrana-do-firma").click(function () {
+        var momentalna = jQuery(this);
+
+        jQuery(".zabrani-pristap-do-firma-select").append('<option value="' + momentalna.parent().find(".izbrisi-value").attr("vrednost") + '">' + momentalna.parent().find(".tdvalue").html() + '</option>');
+        jQuery(this).parent().remove();
+
+    });
+    jQuery(".cmd-dodadi-korisnik-zabrana").click(function () {
+        jQuery(".korisnik-zabrana-do-tabela").append('<tr>' +
+
+            '<td class="izbrisi-zabrana-do"><img height="15" width="15" src="/images/delete.png" alt=""></td>' +
+            ' <td class="izbrisi-value" vrednost="' + jQuery(".zabrani-pristap-do-select option:selected").val() + '">' +
+            '<input type="hidden" name="access[]" value="' + jQuery(".zabrani-pristap-do-select option:selected").val() + '">' +
+            jQuery(".zabrani-pristap-do-select option:selected").val() + '</td>' +
+            '</tr>');
+
+        jQuery(".zabrani-pristap-do-select option:selected").remove();
+        jQuery('.zabrani-pristap-do-select-div .ui-combobox .ui-combobox-input').val("");
+        jQuery('.zabrani-pristap-do-select-div .ui-combobox .ui-button').click();
+
+        //OVA SE POVTORUVA ZA NOVITE ITEMI DA MOZAT DA SE BRISAT
+        jQuery(".korisnik-zabrana-do-tabela tr td.izbrisi-zabrana-do").unbind('click');
+        jQuery(".korisnik-zabrana-do-tabela tr td.izbrisi-zabrana-do").click(function () {
+            var momentalna = jQuery(this);
+
+            jQuery(".zabrani-pristap-do-select").append('<option>' + momentalna.parent().find(".izbrisi-value").attr("vrednost") + '</option>');
+            jQuery(this).parent().remove();
+
+        });
+
+
+    });
+    jQuery(".cmd-dodadi-korisnik-zabrana-firma").click(function () {
+        jQuery(".korisnik-zabrana-do-firma-tabela").append('<tr>' +
+
+            '<td class="izbrisi-zabrana-do-firma"><img height="15" width="15" src="/images/delete.png" alt=""></td>' +
+            ' <td class="izbrisi-firma-value" vrednost="' + jQuery(".zabrani-pristap-do-firma-select option:selected").val() + '">' +
+            '<input type="hidden" name="firmi[]" value="' + jQuery(".zabrani-pristap-do-firma-select option:selected").val() + '">' +
+            '<span class="tdvalue"> ' + jQuery(".zabrani-pristap-do-firma-select option:selected").html() + '</span></td>' +
+            '</tr>');
+
+        jQuery(".zabrani-pristap-do-firma-select option:selected").remove();
+
+
+        //OVA SE POVTORUVA ZA NOVITE ITEMI DA MOZAT DA SE BRISAT
+        jQuery(".korisnik-zabrana-do-firma-tabela tr td.izbrisi-zabrana-do-firma").unbind('click');
+        jQuery(".korisnik-zabrana-do-firma-tabela tr td.izbrisi-zabrana-do-firma").click(function () {
+            var momentalna = jQuery(this);
+
+            jQuery(".zabrani-pristap-do-firma-select").append('<option value="' + momentalna.parent().find(".izbrisi-value").attr("vrednost") + '">' + momentalna.parent().find(".tdvalue").html() + '</option>');
+            jQuery(this).parent().remove();
+
+        });
+
+
+    });
+    jQuery(".cmd-dodadi-korisnik-zabrana-magacin").click(function () {
+        jQuery(".korisnik-zabrana-do-magacin-tabela").append('<tr>' +
+
+            '<td class="izbrisi-zabrana-do-magacin"><img height="15" width="15" src="/images/delete.png" alt=""></td>' +
+            ' <td class="izbrisi-magacin-value" vrednost="' + jQuery(".zabrani-pristap-do-magacin-select option:selected").val() + '">' +
+            '<input type="hidden" name="magacini[]" value="' + jQuery(".zabrani-pristap-do-magacin-select option:selected").val() + '">' +
+            '<span class="tdvalue"> ' + jQuery(".zabrani-pristap-do-magacin-select option:selected").html() + '</span></td>' +
+            '</tr>');
+
+        jQuery(".zabrani-pristap-do-magacin-select option:selected").remove();
+
+
+        //OVA SE POVTORUVA ZA NOVITE ITEMI DA MOZAT DA SE BRISAT
+        jQuery(".korisnik-zabrana-do-magacin-tabela tr td.izbrisi-zabrana-do-magacin").unbind('click');
+        jQuery(".korisnik-zabrana-do-magacin-tabela tr td.izbrisi-zabrana-do-magacin").click(function () {
+            var momentalna = jQuery(this);
+
+            jQuery(".zabrani-pristap-do-magacin-select").append('<option value="' + momentalna.parent().find(".izbrisi-value").attr("vrednost") + '">' + momentalna.parent().find(".tdvalue").html() + '</option>');
+            jQuery(this).parent().remove();
+
+        });
+
+
+    });
+    jQuery(".cmd-dodadi-korisnik-zabrana-kasa").click(function () {
+        jQuery(".korisnik-zabrana-do-kasa-tabela").append('<tr>' +
+
+            '<td class="izbrisi-zabrana-do-kasa"><img height="15" width="15" src="/images/delete.png" alt=""></td>' +
+            ' <td class="izbrisi-kasa-value" vrednost="' + jQuery(".zabrani-pristap-do-kasa-select option:selected").val() + '">' +
+            '<input type="hidden" name="kasi[]" value="' + jQuery(".zabrani-pristap-do-kasa-select option:selected").val() + '">' +
+            '<span class="tdvalue"> ' + jQuery(".zabrani-pristap-do-kasa-select option:selected").html() + '</span></td>' +
+            '</tr>');
+
+        jQuery(".zabrani-pristap-do-kasa-select option:selected").remove();
+
+
+        //OVA SE POVTORUVA ZA NOVITE ITEMI DA MOZAT DA SE BRISAT
+        jQuery(".korisnik-zabrana-do-kasa-tabela tr td.izbrisi-zabrana-do-kasa").unbind('click');
+        jQuery(".korisnik-zabrana-do-kasa-tabela tr td.izbrisi-zabrana-do-kasa").click(function () {
+            var momentalna = jQuery(this);
+
+            jQuery(".zabrani-pristap-do-kasa-select").append('<option value="' + momentalna.parent().find(".izbrisi-value").attr("vrednost") + '">' + momentalna.parent().find(".tdvalue").html() + '</option>');
+            jQuery(this).parent().remove();
+
+        });
+
+
+    });
+</script>

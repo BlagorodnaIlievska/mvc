@@ -1,0 +1,95 @@
+function kasi_nov() {
+
+    var formurl = "/index.php/start/kasi/nov";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нова Каса",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+
+
+
+        }
+    });
+}
+
+function kasi_popolnilista() {
+    formurl="/index.php/start/kasi/popolnilista";
+    table_class= [[".tabelakasi"]];
+    items=["ime","sifra","firma"] ;
+
+    popolni_lista(formurl,table_class,items)
+
+}
+
+function kasi_izmeni(kasaid) {
+    var formurl = "/index.php/start/kasi/izmeni";
+    var data = {  id:kasaid  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени Каса",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+
+}
+
+function kasi_delete(kasaid){
+    var r=confirm("Избриши Каса");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/start/kasi/delete_kasa";
+            var data = {  id:kasaid  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    kasi_popolnilista();
+                }
+            });
+
+        }
+    }
+
+}
+

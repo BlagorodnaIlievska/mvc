@@ -1,0 +1,256 @@
+<div>
+    <table>
+
+        <tr><td>I. a) 1.</td><td><?php echo $traumatologija_a_vkbr_lekuvani_p; ?></td></tr>
+        <!--
+        <tr><td>I. a) 2.</td><td></td></tr>
+        <tr><td>I. a) 3.</td><td><?php //$traum_ort_a3 ?></td></tr>
+        <tr><td>I. a) 4.</td><td></td></tr>
+        <tr><td>I. a) 5.</td><td><?php //$traum_ort_a5 ?></td></tr>
+        <tr><td>I. a) 6.</td><td></td></tr>
+        <tr><td>I. a) 7.</td><td></td></tr>
+        <tr><td>I. a) 8.</td><td></td></tr>
+        <tr><td>I. a) 9.</td><td></td></tr>
+        <tr><td>I. a) 10.</td><td><?php //$num_ispisani_pacienti ?></td></tr>
+        <tr><td>I. a) 11.</td><td><?php //$num_medSestri ?></td></tr>
+
+        <tr><td>I. b) 1.</td><td><?php //$num_umreni48 ?></td></tr>
+        <tr><td>I. b) 4.</td><td><?php //$num_obdukcii ?></td></tr>
+        <tr style="color: #bc8f8f"></tr>
+        <tr><td>I. в) 2.</td><td><?php //$num_pac_intenzivna ?></td></tr>
+        <tr><td>I. в) 8.</td><td><?php //echo $num_pac_v8_uk . " --- " . //$num_pac_v8_ius; ?></td></tr>
+        <tr><td>I. в) 11.</td><td><?php //$num_embol_kompl ?></td></tr>
+        <tr><td>I. в) 13.</td><td><?php //$num_priem_intbol ?></td></tr> -->
+        <tr><td>I. в) 14.</td><td><?php
+            for($i = 0, $j = 0; $i < count($num_pregledi_po_lekar[0]), $j < count($num_pregledi_po_lekar[1]); $i++, $j++){
+                if(!empty($num_pregledi_po_lekar[1][$j] )) echo $num_pregledi_po_lekar[1][$j];
+               else
+                    continue;                echo " има прегледано ";
+               if(!empty($num_pregledi_po_lekar[0][$i])) echo $num_pregledi_po_lekar[0][$i];
+                else
+                    continue;
+                echo " пациенти" . "<br/>";
+           }
+            ?></td></tr>
+
+
+        <tr><td>I. в) 15.</td><td>
+            <div class="left">
+            <?php
+
+         echo "<b>Пакети од ценовник 92:</b>" . "<br/><br/>";
+         if(!empty($num_pregledi_po_paketi['92'])){
+         foreach($num_pregledi_po_paketi['92'] as $row_92){
+             ?>
+             <div class="zaedno">
+             <div class='leva_kolona'>
+                 <?php
+
+                 echo $row_92->Naziv . " : ";
+                 ?>
+             </div>
+             <div class='desna_kolona'>
+                 <?php
+                     if($row_92->Broj > 1)
+                 echo $row_92->Broj . " пакети";
+                 else
+                     if($row_92->Broj == 1)
+                         echo $row_92->Broj . " пакет";
+                 ?>
+             </div></div><br/>
+             <?php
+         }
+         }
+?>
+                </div><div class="right">
+                <?php
+
+            echo "<b>Пакети од ценовник DSG:</b>" . "<br/><br/>";
+            if(!empty($num_pregledi_po_paketi['dsg'])){
+            foreach($num_pregledi_po_paketi['dsg'] as $row_dsg){
+                ?><div class="zaedno">
+                <div class='leva_kolona'>
+                    <?php
+
+                    echo $row_dsg->Naziv . " : ";
+                    ?>
+                </div>
+                <div class='desna_kolona'>
+                    <?php
+                    if($row_92->Broj > 1)
+                        echo $row_92->Broj . " пакети";
+                    else
+                        if($row_92->Broj == 1)
+                            echo $row_92->Broj . " пакет";
+                    ?>
+                </div></div><br/>
+                <?php
+            } }
+
+            ?>
+            </div>
+            <div style='clear: both'></div>
+            <?php
+            ?>
+            <div class="left">
+            <?php
+
+         echo "<b>Пакети од ценовник ДБ:</b>" . "<br/><br/>";
+         if(!empty($num_pregledi_po_paketi['dnevna'])){
+         foreach($num_pregledi_po_paketi['dnevna'] as $row_92){
+             ?><div class="zaedno">
+             <div class='leva_kolona'>
+                 <?php
+
+                 echo $row_dijag->Naziv . " : ";
+                 ?>
+             </div>
+             <div class='desna_kolona'>
+                 <?php
+                 if($row_92->Broj > 1)
+                     echo $row_92->Broj . " пакети";
+                 else
+                     if($row_92->Broj == 1)
+                         echo $row_92->Broj . " пакет";
+                 ?>
+             </div></div><br/>
+             <?php
+         }
+         }
+                ?>
+                </div><div class="right">
+                <?php
+            echo "<b>Пакети од ценовник Спец. конзз ЗЗ:</b>" . "<br/><br/>";
+            if(!empty($num_pregledi_po_paketi['spec'])){
+            foreach($num_pregledi_po_paketi['spec'] as $row_dsg){
+                ?><div class="zaedno">
+                <div class='leva_kolona'>
+                    <?php
+
+                    echo $row_dsg->Naziv . " : ";
+                    ?>
+                </div>
+                <div class='desna_kolona'>
+                    <?php
+                    if($row_92->Broj > 1)
+                        echo $row_92->Broj . " пакети";
+                    else
+                        if($row_92->Broj == 1)
+                            echo $row_92->Broj . " пакет";
+                    ?>
+                </div></div><br/>
+                <?php               }
+            }
+            ?>
+</div><div style='clear: both'></div>
+</td></tr>
+
+        <tr><td>I. в) 20.</td><td><?php
+
+            echo "<b>Дијагнози :</b>" . "<br/><br/>";
+            if(!empty($num_pregledi_po_dijag['dijagnoza'])){
+                foreach($num_pregledi_po_dijag['dijagnoza'] as $row_dijag){
+                    ?><div class="zaedno">
+                    <div class='leva_kolona'>
+                        <?php
+
+                    echo $row_dijag->Naziv . " : ";
+                    ?>
+                        </div>
+                    <div class='desna_kolona'>
+                        <?php
+                        if($row_92->Broj > 1)
+                            echo $row_92->Broj . " пакети";
+                        else
+                            if($row_92->Broj == 1)
+                                echo $row_92->Broj . " пакет";
+                        ?>
+                        </div></div><br/>
+ <?php               }
+            }
+            ?>
+
+ </td></tr>
+
+
+        <tr><td>I. в) 21.</td><td><?php
+
+            echo "<b>Групни дијагнози :</b>" . "<br/><br/>";
+            if(!empty($pregl_po_grupDija)){
+                foreach($pregl_po_grupDija as $row_dijag){
+                    ?><div class="zaedno">
+                        <div class='leva_kolona'>
+                            <?php
+
+                            echo $row_dijag->grupna_dija . " : ";
+                            ?>
+                        </div>
+                        <div class='desna_kolona'>
+                            <?php
+                            if($row_92->Broj > 1)
+                                echo $row_92->Broj . " пакети";
+                            else
+                                if($row_92->Broj == 1)
+                                    echo $row_92->Broj . " пакет";
+                            ?>
+                        </div></div><br/>
+                    <?php               }
+            }
+            ?>
+
+        </td></tr>
+
+        <tr><td>I. в) 22.</td><td><?php echo $num_uslugi->num_uslugi; ?></td></tr>
+        <tr><td>I. в) 23.</td><td><?php echo $num_mkb10->num_mkb10; ?></td></tr>
+       <!-- <tr><td>I. в) 16.</td><td><?php
+//for($i = 0, $j = 0; $i < count($num_priem_po_lekar[0]), $j < count($num_priem_po_lekar[1]); $i++, $j++){
+//    if(!empty($num_priem_po_lekar[1][$j] )) echo $num_priem_po_lekar[1][$j];
+//    else
+//        continue;
+//    echo " има примено ";
+//    if(!empty($num_priem_po_lekar[0][$i])) echo $num_priem_po_lekar[0][$i];
+//    else
+//      continue;
+//    echo " пациенти" . "<br/>";
+//}
+            ?></td></tr>
+
+
+
+        <tr>
+            <td>II. 1.</td><td><?php //$karil_vkbr_lekuvani_p ?></td>
+        </tr>
+        -->
+    </table>
+
+</div>
+<style type="text/css">
+    .zaedno{
+        width: 650px;
+        margin-bottom: 3px;
+        margin-top: 3px;
+    }
+    .left{
+        width: 700px;
+        float: left;
+    }
+    .right{
+        width: 700px;
+float: right;
+    }
+    .leva_kolona{
+text-transform: lowercase;
+        width:500px;
+         float: left;
+        font-size: 11px;
+white-space: normal;
+
+    }
+    .desna_kolona{
+        width: 100px;
+        font-size: 11px;
+ white-space: normal;
+        float: left;
+ }
+
+</style>

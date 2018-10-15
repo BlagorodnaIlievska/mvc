@@ -1,0 +1,54 @@
+<div class="nov_kredit">
+    <form action="/index.php/plati/krediti/create_kredit" method="post">
+        <fieldset>
+        <legend>Нов кредит</legend>
+        <div class="novkredit-levomeni">
+<!--            <input type="checkbox" class="status_kredit" name="status_kredit"/> Активирање / Гаснење на кредитот<br/>-->
+            <ul>
+            <li class="zir"><label>Вработен:</label> <?php echo form_dropdown('vraboten_id',$vraboteni, '', 'class="vraboten_id"'); ?></li>
+                <li class="zir"><label>Кредитор:</label> <?php echo form_dropdown('kreditor_id',$kreditori, '', 'class="kreditor_id"'); ?></li>
+                <li>Жиросметка на кредитор: <span class="zirosmetka_kreditor"></span></li>
+                <li>Датум почеток: <input type="text" class="datum_pocetok" name="datum_pocetok"/></li>
+                <li>Датум на затварање: <input type="text" class="datum_zatvaranje" name="datum_zatvaranje"/></li>
+                <li class="zir"><label>Жирант 1:</label> <?php echo form_dropdown('zirant_1',$vraboteni, '', 'class="zirant_1"'); ?></li>
+                <li class="zir"><label>Жирант 2:</label> <?php echo form_dropdown('zirant_2',$vraboteni, '', 'class="zirant_2"'); ?></li>
+                <li>Вкупен број на рати: <input type="text" name="vkupen_broj_rati"/></li>
+                <li>Досега исплатени рати: <input type="text" name="isplateni_rati"/></li>
+                <li>Остануваат рати за плаќање: <input type="text" name="ostanati_rati"/></li>
+                <li>Прв дел од рата: <input type="text" name="prv_del_od_rata"/></li>
+                <li>Износ на рата: <input type="text" name="iznos_rata"/></li>
+                <li>Износ на кредит: <input type="text" name="iznos_kredit"/></li>
+                <li>Исплатен износ: <input type="text" name="isplaten_iznos"/></li>
+                <li>Остаток за исплата: <input type="text" name="ostatok_isplata"/></li>
+                <li>Валута: <input type="text" name="valuta"/></li>
+                <li>Тип на кредит: <input type="text" name="tip_na_kredit"/></li>
+<!--            Тип на кредит: --><?php //echo form_dropdown('tip_na_kredit',$vraboteni, '', 'class="tip_na_kredit"'); ?><!--<br/>-->
+            </ul>
+        </div>
+<!--        <div class="novmesecen-desnomeni">-->
+<!--            Не Нормирани саати: <input type="text" name="ne_normirani_casovi"/><br/>-->
+<!--            Сменско работење: <input type="text" name="smensko_rabotenje"/><br/>-->
+<!--        </div>-->
+        </fieldset>
+        <div class="addstavka floatright">
+        <button type="button" class="button snimi-forma" izvrsi="krediti_polnilista()" poraka_uspesno="Кредитот е успешно снимен"
+                poraka_neuspesno="Грешка при снимање на кредит">
+                <span>Сними</span></button>
+        </div>
+    </form>
+</div>
+<script>
+
+    jQuery(document).ready(function () {
+        jQuery( ".vraboten_id" ).combobox();
+        jQuery( ".zirant_1" ).combobox();
+        jQuery( ".zirant_2" ).combobox();
+        jQuery( ".kreditor_id" ).combobox();
+        jQuery('.datum_pocetok').datepicker();
+        jQuery('.datum_pocetok').datepicker('setDate', new Date());
+        jQuery('.datum_zatvaranje').datepicker();
+        jQuery('.datum_zatvaranje').datepicker('setDate', new Date());
+//        jQuery(".mesec").val(mesec);
+//        jQuery(".godina").val(godina);
+    });
+</script >

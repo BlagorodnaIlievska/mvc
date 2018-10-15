@@ -1,0 +1,95 @@
+<?php  if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class Klienti extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+    }
+
+    public function nov()
+    {
+        $this->load->model('podatoci/banka_model');
+        $data['banka']=$this->banka_model->get_banka_dropdown();
+     //   $data['tip']          = 'proizvoditeli';
+        $this->load->view('podatoci/klienti/nov', $data);
+    }
+
+
+    public function izmeni()
+    {
+        $this->load->model('podatoci/klienti_model');
+        $this->load->model('podatoci/banka_model');
+
+        $klient = $this->klienti_model->getKlient($this->input->post("firmaID"));
+        $data['banka']=$this->banka_model->get_banka_dropdown();
+        $data['grad']=$this->banka_model->get_grad_dropdown();
+        $data['klient']      = $klient;
+        // print_r($klient); die();
+        $this->load->view('podatoci/klienti/izmeni', $data);
+    }
+
+    public function filtriraj_po_klient(){
+        $klient=$this->input->post('klient');
+
+        $this->load->model('podatoci/klienti_model');
+        $query = $this->klienti_model->filtriraj_po_klient($klient);
+         //print_r($query); die();
+        echo json_encode($query);
+
+    }
+
+    public function lista()
+    {
+        $this->load->model('podatoci/artikl_model');
+        $data['klient'] = $this->artikl_model->klient_dropdown();
+        $this->load->view('podatoci/klienti/lista', $data);
+    }
+
+    public function popolnilista()
+    {
+
+        //$data['main_content'] = 'podatoci/katalog/popolnilista';
+        $this->load->model('podatoci/klienti_model');
+        $return = $this->klienti_model->getKlienti();
+       // print_r($return); die();
+        echo json_encode($return);
+    }
+
+
+
+
+
+    public function create_klient()
+    {
+        $this->load->model('podatoci/klienti_model');
+
+
+
+            $this->klienti_model->create_klient();
+            echo "ok";
+
+
+    }
+
+
+
+    public function update_klient()
+    {
+        $this->load->model('podatoci/klienti_model');
+        $this->klienti_model->update_klient();
+        echo "ok";
+    }
+
+    public function delete_klient()
+    {
+        $id = $this->input->get("firmaID");
+        $this->load->model('podatoci/klienti_model');
+        $this->klienti_model->delete_klient($id);
+        echo "ok";
+    }
+}

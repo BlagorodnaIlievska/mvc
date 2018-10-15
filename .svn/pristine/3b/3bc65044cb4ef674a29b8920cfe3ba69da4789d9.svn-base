@@ -1,0 +1,174 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Pregled_dospeanost extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function menu()
+    {
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $this->load->model('materijalno/materijalno_model');
+//        $queryIdnina = $this->vlezni_fakturi_model->getAll_idnina();
+//        $queryDenes = $this->vlezni_fakturi_model->getAll_denes();
+//        $queryMinato = $this->vlezni_fakturi_model->getAll_pominatrok();
+//        $data['idnina'] = $queryIdnina;
+//        $data['denes'] = $queryDenes;
+//        $data['minato'] = $queryMinato;
+        $data['klient'] = $this->materijalno_model->klient_site_dropdown();
+        $this->load->view('vlezni_fakturi/pregled_dospeanost/menu_form', $data);
+    }
+
+    public function getDospeanostKlient()
+    {
+        $klientid = $this->input->post('klientid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getDospeanostKlient($klientid);
+        echo json_encode($query);
+    }
+    public function getDetaliTabelaIdnina()
+    {
+        $fakturaid = $this->input->post('dbid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getKontoZadolzuvanje($fakturaid);
+        echo json_encode($query);
+    }
+    public function getDetaliTabelaDenes()
+    {
+        $fakturaid = $this->input->post('dbid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getKontoZadolzuvanje($fakturaid);
+        echo json_encode($query);
+    }
+    public function getDetaliTabelaMinato()
+    {
+        $fakturaid = $this->input->post('dbid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getKontoZadolzuvanje($fakturaid);
+        echo json_encode($query);
+    }
+    public function pecati_dospeanost_idnina(){
+    $klientid = $this->input->get('klientid');
+    $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+    $query = $this->vlezni_fakturi_model->fakturi_idnina($klientid);
+    $data['dosp_idnina'] = $query;
+    $data['main_content'] = 'vlezni_fakturi/pecatenje/faktura_idnina';
+    $html = $this->load->view('includes/print_template', $data, true);
+    echo bis_fill_input_values($html, $data);
+}
+    public function pecati_dospeanost_idnina_konto(){
+        $klientid = $this->input->get('klientid');
+        $dbid=$this->input->get('dbid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getKontoZadolzuvanje($dbid);
+       // print_r($query); die();
+        $data['dosp_idnina_konto'] = $query;
+        $data['main_content'] = 'vlezni_fakturi/pecatenje/faktura_idnina_konto';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+    public function pecati_dospeanost_denes_konto(){
+        $klientid = $this->input->get('klientid');
+        $dbid=$this->input->get('dbid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getKontoZadolzuvanje($dbid);
+        // print_r($query); die();
+        $data['dosp_idnina_konto'] = $query;
+        $data['main_content'] = 'vlezni_fakturi/pecatenje/faktura_denes_konto';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+    public function pecati_dospeanost_minato_konto(){
+        $klientid = $this->input->get('klientid');
+        $dbid=$this->input->get('dbid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getKontoZadolzuvanje($dbid);
+        // print_r($query); die();
+        $data['dosp_idnina_konto'] = $query;
+        $data['main_content'] = 'vlezni_fakturi/pecatenje/faktura_minato_konto';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+    public function pecati_dospeanost_denes(){
+        $klientid = $this->input->get('klientid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->fakturi_denes($klientid);
+        $data['dosp_denes'] = $query;
+        $data['main_content'] = 'vlezni_fakturi/pecatenje/faktura_denes';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+    public function pecati_dospeanost_minato(){
+        $klientid = $this->input->get('klientid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->fakturi_minato($klientid);
+        $data['dosp_minato'] = $query;
+        $data['main_content'] = 'vlezni_fakturi/pecatenje/faktura_minato';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+
+
+    public function pecati_denes(){
+
+        $this->load->helper('to_pdf');
+
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+
+        $q=$this->vlezni_fakturi_model->fakturi_denes();
+
+
+        $data['q']=$q;
+
+        // page info here, db calls, etc.
+        $html = $this->load->view('vlezni_fakturi/pecatenje/faktura_denes', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+        //if you want to write it to disk and/or send it as an attachment
+
+    }
+    public function pecati_idnina(){
+
+        $this->load->helper('to_pdf');
+
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+
+        $q=$this->vlezni_fakturi_model->fakturi_idnina();
+
+
+        $data['q']=$q;
+
+        // page info here, db calls, etc.
+        $html = $this->load->view('vlezni_fakturi/pecatenje/faktura_idnina', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+        //if you want to write it to disk and/or send it as an attachment
+
+    }
+    public function pecati_minato(){
+
+        $this->load->helper('to_pdf');
+
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+
+        $q=$this->vlezni_fakturi_model->fakturi_minato();
+
+
+        $data['q']=$q;
+
+        // page info here, db calls, etc.
+        $html = $this->load->view('vlezni_fakturi/pecatenje/faktura_minato', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+        //if you want to write it to disk and/or send it as an attachment
+
+    }
+}

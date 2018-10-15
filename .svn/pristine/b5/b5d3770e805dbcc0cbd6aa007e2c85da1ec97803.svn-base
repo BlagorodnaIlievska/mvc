@@ -1,0 +1,2761 @@
+<?php
+
+class Statistika_model extends CI_Model
+{
+
+///// zaednicki f-cii na karil i trauma - ort
+
+    function datumi_komplik_od_anest_zaednicka($firma)
+    {
+        $firmi = $firma;
+        $this->db->select("pregled_id")->from("bis_pregledi_dijagnoza")->join("bis_mkb_10", "bis_pregledi_dijagnoza.dijagnoza = bis_mkb_10.id", "left");
+        $this->db->where("opis LIKE '%компликац%анест%'");
+        $this->db->or_where("opis LIKE '%КОМПЛИКАЦ%АНЕСТ%'");
+        $query = $this->db->get();
+        $sub_query = array();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+
+            return $query1->result();
+        } else {
+
+            return false;
+        }
+    }
+
+    function datumi_dekubitalni_rani_zaednicka($firmi)
+    {
+
+        $this->db->select("pregled_id")->from("bis_pregledi_dijagnoza")->join("bis_mkb_10", "bis_pregledi_dijagnoza.dijagnoza = bis_mkb_10.id", "left");
+        $this->db->where("opis LIKE '%декубит%'");
+        $this->db->or_where("opis LIKE '%ДЕКУБИТ%'");
+        $query = $this->db->get();
+        $sub_query = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+            // print_r($query1->result()); die();
+            return $query1->result();
+        } else {
+            // print_r("false"); die();
+            return false;
+        }
+    }
+
+    function datum_obdukcija_zaednicka($firmi)
+    {
+        $this->db->select("obdukcionen_naod_data as obdukcija_datum");
+        $this->db->from("bis_potvrda_za_smrt");
+        $this->db->join("bis_pacienti_priem", "bis_potvrda_za_smrt.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where_in("firma_id", $firmi);
+        $this->db->where("obdukcionen_naod_br !=", "");
+        $this->db->or_where("obdukcionen_naod_br !=", 0);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            return $query->result();
+        } else
+            return false;
+    }
+
+    function datum_umreni_pacienti48_zaednicka($firmi)
+    {
+        $this->db->select("priem_id, priem_datum, priem_vreme, data_na_smrtta as data_smrt, cas_na_smrtta as cas_smrt");
+        $this->db->from("bis_potvrda_za_smrt");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id = bis_potvrda_za_smrt.priem_id", "left");
+        $this->db->where_in("firma_id", $firmi);
+        $query = $this->db->get();
+        $result = $query->result();
+        if ($query->num_rows > 0) {
+            return $result;
+        } else {
+            return 0;
+        }
+    }
+
+    function datumi_inf_urinar_zaednicka($firmi)
+    {
+        $this->db->select("pregled_id")->from("bis_pregledi_dijagnoza")->join("bis_mkb_10", "bis_pregledi_dijagnoza.dijagnoza = bis_mkb_10.id", "left");
+        $this->db->where("opis LIKE '%ИНФ%УРИНАР%'");
+        $this->db->or_where("opis LIKE '%УРИНАР%ИНФЕКЦИ%'");
+        $query = $this->db->get();
+        $sub_query = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+
+            return $query1->result();
+        } else {
+
+            return false;
+        }
+    }
+
+    function  zemi_datum_vkupno_lekuvani_zaednicka($firmi)
+    {
+        $this->db->select('priem_datum');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->where_in('firma_id', $firmi);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    function datumi_urinaren_kateter_zaednicka($firmi)
+    {
+        $this->db->select("pregled_id")->from("bis_pregledi_dijagnoza")->join("bis_mkb_10", "dijagnoza = bis_mkb_10.id", "left");
+        $this->db->where("opis LIKE '%уринар%катетер%'");
+        $query = $this->db->get();
+        $sub_query = array();
+        if ($query->num_rows > 0) {
+            $query2 = $query->result();
+        }
+        foreach ($query2 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+
+            return $query1->result();
+        } else {
+
+            return false;
+        }
+    }
+
+    function zemi_datum_zatvoranje_otpusna_za_ispisani_zaednicka($firmi)
+    {
+        $this->db->select("priem_id, priem_datum, datum_na_ispis");
+        $this->db->from('bis_otpusna_lista');
+        $this->db->join('bis_pacienti_priem', 'bis_otpusna_lista.priem_id = bis_pacienti_priem.id');
+        $this->db->where_in('bis_pacienti_priem.firma_id', $firmi);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            // print_r($query->result()); die();
+            return $query->result();
+        } else
+            //print_r('false'); die();
+            return false;
+    }
+
+    function zemi_datumi_upati_do_druga_ZU_zaednicka($firmi)
+    {
+        $this->db->select("sifra");
+        $this->db->from("bis_mkb_10");
+        $this->db->where("opis like '%РЕХА%'");
+        $q = $this->db->get();
+        $sub_query = array();
+        if ($q->num_rows > 0) {
+            $result = $q->result();
+            foreach ($result as $ob) {
+                $sub_query[] = $ob->sifra;
+            }
+        }
+        $q->free_result();
+        $this->db->select("bis_upat.id as upat_id, datum as priem_datum");
+        $this->db->from("bis_upat");
+        $this->db->join("bis_pacienti_priem", "bis_upat.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where("naziv_zdravstvena_ustanova != do_zdravstvena_ustanova");
+        $this->db->where_not_in("sifra_dijagnoza", $sub_query);
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+
+            return $query->result();
+        } else
+
+            return false;
+    }
+
+    function zemi_datum_med_sestri_zaednicka($oddel)
+    {
+
+        $this->db->select("id, pocetok_raboten_odnos, kraj_raboten_odnos");
+        $this->db->from('covecki_resursi');
+        $this->db->where("klasifikacija", 8);
+        $this->db->or_where("rabotno_mesto like '%медицинска сестра%'");
+        $this->db->where_in("oddel", $oddel);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            return $query->result();
+        } else
+            return false;
+    }
+
+    function dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)
+    {
+
+        $datum_plus48 = preg_split('/[-]/', $datum);
+        $den_int = (int)$datum_plus48[0];
+        $den_int += 2;
+        $datum_plus48[0] = $den_int;
+        $joined_datum = join("-", $datum_plus48);
+        $datum_vreme = ($joined_datum . " " . $vreme);
+        $datum_vreme1 = ($datum1 . " " . $vreme1);
+
+        $datum_vreme_primen_plus48 = strtotime($datum_vreme);
+        $datum_vreme_smrt = strtotime($datum_vreme1);
+        if ($datum_vreme_primen_plus48 >= $datum_vreme_smrt)
+            return true;
+        else
+            return false;
+    }
+
+    ////// do tuka
+
+//f-cii za opsto
+    public function zemi_datum()
+    {
+        $this->db->select('priem_datum');
+        $this->db->from('bis_pacienti_priem');
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_osigureni()
+    {
+        $this->db->select('priem_datum');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->where('participacija', 1);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_privatni()
+    {
+        $this->db->select('bis_pacienti_priem.priem_datum');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->where('bis_osnov_na_osiguruvanje.participacija_id', 4);
+        $this->db->join('bis_osnov_na_osiguruvanje', 'bis_pacienti_priem.participacija=bis_osnov_na_osiguruvanje.id');
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_MZ()
+    {
+        $this->db->select('bis_pacienti_priem.priem_datum');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->where('bis_osnov_na_osiguruvanje.participacija_id', 3);
+        $this->db->join('bis_osnov_na_osiguruvanje', 'bis_pacienti_priem.participacija=bis_osnov_na_osiguruvanje.id');
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_so_interklinicki()
+    {
+        $this->db->select('priem_datum');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->where('ima_upat', 3);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_bez_upat()
+    {
+        $this->db->select('priem_datum');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->where('ima_upat', 0);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_primeni_stacionar()
+    {
+        $this->db->select('priem_datum');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->where('pod_oddel', 66);
+        $this->db->or_where('pod_oddel', 63);
+        $this->db->or_where('pod_oddel', 69);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_primeni_stacionar_osigurenici()
+    {
+        $pod = array('66', '63', '69');
+        $this->db->select('priem_datum,id');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->where('participacija', 1);
+        $this->db->where_in('pod_oddel', $pod);
+
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_primeni_stacionar_privatni()
+    {
+        $pod = array('66', '63', '69');
+        $par = array('490', '66');
+        $this->db->select('priem_datum,id');
+        $this->db->from('bis_pacienti_priem');
+
+        $this->db->where_in('pod_oddel', $pod);
+
+        $this->db->where_in('participacija', $par);
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_primeni_stacionar_so_interklinicki()
+    {
+        $pod = array('66', '63', '69');
+
+        $this->db->select('priem_datum, id');
+        $this->db->from('bis_pacienti_priem');
+
+        $this->db->where_in('pod_oddel', $pod);
+
+        $this->db->where('ima_upat', 3);
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_primeni_stacionar_MZ()
+    {
+        $pod = array('66', '63', '69');
+        //$par=array('490','66');
+        $this->db->select('bis_pacienti_priem.priem_datum');
+        $this->db->from('bis_pacienti_priem');
+
+        $this->db->where_in('bis_pacienti_priem.pod_oddel', $pod);
+
+        $this->db->where('bis_osnov_na_osiguruvanje.participacija_id', 3);
+        $this->db->join('bis_osnov_na_osiguruvanje', 'bis_osnov_na_osiguruvanje.id=bis_pacienti_priem.participacija');
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_primeni_stacionar_bez_upat()
+    {
+        $pod = array('66', '63', '69');
+
+        $this->db->select('priem_datum,id');
+        $this->db->from('bis_pacienti_priem');
+
+        $this->db->where_in('pod_oddel', $pod);
+
+        $this->db->where('ima_upat', 0);
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_vkupno_ispisani_osigurenici()
+    {
+        $this->db->select('bis_otpusna_lista.datum_na_ispis as priem_datum');
+        $this->db->from('bis_otpusna_lista');
+        $this->db->where('bis_pacienti_priem.participacija', 1);
+        $this->db->join('bis_pacienti_priem', 'bis_pacienti_priem.id=bis_otpusna_lista.priem_id');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_vkupno_ispisani()
+    {
+        $this->db->select('bis_otpusna_lista.datum_na_ispis as priem_datum');
+        $this->db->from('bis_otpusna_lista');
+        $this->db->join('bis_pacienti_priem', 'bis_pacienti_priem.id=bis_otpusna_lista.priem_id');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_vkupno_ispisani_privatni()
+    {
+        $par = array('66', '490');
+        $this->db->select('bis_otpusna_lista.datum_na_ispis as priem_datum');
+        $this->db->from('bis_otpusna_lista');
+        $this->db->where_in('bis_pacienti_priem.participacija', $par);
+        $this->db->join('bis_pacienti_priem', 'bis_pacienti_priem.id=bis_otpusna_lista.priem_id');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_vkupno_ispisani_MZ()
+    {
+        $par = array('66', '490');
+        $this->db->select('bis_otpusna_lista.datum_na_ispis as priem_datum');
+        $this->db->from('bis_otpusna_lista');
+        $this->db->where_in('bis_pacienti_priem.participacija', $par);
+        $this->db->join('bis_pacienti_priem', 'bis_pacienti_priem.id=bis_otpusna_lista.priem_id');
+        // $this->db->join('bis_osnov_na_osiguruvanje','bis_osnov_na_osiguruvanje.id=bis_pacienti_priem.participacija');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_vkupno_ispisani_so_interklinicki()
+    {
+
+        $this->db->select('bis_otpusna_lista.datum_na_ispis as priem_datum');
+        $this->db->from('bis_otpusna_lista');
+        $this->db->where('bis_pacienti_priem.ima_upat', 3);
+        $this->db->join('bis_pacienti_priem', 'bis_pacienti_priem.id=bis_otpusna_lista.priem_id');
+
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_datum_vkupno_ispisani_bez_dokumenti()
+    {
+
+        $this->db->select('bis_otpusna_lista.datum_na_ispis as priem_datum');
+        $this->db->from('bis_otpusna_lista');
+        $this->db->where('bis_pacienti_priem.ima_upat', 0);
+        $this->db->join('bis_pacienti_priem', 'bis_pacienti_priem.id=bis_otpusna_lista.priem_id');
+
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function zemi_eho_pregledi()
+    {
+        $this->db->select('spec_kon_prev_zz.id');
+        $this->db->from('spec_kon_prev_zz');
+        // $this->db->like('spec_kon_prev_zz.naziv','%eho%');
+        $this->db->like('spec_kon_prev_zz.naziv', 'ехо', 'both');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+
+            $result = $query->result();
+
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function zemi_rtg_snimanja()
+    {
+        $this->db->select('spec_kon_prev_zz.id');
+        $this->db->from('spec_kon_prev_zz');
+        // $this->db->like('spec_kon_prev_zz.naziv','%eho%');
+        $this->db->like('spec_kon_prev_zz.naziv', 'РТГ', 'both');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+
+            $result = $query->result();
+
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function  vkupno_eho_pregledi()
+    {
+        $proba = array();
+        $i = 0;
+        foreach ($this->zemi_eho_pregledi() as $row) {
+            $proba[$i] = $row->id;
+            $i++;
+        }
+
+        //   $eho=$this->zemi_eho_pregledi();
+
+        $this->db->select('bis_pacienti_pregledi_dijagnoza.primen_datum as priem_datum');
+        $this->db->from('bis_pacienti_pregledi_dijagnoza');
+
+        $this->db->where_in('bis_pregledi_paketi.paket_id', $proba);
+        $this->db->where('bis_pregledi_paketi.cenovnik', 4);
+        $this->db->join('bis_pregledi_paketi', 'bis_pregledi_paketi.pregled_id=bis_pacienti_pregledi_dijagnoza.id');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function  vkupno_rtg_snimanja()
+    {
+        $proba = array();
+        $i = 0;
+        foreach ($this->zemi_rtg_snimanja() as $row) {
+            $proba[$i] = $row->id;
+            $i++;
+        }
+
+        //   $eho=$this->zemi_eho_pregledi();
+
+        $this->db->select('bis_pacienti_pregledi_dijagnoza.primen_datum as priem_datum');
+        $this->db->from('bis_pacienti_pregledi_dijagnoza');
+
+        $this->db->where_in('bis_pregledi_paketi.paket_id', $proba);
+        $this->db->where('bis_pregledi_paketi.cenovnik', 4);
+        $this->db->join('bis_pregledi_paketi', 'bis_pregledi_paketi.pregled_id=bis_pacienti_pregledi_dijagnoza.id');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function  vkupno_deksa_pregledi()
+    {
+        $this->db->select('bis_pacienti_pregledi_dijagnoza.primen_datum as priem_datum');
+        $this->db->from('bis_pacienti_pregledi_dijagnoza');
+        $this->db->where('bis_pregledi_paketi.paket_id', 914);
+        $this->db->where('bis_pregledi_paketi.cenovnik', 4);
+        $this->db->join('bis_pregledi_paketi', 'bis_pregledi_paketi.pregled_id=bis_pacienti_pregledi_dijagnoza.id');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function zemi_datum_primeni_dnevna_bolnica()
+    {
+        $this->db->select('priem_datum');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->where('pod_oddel', 59);
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function  vkupno_interklinicki()
+    {
+        $this->db->select('datum as priem_datum');
+        $this->db->from('bis_upat');
+        $this->db->where('tip_upat', 'interklinicki');
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    public function  vkupno_interbolnicki()
+    {
+        $this->db->select('datum as priem_datum');
+        $this->db->from('bis_upat');
+        $this->db->where('tip_upat', 'interbolnicki');
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+
+    }
+
+    //f-cii za manipulacija so datumite
+    function vraka_god_i_polovina($datum)
+    {
+        $nacin = 0; //  default ili so_prebaruvanje
+        $niza1 = array(1, 2, 3, 4, 5, 6);
+        $niza2 = array(7, 8, 9, 10, 11, 12);
+        if (strcmp($datum, date('Y') . "-06-30") == 0) {
+            //$d = date("Y-m-d");
+            $d = date("Y") . "-06-30";
+            $today_parts = preg_split('/[-]/', $d);
+            $god = $today_parts[0];
+            $month = (int)$today_parts[1];
+//            $niza1 = array(1, 2, 3, 4, 5, 6);
+//            $niza2 = array(7, 8, 9, 10, 11, 12);
+            $polovina = 0;
+            foreach ($niza1 as $el) {
+                if ($month == $el) $polovina = 1;
+            }
+            foreach ($niza2 as $el) {
+                if ($month == $el) $polovina = 2;
+            }
+            $nacin = "default";
+        } else {
+//            bis_debug($datum, "datum");
+            $datum_parts = preg_split('/[-]/', $datum);
+            $god = $datum_parts[0];
+            //ova go dodavav jas pod pretpostavka deka vaka treba da raboti - pocetok - Stole
+            $mesec = $datum_parts[1];
+            if(in_array($mesec, $niza1)) $polovina = 1;
+            else $polovina=2;
+            //ova go dodavav jas pod pretpostavka deka vaka treba da raboti - kraj - Stole
+           // $polovina = $datum_parts[2]; // ova bese vaka prvicno koga ja javuvase greskata
+            $nacin = "so_prebaruvanje";
+        }
+        $result = array($god, $polovina, $nacin);
+        return $result;
+    }
+
+    function vraka_stringdatumi_m($god, $polovina, $i)
+    {
+//isto za dvatata nacini
+        bis_debug($polovina, "pocetok");
+        if ($polovina == 1) { //1,2,3,4,5,6
+            if ($i % 2 == 0) { //2,4,6
+                if ($i == 2) { //2
+                    $m1 = "01-0" . $i . "-" . $god; /*od*/
+                    $m2 = "28-0" . $i . "-" . $god; /*do*/
+                    //obratno za nekoi f-cii
+                    $mmm1 = $god . "-0" . $i . "-01";
+                    $mmm2 = $god . "-0" . $i . "-28";
+                } else { //4, 6
+                    $m1 = "01-0" . $i . "-" . $god;
+                    $m2 = "30-0" . $i . "-" . $god;
+                    $mmm1 = $god . "-0" . $i . "-01";
+                    $mmm2 = $god . "-0" . $i . "-30";
+                }
+            } else
+                if ($i % 2 == 1) { //1,3,5
+                    $m1 = "01-0" . $i . "-" . $god;
+                    $m2 = "31-0" . $i . "-" . $god;
+                    $mmm1 = $god . "-0" . $i . "-01";
+                    $mmm2 = $god . "-0" . $i . "-31";
+                }
+            $m1_vkupno = "01-01-" . $god;
+            $m2_vkupno = "30-06-" . $god;
+            $mmm1_vkupno = $god . "-01-01";
+            $mmm2_vkupno = $god . "-06-30";
+        } else
+
+            if ($polovina == 2) { //7,8,9,10,11,12
+                if ($i % 2 == 0) { //8,10,12 (2,4,6)
+                    if ($i == 2) { //8 ( 2 + 6 )
+                        $m1 = "01-0" . ($i + 6) . "-" . $god;
+                        $m2 = "31-0" . ($i + 6) . "-" . $god;
+                        $mmm1 = $god . "-0" . ($i + 6) . "-01";
+                        $mmm2 = $god . "-0" . ($i + 6) . "-31";
+                    } else { // 10, 12 (4,6)
+                        $m1 = "01-" . ($i + 6) . "-" . $god;
+                        $m2 = "31-" . ($i + 6) . "-" . $god;
+                        $mmm1 = $god . "-" . ($i + 6) . "-01";
+                        $mmm2 = $god . "-" . ($i + 6) . "-31";
+                    }
+                } else
+                    if ($i % 2 == 1) { //7,9,11 (1,3,5)
+                        if ($i == 1) {
+                            $m1 = "01-0" . ($i + 6) . "-" . $god;
+                            $m2 = "31-0" . ($i + 6) . "-" . $god;
+                            $mmm1 = $god . "-0" . ($i + 6) . "-01";
+                            $mmm2 = $god . "-0" . ($i + 6) . "-31";
+                        } else {
+                            $m1 = "01-" . (($i == 3) ? "0" . ($i + 6) : ($i + 6)) . "-" . $god;
+                            $mmm1 = $god . "-" . (($i == 3) ? "0" . ($i + 6) : ($i + 6)) . "-01";
+                            $m2 = "30-" . (($i == 3) ? "0" . ($i + 6) : ($i + 6)) . "-" . $god;
+                            $mmm2 = $god . "-" . (($i == 3) ? "0" . ($i + 6) : ($i + 6)) . "-30";
+                        }
+                    }
+                $m1_vkupno = "01-07-" . $god;
+                $m2_vkupno = "31-12-" . $god;
+                $mmm1_vkupno = $god . "-07-01";
+                $mmm2_vkupno = $god . "-12-31";
+            }
+        $m = array("m1" => $m1, "m2" => $m2, "m1_vkupno" => $m1_vkupno, "m2_vkupno" => $m2_vkupno, "mmm1_vkupno" => $mmm1_vkupno, "mmm2_vkupno" => $mmm2_vkupno, "mmm1" => $mmm1, "mmm2" => $mmm2);
+        return $m;
+    }
+
+    ////////////////vkuno po mesec
+
+    public function pacienti_po_mesec($func_get_datum,$i,$m,&$broj,&$broj_vk,$f_arg="")
+    {
+        $pacienti= $this->$func_get_datum($f_arg);
+        foreach ($pacienti as $pacient) {
+            $temp = strtotime($pacient->priem_datum);
+//            if($temp = strtotime($pacient->priem_datum)){}
+//            else {$temp = strtotime($pacient->primen_datum);}
+            if ($temp > strtotime($m["m1"]) && $temp < strtotime($m["m2"])) {
+                $broj = $broj + 1;
+            }
+            if ($i == 1) {
+                if ($temp > strtotime($m["m1_vkupno"]) && $temp < strtotime($m["m2_vkupno"])) {
+                    $broj_vk++;
+                }
+            }
+        }
+    }
+
+    public function grupa_na_podatoci_opsto($datum)
+    {
+        $grupa_podatoci = array();
+        $result = $this->vraka_god_i_polovina($datum);
+        $god = $result[0];
+        $polovina = $result[1];
+        $nacin = $result[2];
+        $variables=array(
+                        "broj",
+                        "broj_osigureni",
+                        "broj_privatni",
+                        "broj_privatni",
+                        "broj_MZ",
+                        "broj_so_interklinicki",
+                        "broj_bez_upat",
+                        "broj_vo_stacionar",
+                        "broj_vo_stacionar_osigurenici",
+                        "broj_vo_stacionar_privatni",
+                        "broj_vo_stacionar_MZ",
+                        "broj_vo_stacionar_interklinicki",
+                        "broj_vo_stacionar_bez_upat",
+                        "broj_na_ispisani",
+                        "broj_na_ispisani_osigurenici",
+                        "broj_na_ispisani_privatni",
+                        "broj_na_ispisani_MZ",
+                        "broj_na_ispisani_so_interklinicki",
+                        "broj_na_ispisani_bez_dokumenti",
+                        "broj_eho_pregledi",
+                        "broj_deksa_pregledi",
+                        "broj_rtg",
+                        "broj_dnevna_bolnica",
+                        "broj_interklinicki_upati",
+                        "broj_interbolnicki_upati",
+                        "broj_lekuvani_vo_karil"
+                    );
+        foreach($variables as $var){
+            ${$var."_vk"}=0;
+        }
+
+        for ($i = 1; $i <= 6; $i++) {
+
+            $pole = array();
+
+            foreach($variables as $var){
+                ${$var}=0;
+            }
+
+            $m = $this->vraka_stringdatumi_m($god, $polovina, $i);
+
+            // $this->pacienti_po_mesec   dava vrednost na variablite sto se vneseni kako 4 i 5 argument
+            $this->pacienti_po_mesec("zemi_datum",$i,$m,$broj,$broj_vk);
+            $this->pacienti_po_mesec("zemi_datum_osigureni",$i,$m,$broj_osigureni,$broj_osigureni_vk);
+            $this->pacienti_po_mesec("zemi_datum_privatni",$i,$m,$broj_privatni,$broj_privatni_vk);
+            $this->pacienti_po_mesec("zemi_datum_MZ",$i,$m,$broj_MZ,$broj_MZ_vk);
+            $this->pacienti_po_mesec("zemi_datum_so_interklinicki",$i,$m,$broj_so_interklinicki,$broj_so_interklinicki_vk);
+            $this->pacienti_po_mesec("zemi_datum_bez_upat",$i,$m,$broj_bez_upat,$broj_bez_upat_vk);
+            $this->pacienti_po_mesec("zemi_datum_primeni_stacionar",$i,$m,$broj_vo_stacionar,$broj_vo_stacionar_vk);
+            $this->pacienti_po_mesec("zemi_datum_primeni_stacionar_osigurenici",$i,$m,$broj_vo_stacionar_osigurenici,$broj_vo_stacionar_osigurenici_vk);
+            $this->pacienti_po_mesec("zemi_datum_primeni_stacionar_privatni",$i,$m,$broj_vo_stacionar_privatni,$broj_vo_stacionar_privatni_vk);
+            $this->pacienti_po_mesec("zemi_datum_primeni_stacionar_MZ",$i,$m,$broj_vo_stacionar_MZ,$broj_vo_stacionar_MZ_vk);
+            $this->pacienti_po_mesec("zemi_datum_primeni_stacionar_so_interklinicki",$i,$m,$broj_vo_stacionar_interklinicki,$broj_vo_stacionar_interklinicki_vk);
+            $this->pacienti_po_mesec("zemi_datum_primeni_stacionar_bez_upat",$i,$m,$broj_vo_stacionar_bez_upat,$broj_vo_stacionar_bez_upat_vk);
+            $this->pacienti_po_mesec("zemi_datum_vkupno_ispisani",$i,$m,$broj_na_ispisani,$broj_na_ispisani_vk);
+            $this->pacienti_po_mesec("zemi_datum_vkupno_ispisani_osigurenici",$i,$m,$broj_na_ispisani_osigurenici,$broj_na_ispisani_osigurenici_vk);
+            $this->pacienti_po_mesec("zemi_datum_vkupno_ispisani_privatni",$i,$m,$broj_na_ispisani_privatni,$broj_na_ispisani_privatni_vk);
+            $this->pacienti_po_mesec("zemi_datum_vkupno_ispisani_MZ",$i,$m,$broj_na_ispisani_MZ,$broj_na_ispisani_MZ_vk);
+            $this->pacienti_po_mesec("zemi_datum_vkupno_ispisani_so_interklinicki",$i,$m,$broj_na_ispisani_so_interklinicki,$broj_na_ispisani_so_interklinicki_vk);
+            $this->pacienti_po_mesec("zemi_datum_vkupno_ispisani_bez_dokumenti",$i,$m,$broj_na_ispisani_bez_dokumenti,$broj_na_ispisani_bez_dokumenti_vk);
+            $this->pacienti_po_mesec("vkupno_eho_pregledi",$i,$m,$broj_eho_pregledi,$broj_eho_pregledi_vk);
+            $this->pacienti_po_mesec("vkupno_deksa_pregledi",$i,$m,$broj_deksa_pregledi,$broj_deksa_pregledi_vk);
+            $this->pacienti_po_mesec("vkupno_rtg_snimanja",$i,$m,$broj_rtg,$broj_rtg_vk);
+            $this->pacienti_po_mesec("zemi_datum_primeni_dnevna_bolnica",$i,$m,$broj_dnevna_bolnica,$broj_dnevna_bolnica_vk);
+            $this->pacienti_po_mesec("vkupno_interklinicki",$i,$m,$broj_interklinicki_upati,$broj_interklinicki_upati_vk);
+            $this->pacienti_po_mesec("vkupno_interbolnicki",$i,$m,$broj_interbolnicki_upati,$broj_interbolnicki_upati_vk);
+            $this->pacienti_po_mesec("zemi_datum_vkupno_lekuvani_zaednicka",$i,$m,$broj_lekuvani_vo_karil,$broj_lekuvani_vo_karil_vk,"array(42)");
+
+            foreach($variables as $var){
+                $pole[ $var . '_' . $i] = ${$var};
+            }
+            $pole['dop_dejnost_' . $i] = 0;
+            $pole['dop_dejnost_privatni_' . $i] = 0;
+            $pole['dop_dejnost_ispisani_' . $i] = 0;
+
+            $grupa_podatoci[$i] = $pole;
+        }
+
+        $pole = array();
+
+        foreach($variables as $var){
+            $pole[ $var . '_7'] = ${$var."_vk"};
+        }
+        $pole['dop_dejnost_7'] = 0;
+        $pole['dop_dejnost_privatni_7'] = 0;
+        $pole['dop_dejnost_ispisani_7'] = 0;
+
+        $grupa_podatoci[7] = $pole;
+
+        return $grupa_podatoci;
+    }
+
+    public function grupa_na_podatoci_TRAUMAORT($datum)
+    {
+        $grupa_podatoci = array();
+        $result = $this->vraka_god_i_polovina($datum);
+        $god = $result[0];
+        $polovina = $result[1];
+        $nacin = $result[2];
+        $variables= array(
+            "broj_a10",
+            "broj_a1",
+            "broj_a5",
+            "broj_a11",
+            "broj_b1",
+            "broj_b4",
+            "broj_v2",
+            "broj_v6",
+            "broj_v7",
+            "broj_v8",
+            "broj_v11",
+            "broj_v13",
+            "broj_v14",
+            "broj_v15",
+            "broj_v16",
+            "broj_v20",
+            "broj_v21",
+            "broj_v22",
+            "broj_v23"
+        );
+
+
+        for ($i = 1; $i <= 6; $i++) {
+
+            $pole = array();
+            $broj_a10 = 0;
+            $broj_a1 = 0;
+            $broj_a5 = 0;
+            $broj_a11 = 0;
+            $broj_b1 = 0;
+            $broj_b4 = 0;
+            $broj_v2 = 0;
+            $broj_v6 = 0;
+            $broj_v7 = 0;
+            $broj_v8 = 0;
+            $broj_v11 = 0;
+            $broj_v13 = 0;
+            $broj_v14 = array();
+            $broj_v15 = array();
+            $broj_v16 = array();
+            $broj_v20 = array();
+            $broj_v21 = array();
+            $broj_v22 = array();
+            $broj_v23 = array();
+
+
+            if ($i == 1) {
+                $broj_to = 0;
+                $broj_a10_to = 0;
+                $broj_a1_to = 0;
+                $broj_a5_to = 0;
+                $broj_a11_to = 0;
+                $broj_b1_to = 0;
+                $broj_b4_to = 0;
+                $broj_v2_to = 0;
+                $broj_v6_to = 0;
+                $broj_v7_to = 0;
+                $broj_v8_to = 0;
+                $broj_v11_to = 0;
+                $broj_v13_to = 0;
+                $broj_v14_to = array();
+                $broj_v15_to = array();
+                $broj_v16_to = array();
+                $broj_v20_to = array();
+                $broj_v21_to = array();
+                $broj_v22_to = array();
+                $broj_v23_to = array();
+
+            }
+            $m = $this->vraka_stringdatumi_m($god, $polovina, $i);
+            $mm1 = strtotime($m["m1"]);
+            $mm2 = strtotime($m["m2"]);
+            $mm1_vkupno = strtotime($m["m1_vkupno"]);
+            $mm2_vkupno = strtotime($m["m2_vkupno"]);
+            $mmm1 = $m["mmm1"];
+            $mmm2 = $m["mmm2"];
+            $mmm1_vkupno = $m["mmm1_vkupno"];
+            $mmm2_vkupno = $m["mmm2_vkupno"];
+            $result_92 = $this->datumi_pregledi_po_paketi_92($mmm1, $mmm2);
+            if ($i == 1) {
+                $result_92_vk = $this->datumi_pregledi_po_paketi_92($mmm1_vkupno, $mm2_vkupno);
+                $result_spec_vk = $this->datumi_pregledi_po_paketi_spec($mmm1_vkupno, $mmm2_vkupno);
+                $result_dnevna_vk = $this->datumi_pregledi_po_paketi_dnevna($mmm1_vkupno, $mmm2_vkupno);
+                $result_dsg_vk = $this->datumi_pregledi_po_paketi_dsg($mmm1_vkupno, $mmm2_vkupno);
+                $broj_v15_to['92'] = $result_92_vk;
+                $broj_v15_to['spec'] = $result_spec_vk;
+                $broj_v15_to['dnevna'] = $result_dnevna_vk;
+                $broj_v15_to['dsg'] = $result_dsg_vk;
+            }
+
+            $result_spec = $this->datumi_pregledi_po_paketi_spec($mmm1, $mmm2);
+            $result_dnevna = $this->datumi_pregledi_po_paketi_dnevna($mmm1, $mmm2);
+            $result_dsg = $this->datumi_pregledi_po_paketi_dsg($mmm1, $mmm2);
+            $broj_v15['92'] = $result_92;
+            $broj_v15['spec'] = $result_spec;
+            $broj_v15['dnevna'] = $result_dnevna;
+            $broj_v15['dsg'] = $result_dsg;
+
+            $this->pacienti_po_mesec("zemi_datum_vkupno_lekuvani_zaednicka",$i,$m,$broj_a1,$broj_a1_to,array(41, 43));
+            $this->pacienti_po_mesec("datumi_priemiso_intklin",$i,$m,$broj_v13,$broj_v13_to);
+            $this->pacienti_po_mesec("zemi_datumi_upati_do_druga_ZU_zaednicka",$i,$m,$broj_a5,$broj_a5_to,array(41, 43));
+//            $this->pacienti_po_mesec("intenzivna_traum_ort_paketi",$i,$m,$broj_v2,$broj_v2_to);
+//            $this->pacienti_po_mesec("intenzivna_traum_ort_paketi2",$i,$m,$broj_v2,$broj_v2_to);
+            $this->pacienti_po_mesec("datumi_dekubitalni_rani_zaednicka",$i,$m,$broj_v6,$broj_v6_to,array(41, 43));
+            $this->pacienti_po_mesec("datumi_komplik_od_anest_zaednicka",$i,$m,$broj_v7,$broj_v7_to,array(41, 43));
+            $this->pacienti_po_mesec("datumi_urinaren_kateter_zaednicka",$i,$m,$broj_v8,$broj_v8_to,array(41, 43));
+            $this->pacienti_po_mesec("datumi_inf_urinar_zaednicka",$i,$m,$broj_v8,$broj_v8_to,array(41, 43));
+            $this->pacienti_po_mesec("datumi_kompl_emboli",$i,$m,$broj_v11,$broj_v11_to);
+            foreach ($this->zemi_datum_zatvoranje_otpusna_za_ispisani_zaednicka(array(41, 43)) as $row) {
+                $tmp1 = strtotime($row->priem_datum);
+                $tmp2 = strtotime($row->datum_na_ispis);
+                if ($tmp1 < $tmp2) {
+                    if ($tmp2 >= $mm1 && $tmp2 <= $mm2) {
+                        $broj_a10++;
+                    }
+                    if ($i == 1) {
+                        if ($tmp2 >= $mm1_vkupno && $tmp2 <= $mm2_vkupno) {
+                            $broj_a10_to++;
+                        }
+                    }
+                }
+            }
+            foreach ($this->zemi_datum_med_sestri_zaednicka(array(41, 43)) as $row) {
+                $tmp1 = strtotime($row->pocetok_raboten_odnos);
+                $tmp2 = strtotime($row->kraj_raboten_odnos);
+                if ($tmp1 <= $mm1 && $tmp2 >= $mm2) {
+                    $broj_a11++;
+                }
+                if ($i == 1) {
+                    if ($tmp1 <= $mm1_vkupno && $tmp2 >= $mm2_vkupno) {
+                        $broj_a11_to++;
+                    }
+                }
+            }
+            foreach ($this->datum_umreni_pacienti48_zaednicka(array(41, 43)) as $row) {
+                $tmp1 = strtotime($row->priem_datum);
+                if ($tmp1 >= $mm1 && $tmp1 <= $mm2) {
+                    $datum = $row->priem_datum;
+                    $vreme = $row->priem_vreme;
+                    $datum1 = $row->data_smrt;
+                    $vreme1 = $row->cas_smrt;
+                    if ($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $broj_b1++;
+                }
+                if ($i == 1) {
+                    if ($tmp1 >= $mm1_vkupno && $tmp1 <= $mm2_vkupno) {
+                        $datum = $row->priem_datum;
+                        $vreme = $row->priem_vreme;
+                        $datum1 = $row->data_smrt;
+                        $vreme1 = $row->cas_smrt;
+                        if ($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $broj_b1_to++;
+                    }
+                }
+            }
+            foreach ($this->datum_obdukcija_zaednicka(array(41, 43)) as $row) {
+                $tmp1 = strtotime($row->obdukcija_datum);
+                if ($tmp1 >= $mm1 && $tmp1 <= $mm2) {
+                    $broj_b4++;
+                }
+                if ($i == 1) {
+                    if ($tmp1 >= $mm1_vkupno && $tmp1 <= $mm2_vkupno) {
+                        $broj_b4_to++;
+                    }
+                }
+            }
+            foreach ($this->intenzivna_traum_ort_paketi() as $row) {
+                $tmp1 = strtotime($row->primen_datum);
+                if ($tmp1 >= $mm1 && $tmp1 <= $mm2) {
+                    $broj_v2++;
+                }
+                if ($i == 1) {
+                    if ($tmp1 >= $mm1_vkupno && $tmp1 <= $mm2_vkupno) {
+                        $broj_v2_to++;
+                    }
+                }
+            }
+            foreach ($this->intenzivna_traum_ort_paketi2() as $row) {
+                $tmp11 = strtotime($row->primen_datum);
+                if ($tmp11 >= $mm1 && $tmp11 <= $mm2) {
+                    $broj_v2++;
+                }
+                if ($i == 1) {
+                    if ($tmp11 >= $mm1_vkupno && $tmp11 <= $mm2_vkupno) {
+                        $broj_v2_to++;
+                    }
+                }
+            }
+
+            $count_niza = array();
+            $id_lekari = array();
+            foreach ($this->datumi_pregledi_po_lekar() as $row) {
+                $tmp1 = strtotime($row->primen_datum);
+                if ($tmp1 >= $mm1 && $tmp1 <= $mm2) {
+                    $id_lekari[0][] = $row->za_doktor_id;
+                    $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                    // za 1 slucaj
+                    $niza_ids = array();
+                    $niza_ids[0] = $id_lekari[0][0];
+                    $count_niza[0][0] = 1;
+                    $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                    for ($a = 0; $a < count($id_lekari[0]); $a++) {
+                        if (in_array($id_lekari[0][$a], $niza_ids)) {
+                            continue;
+                        }
+                        $niza_ids[] = $id_lekari[0][$a];
+                        $count_niza[0][$a] = 1;
+                        $count_niza[1][$a] = $id_lekari[1][$a];
+                        for ($b = $a + 1; $b < count($id_lekari[0]); $b++) {
+                            if ($id_lekari[0][$b] == $id_lekari[0][$a])
+                                $count_niza[0][$a]++;
+                        }
+                    }
+                }
+            }
+            $broj_v14 = $count_niza;
+if($i == 1){
+            $count_niza = array();
+            $id_lekari = array();
+            foreach ($this->datumi_pregledi_po_lekar() as $row) {
+                $tmp1 = strtotime($row->primen_datum);
+                if ($tmp1 >= $mm1_vkupno && $tmp1 <= $mm2_vkupno) {
+                    $id_lekari[0][] = $row->za_doktor_id;
+                    $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                    // za 1 slucaj
+                    $niza_ids = array();
+                    $niza_ids[0] = $id_lekari[0][0];
+                    $count_niza[0][0] = 1;
+                    $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                    for ($a = 0; $a < count($id_lekari[0]); $a++) {
+                        if (in_array($id_lekari[0][$a], $niza_ids)) {
+                            continue;
+                        }
+                        $niza_ids[] = $id_lekari[0][$a];
+                        $count_niza[0][$a] = 1;
+                        $count_niza[1][$a] = $id_lekari[1][$a];
+                        for ($b = $a + 1; $b < count($id_lekari[0]); $b++) {
+                            if ($id_lekari[0][$b] == $id_lekari[0][$a])
+                                $count_niza[0][$a]++;
+                        }
+                    }
+                }
+            }
+            $broj_v14_to = $count_niza;
+        }
+            $count_niza = array();
+            $id_lekari = array();
+            foreach ($this->datumi_priemi_po_mesec() as $row) {
+                $tmp1 = strtotime($row->priem_datum);
+                if ($tmp1 >= $mm1 && $tmp1 <= $mm2) {
+                    $id_lekari[0][] = $row->za_doktor_id;
+                    $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                    // za 1 slucaj
+                    $niza_ids = array();
+                    $niza_ids[0] = $id_lekari[0][0];
+                    $count_niza[0][0] = 1;
+                    $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                    for ($a = 0; $a < count($id_lekari[0]); $a++) {
+                        if (in_array($id_lekari[0][$a], $niza_ids)) {
+                            continue;
+                        }
+                        $niza_ids[] = $id_lekari[0][$a];
+                        $count_niza[0][$a] = 1;
+                        $count_niza[1][$a] = $id_lekari[1][$a];
+                        for ($b = $a + 1; $b < count($id_lekari[0]); $b++) {
+                            if ($id_lekari[0][$b] == $id_lekari[0][$a])
+                                $count_niza[0][$a]++;
+                        }
+                    }
+                }
+
+            }
+            $broj_v16 = $count_niza;
+               if($i == 1){
+                $count_niza = array();
+                $id_lekari = array();
+                   foreach($this->datumi_priemi_po_mesec() as $row){
+                       $tmp1 = strtotime($row->priem_datum);
+                       if ($tmp1 >= $mm1_vkupno && $tmp1 <= $mm2_vkupno) {
+                           $id_lekari[0][] = $row->za_doktor_id;
+                           $id_lekari[1][] = "д-р." . $row->ime . " " . $row->prezime . " (" . $row->faksimil . ")";
+
+                           // za 1 slucaj
+                           $niza_ids = array();
+                           $niza_ids[0] = $id_lekari[0][0];
+                           $count_niza[0][0] = 1;
+                           $count_niza[1][0] = $id_lekari[1][0];
+
+//za site ostanati
+                           for ($a = 0; $a < count($id_lekari[0]); $a++) {
+                               if (in_array($id_lekari[0][$a], $niza_ids)) {
+                                   continue;
+                               }
+                               $niza_ids[] = $id_lekari[0][$a];
+                               $count_niza[0][$a] = 1;
+                               $count_niza[1][$a] = $id_lekari[1][$a];
+                               for ($b = $a + 1; $b < count($id_lekari[0]); $b++) {
+                                   if ($id_lekari[0][$b] == $id_lekari[0][$a])
+                                       $count_niza[0][$a]++;
+                               }
+                           }
+                       }
+                   }
+                $broj_v16_to = $count_niza;
+            }
+
+            $count_niza = array();
+            $res_dijag = $this->datumi_pregledi_po_dijagnozi($mmm1, $mmm2);
+            $count_niza['dijagnoza'] = $res_dijag;
+            $broj_v20 = $count_niza;
+            if ($i == 1) {
+                $count_niza = array();
+                $res_dijag = $this->datumi_pregledi_po_dijagnozi($mmm1_vkupno, $mmm2_vkupno);
+                $count_niza['dijagnoza'] = $res_dijag;
+                $broj_v20_to = $count_niza;
+            }
+
+            $count_niza = array();
+            $res_dijag = $this->datumi_pregledi_po_grupni_dijag($mmm1, $mmm2);
+            $count_niza['dijagnoza'] = $res_dijag;
+            $broj_v21 = $count_niza;
+            if ($i == 1) {
+                $count_niza = array();
+                $res_dijag = $this->datumi_pregledi_po_grupni_dijag($mmm1_vkupno, $mmm2_vkupno);
+                $count_niza['dijagnoza'] = $res_dijag;
+                $broj_v21_to = $count_niza;
+            }
+            $count_niza = array();
+            $num_uslugi = $this->uslugi_vo_mesec_naplateni($mmm1, $mmm2);
+            $count_niza['num_uslugi'] = $num_uslugi;
+            $broj_v22 = $count_niza;
+            if ($i == 1) {
+                $count_niza = array();
+                $num_uslugi = $this->uslugi_vo_mesec_naplateni($mmm1_vkupno, $mmm2_vkupno);
+                $count_niza['num_uslugi'] = $num_uslugi;
+                $broj_v22_to = $count_niza;
+            }
+            $count_niza = array();
+            $num_mkb10 = $this->MKB10_vo_mesec($mmm1, $mmm2);
+            $count_niza['num_mkb10'] = $num_mkb10;
+            $broj_v23 = $count_niza;
+            if ($i == 1) {
+                $count_niza = array();
+                $num_mkb10 = $this->MKB10_vo_mesec($mmm1_vkupno, $mmm2_vkupno);
+                $count_niza['num_mkb10'] = $num_mkb10;
+                $broj_v23_to = $count_niza;
+            }
+            foreach($variables as $var){
+                $pole[ $var . '_' . $i] = ${$var};
+            }
+           $grupa_podatoci[$i] = $pole;
+        }
+
+        $pole = array();
+        foreach($variables as $var){
+            $pole[ $var . '_7'] = ${$var."_to"};
+        }
+        $grupa_podatoci[7] = $pole;
+
+        return $grupa_podatoci;
+    }
+
+    public function grupa_na_podatoci_KARIL($datum)
+    {
+        $grupa_podatoci = array();
+        $result = $this->vraka_god_i_polovina($datum);
+        $god = $result[0];
+        $polovina = $result[1];
+        $nacin = $result[2];
+        $variables=array(1,6,7,9,12,13,14,18,19,20,21,23,24,25,26,29,30,31,32,33,35,36,37,38);
+        foreach($variables as $var){
+        ${"broj".$var."_vk"}=0;
+        }
+
+        for ($i = 1; $i <= 6; $i++) {
+
+            $pole = array();
+
+            foreach($variables as $var){
+                ${"broj".$var}=0;
+            }
+
+            $m = $this->vraka_stringdatumi_m($god, $polovina, $i);
+            $mm1 = strtotime($m["m1"]);
+            $mm2 = strtotime($m["m2"]);
+            $mm1_vkupno = strtotime($m["m1_vkupno"]);
+            $mm2_vkupno = strtotime($m["m2_vkupno"]);
+
+            $this->pacienti_po_mesec("zemi_datum_vkupno_lekuvani_zaednicka",$i,$m,$broj1,$broj1_vk,array(42));
+            $this->pacienti_po_mesec("datumi_urinaren_kateter_zaednicka",$i,$m,$broj6,$broj6_vk,array(42));
+            $this->pacienti_po_mesec("datumi_inf_urinar_zaednicka",$i,$m,$broj7,$broj7_vk,array(42));
+            $this->pacienti_po_mesec("datumi_dekubitalni_rani_zaednicka",$i,$m,$broj18,$broj18_vk,array(42));
+            $this->pacienti_po_mesec("datumi_komplik_od_anest_zaednicka",$i,$m,$broj19,$broj19_vk,array(42));
+            $this->pacienti_po_mesec("datumi_traheotomija_KARIL",$i,$m,$broj24,$broj24_vk);
+            $this->pacienti_po_mesec("datumi_politrauma_KARIL",$i,$m,$broj25,$broj25_vk);
+            
+            $res0 = $this->zemi_datumi_upati_do_druga_ZU_zaednicka(array(42));
+            if ($res0 != false && is_array($res0)) {
+                foreach ($res0 as $row) {
+                    $tmp = strtotime($row->priem_datum);
+                    if ($tmp >= $mm1 && $tmp <= $mm2) {
+                        $broj9++;
+                    }
+                    if ($i == 1) {
+                        if ($tmp >= $mm1_vkupno && $tmp <= $mm2_vkupno) {
+                            $broj9_vk++;
+                        }
+                    }
+                }
+            }
+            foreach ($this->datum_umreni_KARIL() as $row) {
+                $tmp = strtotime($row->data_smrt);
+                if ($tmp >= $mm1 && $tmp <= $mm2) {
+                    $broj12++;
+                }
+                if ($i == 1) {
+                    if ($tmp >= $mm1_vkupno && $tmp <= $mm2_vkupno) {
+                        $broj12_vk++;
+                    }
+                }
+            }
+            foreach ($this->datum_umreni_pacienti48_zaednicka(array(42)) as $row) {
+                $tmp1 = strtotime($row->priem_datum);
+                if ($tmp1 >= $mm1 && $tmp1 <= $mm2) {
+                    $datum = $row->priem_datum;
+                    $vreme = $row->priem_vreme;
+                    $datum1 = $row->data_smrt;
+                    $vreme1 = $row->cas_smrt;
+                    if ($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $broj13++;
+                }
+                if ($i == 1) {
+                    if ($tmp1 >= $mm1_vkupno && $tmp1 <= $mm2_vkupno) {
+                        $datum = $row->priem_datum;
+                        $vreme = $row->priem_vreme;
+                        $datum1 = $row->data_smrt;
+                        $vreme1 = $row->cas_smrt;
+                        if ($this->dali_smrt_pod48($datum, $vreme, $datum1, $vreme1)) $broj13_vk++;
+                    }
+                }
+            }
+            foreach ($this->datum_obdukcija_zaednicka(array(42)) as $row) {
+                $tmp = strtotime($row->obdukcija_datum);
+                if ($tmp >= $mm1 && $tmp <= $mm2) {
+                    $broj14++;
+                }
+                if ($i == 1) {
+                    if ($tmp >= $mm1_vkupno && $tmp <= $mm2_vkupno) {
+                        $broj14_vk++;
+                    }
+                }
+            }
+
+            $res1 = $this->zemi_datum_zatvoranje_otpusna_za_ispisani_zaednicka(array(42));
+            if ($res1 != false && is_array($res1)) {
+                foreach ($this->zemi_datum_zatvoranje_otpusna_za_ispisani_zaednicka(array(42)) as $row) {
+                    $tmp1 = strtotime($row->priem_datum);
+                    $tmp2 = strtotime($row->datum_na_ispis);
+                    if ($tmp1 < $tmp2) {
+                        if ($tmp2 >= $mm1 && $tmp2 <= $mm2) {
+                            $broj20++;
+                        }
+                    }
+                    if ($i == 1) {
+                        if ($tmp1 < $tmp2) {
+                            if ($tmp2 >= $mm1_vkupno && $tmp2 <= $mm2_vkupno) {
+                                $broj20_vk++;
+                            }
+                        }
+                    }
+                }
+            }
+            foreach ($this->zemi_datum_med_sestri_zaednicka(array(42)) as $row) {
+                $tmp1 = strtotime($row->pocetok_raboten_odnos);
+                $tmp2 = strtotime($row->kraj_raboten_odnos);
+                if ($tmp1 <= $mm1 && $tmp2 >= $mm2) {
+                    $broj21++;
+                }
+                if ($i == 1) {
+                    if ($tmp1 <= $mm1_vkupno && $tmp2 >= $mm2_vkupno) {
+                        $broj21_vk++;
+                    }
+                }
+            }
+            foreach ($this->zemi_datumi_stacionarni30_KARIL() as $row) {
+                $priem_datum = $row->priem_datum;
+                $priem_datum_zavrsen = $row->priem_datum_zavrsen;
+                $tmp_p = strtotime($priem_datum);
+                if ($tmp_p >= $mm1 && $tmp_p <= $mm2) {
+                    if ($this->proveri_datum_zavrsenol_nad30($priem_datum, $priem_datum_zavrsen) == true) {
+                        $broj23++;
+                    }
+                }
+                if ($i == 1) {
+                    if ($tmp_p >= $mm1_vkupno && $tmp_p <= $mm2_vkupno) {
+                        if ($this->proveri_datum_zavrsenol_nad30($priem_datum, $priem_datum_zavrsen) == true) {
+                            $broj23_vk++;
+                        }
+                    }
+                }
+            }
+            $upit = $this->datumi_dijaliza_plazmofereza_KARIL();
+            if ($upit != false && !empty($upit)) {
+                foreach ($upit as $tip_datum) {
+                    foreach ($tip_datum as $row) {
+                        $tmp = strtotime($row->primen_datum);
+                        if ($tmp >= $mm1 && $tmp <= $mm2) {
+                            $broj25++;
+                        }
+                        if ($i == 1) {
+                            if ($tmp >= $mm1_vkupno && $tmp <= $mm2_vkupno) {
+                                $broj25_vk++;
+                            }
+                        }
+                    }
+                }
+            }
+            $upit = $this->datumi_anestez_pregledi_EKG_KARIL();
+            if ($upit != false && !empty($upit)) {
+                foreach ($upit as $row) {
+                    $tmp = strtotime($row->primen_datum);
+                    if ($tmp >= $mm1 && $tmp <= $mm2) {
+                        $broj29++;
+                    }
+                    if ($i == 1) {
+                        if ($tmp >= $mm1_vkupno && $tmp <= $mm2_vkupno) {
+                            $broj29_vk++;
+                        }
+                    }
+                }
+            }
+            $upit = $this->datumi_ambulantni_anestezii_KARIL();
+            if ($upit != false && !empty($upit)) {
+                foreach ($upit as $row) {
+                    $tmp = strtotime($row->primen_datum);
+                    if ($tmp >= $mm1 && $tmp <= $mm2) {
+                        $broj30++;
+                    }
+                    if ($i == 1) {
+                        if ($tmp >= $mm1_vkupno && $tmp <= $mm2_vkupno) {
+                            $broj30_vk++;
+                        }
+                    }
+                }
+            }
+            $upit = $this->datumi_kombinirani_anestezii_KARIL();
+            if ($upit != false && !empty($upit)) {
+                foreach ($upit as $row) {
+                    $tmp = strtotime($row->primen_datum);
+                    if ($tmp >= $mm1 && $tmp <= $mm2) {
+                        $broj37++;
+                    }
+                    if ($i == 1) {
+                        if ($tmp >= $mm1_vkupno && $tmp <= $mm2_vkupno) {
+                            $broj37_vk++;
+                        }
+                    }
+                }
+            }
+            $upit = $this->datumi_regionalni_anestezii_KARIL();
+            if ($upit != false && !empty($upit)) {
+                foreach ($upit as $row) {
+                    $tmp = strtotime($row->primen_datum);
+                    if ($tmp >= $mm1 && $tmp <= $mm2) {
+                        $broj38++;
+                    }
+                    if ($i == 1) {
+                        if ($tmp >= $mm1_vkupno && $tmp <= $mm2_vkupno) {
+                            $broj38_vk++;
+                        }
+                    }
+                }
+            }
+            $upit = $this->datumi_opsta_anestezija_do90min_KARIL();
+            if ($upit != false && !empty($upit)) {
+                foreach ($upit as $row) {
+                    $tmp = strtotime($row->primen_datum);
+                    if ($tmp >= $mm1 && $tmp <= $mm2) {
+                        $broj35++;
+                    }
+                    if ($i == 1) {
+                        if ($tmp >= $mm1_vkupno && $tmp <= $mm2_vkupno) {
+                            $broj35_vk++;
+                        }
+                    }
+                }
+            }
+            $upit = $this->datumi_opsta_anestezija_nad90min_KARIL();
+            if ($upit != false && !empty($upit)) {
+                foreach ($upit as $row) {
+                    $tmp = strtotime($row->primen_datum);
+                    if ($tmp >= $mm1 && $tmp <= $mm2) {
+                        $broj36++;
+                    }
+                    if ($i == 1) {
+                        if ($tmp >= $mm1_vkupno && $tmp <= $mm2_vkupno) {
+                            $broj36_vk++;
+                        }
+                    }
+                }
+            }
+            $upit = $this->datumi_CVK_KARIL();
+            if ($upit != false && !empty($upit)) {
+                foreach ($upit as $row) {
+                    $tmp = strtotime($row->primen_datum);
+                    if ($tmp >= $mm1 && $tmp <= $mm2) {
+                        $broj33++;
+                    }
+                    if ($i == 1) {
+                        if ($tmp >= $mm1_vkupno && $tmp <= $mm2_vkupno) {
+                            $broj33_vk++;
+                        }
+                    }
+                }
+            }
+            $upit = $this->datumi_konzolijarni_pregledi_KARIL();
+            if (is_array($upit)) {
+                foreach ($upit as $tip) {
+                    if ($tip != false && !empty($tip)) {
+                        foreach ($tip as $row) {
+                            $tmp = strtotime($row->primen_datum);
+                            if ($tmp >= $mm1 && $tmp <= $mm2) {
+                                $broj31++;
+                            }
+                            if ($i == 1) {
+                                if ($tmp >= $mm1_vkupno && $tmp <= $mm2_vkupno) {
+                                    $broj31_vk++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            $upit = $this->datumi_konzolijarni_so_intubacija_KARIL();
+            if ($upit != false && !empty($upit)) {
+                foreach ($upit as $row) {
+                    $tmp = strtotime($row->primen_datum);
+                    if ($tmp >= $mm1 && $tmp <= $mm2) {
+                        $broj32++;
+                    }
+                    if ($i == 1) {
+                        if ($tmp >= $mm1_vkupno && $tmp <= $mm2_vkupno) {
+                            $broj32_vk++;
+                        }
+                    }
+                }
+            }
+            if ($upit != false && !empty($upit)) {
+                foreach ($upit as $row) {
+                    $tmp = strtotime($row->primen_datum);
+                    if ($tmp >= $mm1 && $tmp <= $mm2) {
+                        $broj33++;
+                    }
+                    if ($i == 1) {
+                        if ($tmp >= $mm1_vkupno && $tmp <= $mm2_vkupno) {
+                            $broj33_vk++;
+                        }
+                    }
+                }
+            }
+
+            foreach($variables as $var){
+                $pole['broj'.$var.'_'.$i] = ${'broj'.$var};
+            }
+
+            $grupa_podatoci[$i] = $pole;
+        }
+
+        $pole = array();
+
+        foreach($variables as $var){
+            $pole['broj'.$var.'_7'] = ${'broj'.$var."_vk"};
+        }
+
+        $grupa_podatoci[7] = $pole;
+        return $grupa_podatoci;
+    }
+
+    public function grupa_na_podatoci_UC($datum)
+    {
+        $grupa_podatoci = array();
+        $result = $this->vraka_god_i_polovina($datum);
+        $god = $result[0];
+        $polovina = $result[1];
+        $nacin = $result[2];
+        for ($i = 1; $i <= 6; $i++) {
+
+            $pole = array();
+
+            $broj1 = 0;
+            $broj2 = 0;
+            $broj3 = 0;
+            $broj4 = 0;
+
+            if ($i == 1) {
+                $broj1_vk = 0;
+                $broj2_vk = 0;
+                $broj3_vk = 0;
+                $broj4_vk = 0;
+            }
+            $m = $this->vraka_stringdatumi_m($god, $polovina, $i);
+            $mm1 = strtotime($m["m1"]);
+            $mm2 = strtotime($m["m2"]);
+            $mm1_vkupno = strtotime($m["m1_vkupno"]);
+            $mm2_vkupno = strtotime($m["m2_vkupno"]);
+            foreach ($this->zemi_datumi_urgenten_centar_pregledani_za1saat() as $row) {
+                $tmp1 = strtotime($row->priem_datum);
+                if ($tmp1 >= $mm1 && $tmp1 <= $mm2) {
+                    $datum = $row->priem_datum;
+                    $vreme = $row->priem_vreme;
+                    $datum1 = $row->primen_datum;
+                    $vreme1 = $row->primen_vreme;
+                    if ($this->proveri_iten_priem($datum, $vreme, $datum1, $vreme1) == true) {
+                        $broj1++;
+                    }
+                }
+                if ($i == 1) {
+                    if ($tmp1 >= $mm1_vkupno && $tmp1 <= $mm2_vkupno) {
+                        $datum = $row->priem_datum;
+                        $vreme = $row->priem_vreme;
+                        $datum1 = $row->primen_datum;
+                        $vreme1 = $row->primen_vreme;
+                        if ($this->proveri_iten_priem($datum, $vreme, $datum1, $vreme1) == true) {
+                            $broj1_vk++;
+                        }
+                    }
+                }
+            }
+            $pole['broj1_' . $i] = $broj1;
+            $grupa_podatoci[$i] = $pole;
+        }
+
+        $pole = array();
+        $pole['broj1_7'] = $broj1_vk;
+        $grupa_podatoci[7] = $pole;
+        return $grupa_podatoci;
+    }
+
+    public function vrati_gi_site($datum)
+    {
+
+        $query = $this->grupa_na_podatoci_opsto($datum);
+        $prenos = array();
+        $q = array();
+        if (!empty($query)) {
+            for ($i = 1; $i <= 7; $i++)
+                $q[$i] = $query[$i];
+        }
+        for ($i = 1; $i <= 7; $i++)
+            $prenos[$i] = $q[$i];
+
+        return array("prenos" => $prenos);
+    }
+
+    public function vrati_gi_site_traum_ort($datum)
+    {
+        $query = $this->grupa_na_podatoci_TRAUMAORT($datum);
+        $prenos_traum = array();
+        $t = array();
+        if (!empty($query)) {
+            for ($i = 1; $i <= 7; $i++)
+                $t[$i] = $query[$i];
+        }
+        for ($i = 1; $i <= 7; $i++)
+            $prenos_traum[$i] = $t[$i];
+
+        return array("prenos_traum" => $prenos_traum);
+
+    }
+
+    public function vrati_gi_site_KARIL($datum)
+    {
+        $query = $this->grupa_na_podatoci_KARIL($datum);
+        $prenos_karil = array();
+        if (!empty($query)) {
+            for ($i = 1; $i <= 7; $i++)
+                $k[$i] = $query[$i];
+        }
+        for ($i = 1; $i <= 7; $i++)
+            $prenos_karil[$i] = $k[$i];
+        return array("prenos_karil" => $prenos_karil);
+    }
+
+    public function vrati_gi_site_UC($datum)
+    {
+        $prenos_uc = array();
+        $query = $this->grupa_na_podatoci_UC($datum);
+        if (!empty($query)) {
+            for ($i = 1; $i <= 7; $i++)
+                $uc[$i] = $query[$i];
+        }
+        for ($i = 1; $i <= 7; $i++)
+            $prenos_uc[$i] = $uc[$i];
+        return array("prenos_uc" => $prenos_uc);
+    }
+
+    ///////////////////TRAUMATOLOGIJA I ORTOPEDIJA POCNUVAT OD TUKA
+    function zemi_datum_zatvoranje_priem_za_ispisanji()
+    {
+
+        $firmi = array(41, 43);
+        $this->db->select("id, priem_datum_zavrsen");
+        $this->db->from("bis_pacienti_priem");
+        $this->db->where_in("firma_id", $firmi);
+        $this->db->where("priem_datum_zavrsen !=", '');
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            return $query->result();
+        } else
+            return false;
+
+    }
+
+    function intenzivna_traum_ort_paketi()
+    {
+        $firmi = array(41, 43);
+        $this->db->select("bis_pregledi_paketi.pregled_id, bis_pacienti_pregledi_dijagnoza.primen_datum");
+        $this->db->from("bis_pregledi_paketi");
+        $this->db->join("bis_pacienti_pregledi_dijagnoza", "bis_pregledi_paketi.pregled_id = bis_pacienti_pregledi_dijagnoza.id", "left");
+        $this->db->join("paketi", "bis_pregledi_paketi.paket_id = paketi.id", "left");
+        $this->db->like("paketi.naziv", "интензивна", "both");
+        $this->db->where_in("bis_pacienti_pregledi_dijagnoza.firma_id", $firmi);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            return $query->result();
+        } else
+            return false;
+    }
+
+    function intenzivna_traum_ort_paketi2()
+    {
+        $firmi = array(41, 43);
+        $this->db->select("bis_pregledi_paketi_2.pregled_id, bis_pacienti_pregledi_dijagnoza.primen_datum");
+        $this->db->from("bis_pregledi_paketi_2");
+        $this->db->join("bis_pacienti_pregledi_dijagnoza", "bis_pregledi_paketi_2.pregled_id = bis_pacienti_pregledi_dijagnoza.id", "left");
+        $this->db->join("paketi", "bis_pregledi_paketi_2.paket_id = paketi.id", "left");
+        $this->db->like("paketi.naziv", "интензивна", "both");
+        $this->db->where_in("bis_pacienti_pregledi_dijagnoza.firma_id", $firmi);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            return $query->result();
+        } else
+            return false;
+    }
+
+    function datumi_kompl_emboli()
+    {
+
+        $this->db->select("pregled_id")->from("bis_pregledi_dijagnoza")->join("bis_mkb_10", "bis_pregledi_dijagnoza.dijagnoza = bis_mkb_10.id", "left");
+        $this->db->where("opis LIKE '%КОМПЛИ%ЕМБОЛИ%'");
+        $this->db->or_where("opis LIKE '%ЕМБОЛИ%КОМПЛИ%'");
+        $query = $this->db->get();
+        $sub_query = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+        $firmi = array(41, 43);
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+
+            return $query1->result();
+        } else {
+
+            return false;
+        }
+    }
+
+    function datumi_priemiso_intklin()
+    {
+        $this->db->select("id, priem_datum, ima_upat")->from("bis_pacienti_priem");
+        $this->db->where("ima_upat", 2);
+        $this->db->where_in("firma_id", array(41, 43));
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            return $query->result();
+        } else
+            return false;
+    }
+
+    function datumi_pregledi_po_lekar()
+    {
+        $firmi = array(41, 43);
+        $this->db->select("primen_datum, za_doktor_id, faksimil, ime, prezime, priem_id");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->join("bis_lekari_site", "bis_pacienti_priem.za_doktor_id = bis_lekari_site.id", "left");
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+
+            return $query->result();
+        } else
+
+            return false;
+    }
+
+    function datumi_priemi_po_mesec()
+    {
+        $firmi = array(41, 43);
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, za_doktor_id, faksimil, ime, prezime");
+        $this->db->from("bis_pacienti_priem");
+        $this->db->join("bis_lekari_site", "bis_pacienti_priem.za_doktor_id = bis_lekari_site.id", "left");
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            // print_r($query->result()); die();
+            return $query->result();
+        } else
+            return false;
+    }
+
+
+    ////---------posebno razlicni so count i primat gi 2 ta datuma u meseco so go nabluduvame
+    function datumi_pregledi_po_paketi_92($datum1 = '2013-05-01', $datum2 = '2013-05-31')
+    {
+        $query = $this->db->query("SELECT COUNT( pregled_id ) as Broj , Paket_Id, paketi.naziv as Naziv, cenovnik FROM (
+
+SELECT pregled_id, bis_pregledi_paketi.paket_id AS Paket_Id, cenovnik, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_paketi
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_paketi.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+AND cenovnik =1
+ORDER BY Paket_Id, cenovnik
+) AS Tbl, paketi
+WHERE Tbl.Paket_Id = paketi.id
+AND (
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' )
+)
+GROUP BY Paket_Id, cenovnik;");
+
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+
+
+        } else
+
+            return false;
+    }
+
+    function datumi_pregledi_po_paketi_dsg($datum1 = '2013-05-01', $datum2 = '2013-05-31')
+    {
+
+        $query = $this->db->query("(SELECT COUNT( pregled_id ) as Broj , Paket_Id, dsg_uslugi.naziv as Naziv, cenovnik
+FROM (
+
+SELECT pregled_id, bis_pregledi_paketi.paket_id AS Paket_Id, cenovnik, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_paketi
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_paketi.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+AND cenovnik =2
+ORDER BY Paket_Id, cenovnik
+) AS Tbl, dsg_uslugi
+WHERE Tbl.Paket_Id = dsg_uslugi.id
+AND (
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' )
+)
+GROUP BY Paket_Id, cenovnik)");
+
+
+        if ($query->num_rows > 0) {
+            //print_r($query->result()); die();
+            return $query->result();
+        } else
+            //   print_r("false"); die();
+            return false;
+    }
+
+    function datumi_pregledi_po_paketi_spec($datum1 = '2013-05-01', $datum2 = '2013-05-31')
+    {
+
+        $query = $this->db->query("(SELECT COUNT( pregled_id ) as Broj, Paket_Id, spec_kon_prev_zz.naziv as Naziv, cenovnik
+FROM (
+
+SELECT pregled_id, bis_pregledi_paketi.paket_id AS Paket_Id, cenovnik, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_paketi
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_paketi.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+AND cenovnik =4
+ORDER BY Paket_Id, cenovnik
+) AS Tbl, spec_kon_prev_zz
+WHERE Tbl.Paket_Id = spec_kon_prev_zz.id
+AND (
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' )
+)
+GROUP BY Paket_Id, cenovnik)");
+
+        if ($query->num_rows > 0) {
+            // print_r($query->result()); die();
+            return $query->result();
+        } else
+            // print_r("false"); die();
+            return false;
+    }
+
+    function datumi_pregledi_po_paketi_dnevna($datum1 = '2013-05-01', $datum2 = '2013-05-31')
+    {
+
+        $query = $this->db->query("(SELECT COUNT( pregled_id ) as Broj, Paket_Id, dnevnaBol_uslugi.naziv as Naziv, cenovnik
+FROM (
+
+SELECT pregled_id, bis_pregledi_paketi.paket_id AS Paket_Id, cenovnik, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_paketi
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_paketi.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+AND cenovnik =3
+ORDER BY Paket_Id, cenovnik
+) AS Tbl, dnevnaBol_uslugi
+WHERE Tbl.Paket_Id = dnevnaBol_uslugi.id
+AND (
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' )
+)
+GROUP BY Paket_Id, cenovnik)");
+
+        if ($query->num_rows > 0) {
+            //print_r($query->result()); die();
+            return $query->result();
+        } else
+            //print_r("false"); die();
+            return false;
+    }
+
+    function datumi_pregledi_po_dijagnozi($datum1 = '2013-05-01', $datum2 = '2013-05-31')
+    {
+        $query = $this->db->query("SELECT COUNT( pregled_id ) as Broj , Dijagnoza, bis_mkb_10.opis as Naziv FROM (
+
+SELECT pregled_id, bis_pregledi_dijagnoza.dijagnoza AS Dijagnoza, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_dijagnoza
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_dijagnoza.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+
+ORDER BY Dijagnoza
+) AS Tbl, bis_mkb_10
+WHERE Tbl.Dijagnoza = bis_mkb_10.id
+AND (
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' )
+)
+GROUP BY Dijagnoza;");
+
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+
+
+        } else
+
+            return false;
+    }
+
+    function datumi_pregledi_po_grupni_dijag($datum1 = '2013-05-01', $datum2 = '2013-05-31')
+    {
+        $query = $this->db->query("SELECT COUNT( pregled_id ) as Broj , bis_mkb_10.glavna_dijagnosticka_kategorija as grupna_dija FROM (
+
+SELECT pregled_id, bis_pregledi_dijagnoza.dijagnoza AS Dijagnoza, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_dijagnoza
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_dijagnoza.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+
+ORDER BY Dijagnoza
+) AS Tbl, bis_mkb_10
+WHERE Tbl.Dijagnoza = bis_mkb_10.id
+AND (
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' )
+)
+GROUP BY bis_mkb_10.glavna_dijagnosticka_kategorija;");
+
+
+        if ($query->num_rows > 0) {
+
+            return $query->result();
+
+
+        } else
+
+            return false;
+    }
+
+    function uslugi_vo_mesec_naplateni($datum1 = '2013-05-01', $datum2 = '2013-05-31')
+    {
+
+        $query = $this->db->query("(SELECT COUNT( Paket_Id ) as num_uslugi
+FROM (
+
+SELECT pregled_id, bis_pregledi_paketi.paket_id AS Paket_Id, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_paketi
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_paketi.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+ORDER BY Paket_Id
+) AS Tbl
+WHERE
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' )
+)"
+        );
+
+        if ($query->num_rows > 0) {
+            $result = $query->result();
+            return $result[0];
+        } else
+
+            return false;
+    }
+
+    function MKB10_vo_mesec($datum1 = '2013-05-01', $datum2 = '2013-05-31')
+    {
+
+        $query = $this->db->query("(SELECT COUNT( Dijagnoza ) as num_mkb10  FROM (
+
+SELECT bis_pregledi_dijagnoza.dijagnoza AS Dijagnoza, STR_TO_DATE( primen_datum, '%d-%m-%Y' ) AS Datum_Priman
+FROM bis_pregledi_dijagnoza
+LEFT JOIN bis_pacienti_pregledi_dijagnoza ON bis_pregledi_dijagnoza.pregled_id = bis_pacienti_pregledi_dijagnoza.id
+LEFT JOIN bis_pacienti_priem ON bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id
+WHERE bis_pacienti_priem.firma_id
+IN ( 41, 43 )
+
+ORDER BY Dijagnoza
+) AS Tbl
+WHERE
+Tbl.Datum_Priman >= DATE( '$datum1' )
+AND Tbl.Datum_Priman <= DATE( '$datum2' ))");
+
+        if ($query->num_rows > 0) {
+
+            $result = $query->result();
+
+            return $result[0];
+        } else
+
+            return false;
+    }
+
+    ///////////////////////////////// KARIL POCNUVAT OD TUKA
+    function datumi_traheotomija_KARIL()
+    {
+
+        $this->db->select("pregled_id")->from("bis_pregledi_dijagnoza")->join("bis_mkb_10", "bis_pregledi_dijagnoza.dijagnoza = bis_mkb_10.id", "left");
+        $this->db->where("opis LIKE '%трахео%'");
+        $query = $this->db->get();
+        $sub_query = array();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+
+
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where("bis_pacienti_priem.firma_id", 42);
+        if (!empty($sub_query)) {
+            $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        }
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+
+            return $query1->result();
+        } else {
+
+            return false;
+        }
+    }
+
+    function datumi_politrauma_KARIL()
+    {
+
+        $this->db->select("pregled_id")->from("bis_pregledi_dijagnoza")->join("bis_mkb_10", "bis_pregledi_dijagnoza.dijagnoza = bis_mkb_10.id", "left");
+        $this->db->where("opis LIKE '%политраума%'");
+        $query = $this->db->get();
+        $sub_query = array();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+
+        $firmi = array(42);
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        if (!empty($sub_query)) {
+            $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        }
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+
+            return $query1->result();
+        } else {
+
+            return false;
+        }
+    }
+
+    function datumi_dijaliza_plazmofereza_KARIL()
+    {
+
+        $this->db->select("pregled_id")->from("bis_pregledi_dijagnoza")->join("bis_mkb_10", "bis_pregledi_dijagnoza.dijagnoza = bis_mkb_10.id", "left");
+        $this->db->where("opis LIKE '%дијализа%'");
+        $query = $this->db->get();
+        $sub_query = array();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+
+        $firmi = array(42);
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        if (!empty($sub_query)) {
+            $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        }
+
+        $this->db->where_in("bis_pacienti_priem.firma_id", $firmi);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+
+            $result1 = $query1->result();
+        }
+
+        $query1->free_result();
+
+        $this->db->select("pregled_id")->from("bis_pregledi_paketi")->join("spec_kon_prev_zz", "bis_pregledi_paketi.paket_id = spec_kon_prev_zz.id", "left");
+        $this->db->where("naziv LIKE '%плазмоф%'");
+        $this->db->or_where("naziv LIKE '%дијализа%'");
+        $query = $this->db->get();
+        $sub_query = array();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+
+
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        if (!empty($sub_query)) {
+            $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        }
+
+        $this->db->where("bis_pacienti_priem.firma_id", 42);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+
+            $result2 = $query1->result();
+        }
+        $query1->free_result();
+        $niza = array();
+        $niza['datumiod_dijagnozi'] = $result1;
+        $niza['datumiod_paketi'] = $result2;
+        if (!empty($niza)) return $niza;
+        else return false;
+
+    }
+
+    function zemi_datumi_stacionarni30_KARIL()
+    {
+        $this->db->select("id, priem_datum, priem_datum_zavrsen");
+        $this->db->from("bis_pacienti_priem");
+        $this->db->where("firma_id", 42);
+        $this->db->where("pod_oddel", 66);
+        $q = $this->db->get();
+        if ($q->num_rows > 0) {
+            return $q->result();
+        } else
+            return false;
+    }
+
+// za datum zavrseno se zema datumot od zavrsen_priem a ne datumot od otpusna lista
+    function proveri_datum_zavrsenol_nad30($datum_priem, $datum_zavrseno)
+    {
+
+        $datum_plus30 = preg_split('/[-]/', $datum_priem);
+
+        $mesec_int = (int)$datum_plus30[1];
+        $mesec_int_nov = $mesec_int + 1;
+        $datum_plus30[1] = $mesec_int_nov;
+
+        $joined_datum = join("-", $datum_plus30);
+        // $datum_vreme = ($joined_datum . " " . $vreme);
+        $//datum_vreme1 = ($datum1 . " " . $vreme1);
+
+        $joined_datum = strtotime($joined_datum);
+        $datum_zavrseno = strtotime($datum_zavrseno);
+        if ($datum_zavrseno > $joined_datum)
+            return true;
+        else
+            return false;
+    }
+
+    function zemi_datum_zatvoranje_priem_za_ispisanji_KARIL()
+    {
+
+        $this->db->select("id, priem_datum_zavrsen");
+        $this->db->from("bis_pacienti_priem");
+        $this->db->where("firma_id", 42);
+        $this->db->where("priem_datum_zavrsen !=", '');
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            return $query->result();
+        } else
+            return false;
+
+    }
+
+    function datumi_anestez_pregledi_EKG_KARIL()
+    {
+        $this->db->select("pregled_id")->from("bis_pregledi_paketi")->join("spec_kon_prev_zz", "bis_pregledi_paketi.paket_id = spec_kon_prev_zz.id", "left");
+        $this->db->where("naziv LIKE  '%ЕКГ%'");
+        $this->db->where("cenovnik", 4);
+        $query = $this->db->get();
+        $sub_query = array();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+        $query->free_result();
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        if (!empty($sub_query)) {
+            $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        }
+        $this->db->where("bis_pacienti_priem.firma_id", 42);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+            // print_r($query1->result()); die();
+            return $query1->result();
+        } else {
+            // print_r("false"); die();
+            return false;
+        }
+
+    }
+    function datumi_ambulantni_anestezii_KARIL()
+    {
+        $this->db->select("pregled_id")->from("bis_pregledi_paketi")->join("spec_kon_prev_zz", "bis_pregledi_paketi.paket_id = spec_kon_prev_zz.id", "left");
+        $this->db->where("naziv LIKE  '%амбулант%анестез%'");
+        $this->db->where("cenovnik", 4);
+        $query = $this->db->get();
+        $sub_query = array();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+        $query->free_result();
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        if (!empty($sub_query)) {
+            $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        }
+        $this->db->where("bis_pacienti_priem.firma_id", 42);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+            // print_r($query1->result()); die();
+            return $query1->result();
+        } else {
+            // print_r("false"); die();
+            return false;
+        }
+
+    }
+
+    function datumi_kombinirani_anestezii_KARIL()
+    {
+        $this->db->select("pregled_id")->from("bis_pregledi_paketi")->join("spec_kon_prev_zz", "bis_pregledi_paketi.paket_id = spec_kon_prev_zz.id", "left");
+        $this->db->where("naziv LIKE  '%комбинира%анестез%'");
+        $this->db->where("cenovnik", 4);
+        $query = $this->db->get();
+        $sub_query = array();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+        $query->free_result();
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        if (!empty($sub_query)) {
+            $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        }
+        $this->db->where("bis_pacienti_priem.firma_id", 42);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+            // print_r($query1->result()); die();
+            return $query1->result();
+        } else {
+            // print_r("false"); die();
+            return false;
+        }
+
+    }
+
+    function datumi_regionalni_anestezii_KARIL()
+    {
+        $this->db->select("pregled_id")->from("bis_pregledi_paketi")->join("spec_kon_prev_zz", "bis_pregledi_paketi.paket_id = spec_kon_prev_zz.id", "left");
+        $this->db->where("naziv LIKE  '%региона%анестез%'");
+        $this->db->where("cenovnik", 4);
+        $query = $this->db->get();
+        $sub_query = array();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+        $query->free_result();
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        if (!empty($sub_query)) {
+            $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        }
+        $this->db->where("bis_pacienti_priem.firma_id", 42);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+            // print_r($query1->result()); die();
+            return $query1->result();
+        } else {
+            // print_r("false"); die();
+            return false;
+        }
+
+    }
+
+    function datumi_opsta_anestezija_do90min_KARIL()
+    {
+        $this->db->select("pregled_id")->from("bis_pregledi_paketi")->join("spec_kon_prev_zz", "bis_pregledi_paketi.paket_id = spec_kon_prev_zz.id", "left");
+        $this->db->where("naziv LIKE  '%анестез%до%90%мин%'");
+        $this->db->where("cenovnik", 4);
+        $query = $this->db->get();
+        $sub_query = array();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+        $query->free_result();
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        if (!empty($sub_query)) {
+            $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        }
+        $this->db->where("bis_pacienti_priem.firma_id", 42);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+            // print_r($query1->result()); die();
+            return $query1->result();
+        } else {
+            // print_r("false"); die();
+            return false;
+        }
+
+    }
+
+    function datumi_opsta_anestezija_nad90min_KARIL()
+    {
+        $this->db->select("pregled_id")->from("bis_pregledi_paketi")->join("spec_kon_prev_zz", "bis_pregledi_paketi.paket_id = spec_kon_prev_zz.id", "left");
+        $this->db->where("naziv LIKE  '%анестез%над%90%мин%'");
+        $this->db->where("cenovnik", 4);
+        $query = $this->db->get();
+        $sub_query = array();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+        $query->free_result();
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        if (!empty($sub_query)) {
+            $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        }
+        $this->db->where("bis_pacienti_priem.firma_id", 42);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+            // print_r($query1->result()); die();
+            return $query1->result();
+        } else {
+            // print_r("false"); die();
+            return false;
+        }
+
+    }
+
+    function datumi_CVK_KARIL()
+    {
+        $this->db->select("pregled_id")->from("bis_pregledi_paketi")->join("spec_kon_prev_zz", "bis_pregledi_paketi.paket_id = spec_kon_prev_zz.id", "left");
+        $this->db->where("naziv LIKE '%центр%вен%катет%'");
+        $this->db->where("cenovnik", 4);
+        $query = $this->db->get();
+        $sub_query = array();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+        $query->free_result();
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        if (!empty($sub_query)) {
+            $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        }
+        $this->db->where("bis_pacienti_priem.firma_id", 42);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+            // print_r($query1->result()); die();
+            return $query1->result();
+        } else {
+            // print_r("false"); die();
+            return false;
+        }
+
+    }
+
+    function datumi_konzolijarni_pregledi_KARIL()
+    {
+        $konzolijarni_niza = array();
+        $this->db->select("pregled_id")->from("bis_pregledi_paketi")->join("spec_kon_prev_zz", "bis_pregledi_paketi.paket_id = spec_kon_prev_zz.id", "left");
+        $this->db->where("naziv LIKE '%конз%'");
+        $this->db->where("cenovnik", 4);
+        $query = $this->db->get();
+        $sub_query = array();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+        $query->free_result();
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        if (!empty($sub_query)) {
+            $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        }
+        $this->db->where("bis_pacienti_priem.firma_id", 42);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+
+            $konzolijarni_niza['od_uslugi'] = $query1->result();
+        } else {
+            $konzolijarni_niza['od_uslugi'] = false;
+        }
+        $this->db->select("pregled_id")->from("bis_pregledi_materijali")->join("s1", "bis_pregledi_materijali.artikal_id = s1.SID", "left");
+        $this->db->where("S1Ime LIKE  '%конзил%'");
+        $query = $this->db->get();
+        $sub_query = array();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[] = $row->pregled_id;
+        }
+        $query->free_result();
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        if (!empty($sub_query)) {
+            $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $sub_query);
+        }
+        $this->db->where("bis_pacienti_priem.firma_id", 42);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+
+            $konzolijarni_niza['od_materijali'] = $query1->result();
+        } else {
+            $konzolijarni_niza['od_materijali'] = false;
+        }
+        return $konzolijarni_niza;
+    }
+
+    function datum_umreni_KARIL()
+    {
+        $this->db->select("priem_id, data_na_smrtta as data_smrt");
+        $this->db->from("bis_potvrda_za_smrt");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id = bis_potvrda_za_smrt.priem_id", "left");
+        $this->db->where("firma_id", 42);
+        $query = $this->db->get();
+        $result = $query->result();
+        if ($query->num_rows > 0) {
+            return $result;
+        } else {
+            return 0;
+        }
+    }
+
+    function datumi_konzolijarni_so_intubacija_KARIL()
+    {
+        $this->db->select("pregled_id")->from("bis_pregledi_paketi")->join("dsg_uslugi", "bis_pregledi_paketi.paket_id = dsg_uslugi.id", "left");
+        $this->db->where("naziv LIKE  '%интубац%'");
+        $this->db->where("cenovnik", 2);
+        $this->db->order_by("pregled_id");
+        $query = $this->db->get();
+        $sub_query = array();
+        $i = 0;
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[$i] = $row->pregled_id;
+            $i++;
+        }
+        $query->free_result();
+        $this->db->select("pregled_id")->from("bis_pregledi_paketi")->join("paketi", "bis_pregledi_paketi.paket_id = paketi.id", "left");
+        $this->db->where("naziv LIKE  '%интубац%'");
+        $this->db->where("cenovnik", 1);
+        $this->db->order_by("pregled_id");
+        $query = $this->db->get();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query[$i] = $row->pregled_id;
+            $i++;
+        }
+        $query->free_result();
+
+
+        $this->db->select("pregled_id")->from("bis_pregledi_materijali")->join("s1", "bis_pregledi_materijali.artikal_id = s1.SID", "left");
+        $this->db->where("S1Ime LIKE  '%конзил%'");
+        $this->db->order_by("pregled_id");
+        $query = $this->db->get();
+        $sub_query1 = array();
+        $query1 = array();
+        if ($query->num_rows > 0) {
+            $query1 = $query->result();
+        }
+        foreach ($query1 as $row) {
+            $sub_query1[] = $row->pregled_id;
+        }
+        $query->free_result();
+
+        $res_sub = array();
+        if (!empty($sub_query) && !empty($sub_query1)) {
+            foreach ($sub_query as $val1) {
+                foreach ($sub_query1 as $val2) {
+                    if ($val1 == $val2)
+                        $res_sub[] = $val1;
+                }
+            }
+        }
+
+        $this->db->select("bis_pacienti_priem.id as priem_id, priem_datum, bis_pacienti_pregledi_dijagnoza.id as pregled_id, primen_datum");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        if (!empty($res_sub)) {
+
+            $this->db->where_in("bis_pacienti_pregledi_dijagnoza.id", $res_sub);
+        }
+        $this->db->where("bis_pacienti_priem.firma_id", 42);
+        $query1 = $this->db->get();
+        if ($query1->num_rows > 0) {
+            // print_r($query1->result()); die();
+            return $query1->result();
+        } else {
+            // print_r("false"); die();
+            return false;
+        }
+    }
+
+    //////////////////////  URGENTEN CENTAR
+    function zemi_datumi_urgenten_centar_pregledani_za1saat()
+    {
+        $this->db->select("priem_datum, priem_vreme, primen_datum, primen_vreme");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_pregledi_dijagnoza.priem_id = bis_pacienti_priem.id", "left");
+        $this->db->where("bis_pacienti_priem.firma_id", 44);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            //print_r($query->result()); die();
+            return $query->result();
+        } else
+            return false;
+    }
+
+    function proveri_iten_priem($priem_datum, $priem_vreme, $primen_datum, $primen_vreme)
+    {
+        $datum1 = strtotime($priem_datum);
+        $datum2 = strtotime($primen_datum);
+        //print_r($datum1 . " " . $datum2); die();
+        $priem_vreme_array = array();
+        $priem_vreme_array = preg_split('/[:]/', $priem_vreme);
+        //21,7
+        $cas = (int)$priem_vreme_array[0]; //21
+        if ($cas != 23) $cas++; //22
+        if ($cas == 23) $cas = 0;
+        $priem_vreme_joined = join(":", $priem_vreme_array); // 22:7
+        $primen_vreme1 = strtotime($primen_vreme); //strtotime(21:10) // pomal saat dava pogolem broj
+        $priem_vreme1 = strtotime($priem_vreme_joined); //strtotime(22:7) //poglem saat dava pomal broj
+        if ($datum1 == $datum2) {
+            //print_r($primen_vreme1 . " " . $priem_vreme1); die();
+            if ($primen_vreme1 > $priem_vreme1)
+                return true;
+        } else
+            return false;
+    }
+
+}

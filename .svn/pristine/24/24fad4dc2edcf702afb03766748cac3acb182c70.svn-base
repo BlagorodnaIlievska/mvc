@@ -1,0 +1,61 @@
+<div class="nov-artikl labaratoriski-naod">
+    <form action="/index.php/upati/upati/create_upat" method="post">
+        <input type="hidden" name="priem_id" value="<?php echo $priem_id ?>" />
+        <div class="novupat-levomeni">
+            <div class="lnaod-levomeni">
+            <input type="hidden" name="tip_upat" value="laboratoriski_naod">
+            Назив на здравствена установа<br/>
+            <input type="text" value="ЈЗУ Ургентни Клиники" class="upat" disabled="" /> <br>
+            </div>
+            <div class="lnaod-levomeni">
+            Работна единица - одделение <br/>
+            <input type="text" name="rabotna_edinica_oddelenie" class="upat rabotnaedinica-lnaod" value="<?php echo $this->session->userdata('firma_ime') ?>" readonly=""/> <br/><br/>
+            </div>
+                <div class="lnaod-levomeni">
+            Број на лекарски дневник  <br/>
+            <input type="text" class="upat" value="<?php echo $priem_id ?>" disabled="" />  <br>
+            <br>
+                </div>
+        </div>
+        <div class="novupat-desnomeni">
+
+        </div>
+
+        <div class="novupat-podmeni">
+            <h4 align='center' class="naslovupat">ИЗВЕШТАЈ - ЛАБОРАТОРИСКИ НАОД</h4> <br>
+            <label>Име</label> <input type="text" name="ime" class="upatime"  disabled="" /> <label>Татково име:</label><input type="text" name="tatkovoime" class="upatime" disabled="" />Презиме :</label><input type="text" name="prezime" class="normagin upatime" disabled="" /><br>
+            <label>Број на здр. легитимација:</label><input type="text" style="margin-left: 5px;" name="br_zdravstvena_legitimacija" class="zdrleg" disabled="" /> <br>
+            <label>Единствен матичен број:</label><input type="text" style="margin-left: 22px;" name="embg" class="embg" disabled="" />    <br>
+                <label>Единствен здравствен број на осигуреникот:</label> <input type="text" name="ezbo" class="ezbo" disabled="" />    <br>
+                    <label>е утврден следниот лабораториски наод  :</label> <br>
+            <textarea style="overflow-y:scroll;width:100%;resize: none;margin-bottom:10px;"  name="dijagnoza"></textarea> <br>
+
+            <ul class="datumvrememesto-upat dolno-meni">
+                <li><label>Датум :</label><input type="text" name="datum" class="datum" readonly="" value="<?php echo date("d-m-Y") ?>"/></li>
+                <li class="mesto"><label>Место:</label> <input type="text" name="mesto"/></li>
+                <li><label>Време: </label><input type="text" name="vreme" class="vreme" readonly="" value="<?php echo date("H:i") ?>"/></li>
+            </ul>
+            <label> Потпис и факсимил на лекарот:</label> <input type="text" name="potpis"/>
+        </div>
+        <br/>
+        <div class="addstavka floatright">
+            <?php if($print == 2) { ?>
+            <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_laboratoriski_naod&id=" class="printlink" target="_blank" >
+                <button type="button" class="print"><span>Принт</span></button>
+            </a>
+            <?php } ?>
+            <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_laboratoriski_naod&id=" class="printlinkupati hide" target="_blank" >
+                <button type="button" class="print"><span>Принт</span></button>
+            </a>
+            <button type="button" class="button snimi-forma-upati"  poraka_uspesno="успешно снимен"
+                    poraka_neuspesno="Грешка при снимање" izvrsi="lekuvanja_listasozapisi(lekuvanja_getaktiven_priemid())">
+                <span>Сними</span>
+            </button>
+        </div>
+    </form>
+</div>
+<script>
+    jQuery(document).ready(function(){
+        jQuery('.datum').datepicker({dateFormat:'yy-mm-dd'});
+    });
+</script>

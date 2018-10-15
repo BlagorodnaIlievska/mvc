@@ -1,0 +1,175 @@
+<div id="info_faktura_form">
+    <?php $datum = explode("-", $fzom_faktura['fakturi'][0]->datum); ?>
+    <div class="top-left">
+        Здравствена установа: ЈЗУ ТОАРИЛУЦ<br/>
+        Работна единица: <?= $ustanova->ime ?><br/>
+<!--        Дејност: шифра на дејност од ексел <br/>-->
+        Адреса на клиниката: <br/>
+        Датум <?= $fzom_faktura['fakturi'][0]->datum ?><br/>
+    </div>
+    <div class="top-center">
+        <h1>СПЕЦИФИКАЦИЈА БР 10</h1><br/>
+        Година <?= $datum[2] ?><br/>
+        Месец <?= $datum[1] ?><br/>
+    </div>
+    <div class="top-right">
+        ФЗОМ Скопје<br/>
+    </div>
+    <div class="tabela">
+        <table class="tabela-stavki-popis" border="1" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="rb centar-print">Реден број</th>
+                <th class="sifra-paket centar-print">Шифра на пакет</th>
+                <th class="naziv-paketi centar-print">Назив на пакет</th>
+                <th class="embg centar-print">ЕМБГ</th>
+                <th class="prezime-ime centar-print">Име и презиме на осигуреник</th>
+                <th class="dijagnoza centar-print">МКБ дијагноза</th>
+                <th class="broj-presmetka centar-print">Број на пресметка во дневник</th>
+                <th class="referenten centar-print">Референтна цена</th>
+                <th class="vkupno-presmetena centar-print">Вкупен износ на партиципација</th>
+                <th class="iznos-naplata centar-print">Износ за наплата од ФЗОМ</th>
+            </tr>
+            <tr>
+                <th class="centar-print">1</th>
+                <th class="centar-print">2</th>
+                <th class="centar-print">3</th>
+                <th class="centar-print">4</th>
+                <th class="centar-print">5</th>
+                <th class="centar-print">6</th>
+                <th class="centar-print">7</th>
+                <th class="centar-print">8</th>
+                <th class="centar-print">9</th>
+                <th class="centar-print">10</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $i=0;
+            $vkupen_iznos_izvrseni = 0; $vkupen_iznos_participacija = 0; $vkupen_iznos_naplata =0;
+            foreach ($fzom_faktura['fakturi'] as $faktura) {
+//                bis_debug($faktura);
+                foreach ($faktura->stavki as $stavka) {
+                    $i++;
+                    $vkupen_iznos_izvrseni +=$stavka->cena;
+                    $vkupen_iznos_participacija +=$stavka->iznos_participacija;
+                    $vkupen_iznos_naplata += ($stavka->cena - $stavka->iznos_participacija);
+                    ?>
+                    <tr>
+                        <td class="reden-broj centar-print"><?= $i ?></td>
+                        <td class="sifra-paket centar-print"><?= $stavka->sifra_paket   ?></td>
+                        <td class="naziv-paket"><?= $stavka->stavka   ?></td>
+                        <td class="embg centar-print"><?=$faktura->lekuvanje->embg ?></td>
+                        <td class="pacient"><?=$faktura->lekuvanje->ime ?> <?=$faktura->lekuvanje->prezime ?></td>
+                        <td class="mkb-dijagnoza"><?= (!empty($faktura->dijagnoza)) ? $faktura->dijagnoza->opis : ""; ?></td>
+                        <td class="broj-presmetka desno-print"><?=$faktura->lekuvanje_id ?></td>
+                        <td class="referentna-cena centar-print"><?=$stavka->cena ?></td>
+                        <td class="vkupno-participacija centar-print"><?=$stavka->iznos_participacija ?></td>
+                        <td class="iznos-naplata-fzom centar-print"><?=$stavka->cena-$stavka->iznos_participacija ?></td>
+                    </tr>
+                <?php
+                }
+            }
+            ?>
+            </tbody>
+        </table>
+        <ul class="vkupno-izlez">
+            <li><label>Вкупно услуги по пакети</label>
+                <span class="vkupno-uslugi-po-paketi first"><?= $i ?></span></li>
+            <li><label>Вкупен износ на извршените пакет услуги</label>
+                <span class="vkupen-iznos-izvrseni-paket-uslugi first"><?= $vkupen_iznos_izvrseni ?></span></li>
+            <li><label>Вкупен износ на партиципација</label>
+                <span class="vkupen-iznos-participacija"><?= $vkupen_iznos_participacija ?></span></li>
+            <li><label>Вкупен износ за наплата</label>
+                <span class="vkupen-iznos-za-naplata last"><?= $vkupen_iznos_naplata ?></span></li>
+        </ul>
+    </div>
+    <div class="bottom-left">
+        Пресметал <br/>
+        _____________________
+    </div>
+</div>
+
+<style type="text/css">
+    #info_faktura_form .top-left,
+    #info_faktura_form .top-center {
+        width: 33%;
+        float: left;
+    }
+
+    #info_faktura_form .top-right {
+        width: 33%;
+        float: right;
+    }
+
+    .tabela {
+        margin-top: 150px;
+    }
+
+    table thead th, table tbody td, table tfoot td {
+        overflow: hidden;
+    }
+
+    table {
+        font-size: 9px !important;
+    }
+
+    #info_faktura_form .rb {
+        width: 30px !important;
+    }
+
+    #info_faktura_form .sifra-paket {
+        width: 40px !important;
+    }
+
+    #info_faktura_form .naziv-paketi {
+        width: 150px !important;
+    }
+
+    #info_faktura_form .dijagnoza {
+        width: 80px !important;
+    }
+
+    #info_faktura_form .embg {
+        width: 80px !important;
+    }
+
+    #info_faktura_form .prezime-ime {
+        width: 120px !important;
+    }
+
+    #info_faktura_form .broj-presmetka {
+        width: 20px !important;
+    }
+
+    #info_faktura_form .referenten {
+        width: 50px !important;
+    }
+
+    #info_faktura_form .vkupno-presmetena {
+        width: 50px !important;
+    }
+
+    #info_faktura_form .iznos-naplata {
+        width: 50px !important;
+    }
+
+    .vkupno-izlez li {
+        clear: left;
+        display: block;
+        margin-top: 0 !important;
+        margin-bottom: 1px !important;
+    }
+
+    .vkupno-izlez {
+        margin-top: -10px !important;
+    }
+
+    .vtora thead {
+        visibility: hidden;
+    }
+
+    th {
+        background-color: transparent;
+    }
+</style>

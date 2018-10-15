@@ -1,0 +1,46 @@
+.novazirosmetka label, .novazirosmetka select, .novazirosmetka input {
+    float: left;
+}
+.novazirosmetka input {width: 375px !important;}
+.novazirosmetka {
+    float: left;
+    clear: both;
+}
+
+.novazirosmetka label {
+    width: 190px;
+}
+
+.novazirosmetka select {
+    width: 380px;
+}
+
+.vnesinovakasa label, .vnesinovakasa select, .vnesinovakasa input {
+    float: left;
+    margin-right: 10px;
+}
+
+.vnesinovakasa label {
+    line-height: 2;
+}
+
+.novmagacin {
+    width:auto;
+}
+
+.novmagacin label {
+    float: left;
+    width: 185px;
+    line-height: 2;
+}
+.novmagacin select , .izmenikasa select {width: 395px;margin-bottom: 10px;}
+.novmagacin input {
+    width: 390px;
+    margin-bottom: 10px;
+}
+.novafirma , .novodel , .editfirma {width: 390px;}
+.novafirma input , .novodel input , .izmenikasa input {width: 98%;}
+.novakasa .snimi-forma {margin-top: 10px;}
+.novakasa input , .editfirma input {width: 98%;}
+.kasi-glavnalista .button {margin: 10px 0;}
+.izmenikasa .button {margin-top: 10px;}

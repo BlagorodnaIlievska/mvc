@@ -1,0 +1,168 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Artikl extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+    }
+
+    public function new_artikl()
+    {
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('podatoci/katalog_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $data['katbroj'] = $this->artikl_model->katbroj_dropdown();
+        //$data['proizvoditel'] = $this->artikl_model->proizvoditel_dropdown();
+        $data['edinicamerka'] = $this->artikl_model->edinicamerka_dropdown();
+        $data['konto'] = $this->plan_model->konto_dropdown();
+       // print_r($data['konto']); die();
+        $data['katalogmodel'] = $this->katalog_model;
+        $data['edmerkimodel']= $this->edmerki_model;
+        $data['kontamodel']= $this->plan_model;
+        $this->load->view('podatoci/artikl/nov', $data);
+    }
+
+
+    public function create_artikl()
+    {
+
+        $this->load->model('podatoci/artikl_model');
+        $this->artikl_model->create_artikl();
+        echo "<script>window.close();</script>";
+    }
+    public function getAll(){
+        $this->load->model('podatoci/artikl_model');
+
+        $query = $this->artikl_model->getAll();
+        echo json_encode($query);
+    }
+
+    public function getArtiklByCriteria(){
+        $stavka = $this->input->post("stavka");
+        $katbroj = $this->input->post("katbroj");
+        $this->load->model('podatoci/artikl_model');
+        $query = $this->artikl_model->getArtiklByCriteria($stavka, $katbroj);
+        echo json_encode($query);
+    }
+
+    public function view_artikl()
+    {
+        $this->load->model('podatoci/artikl_model');
+        $query = $this->artikl_model->getAll();
+        //$data['konto'] = $this->artikl_model->grupa_dropdown();
+        //$data['proizvoditel'] = $this->artikl_model->proizvoditel_dropdown();
+        $data['artikl2']=$this->artikl_model->artikl_dropdown();
+        $data['artikl'] = $query;
+        $this->load->view('podatoci/artikl/lista', $data);
+    }
+
+    public function delete_artikl()
+    {
+	    $id=$this->input->get("id");
+        $this->load->model('podatoci/artikl_model');
+        $this->artikl_model->delete_artikl($id);
+	    echo "ok";
+    }
+    public function izmeni()
+    {
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $artikal = $this->artikl_model->edit_artikl($this->input->get("id"));
+        $data['katbroj'] = $this->artikl_model->katbroj_dropdown();
+        //$data['proizvoditel'] = $this->artikl_model->proizvoditel_dropdown();
+        $data['edinicamerka'] = $this->artikl_model->edinicamerka_dropdown();
+        $data['konto'] = $this->plan_model->konto_dropdown();
+		$data['sliki']=$this->artikl_model->getSliki($this->input->get("id"));
+	    $data['dokumenti']=$this->artikl_model->getDokumenti($this->input->get("id"));
+        $data['artikl'] = $artikal;
+        $this->load->view('podatoci/artikl/edit_artikl_form', $data);
+    }
+
+	public function artikli_prikaziartikl()
+	{
+		$this->load->model('podatoci/artikl_model');
+        $this->load->model('finansiski_plan/plan_model');
+		$artikal = $this->artikl_model->edit_artikl($this->input->get("id"));
+		$data['katbroj'] = $this->artikl_model->katbroj_dropdown();
+		$data['proizvoditel'] = $this->artikl_model->proizvoditel_dropdown();
+		$data['edinicamerka'] = $this->artikl_model->edinicamerka_dropdown();
+        $data['konto'] = $this->plan_model->konto_dropdown();
+		$data['sliki']=$this->artikl_model->getSliki($this->input->get("id"));
+		$data['dokumenti']=$this->artikl_model->getDokumenti($this->input->get("id"));
+		$data['artikl'] = $artikal;
+		$this->load->view('podatoci/artikl/artikli_prikaziartikl', $data);
+
+	}
+	public function izbrisidokumentodartikal(){
+		 $this->load->model('podatoci/artikl_model');
+		 $this->artikl_model->izbrisidokumentodartikal($this->input->get("id"),$this->input->get("ime"));
+		 echo "ok";
+	}
+    public function update_artikl()
+    {
+        $this->load->model('podatoci/artikl_model');
+        $this->artikl_model->update_artikl();
+
+	    echo "<script>window.close();</script>";
+    }
+    public function new_katbroj()
+    {
+        $this->load->view('materijalno/vlez_izlez/vlez/new_katbroj_form');
+    }
+
+    public function create_katbroj()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->materijalno_model->create_katbroj();
+    }
+
+    public function new_proizvoditel()
+    {
+        $this->load->view('materijalno/vlez_izlez/vlez/new_proizvoditel_form');
+    }
+
+    public function create_proizvoditel()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->materijalno_model->create_proizvoditel();
+        print_r($this->materijalno_model->proizvoditel_dropdown());
+    }
+    public function getArtikliPoDokument(){
+        $id=$this->input->get("id");
+        $this->load->model('podatoci/artikl_model');
+        $query = $this->artikl_model->getArtikliPoDokument($id);
+        echo json_encode($query);
+
+    }
+    public function pecati_artikli(){
+
+        $this->load->helper('to_pdf');
+
+        $this->load->model('podatoci/artikl_model');
+
+        $q=$this->artikl_model->getAll();
+
+
+        $data['q']=$q;
+        // page info here, db calls, etc.
+        $html = $this->load->view('podatoci/pecatenje/pecati_artikli', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+        //if you want to write it to disk and/or send it as an attachment
+
+    }
+    public function filtriraj_po_artikl(){
+        $artikl=$this->input->post('artikl');
+
+        $this->load->model('podatoci/artikl_model');
+        $query = $this->artikl_model->filtriraj_po_artikl($artikl);
+        //print_r($query); die();
+        echo json_encode($query);
+
+    }
+}

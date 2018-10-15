@@ -1,0 +1,210 @@
+.recepta-leva-kolona{
+    width: 450px;
+    border: 2px solid #000000;
+    float: left;
+    text-align: left;
+    padding-bottom: 5px;
+    font-family: Arial ;
+}
+.recepta-desna-kolona{
+    width: 450px;
+    border: 2px solid #000000;
+    float: right;
+    text-align: left;
+    padding-bottom: 5px;
+    min-height: 500px;
+}
+.div-first-block{
+    padding-left: 5px; padding-right: 5px; margin-top: 5px;
+    background-color: #ffffff;
+    line-height: 1;
+    width: 370px;
+    display: inline-block;
+    height: 55px;
+}
+.recept-text li {list-style: none;}
+.recepta-naslov1{
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.input_linii{
+    border-left: none;
+    border-right: none;
+    border-top: none;
+}
+.recepta-fineprint-border {
+    border: solid 1px #000000;
+    float: right; padding-top: 0px;
+     padding-right: 5px;
+    width: 50px; height: 60px;
+    margin-top: -85px; margin-right: 5px;
+    background-color: #ffffff;
+    display: block !important;
+    clear: both;
+}
+.fzo_podracna {margin-top: 10px !important;}
+.recepta-fineprint-border span {
+    font-size: 9px;
+}
+.sirina_200{
+    width: 200px;
+}
+.sirina_150{
+    width: 150px;
+}
+.sirina_360{
+    width: 360px;
+}
+.sirina_450{
+    width: 450px;
+    height: 25px;
+}
+.sirina_180{
+    width: 180px;
+}
+.sirina_356{
+    width: 356px;
+}
+.sirina_60{
+    width: 60px;
+}
+.left_margin_5{
+    margin-left: 0px;
+}
+.div_tret_del{
+    min-height: 430px; padding-top: 2px;
+}
+.div-preporaka-od{
+    float: right; margin-right: 5px;
+}
+
+.recepta-input-l{
+    font-size: 12px; margin-left: 5px; margin-right: 15px;
+}
+.recepta-labela{ font-size: 12px; margin-left: 5px;}
+.recepta-column-wrapper{width: 100%; margin-top: 15px; }
+.recepta-column-wrapper label sub {font-size: 12px;}
+
+.recepta-column-wrapper input {margin-bottom: 2px; margin-top: 2px;}
+.recepta-column-wrapper #leva-kolona li {clear: both;}
+.recepta-column-wrapper #leva-kolona li input {float: right; margin-right: 10px;}
+.potvrda-smrt-br{border-bottom: 2px solid #000000; width: 90%; margin: 5%;}
+.linija-br{border-bottom: 2px solid #000000; width: 100%;}
+.trw{
+    width: 130px;
+}
+.potpisi{
+
+    padding-top: 20px; padding-bottom: 5px;
+
+}
+.potpisLabela{
+    display: block;
+    width: 120px;
+    text-align: center;
+}
+.potpisLabela1{
+    display: block;
+    width: 155px;
+    text-align: center;
+}
+.potpisVtori{
+    display: block;
+    width: 140px;
+    text-align: center;
+}
+.div_za_potpis{
+    float: right; width: 230px; margin-left: 0px
+}
+.margin-left-15{
+    margin-left:15px;
+}
+.textarea-recepta{
+    margin-left: 5px; margin-right: 5px;white-space: normal;
+}
+.slika_barkod{
+
+     margin-right: 5px; width: 110px;margin-left: 330px;
+}
+.div-datumi-propis{
+    width: 135px; float: left;
+}
+.MP-recepta{
+    width: 30px; float: left;
+}
+.pole-za-lek{
+    font-size: 12px; font-family: Tahoma, Geneva, sans-serif; margin-left: 5px;
+}
+.sirina_90{
+    width: 90px;
+}
+.sirina_130{
+    width: 130px;
+}
+.padding_left_5{
+    padding-left: 5px;
+}
+
+.hidden {display: none;}
+
+.printdisplay {display: none;}
+.printnotdisplay {display: block !important;}
+.leftside-recepti {display: inline-block;width: 220px;margin-left: -30px;margin-top: -10px;}
+.leftside-recepti p {margin:0px !important;text-align: left;}
+.leftside-recepti ul li {list-style: none;}
+
+.leftside-recepti-small {display: inline-block;width:130px;margin-left: -30px;margin-top: -10px;}
+.leftside-recepti-small p {margin:0px !important;text-align: left;}
+.leftside-recepti-small ul li {list-style: none;}
+
+.rightside-recepti-small {display: inline-block;width: 130px;}
+.rightside-recepti-small input {width: 70%;display: block;height: 13px;}
+
+.rightside-recepti {display: inline-block;width: 220px;}
+.rightside-recepti input {width: 70%;display: block;height: 13px;}
+
+.recept-posleden-del-desno {width: 150px;display: inline-block;}
+.recept-posleden-del-levo {width: 200px;display: inline-block;}
+
+.dvaredarecept {line-height: 1;}
+.podatoci-za-nositelot {height: 100px;border-top: 2px solid #000;border-bottom: 2px solid #000;}
+.podatoci-za-nositelot-obicna {height: 130px;border-top: 2px solid #000;border-bottom: 2px solid #000;}
+.nositelosig {margin-left: 5px;margin-top: 0; margin-bottom: 0;}
+.podatoci-za-nositelot .rightside-recepti input {margin-top: 7px !important;}
+.podatoci-za-nositelot-obicna .rightside-recepti input {margin-top: 4px !important;}
+.recept-sredina span input {width: 90px;}
+.rs-preporakaod {margin-left: 10px;}
+.preporaka-specijalist input {width: 20px;display: inline;margin-right: 10px;}
+.recept-sredina {}
+.preporaka-specijalist {margin-left: 100px;margin-top: 0px;}
+.preporaka-specijalist span {margin-right: 10px;}
+.checkbox-recept span {margin-right: 10px;}
+.checkbox-recept span input[type="checkbox"] {display: inline-block;width: 20px !important;}
+.checkbox-recept span input {display: inline-block;width: 200px !important;}
+.checkbox-recept {margin-left: 100px;}
+.nahinput {line-height: 10px;}
+.rp-recepta b {font-size: 20px;margin-left: 10px;color: #015D8B;}
+.slikacontainer {margin: 0px;}
+.recept-poddatumi span {font-size: 12px;}
+.datum-propisuvanje {margin-right: 0;}
+.recept-datumi-inputi span input {width: 100px;margin-right: 0px !important;display: inline-block;}
+.recept-datum1 p {margin: 0 !important;text-align: center;}
+.recept-datum1 {width: 150px;display: inline-block;}
+.recept-datum1 span input {width: 100px;text-align: center;}
+.recept-posleden-del {border-top: 2px solid #000;}
+.pakuvanje2 {margin-top: 25px;}
+.rrs1 {margin-top: 10px;}
+.rrs2 {margin-top: 35px;}
+.rrs3 {margin-top: 20px;}
+.rrs4 {margin-top: 10px;}
+.rrs5 {margin-top: 22px;}
+.rrs6 {margin-top: 30px;}
+.podbarkod {height: 70px;}
+.recept-posleden-del {min-height: 200px;}
+.recept-datum1 p {margin-bottom: 0px !important;font-size: 10px;}
+.text-center {text-align: center;}
+.nahinputdiv {display: inline-block;margin-top: 15px;}
+.br_legitimacija {margin-top: 5px;}
+/*.osnovnaosig {margin-top: 2px;}*/
+/*.recepta-column-wrapper h2 {margin-bottom: 0 !important;padding-bottom: 0 !important;font-size: 13px;text-align: center;color: #000;}*/

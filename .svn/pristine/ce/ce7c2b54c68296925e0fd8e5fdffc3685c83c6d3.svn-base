@@ -1,0 +1,62 @@
+<html>
+<head>
+
+</head>
+<body>
+
+<p align='center'>Pregled na kartica za klient</p>
+Klient : <?  if(isset($q)) echo $q[0]->firmaIme;?>
+<table  border='1'   width='150' height='60' align='center'>
+    <tr>
+
+        <td>No.</td>
+        <td>Tip.</td>
+        <td>Broj</td>
+        <td>Datum</td>
+        <td>Suma</td>
+        <td>Komentar</td>
+
+
+    </tr>
+
+    <?php
+    $reden=1;
+
+    if(isset($q)){
+        foreach($q as $row){
+
+            echo "<tr>" ;
+
+            echo "<td width='20'>" . $reden . "</td>";
+            echo "<td width='100'>" . $row->tip . "</td>";
+            echo "<td width='60'>" .$row->textBroj."</td>";
+            echo "<td width='60'>" .$row->datum."</td>";
+            echo "<td width='60'>" .$row->suma."</td>";
+            echo "<td width='60'>".$row->komentar. "</td>";
+
+
+
+
+            $reden=$reden+1;
+
+
+            echo " </tr>";
+
+        }
+    }
+
+    ?>
+
+</table>
+<br>
+<br>
+<br>
+<!--<p class="doleLevo">
+    <?//echo 'Osnova vkupno  :'.$o;?>
+    <br>
+    <?//echo 'Ddv vkupno :'.$d;?>
+    <br>
+    <? //echo 'Vkupno :'.$v;?>
+</p>-->
+</body>
+</html>

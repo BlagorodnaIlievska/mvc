@@ -1,0 +1,132 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+
+class Vraboten_mesecni_promeni extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function lista()
+    {
+        $this->load->model('plati/mesecni_parametri_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $data['mesec'] = $this->mesecni_parametri_model->mesec_dropdown();
+        $data['oddel'] = $this->covecki_resursi_model->get_oddeli();
+        $this->load->view('plati/vraboteni_mesecni_promeni/lista', $data);
+    }
+
+    public function nov_vraboten_zapis()
+    {
+        $vraboten_id = $this->input->get('vraboten_id');
+        $this->load->model('plati/vraboten_mesecni_promeni_model');
+        $data['vraboten']    = $this->vraboten_mesecni_promeni_model->getVrabotenInfo($vraboten_id);
+        $this->load->view('plati/vraboteni_mesecni_promeni/nov_vraboten_zapis', $data);
+    }
+
+    public function izmeni()
+    {
+        $this->load->model('plati/krediti_model');
+        $this->load->model('plati/vraboten_mesecni_promeni_model');
+        $mesec = $this->input->get("mesec_id");
+        $godina = $this->input->get("godina");
+        $zapis = $this->vraboten_mesecni_promeni_model->getVrabotenZapis($this->input->get("id"), $mesec, $godina);
+        bis_debug($zapis,'zapis');
+       //print_r($zapis); die();
+        $vraboten = $this->vraboten_mesecni_promeni_model->getVrabotenInfo($this->input->get("vraboten_id"));
+
+        $data['vraboten'] = $vraboten;
+        $data['mesec']    = $mesec;
+        $data['godina']    = $godina;
+        $data['zapis']    = $zapis;
+        $data['id']    = $this->input->get("id");
+        $this->load->view('plati/vraboteni_mesecni_promeni/izmeni', $data);
+    }
+
+    public function polnilista()
+    {
+        $mesec = $this->input->get('mesec');
+        $godina = $this->input->get('godina');
+        $this->load->model('plati/vraboten_mesecni_promeni_model');
+        $return = $this->vraboten_mesecni_promeni_model->polniLista($mesec, $godina);
+        echo json_encode($return);
+    }
+
+    public function getVraboteniZapisi()
+    {
+        $mesec = $this->input->get('mesec');
+        $godina = $this->input->get('godina');
+        $this->load->model('plati/vraboten_mesecni_promeni_model');
+        $return = $this->vraboten_mesecni_promeni_model->getVraboteniZapisi($mesec, $godina);
+        echo json_encode($return);
+    }
+
+    public function create_vraboten_zapis()
+    {
+        $this->load->model('plati/vraboten_mesecni_promeni_model');
+        $this->vraboten_mesecni_promeni_model->create_vraboten_zapis();
+        echo "ok";
+    }
+
+    public function update_vraboten_zapis()
+    {
+        $this->load->model('plati/vraboten_mesecni_promeni_model');
+        $this->vraboten_mesecni_promeni_model->update_vraboten_zapis() ;
+        echo 'ok';
+
+    }
+
+    public function delete_vraboten_zapis()
+
+    {
+        $id = $this->input->get("id");
+        $this->load->model('plati/vraboten_mesecni_promeni_model');
+        $this->vraboten_mesecni_promeni_model->delete_vraboten_zapis($id);
+        echo "ok";
+    }
+
+    public function nova_mesecna_presmetka()
+    {
+        $mesec = $this->input->get('mesec');
+        $godina = $this->input->get('godina');
+        $this->load->model('plati/vraboten_mesecni_promeni_model');
+        $return = $this->vraboten_mesecni_promeni_model->nova_mesecna_presmetka($mesec, $godina);
+        echo json_encode($return);
+    }
+
+    public function proveri_mesecna_presmetka()
+
+    {
+        $mesec = $this->input->get('mesec');
+        $godina = $this->input->get('godina');
+        $this->load->model('plati/vraboten_mesecni_promeni_model');
+        $return = $this->vraboten_mesecni_promeni_model->proveri_mesecna_presmetka($mesec, $godina);
+        echo json_encode($return);
+
+    }
+
+    public function getMesecniPromeni()
+    {
+        $mesec = $this->input->get('mesec');
+        $godina = $this->input->get('godina');
+        $ime = $this->input->get('ime');
+        $prezime = $this->input->get('prezime');
+        $oddel = $this->input->get('oddel');
+        $this->load->model('plati/vraboten_mesecni_promeni_model');
+        $return = $this->vraboten_mesecni_promeni_model->getMesecniPromeni($mesec, $godina, $ime, $prezime, $oddel);
+        echo json_encode($return);
+    }
+    public function mesecni_promeni_kaj_vrab()
+    {
+
+        $data=array();
+        $mesec = $this->input->get('mesec');
+        $godina = $this->input->get('godina');
+        $this->load->view('plati/vraboteni_mesecni_promeni/nova_mesecna_presmetka', $data);
+
+
+    }
+}

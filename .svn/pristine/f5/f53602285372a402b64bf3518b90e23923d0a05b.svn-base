@@ -1,0 +1,23 @@
+<div id="raporti_menu_form">
+
+
+    <div id="raporti-meni" class="sub-menu-tabs">
+        <ul>
+            <li><?php echo anchor('materijalno/raporti/materijalno', 'Материјално'); ?></li>
+            <li><?php echo anchor('materijalno/raporti/fakturi', 'Фактури'); ?></li>
+            <li><?php echo anchor('materijalno/raporti/izlezni_fakturi', 'Излезни фактури'); ?></li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.magacinbutton').click(function()
+        {
+            var formaction=jQuery(this).attr('formaction');
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({ autoOpen: true }).load(formaction);
+        });
+    });
+</script>

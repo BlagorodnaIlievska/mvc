@@ -1,0 +1,20 @@
+<div class="upat-glavnalista" xmlns="http://www.w3.org/1999/html">
+<div class="upatiilista">
+    <div class="buttoncontainer">
+        <button class="button" onclick="nov_interklinicki_upat()">Интер-клинички упат</button>
+        <button class="button" onclick="nov_radiodijagnosticki_upat()">Упат за радиодијагностика</button>
+        <button class="button" onclick="nov_radiodijagnosticki_naod()">Радиодијагностички наод</button>
+        <button class="button" onclick="nov_laboratoriski_upat()">Лабораториски упат</button>
+        <button class="button" onclick="nov_laboratoriski_naod()">Лабораториски наод</button>
+        <button class="button" onclick="nov_rezultat_biohemija()">Резултати од биохемиски анализи</button>
+        <button class="button" onclick="nov_bolnicki_upat()">Болнички упат</button>
+        <button class="button" onclick="potvrda_za_smrt()">Потврда за смрт</button>
+        <button class="button" onclick="trebuvanje_za_krv()">Требување за крв и крвни продукти</button>
+        <button class="button" onclick="otpusna_lista()">Отпусна листа</button>
+        <button class="button" onclick="mrtovecka_pridruznica()">Мртовечка придружница</button>
+        <button class="button" onclick="pokana_za_konzilijaren_pregled()">Покана за конзилијарен преглед</button>
+        <button class="button" onclick="obrazecc_nov()">Образец С</button>
+    </div>
+
+</div>
+</div>

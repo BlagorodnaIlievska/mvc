@@ -1,0 +1,336 @@
+@charset "UTF-8";
+
+
+
+
+.novupat-desnomeni {
+    float: right;
+    width: 200px;
+    height: 150px;
+}
+.novupat-levomeni {
+    float: left;
+    height: 150px;
+    width: 600px;
+}
+.novupat-podmeni {
+
+    clear: both;
+    width: 800px;
+}
+.adresaupat { width: 690px; margin-left: 10px; margin-right: 10px;}
+.upat{ width: 200px;}
+.upatime {width: 180px;margin-right: 10px; }
+.zdrleg{ width: 190px;}
+.ezbo{ width: 200px; }
+.podracna { width: 240px; }
+.sifradijagnoza { }
+.osnovosig { width: 60px;}
+.karton { width: 240px;}
+.biohemiski-pregled-levo {float: left;width: 480px;background-color: #FFF; }
+.biohemiski-pregled-desno {float: right;width: 440px;background-color: #FFF;}
+.levo{ float: left; width: 100px;}
+.desno{ float:right; width: 100px;}
+.ogranizaciona{ width: 400px; }
+.klinika{ width: 300px;}
+.datum{  margin-left: 29px;}
+.otsek{ width: 300px; }
+.dijagnozarezultat{ width: 300px;}
+.imerezultat{  margin-left: 15px;}
+
+.bio-info {clear: both;float: left;width: 99%;}
+.input-table-bio tr td input {background-color: #FFF !important;width: 100%;}
+.biohemiski-pregled-levo fieldset input , .biohemiski-pregled-desno fieldset input {margin-bottom: 5px;float: right;}
+.biohemiski-pregled-levo fieldset label , .biohemiski-pregled-desno fieldset label {float: left;line-height: 1.7;}
+.biohemiski-pregled-desno fieldset input {width:320px;}
+.biohemiski-pregled-levo fieldset input {width: 375px;}
+
+
+.potvrda-smrt-container{ text-align: center; width: 1100px;}
+.potvrda-smrt-naslov{ }
+.potvrda-smrt-naslov-levo{float: left; width: 190px;}
+.potvrda-smrt-naslov-sredina{ width: 520px; margin-left: 200px;  }
+.potvrda-smrt-naslov-desno{ float: right; width: 210px; }
+p.potvrda-smrt-fineprint-border {font-size: 8px; border: solid 1px #000000; font-family: inherit;}
+.potvrda-smrt-column-wrapper{width: 100%; margin-top: 25px; }
+.potvrda-smrt-leva-kolona{
+    width: 545px;
+    border: 1px solid #1e7db1;
+    float: left;
+    text-align: left;
+}
+.potvrda-smrt-desna-kolona{
+    width: 545px;
+    border: 1px solid #1e7db1;
+    float: right;
+    text-align: left;
+}
+.potvrda-smrt-labela{ font-size: 12px; font-family: inherit; margin-left: 15px;}
+.potvrda-smrt-labela-vovleceno{font-size: 12px; font-family: inherit; margin-left: 50px;}
+.potvrda-smrt-labela-bold{ font-size: 12px; font-weight: bold; font-family: inherit; margin-left: 15px;}
+.potvrda-smrt-input{  margin-left: 30px;}
+.potvrda-smrt-input-vtoro{  margin-left: 15px;}
+.potvrda-smrt-input-vovleceno{  margin-left: 50px;}
+.potvrda-smrt-br{border-bottom: 1px solid #1e7db1; width: 90%; margin: 5%;}
+.potvrda-smrt-forma
+.actions-potvrda-smrt{float: right; }
+
+
+.trebuvanje-krv-container{ text-align: left; width: 1000px; }
+.trebuvanje-krv-sodrzina-wrapper{text-align: left;  margin-top: 250px; margin-left: 50px; width: 90%; }
+.trebuvanje-krv-heder{text-align: center;}
+.trebuvanje-krv-levo-heder-box{width: 650px; float: left; margin-left: 50px; text-align: left; padding-right: 15px; padding-top: 5px;padding-bottom: 5px; }
+.trebuvanje-krv-desno-heder-box{width: 200px; float: left; margin-left: 20px;  text-align: left; border: 1px solid #1E7DB1; padding-right: 15px; padding-top: 5px;padding-bottom: 5px;}
+.trebuvanje-krv-sredinabox{ border: 1px solid #1E7DB1; width: 90%;margin-left: 5%;}
+.trebuvanje-krv-br{border-bottom: 1px solid #1e7db1; width: 90%; margin: 5%;}
+.trebuvanje-krv-labela{ font-size: 12px; font-family: inherit; margin-left: 15px;}
+.trebuvanje-krv-labela-vovleceno{font-size: 12px; font-family: inherit; margin-left: 50px;}
+.trebuvanje-krv-labela-bold{ font-size: 12px; font-weight: bold; font-family: inherit; margin-left: 15px;}
+.trebuvanje-krv-input{  margin-left: 30px;}
+.trebuvanje-krv-input-vtoro{  margin-left: 15px;}
+.trebuvanje-krv-input-vovleceno{  margin-left: 50px;}
+
+/*za timePicker css START*/
+.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
+.ui-timepicker-div dl dd { margin: 0 10px 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none;  margin: 0; padding: 0; }
+.ui-timepicker-rtl{ direction: rtl; }
+.ui-timepicker-rtl dl { text-align: right; border: 1px solid #1E7DB1; }
+.ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px;border: 1px solid #1E7DB1; }
+/*za timePicker css END*/
+
+
+.otpusna-lista-container{ text-align: left; width: 1000px;}
+.otpusna-lista-heder{text-align: center;}
+.otpusna-lista-leva-kolona{
+    width: 49%;
+    border: none;
+    float: left;
+    text-align: left;
+}
+.otpusna-lista-desna-kolona{
+    width: 49%;
+    border: none;
+    float: right;
+    text-align: left;
+}
+.otpusna-lista-leva-podkolona{
+    clear: left;
+}
+.otpusna-lista-desna-podkolona{
+    width: 69%;
+    border: none;
+    float: right;
+    text-align: left;
+}
+.otpusna-lista-br{border-bottom: 1px solid #1e7db1; width: 90%; margin: 5%;}
+.otpusna-lista-sredinabox{ border: 1px solid #1E7DB1; width: 93%;}
+.otpusna-lista-labela{ font-size: 12px; font-family: inherit; margin-left: 15px;}
+.otpusna-lista-labela-bold{ font-size: 12px; font-weight: bold; font-family: inherit; }
+.otpusna-lista-input-vtoro{  margin-left: 15px;}
+.otpusna-lista-labela-bold {
+    line-height: 26px;
+}
+otpusna-lista-input-vtoro {
+    margin-top: 2px;
+}
+
+
+.mrtovecka-pridruznica-container{ text-align: left; width: 1000px;}
+.mrtovecka-pridruznica-heder{text-align: center;}
+.mrtovecka-pridruznica-leva-kolona{
+    width: 49%;
+    border: none;
+    float: left;
+    text-align: left;
+}
+.mrtovecka-pridruznica-desna-kolona{
+    width: 49%;
+    border: none;
+    float: right;
+    text-align: left;
+}
+.mrtovecka-pridruznica-leva-podkolona{
+    width: 30%;
+    border: none;
+    float: left;
+    text-align: left;
+    line-height: 26px;
+}
+.mrtovecka-pridruznica-desna-podkolona{
+    width: 69%;
+    border: none;
+    float: right;
+    text-align: left;
+}
+.mrtovecka-pridruznica-br{border-bottom: 1px solid #1e7db1; width: 90%; margin: 5%;}
+.mrtovecka-pridruznica-sredinabox{ border: 1px solid #1E7DB1; width: 90%;margin-left: 5%; margin-bottom: 5%; text-align: center;}
+.mrtovecka-pridruznica-labela{ font-size: 12px; font-family: inherit; margin-left: 15px;}
+.mrtovecka-pridruznica-labela-bold{ font-size: 12px; font-weight: bold; font-family: inherit; margin-left: 55px;}
+.mrtovecka-pridruznica-input-vtoro{  margin-left: 15px; width: 250px;}
+
+
+
+
+.pokana_za_konzilijaren_pregled-container{ text-align: left; width: 1000px;}
+.pokana_za_konzilijaren_pregled-heder{text-align: center;}
+.pokana_za_konzilijaren_pregled-leva-kolona{
+    width: 49%;
+    border: none;
+    float: left;
+    text-align: left;
+}
+.pokana_za_konzilijaren_pregled-desna-kolona{
+    width: 49%;
+    border: none;
+    float: right;
+    text-align: left;
+}
+.pokana_za_konzilijaren_pregled-leva-podkolona{
+    width: 30%;
+    border: none;
+    float: left;
+    text-align: left;
+    line-height: 26px;
+}
+.pokana_za_konzilijaren_pregled-desna-podkolona{
+    width: 69%;
+    border: none;
+    float: right;
+    text-align: left;
+}
+
+.spanstil {
+    display: block;
+    overflow: hidden;
+    padding-right:10px;
+}
+.pokana_za_konzilijaren_pregled-br{border-bottom: 1px solid #1e7db1; width: 90%; margin: 5%;}
+.pokana_za_konzilijaren_pregled-sredinabox{ border: 1px solid #1E7DB1; width: 90%;margin-left: 5%; margin-bottom: 5%; text-align: center;}
+.pokana_za_konzilijaren_pregled-labela{ font-size: 12px; font-family: inherit; margin-left: 15px;}
+.pokana_za_konzilijaren_pregled-labela-fs{ font-size: 12px; font-family: inherit; margin-left: 15px; float: left;}
+.pokana_za_konzilijaren_pregled-labela-bold{ font-size: 12px; font-weight: bold; font-family: inherit; margin-left: 55px;}
+.pokana_za_konzilijaren_pregled-input-vtoro{  margin-left: 15px; width: 250px;}
+.pokana_za_konzilijaren_pregled-input-vtoro-fs{  margin-left: 15px; width: 100%;}
+.datumvrememesto-upat li {width: 270px;height: 30px;}
+.datumvrememesto-upat li input , .datumvrememesto-upat li select {float: right;}
+.datumvrememesto-upat li label {float: left;
+    line-height: 1.6;
+    width: 56px;}
+.novbolnicki-upat .novupat-podmeni li {margin-bottom: 5px;}
+.potvrda-smrt-column-wrapper label sub {font-size: 12px;}
+label.opstina {margin-left: 0;}
+.potvrda-smrt-column-wrapper input {margin-bottom: 2px; margin-top: 2px;}
+.potvrda-smrt-column-wrapper #leva-kolona li {clear: both;}
+.potvrda-smrt-column-wrapper #leva-kolona li input {float: right; margin-right: 10px;}
+.novupat-podmeni .zdrleg {}
+
+
+/*Interbolnichki i interoddelensi upat*/
+
+.nov-interbolnicki-upat .text-inside li {
+     float: left;
+     width: 100%;
+     margin-bottom: 5px;
+ }
+.nov-artikl-2 {padding-left: 30px; padding-bottom: 10px; padding-right: 30px; padding-top: 40px; }
+
+.levo-2{
+    float: left;
+    width: 300px;
+    height: 250px;
+
+}
+.desno-2{
+    float: left;
+    width: 400px;
+    height: 250px;
+
+}
+.levo-2 li {
+    width: 300px !important;
+    text-align: center;
+    margin-top: 5px;
+}
+.levo-2 li input:not(.sirina_100){
+    width: 300px;
+}
+.desno-2 ul{
+    display: block;
+    text-align: right;
+    float: right;
+}
+.desno-2 li {
+    width: 300px;
+    text-align:center;
+    margin-top: 5px;
+}
+.desno-2 li input{
+    width: 300px;
+}
+.label-text{
+    font-size: 11px;
+}
+.text12{
+    font-size: 12px;
+}
+
+.label-right{
+    display: block;
+    text-align: right;
+}
+.sirina_100{
+    width: 100px;
+}
+
+.sredno-2{
+    clear: both;
+    width: 700px;
+}
+.center-2{
+    text-align: center;
+}
+.text-inside{
+    text-align: justify;
+    font-size: 12px;
+
+}
+.text-inside li{
+    margin-top: 3px;
+}
+.text-inside li:not(.krajno) input:not(.ulica1){
+    width: 100px !important;
+}
+.text-inside li input.ulica1{
+    width: 300px;
+}
+.text-inside li input.osnov-na-osiguruvanje{
+    width: 200px;
+}
+.text-inside li:not(.krajno) label{
+    font-size: 12px;
+}
+.text-inside li.krajno label{
+    font-size: 10px;
+}
+.text-inside li.krajno input:not(.potpis-faksimil){
+    width: 100px;
+}
+.text-inside li textarea{
+    width: 450px;
+}
+.krajno{
+    display: block;
+
+}
+.potpis-faksimil{
+    width: 220px;
+    position: absolute;
+    left: 430px;
+    top: 760px;
+}
+.zapis-leva-kolona .zapis-leva-podkolona p {margin: 0;}
+

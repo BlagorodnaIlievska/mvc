@@ -1,0 +1,75 @@
+<?php  if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class Mkb extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+    }
+
+    public function nov()
+    {
+        $this->load->model('mkb/mkb_model');
+        $data['mkb_glavna']=$this->mkb_model->mkb_glavna_dropdown();
+        $this->load->view('mkb/nov', $data);
+    }
+
+
+    public function izmeni()
+    {
+        $this->load->model('mkb/mkb_model');
+        $mkb = $this->mkb_model->getMkb($this->input->get("id"));
+        //print_r($smena); die();
+        $data['mkb_glavna']=$this->mkb_model->mkb_glavna_dropdown();
+        $data['mkb']      = $mkb;
+        $this->load->view('mkb/izmeni', $data);
+    }
+
+
+
+    public function lista()
+    {
+        $this->load->view('mkb/lista');
+    }
+
+    public function popolnilista()
+    {
+
+        //$data['main_content'] = 'podatoci/katalog/popolnilista';
+        $this->load->model('mkb/mkb_model');
+        $return = $this->mkb_model->getMkbi();
+        echo json_encode($return);
+    }
+
+
+
+
+
+    public function create_mkb()
+    {
+        $this->load->model('mkb/mkb_model');
+        $this->mkb_model->create_mkb();
+        echo "ok";
+    }
+
+
+
+    public function update_mkb()
+    {
+        $this->load->model('mkb/mkb_model');
+        $this->mkb_model->update_mkb();
+        echo "ok";
+    }
+
+    public function delete_mkb()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('mkb/mkb_model');
+        $this->mkb_model->delete_mkb($id);
+        echo "ok";
+    }
+}

@@ -1,0 +1,66 @@
+
+<form action="/index.php/upati/upati/create_upat" method="post">
+<input type="hidden" name="priem_id" value="<?php echo $priem_id; ?>">
+    <input type="hidden" name="tip_upat" value="konzolijarno_mislenje">
+<div class="konzm-levo">
+    <input type="text" value="ЈЗУ Ургентни Клиники" disabled="">
+    <div class="konzm-desno">
+        <label>ФЗОМ Образец - КММР</label><br/>
+    </div>
+    <br/>
+    <label>Назив на здравствена установа</label><br/>
+    <input type="text" name="rabotna_edinica_oddelenie" value="<?php echo $this->session->userdata('firma_ime') ?>" readonly=""/><br/>
+    <label>Одделение</label> <br/>
+    <input type="text" name="mesto" ><br/>
+    <label>Место</label>
+</div>
+
+
+    <div style="clear: both" class="naslov">
+        <h3 style="text-align: center">КОНЗИЛИЈАРНО МИСЛЕЊЕ</h3>
+        <br/>
+        <h4>ЗА ПРОДОЛЖЕНО ЛЕКУВАЊЕ - МЕДИЦИНСКА РЕХАБИЛИТАЦИЈА</h4>
+    </div>
+    <div class="text-inside">
+        <p>
+        Име <input type="text" name="ime" disabled=""> татково име <input type="text" name="tatkovoime" disabled=""> презиме <input type="text" name="prezime" disabled=""><br>
+        Адреса <input type="text" name="ulica" disabled="" width="100px"><input type="text" name="grad"disabled="" width="100px"><input type="text" name="drzava"disabled="" width="100px"><br>
+        ЕМБГ&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="embg" style="width: 200px" disabled=""><br>
+        ЕЗБО&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="ezbo" style="width: 200px" disabled=""><br>
+        Сериски бр. на ЕЗК/Бр. на здравствена легитимација <input type="text" name="br_zdravstvena_legitimacija" style="width: 200px" disabled=""><br>
+        </p>
+        <p>
+            Пациентот е примен во нашата здравствена установа со дијагноза<br> <textarea type="text" name="dijagnoza" rows="2" style="width: 100%" ></textarea><br>
+            и шифра на дијагноза по МКБ - 10 АМ <input type="text" name="sifra_dijagnoza">.<br>
+            Конзилијарното мислење се издава за остварување на право на продолжено лекување - медицинска <br/> рехабилитација во <input type="text" name="mesto_rehabilitacija">
+            <input type="radio" name="pridruznik" value="da">со придружник - <input type="radio" name="pridruznik" value="ne">без придружник,
+            во траење од <input type="text" style="width: 30px;" name="denovi_rehabilitacija"> дена.<br>
+            Конзилијарното мислење е со важност согласно член 79 од Правилникот за содржината и начинот на <br/>остварувањето на правата и обврските од задолжителното
+            здравствено осигурување.
+
+        </p>
+        <p>
+            Образложение: <textarea name="obrazlozenije_rehabilitacija" style="width: 100%" rows="5"></textarea>
+        </p>
+    </div>
+    <br>
+
+    <div style="width: 300px;display: inline-block;">
+        <p>Директор</p> <br>
+        <p><input type="text" name="direktor"></p>
+        <p>Bo </p><p><input type="text" name="mesto" style="width: 140px"></p>
+        <p>Дата </p><p><input type="text" name="datum" class="datum" style="width: 130px" value="<?php echo date('d-m-Y'); ?>"> <input type="hidden" name="vreme" value="<?php echo date('H:i'); ?>"></p>
+    </div>
+    <div style="display: inline-block;width: 260px;margin-top: 20px;line-height: 25px;" class="mp">МП</div>
+    <div style="display: inline-block;">
+        <p>Лекарски конзилиум<br/></p>
+        <p>1.</p>
+        <p><input type="text" name="doktor1"></p>
+        <p>2.</p><p><input type="text" name="doktor2"></p>
+        <p>3.</p><p><input type="text" name="doktor3"></p>
+    </div>
+</div>
+
+    </div>
+    </form>
+  </div>

@@ -1,0 +1,80 @@
+<div id="nova_stavka_form">
+    <?php
+    $delete = img(array(
+        'src' => 'images/delete.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    ?>
+<fieldset>
+    <legend>Артикл</legend>
+    <div class="parametri">
+        Кат. Број: <input type='text' name='bykatbroj' class='bykatbroj izborartikl'>
+        Ставка: <input type='text' name='bystavka' class='bystavka izborartikl'>
+    </div>
+    <table class="tartikli" border="1" cellspacing="2" cellpadding="2" id="faktura">
+        <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th>Шифра</th>
+            <th>Кат. Број</th>
+            <th>Име</th>
+            <th>Опис</th>
+            <th>Ед. мерка</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+</fieldset>
+<script>
+    jQuery(document).ready(function() {
+        mat_vlez_popolnilista_artikli('table.tartikli');
+        jQuery('.izborartikl').keyup(function(){
+            var stavka = jQuery('.bystavka.izborartikl').val();
+            var katbroj = jQuery('.bykatbroj.izborartikl').val();
+            var formaction = jQuery(this).parent().attr('action');
+            var data = {
+                stavka: stavka,
+                katbroj: katbroj
+            }
+            jQuery.ajax({
+                url: "/index.php/podatoci/artikl/getArtiklByCriteria",
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function (response) {
+                      console.log(response);
+                    jQuery(".tartikli").find("tr:gt(1)").remove();
+                    jQuery(".tartikli tbody").html('');
+                    jQuery.each(response, function (index, item) {
+                        jQuery(".tartikli tbody").append(('<tr class="detali" artikl_id="' + item.SID + '">' +
+                                '<td>' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +'</td>' +
+                                '<td>' + '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' + '</td>' +
+                                '<td class="sifra">' + item.sifra + '</td>' +
+                                '<td class="katbroj">' + item.katBroj + '</td>' +
+                                '<td class="stavka">' + item.S1Ime + '</td>' +
+                                '<td class="opis">' + item.opis_artikl  + '</td>' +
+                                '<td class="edmerka">' + item.edMerkaIme + '</td>' +
+                                '<td class="edmerkaid hide">' + item.EdMerka + '</td>' +
+                                '<td class="ddv hide">' + item.ddv + '</td>' +
+                                '</tr>'
+                                ));
+                    });
+                    jQuery(".tartikli").trigger("update");
+                    jQuery('.tartikli tr').dblclick(function(){
+                        var currentrow = jQuery(this);
+                        addNewStavkaPriemnica2(currentrow);
+                    });
+                }
+            });
+        });
+    });
+</script>

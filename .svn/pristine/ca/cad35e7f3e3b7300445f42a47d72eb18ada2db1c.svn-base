@@ -1,0 +1,94 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Roles extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+    }
+
+    public function new_role()
+    {
+        $this->load->view('users/roles/roles_form');
+    }
+
+    public function create_role()
+    {
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('role_name', 'Role Name', 'trim|required');
+
+        if($this->form_validation->run() == FALSE)
+        {
+            $this->new_role();
+        }
+        else
+        {
+            $this->load->model('users/roles_model');
+            if($query = $this->roles_model->create_role())
+            {
+                $data['main_content'] = 'users/roles/role_successful';
+                $this->load->view('includes/template', $data);
+            }
+            else
+            {
+                $this->load->view('users/roles/roles_form');
+            }
+        }
+    }
+
+    public function view_roles()
+    {
+        $this->load->model('users/roles_model');
+        $query = $this->roles_model->getAll();
+
+        $data['roles'] = $query;
+        $this->load->view('users/roles/edit_roles_form', $data);
+    }
+
+    public function delete_role(){
+
+        $this->load->model('users/roles_model');
+        $this->roles_model->delete_role();
+        $this->view_roles();
+    }
+
+    public function edit_role(){
+
+        $this->load->model('users/roles_model');
+        $query = $this->roles_model->edit_role();
+
+        $data['main_content'] = 'users/roles/update_roles_form';
+        $data['roles'] = $query;
+        $this->load->view('includes/template', $data);
+        $this->view_roles();
+    }
+
+    public function update_role(){
+
+        $this->load->model('users/roles_model');
+        $query = $this->roles_model->update_role();
+
+        if($query)
+        {
+            echo "Role updated successfully";
+        }
+        else
+        {
+            echo "No row was found ... Please try again.";
+        }
+        $this->view_roles();
+    }
+
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+
+}

@@ -1,0 +1,420 @@
+<div class="izlez-form content-area">
+    <?php
+    $status_options = array('0' => 'Сите', '1' => 'Платени', '2' => 'Неплатени');
+    echo form_open('izlezni_fakturi/pregled_izlezni/nova_faktura');
+    ?>
+    <div class="vleznifak-top">
+        <?php if (bis_check_access('izlezni_fakturi_pregled_izlezni_fakturi_detalen_pregled_nova_faktura_button')): ?>
+        <button type="button" value="" class="button bnovafak"><span>Нова фактура</span></button>
+            <?php endif ?>
+        <?php if (bis_check_access('izlezni_fakturi_pregled_izlezni_fakturi_detalen_pregled_nova_faktura_fzom_button')): ?>
+        <button type="button" value="" class="button novafakfzom">
+            <span>Нова фактура ФЗОМ</span>
+        </button>
+            <?php endif ?>
+        <?php if (bis_check_access('izlezni_fakturi_pregled_izlezni_fakturi_detalen_pregled_nova_faktura_ministerstvo_button')): ?>
+        <button type="button" value="" class="button novafakministerstvo">
+            <span>Нова фактура Министерство</span>
+        </button>
+            <?php endif ?>
+        <?php if (bis_check_access('izlezni_fakturi_pregled_izlezni_fakturi_detalen_pregled_pecati_button')): ?>
+        <a href="" target="_blank" class="cmd-printlink-izlezni">
+            <button type="button" class="print"><span>Печати</span></button>
+        </a>
+            <?php endif ?>
+        <?php if (bis_check_access('izlezni_fakturi_pregled_izlezni_fakturi_detalen_pregled_baraj_button')): ?>
+        <button type="button" value="" class="baraj button"><span>Барај</span></button>
+            <?php endif ?>
+    </div>
+    <div class="filtermenu" style="display: none;">
+        <div class="filter-vleznifak">
+            <span>Период од:</span>
+            <input type="text" class="periodod pregledvlezna" name="periodod"/>
+            <span style="margin: 0 5px;">до:</span>
+            <input type="text" class="perioddo pregledvlezna" name="perioddo"/>
+        </div>
+        <div class="filter-vleznifak">
+            <label>Број:</label>
+            <input type="text" class="filterbrojfaktura pregledvlezna" name="filterbrojfaktura"
+                   formaction="/index.php/vlezni_fakturi/faktura/search_vlezna_faktura">
+        </div>
+        <div class="filter-vleznifak">
+            <?php
+            echo form_label('Коминтент: ', 'klient');
+            echo form_dropdown('klient', $klient, '', 'class="ddklient pregledvlezna"');
+            ?>
+        </div>
+        <div class="filter-vleznifak">
+            <?php
+            echo form_label('Пациент: ', 'pacient');
+            echo form_dropdown('pacient', $pacienti, '', 'class="ddpacient pregledvlezna"');
+            ?>
+        </div>
+        <div class="filter-vleznifak status-ui">
+            <?php
+            echo form_label('Статус:', 'status_options');
+            echo form_dropdown('status_options', $status_options, '', 'class="ddstatus pregledvlezna"');
+            ?>
+        </div>
+        <div class="reset-baraj">
+            <button type="button" value="" class="button resetbarajpolinja">
+                <span>Ресетирај</span>
+            </button>
+        </div>
+        <?php echo form_close(); ?>
+    </div>
+
+    <div class="izlezni-fakturi">
+    </div>
+    <div class="stavka">
+        <p class="naslovizleznifakturi" > ( <span class="vkupnostavki">0</span> ) Излезни фактури</p>
+        <div class="predtabela">
+            <table class="tizleznifakturi" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th class="ac"></th>
+                    <th class="ac"></th>
+                    <th class="ac"></th>
+                    <th class="broj">Број</th>
+                    <th class="datum">Датум</th>
+                    <th class="klient">Коминтент</th>
+                    <th class="osnova">Основица</th>
+                    <th class="valuta">Валута</th>
+                    <th>Врзани Документи</th>
+                    <th>Оддел</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class='hiderow trow' komintent="" fakturaid="">
+                    <td class="deletefaktura"><img width="15" height="15" alt="" src="/images/delete.png"></td>
+                    <td class="editfaktura"><img width="15" height="15" alt=""
+                                                 src="/images/edit.png"></td>
+                    <td class="infofaktura"><img width="15" height="15" alt=""
+                                                 src="/images/information.png"></td>
+                    <td class="broj"></td>
+                    <td class="datum"></td>
+                    <td class="klient"></td>
+                    <td class="osnova"></td>
+                    <td class="valuta"></td>
+                    <td class="zabeleska"></td>
+                    <td class="odel"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <table class="sumiranje">
+            <tfoot>
+            <tr>
+                <td class="deletefaktura"></td>
+                <td class="editfaktura"></td>
+                <td class="infofaktura"></td>
+                <td class="broj"></td>
+                <td class="datum"></td>
+                <td class="vkupnolabel" style="width:213px;">Вкупно:</td>
+                <td class="osnovasum" style="width:104px;"></td>
+                <td></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="stavkadetail">
+        <p class="naslov" > ( <span class="vkupnostavki">0</span> ) Ставки во документот - Детално</p>
+        <div class="predtabela">
+            <table class="tstavkadetail" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th class="redenbroj">РБ</th>
+                    <th class="sifra">Шифра</th>
+                    <th class="stavka">Ставка</th>
+                    <th class="kolicina">Кол.</th>
+                    <th class="em">ЕМ</th>
+                    <th class="cena">Цена</th>
+                    <th class="vkupno">Вкупно</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="hiderow">
+                    <td class="number"></td>
+                    <td class="katbroj"></td>
+                    <td class="stavka"></td>
+                    <td class="kolicina"></td>
+                    <td class="em"></td>
+                    <td class="bezddv"></td>
+                    <td class="vkupno"></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr  >
+                    <td colspan="3">Вкупно:</td>
+                    <td></td>
+                    <td ></td>
+                    <td class="vkupnobezddv">0</td>
+                    <td class="vkupnosoddv">0</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+function izlezni_fakturi_getSelektirana(){
+    if ( jQuery(".tizleznifakturi tbody tr.active").attr("fakturaid") > 0 ) {
+        return jQuery(".tizleznifakturi tbody tr.active").attr("fakturaid") ;
+    } else {
+        return 0;
+    }
+}
+jQuery(document).ready(function () {
+//    jQuery('.tvleznifakturi').fixedHeaderTable({ footer: true, cloneHeadToFoot: true, fixedColumn: false });
+    jQuery('.periodod').datepicker({dateFormat:'dd-mm-yy'});
+    jQuery('.perioddo').datepicker({dateFormat:'dd-mm-yy'});
+    jQuery('.periodod').datepicker('setDate', new Date(2013, 00, 01));
+    jQuery('.perioddo').datepicker('setDate', new Date());
+
+    jQuery('.ddstatus, .ddklient, .ddpacient').combobox();
+    jQuery(".tstavkadetail").tablesorter();
+    jQuery(".tizleznifakturi").tablesorter();
+
+    if_dp_napolnilista();
+    jQuery(".cmd-printlink-izlezni").click(function(e){
+        if (izlezni_fakturi_getSelektirana()>0){
+            var komintent = jQuery(".tizleznifakturi tbody tr.active").attr("komintent");
+            if(komintent == "firma") jQuery(".cmd-printlink-izlezni").attr("href","/index.php/print/pdf?view=/index.php/izlezni_fakturi/faktura/print_izlezna_faktura_firma&id="+izlezni_fakturi_getSelektirana());
+            else if(komintent == "pacient") jQuery(".cmd-printlink-izlezni").attr("href","/index.php/print/pdf?view=/index.php/izlezni_fakturi/faktura/print_izlezna_faktura&id="+izlezni_fakturi_getSelektirana());
+            else if(komintent == "fzom") jQuery(".cmd-printlink-izlezni").attr("href","/index.php/print/pdf?view=/index.php/izlezni_fakturi/faktura/fzom_faktura_print&id="+izlezni_fakturi_getSelektirana());
+            else if(komintent == "ministerstvo") jQuery(".cmd-printlink-izlezni").attr("href","/index.php/print/pdf?view=/index.php/izlezni_fakturi/faktura/print_izlezna_faktura_min&id="+izlezni_fakturi_getSelektirana());
+        } else {
+            alert("Ве молиме одберете фактура");
+            e.preventDefault();
+            return false;
+        }
+    });
+    jQuery(".tizleznifakturi").delegate("tbody tr.trow", "click", function () {
+        jQuery(".tizleznifakturi .trow").removeClass("active");
+        jQuery(this).addClass('active');
+        var dbid = jQuery(this).attr("fakturaid");
+        var tip_faktura = jQuery(this).attr("komintent");
+        var participacija = jQuery(this).attr("participacija");
+        var data = {
+            dbid:dbid
+        }
+        jQuery.ajax({
+            url:"/index.php/izlezni_fakturi/pregled_izlezni/getIzleznaDetali",
+            type:'POST',
+            data:data,
+            dataType:'json',
+            success:function (response) {
+                console.log(response);
+                if(response)
+                {
+                    var vkupnostavki = response.length;
+                    var vkupnokolicina= 0, vkupnosevkupno= 0, redenbroj=0;
+                    var vkupnobezddv= 0, sumavkupnobezddv = 0, sumavkupnocena =0;
+                    var sumavkupnoddv = 0, sumasevkupno =0;
+                    var vkupnosoddv= 0, vkupnovkupno= 0, vkupnovkupnoddv=0;
+
+                    jQuery('.tstavkadetail tbody').html('');
+                    jQuery.each(response, function (index, item) {
+                        redenbroj += 1*1;
+                        if(tip_faktura == 'firma') var sifra = item.sifra;
+                        else var sifra = item.sifra_paket;
+                        if(participacija == 1) var cenabezddv = item.iznos_participacija;
+                        else var cenabezddv = item.cena;
+                        var kolicina = item.kolicina;
+//                        var cenabezddv = item.cena;
+                        var ddv = item.DDV;
+                        var vkupnobezddv = parseInt(cenabezddv) * parseInt(kolicina);
+                        var vkupnoddv = parseInt((vkupnobezddv * ddv) / 100);
+                        var vkupnosoddv = parseInt(vkupnobezddv) + parseInt(vkupnoddv);
+                        jQuery('.tstavkadetail tbody').append(
+                            '<tr>' +
+                                '<td class="number">' + redenbroj + '</td>' +
+                                '<td class="katbroj">' + item.sifra_usluga + '</td>' +
+                                '<td class="stavka">' + item.stavka + '</td>' +
+                                '<td class="kolicina text-right">' + kolicina + '</td>' +
+                                '<td class="em">' + item.edMerkaIme + '</td>' +
+                                '<td class="bezddv">' + formatnumbermkd(parseFloat(cenabezddv)) + '</td>' +
+                                '<td class="vkupno text-right">' + formatnumbermkd(parseFloat(vkupnobezddv)) + '</td>' +
+                            '</tr>'
+                        );
+                        vkupnokolicina=vkupnokolicina+1*kolicina;
+                        sumavkupnocena=sumavkupnocena+parseFloat(cenabezddv);
+                        sumavkupnobezddv=sumavkupnobezddv+parseFloat(vkupnobezddv);
+                        sumavkupnoddv=sumavkupnoddv+parseFloat(vkupnoddv);
+                        sumasevkupno=sumasevkupno+parseFloat(vkupnosoddv);
+                        vkupnosoddv=vkupnosoddv+1*item.cenaDDV;
+                        vkupnovkupno=vkupnovkupno+1*vkupnobezddv;
+                        vkupnovkupnoddv=vkupnovkupnoddv+1*vkupnoddv;
+                        vkupnosevkupno=vkupnosevkupno+1*vkupnosoddv;
+                    });
+                    jQuery(".tstavkadetail tfoot .vkupnokolicina").html(vkupnokolicina);
+                    jQuery(".tstavkadetail tfoot .vkupnobezddv").html('');
+                    jQuery(".tstavkadetail tfoot .vkupnosoddv").html(formatnumbermkd(parseFloat(sumavkupnobezddv)));
+                    jQuery(".tstavkadetail tfoot .vkupnovkupno").html(formatnumbermkd(parseFloat(sumavkupnoddv)));
+                    jQuery(".tstavkadetail tfoot .vkupnovkupnoddv").html(vkupnovkupnoddv);
+                    jQuery(".tstavkadetail tfoot .vkupnoddvsevkupno").html(parseFloat(sumasevkupno));
+                    jQuery(".naslov .vkupnostavki").html(response.length);
+                    jQuery(".tstavkadetail").trigger("update");
+            }
+        }
+        });
+    });
+    jQuery('.resetbarajpolinja').click(function () {
+        jQuery('.periodod').datepicker('setDate', new Date(2013, 00, 01));
+        jQuery('.perioddo').datepicker('setDate', new Date());
+        jQuery('.filterbrojfaktura').val('');
+        jQuery('.ui-combobox-input').val("Сите");
+        if_dp_napolnilista();
+    });
+    jQuery('.pregledvlezna').live('change', function () {
+        jQuery(".tizleznifakturi tbody").find("tr:gt(2)").remove();
+        jQuery(".tstavkadetail tbody").find("tr:gt(2)").remove();
+        var stat = jQuery('.ddstatus option:selected').val();
+        var klient = jQuery('.ddklient option:selected').val();
+        var pacient = jQuery('.ddpacient option:selected').val();
+        var period1 = jQuery('.periodod').val();
+        var period2 = jQuery('.perioddo').val();
+        var broj = jQuery('.filterbrojfaktura').val();
+        var status = jQuery('.ddstatus').val();
+        var formaction = "/index.php/izlezni_fakturi/pregled_izlezni/pregled";
+//        console.log(klient, period1, period2);
+        var data = {
+            statusid:stat,
+            klientid:klient,
+            pacientid:pacient,
+            period1:period1,
+            period2:period2,
+            brojfaktura: broj,
+            status: status
+        }
+        jQuery.ajax({
+            url:formaction,
+            type:'POST',
+            data:data,
+            dataType:'json',
+            success:function (response) {
+//                console.log(response);
+                var tr = jQuery('.tizleznifakturi tbody tr:last');
+                tr.removeClass('hiderow');
+                var osnovasum = 0;
+                var vkupnoddv = 0;
+                var vkupnovkupno = 0;
+                for (var i = 0; i < response.length; i++) {
+                    var dokumentihtml="";
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.attr("fakturaid", response[i].dbid);
+                    newrow.find('.broj').html(response[i].broj);
+                    newrow.find('.datum').html(response[i].datum);
+                    newrow.find('.osnova').html(formatnumbermkd(response[i].osnova));
+                    for (var ib=0 ; ib < response[i].dokumenti.length;ib++){
+                        dokumentihtml=dokumentihtml+
+                            '<span>'+response[i].dokumenti[ib].textBroj+'</span>';
+                    }
+                    newrow.find('.zabeleska').html(dokumentihtml);
+                    if(response[i].firmaID > 0)
+                    {
+                        newrow.find('.klient').html(response[i].firmaIme);
+                        newrow.find('.osnova').html(formatnumbermkd(parseFloat(response[i].osnova)));
+                        osnovasum =1 * osnovasum + 1 * response[i].osnova;
+                    }
+                    if(response[i].pacientID > 0)
+                    {
+                        var pacientIme = response[i].pacientIme+" "+response[i].pacientTatkovoIme+" "+response[i].pacientPrezime;
+                        newrow.find('.klient').html(pacientIme);
+                        newrow.find('.osnova').html(formatnumbermkd(parseFloat(response[i].pacientIznos)));
+                        osnovasum =1 * osnovasum + 1 * response[i].pacientIznos;
+                    }
+                }
+                tr.addClass('hiderow');
+                jQuery(".sumiranje .osnovasum").html(formatnumbermkd(osnovasum));
+                jQuery(".sumiranje .vkupnovkupno").html(formatnumbermkd(vkupnovkupno));
+                jQuery(".naslovizleznifakturi .vkupnostavki").html(response.length);
+            }
+        });
+    });
+    jQuery('.filterbrojfaktura').live('keyup', function () {
+        jQuery(".tizleznifakturi").find("tr:gt(2)").remove();
+        jQuery(".tstavkadetail").find("tr:gt(2)").remove();
+        var stat = jQuery('.ddstatus option:selected').val();
+        var klient = jQuery('.ddklient option:selected').val();
+        var period1 = jQuery('.periodod').val();
+        var period2 = jQuery('.perioddo').val();
+        var broj = jQuery('.filterbrojfaktura').val();
+        var status = jQuery('.ddstatus').val();
+        var formaction = "/index.php/izlezni_fakturi/pregled_izlezni/pregled";
+//        console.log(klient, period1, period2);
+        var data = {
+            statusid:stat,
+            klientid:klient,
+            period1:period1,
+            period2:period2,
+            brojfaktura: broj,
+            status: status
+        }
+        jQuery.ajax({
+            url:formaction,
+            type:'POST',
+            data:data,
+            dataType:'json',
+            success:function (response) {
+//                console.log(response);
+                var tr = jQuery('.tizleznifakturi tr:last');
+                tr.removeClass('hiderow');
+
+                for (var i = 0; i < response.length; i++) {
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.attr("fakturaid", response[i].dbid);
+                    newrow.find('.broj').html(response[i].broj);
+                    newrow.find('.datum').html(response[i].datum);
+                    newrow.find('.osnova').html(response[i].osnova);
+                    newrow.find('.ddv').html(response[i].ddv);
+                    newrow.find('.vkupno').html(response[i].vkupno);
+                    newrow.find('.zabeleska').html(response[i].zabeleska);
+                    if(response[i].firmaID > 0)
+                    {
+                        newrow.find('.klient').html(response[i].firmaIme);
+                        newrow.find('.osnova').html(formatnumbermkd(parseFloat(response[i].osnova).toFixed(2)));
+                    }
+                    if(response[i].pacientID > 0)
+                    {
+                        var pacientIme = response[i].pacientIme+" "+response[i].pacientTatkovoIme+" "+response[i].pacientPrezime;
+                        newrow.find('.klient').html(pacientIme);
+                        newrow.find('.osnova').html(formatnumbermkd(parseFloat(response[i].pacientIznos).toFixed(2)));
+                    }
+                }
+                //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                tr.addClass('hiderow');
+                jQuery(".naslovizleznifakturi .vkupnostavki").html(response.length);
+            }
+        });
+    });
+
+
+    jQuery('.bnovafak').click(function () {
+        nova_izlezna_faktura();
+    });
+    jQuery('.novafakfzom').click(function () {
+        if(!jQuery(".firmadropdown option:selected").hasClass("firmaodel")){
+            alert("Ве молиме изберете оддел!!!");
+            return false;
+        }
+        nova_izlezna_faktura_fzom();
+    });
+    jQuery('.novafakministerstvo').click(function () {
+        nova_izlezna_faktura_ministerstvo();
+    });
+    jQuery(".baraj").live("click", function () {
+        if (jQuery(".filtermenu").hasClass("prikazano")) {
+            jQuery(".filtermenu").hide(500);
+            jQuery(".filtermenu").removeClass("prikazano");
+        } else {
+            jQuery(".filtermenu").show(500);
+            jQuery(".filtermenu").addClass("prikazano");
+        }
+    });
+    jQuery('.tizleznifakturi tbody tr').live("dblclick", function () {
+        editizleznafaktura(jQuery(this));
+    });
+});
+</script>

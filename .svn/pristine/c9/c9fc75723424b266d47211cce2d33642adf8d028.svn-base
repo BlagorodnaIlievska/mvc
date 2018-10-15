@@ -1,0 +1,132 @@
+
+function mkb_nov() {
+
+    var formurl = "/index.php/mkb/mkb/nov";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нова",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+
+
+function mkb_popolnilista() {
+    var formurl = "/index.php/mkb/mkb/popolnilista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            jQuery(".tabela-mkblista tbody").html('');
+
+            jQuery.each(response, function (index, item) {
+                //  console.log(item);
+
+                jQuery(".tabela-mkblista tbody").append(('<tr mkbid="' + item.id + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '</td>' +
+                    '<td>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                    '</td>' +
+                    '<td>' + item.sifra + '</td>' +
+                    '<td class="mkbopis">' + item.opis + '</td>' +
+                    '<td>' + item.neprifatena_primarna_dijagnoza + '</td>' +
+                    '<td>' + item.vozrast + '</td>' +
+                    '<td>' + item.pol + '</td>' +
+                    '<td>' + item.glavna_kategorija + '</td>' +
+                    '</tr>'
+                    ));
+            });
+            jQuery(".tabela-mkblista").trigger("update");
+
+
+        }
+    });
+}
+
+
+function mkb_izmeni(mkbid) {
+    var formurl = "/index.php/mkb/mkb/izmeni";
+    var data = {  id:mkbid  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени ",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+
+}
+
+function mkb_delete(mkbid){
+    var r=confirm("Избриши");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/mkb/mkb/delete_mkb";
+            var data = {  id:mkbid  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    mkb_popolnilista();
+                }
+            });
+
+        }
+    }
+
+}
+

@@ -1,0 +1,691 @@
+function nalozi_popolnilista(){
+
+    var formurl = "/index.php/knizenje/nalog/popolnilista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+       //
+            jQuery(".tabela-naloglista tbody").html('');
+
+                var s;
+            jQuery.each(response, function (index, item) {
+                //  console.log(item);
+                                if(item.tip_na_nalog==10){ s='za vlezni fakturi'}
+                                else if(item.tip_na_nalog==20) { s='za_izlezni_fakturi'}
+                                 else if(item.tip_na_nalog==540 || item.tip_na_nalog==550) { s='za_kasa'}
+                                else if(item.tip_na_nalog==40 || item.tip_na_nalog==50) { s='za_izvod'}
+                                   else if  (item.tip_na_nalog==90) {s='za otpis na materijali'}
+                jQuery(".tabela-naloglista tbody").append(('<tr class="trow" nalogid="' + item.id + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '</td>' +
+                    '<td>' +
+                    '<a class="info-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/information.png"></a>' +
+                    '</td>' +
+                    '<td>' + item.broj + '</td>' +
+                    '<td>' + item.datum + '</td>' +
+                    '<td>' +s+ '</td>' +
+                    '<td>' + item.oddel + '</td>' +
+                    '</tr>'
+                    ));
+            });
+           // jQuery(".nalogdetali tbody").html('');
+            jQuery(".tabela-bankalista").trigger("update");
+
+
+        }
+    });
+}
+function pregled_po_konto(){
+    var formurl = "/index.php/knizenje/nalog/pregled_po_konto";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            jQuery(".kontalista tbody").html('');
+            var s;
+            jQuery.each(response, function (index, item) {
+                //  console.log(item);
+
+                jQuery(".kontalista tbody").append(('<tr>' +
+
+                    '<td>' + item.konto + '</td>' +
+                    '<td>' + item.opis + '</td>' +
+                    '<td class="text-right">' + formatnumbermkd(item.dolzi) + '</td>' +
+                    '<td class="text-right">' + formatnumbermkd(item.pobaruva) + '</td>' +
+
+                    '</tr>'
+                    ));
+            });
+            jQuery(".kontalista").trigger("update");
+
+
+        }
+    });
+}
+function pregled_po_konto_so_konto(konto,datum1,datum2){
+
+    var formurl = "/index.php/knizenje/nalog/pregled_po_konto_so_konto";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{ konto:konto,datum1:datum1,datum2:datum2},
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            jQuery(".kontalista tbody").html('');
+            var s;
+            jQuery.each(response, function (index, item) {
+                jQuery(".kontalista tbody").append(('<tr>' +
+                    '<td>' + item.konto + '</td>' +
+                    '<td>' + item.opis + '</td>' +
+                    '<td class="text-right">' + formatnumbermkd(item.dolzi) + '</td>' +
+                    '<td class="text-right">' + formatnumbermkd(item.pobaruva) + '</td>' +
+
+                    '</tr>'
+                    ));
+            });
+            jQuery(".kontalista").trigger("update");
+        }
+    });
+}
+
+function nov_nalog() {
+
+    var formurl = "/index.php/knizenje/nalog/nov_nalog";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нов налог",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+function getSiteVlezniFakturi(){
+    var brojfaktura = jQuery('.filter-broj-faktura').val();
+    var firmaid = jQuery('.filter-firmaid').val();
+    if(brojfaktura.length > 0) var data = { brojfaktura: brojfaktura, firmaid: firmaid }
+    else var data = { brojfaktura: 0, firmaid: firmaid }
+    jQuery.ajax({
+        url:"/index.php/vlezni_fakturi/pregled_vlezni/getSiteVlezniFakturi",
+        type:'POST',
+        data: data,
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            jQuery(".dokumenti tbody").find("tr:not(:last)").remove();
+            var tr = jQuery('.dokumenti tr:last');
+            tr.removeClass('hiderow');
+            var vkupnostavki = response.length;
+            for (var i = 0; i < response.length; i++) {
+                var newrow = jQuery(tr).clone().insertBefore(tr);
+//                        newrow.attr("fakturaid", response[i].dbid);
+                newrow.find('.broj').html(response[i].broj);
+                newrow.find('.datum').html(response[i].datum);
+                newrow.find('.klient').html(response[i].firmaIme);
+                newrow.find('.suma').html(response[i].vkupno);
+                newrow.find('.zabeleska').html(response[i].zabeleska);
+                newrow.find('.zaDokID').html(response[i].dbid);
+            }
+            tr.addClass('hiderow');
+        }
+    });
+}
+function site_otpis(){
+
+    jQuery.ajax({
+        url:"/index.php/knizenje/nalog/site_otpis",
+        type:'POST',
+        dataType:'json',
+        success:function (response) {
+            //console.log(response);
+            jQuery(".tabela-otpis tbody").html('');
+
+            jQuery.each(response, function (index, item) {
+                //  console.log(item);
+
+                jQuery(".tabela-otpis tbody").append(('<tr stavkaid="' + item.ID + '">' +
+                    '<td><input type="checkbox" name="cekirano" class="cekirano" value="'+item.ID+'"></td>' +
+                    '<td>' + item.textBroj + '</td>' +
+                    '<td>' + item.datum + '</td>' +
+
+                    '</tr>'
+                    ));
+            });
+
+            jQuery(".tabela-otpis").trigger("update");
+
+
+        }
+    });
+}
+
+function izlistaj_kasi(kasaid){
+    var formurl = "/index.php/knizenje/nalog/izlistaj_kasi";
+    jQuery.ajax({
+        url:formurl,
+        type:'POST',
+        data:{
+            kasaid:kasaid
+        },
+        dataType:'json',
+        success:function (response) {
+           // console.log(response);
+            jQuery(".tabela-kasi tbody").html('');
+
+            jQuery.each(response, function (index, item) {
+                jQuery('.zaDokID').val(item.zaDokID);
+               // if(item.firmaID > 0) var klientIme = item.firmaIme;
+                //if(item.pacient_id > 0) var klientIme = item.pacientIme+" "+item.pacientTatkovoIme+" "+item.pacientPrezime;
+                if(item.tip==550){
+                    if(item.firmaIme!=null){
+                        jQuery(".tabela-kasi tbody").append(('<tr kasaid="' + item.ID + '" zaDokID="'+ item.zaDokID+'">' +
+                            '<td>' +
+                            '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                            '</td>' +
+                            '<td><input type="checkbox" name="cekirano" class="cekirano" value="'+item.ID+'"></td>' +
+                            '<td>' + item.arhTextBroj + '</td>' +
+                            '<td>' + item.datum + '</td>' +
+                            '<td>' + item.firmaIme + '</td>' +
+                            '<td>' + item.zadolzen_oddel + '</td>' +
+                            '<td>' + item.z_uplata + '</td>' +
+                            '<td></td>' +
+                            '<td>' + item.konto + '</td>' +
+                            '</tr>'
+                            ));
+                    }
+                    else if(item.firmaIme==null) {
+                        jQuery(".tabela-kasi tbody").append(('<tr kasaid="' + item.ID + '" zaDokID="'+ item.zaDokID+'">' +
+                            '<td>' +
+                            '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                            '</td>' +
+                            '<td><input type="checkbox" name="cekirano" class="cekirano" value="'+item.ID+'"></td>' +
+                            '<td>' + item.arhTextBroj + '</td>' +
+                            '<td>' + item.datum + '</td>' +
+                            '<td>' + item.pacient_ime +' '+ item.pacient_prezime+'</td>' +
+                            '<td>' + item.zadolzen_oddel + '</td>' +
+                            '<td>' + item.z_uplata + '</td>' +
+                            '<td></td>' +
+                            '<td>' + item.konto + '</td>' +
+                            '</tr>'
+                            ));
+                        }
+                }
+                else if(item.tip==540){
+                   if(item.firmaIme!=null){
+                        jQuery(".tabela-kasi tbody").append(('<tr kasaid="' + item.ID + '" zaDokID="'+ item.zaDokID+'">' +
+                            '<td>' +
+                            '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                            '</td>' +
+                            '<td><input type="checkbox" name="cekirano" class="cekirano" value="'+item.ID+'"></td>' +
+                            '<td>' + item.arhTextBroj + '</td>' +
+                            '<td>' + item.datum + '</td>' +
+                            '<td>' + item.firmaIme + '</td>' +
+                            '<td>' + item.zadolzen_oddel + '</td>' +
+                            '<td></td>' +
+                            '<td>' + item.z_uplata + '</td>' +
+                            '<td>' + item.konto + '</td>' +
+                            '</tr>'
+                            ));
+                                   }
+                    else if(item.firmaIme==null) {
+                                       jQuery(".tabela-kasi tbody").append(('<tr kasaid="' + item.ID + '" zaDokID="'+ item.zaDokID+'">' +
+                                           '<td>' +
+
+                                           '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+
+                                           '</td>' +
+                                           '<td><input type="checkbox" name="cekirano" class="cekirano" value="'+item.ID+'"></td>' +
+                                           '<td>' + item.arhTextBroj + '</td>' +
+                                           '<td>' + item.datum + '</td>' +
+                                           '<td>' + item.pacient_ime + ' '+ item.pacient_prezime+'</td>' +
+                                           '<td>' + item.zadolzen_oddel + '</td>' +
+                                           '<td></td>' +
+                                           '<td>' + item.z_uplata + '</td>' +
+                                           '<td>' + item.konto + '</td>' +
+                                           '</tr>'
+                                           ));
+                                   }
+                }
+            });
+
+
+        }
+    });
+}
+function izlistaj_izvodi(izvodid,ziroid){
+    var formurl = "/index.php/knizenje/nalog/izlistaj_izvodi";
+    jQuery.ajax({
+        url:formurl,
+        type:'POST',
+        data:{
+            izvodid:izvodid,
+            ziroid:ziroid
+
+        },
+        dataType:'json',
+        success:function (response) {
+            console.log(response);
+
+            jQuery(".tabela-izvodi tbody").html('');
+
+            jQuery.each(response, function (index, item) {
+
+
+
+                // if(item.firmaID > 0) var klientIme = item.firmaIme;
+                //if(item.pacient_id > 0) var klientIme = item.pacientIme+" "+item.pacientTatkovoIme+" "+item.pacientPrezime;
+
+
+                if(item.tip==50){
+                            if(item.konto!=null){
+
+
+
+                    jQuery(".tabela-izvodi tbody").append(('<tr izvodid="' + item.dbid + '" zsid="'+item.ZSID+'" zaDokID="'+item.zaDokID+'">' +
+                        '<td>' +
+
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+
+                        '</td>' +
+                        '<td><input type="checkbox" name="cekirano" class="cekirano" value="'+item.dbid+'"></td>' +
+
+                        '<td>' + item.intBroj + '</td>' +
+                        '<td>' + item.datum + '</td>' +
+                        '<td>' + item.firma + '</td>' +
+                        '<td>' + item.uplata + '</td>' +
+
+                        '<td></td>' +
+                        '<td>' + item.konto + '</td>' +
+                        '</tr>'
+                        ));
+                }
+                    else if(item.konto==null){
+                                jQuery(".tabela-izvodi tbody").append(('<tr izvodid="' + item.dbid + '" zsid="'+item.ZSID+'" zaDokID="'+item.zaDokID+'">' +
+                                    '<td>' +
+
+                                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+
+                                    '</td>' +
+                                    '<td><input type="checkbox" name="cekirano" class="cekirano" value="'+item.dbid+'"></td>' +
+
+                                    '<td>' + item.intBroj + '</td>' +
+                                    '<td>' + item.datum + '</td>' +
+                                    '<td>' + item.firma + '</td>' +
+                                    '<td>' + item.uplata + '</td>' +
+
+                                    '<td></td>' +
+                                    '<td>по док.</td>' +
+                                    '</tr>'
+                                    ));
+                    }
+                }
+
+
+                else if(item.tip==40){
+
+
+                    if(item.konto!=null){
+
+
+
+                        jQuery(".tabela-izvodi tbody").append(('<tr izvodid="' + item.dbid + '" zsid="'+item.ZSID+'" zaDokID="'+item.zaDokID+'">' +
+                            '<td>' +
+
+                            '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+
+                            '</td>' +
+                            '<td><input type="checkbox" name="cekirano" class="cekirano" value="'+item.dbid+'"></td>' +
+
+                            '<td>' + item.intBroj + '</td>' +
+                            '<td>' + item.datum + '</td>' +
+                            '<td>' + item.firma + '</td>' +
+
+
+                            '<td></td>' +
+                            '<td>' + item.uplata + '</td>' +
+                            '<td>' + item.konto + '</td>' +
+                            '</tr>'
+                            ));
+                    }
+                    else if(item.konto==null){
+                        jQuery(".tabela-izvodi tbody").append(('<tr izvodid="' + item.dbid + '" zsid="'+item.ZSID+'" zaDokID="'+item.zaDokID+'">' +
+                            '<td>' +
+
+                            '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+
+                            '</td>' +
+                            '<td><input type="checkbox" name="cekirano" class="cekirano" value="'+item.dbid+'"></td>' +
+
+                            '<td>' + item.intBroj + '</td>' +
+                            '<td>' + item.datum + '</td>' +
+                            '<td>' + item.firma + '</td>' +
+
+
+                            '<td></td>' +
+                            '<td>' + item.uplata + '</td>' +
+                            '<td>по док.</td>' +
+                            '</tr>'
+                            ));
+                    }
+
+                }
+
+
+
+
+            });
+            jQuery(".naslovkasapregled .vkupnostavki").html(vkupnostavki);
+        }
+    });
+}
+function getNewNalogBroj(){
+    var formaction = '/index.php/knizenje/nalog/getLastNalogBroj';
+    jQuery.ajax({
+        url:formaction,
+        dataType: "json",
+        type:'GET',
+        success:function (response) {
+            //console.log(response);
+            var lastbroj =parseInt(response[0].broj);
+           console.log(lastbroj);
+            var newbroj = 1*lastbroj + 1;
+            var newbrojint = newbroj;
+            var prefix = 'Налог'+'/';
+            var currentYear = (new Date).getFullYear();
+            var godina = ""+currentYear;
+            var YY = godina.substr(2,2);
+            if(lastbroj.toString().length == 0) newbroj= prefix + '0001' + '/' + YY;
+            if(lastbroj.toString().length == 1) newbroj= prefix + '000' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 2) newbroj= prefix + '00' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 3) newbroj= prefix + '0' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 4) newbroj= prefix + newbroj + '/' + YY;
+            jQuery('span.arhivskibroj').html(newbroj);
+            jQuery('input.fakturabroj').val(newbroj);
+            jQuery('input.arhivskibrojint').val(newbrojint);
+        }
+    });
+}
+function izmeni_nalog(nalogid){
+    var formurl = "/index.php/knizenje/nalog/izmeni_nalog";
+    var data = {  id:nalogid }
+//    console.log(data);
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени Налог",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+
+}
+
+function info_nalog(nalogid){
+    var formurl = "/index.php/knizenje/nalog/info_nalog";
+    var data = {  id:nalogid }
+//    console.log(data);
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:[20, 20],
+                modal:true,
+                title:"Инфо Налог",
+                dialogClass: 'dialogsotabovi',
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+}
+function promena_na_konta(){
+
+   var formurl = "/index.php/knizenje/nalog/promena_na_konta";
+   //var test=1;
+   // if(konto.length >0 && komintent.length >0){
+   // var data = {  konto:konto,komintent:komintent }
+   // }
+   // else if(konto.length>0 && komintent.length==0){
+   //     var data = {  konto:konto,komintent:test }
+   // }
+   // else if(konto.length==0 && komintent.length >0){
+     //   var data = {   konto:test,komintent:komintent }
+  //  }
+  //  console.log(data);
+    jQuery.ajax({
+        url:formurl,
+        type:'POST',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            var saldo=0;
+            jQuery(".kontalista-promena tbody").html('');
+            var s;
+            jQuery.each(response, function (index, item) {
+                jQuery(".kontalista-promena tbody").append(('<tr>' +
+                    '<td>' + item.konto + '</td>' +
+                    '<td>' + item.opis + '</td>' +
+                    '<td>' + item.komintent + '</td>' +
+                    '<td class="text-right">' + formatnumbermkd(item.dolzi) + '</td>' +
+                    '<td class="text-right">' + formatnumbermkd(item.pobaruva) + '</td>' +
+                    '</tr>'
+                    ));
+                saldo = saldo+ (item.pobaruva - item.dolzi);
+            });
+            jQuery(".kontalista-promena tfoot .saldo-konto").html(formatnumbermkd(saldo));
+            jQuery(".kontalista-promena").trigger("update");
+        }
+    });
+}
+
+function promena_spored_dvata_atributi(konto,komintent){
+
+     var formurl = "/index.php/knizenje/nalog/promena_spored_dvata_atributi";
+    var test=1;
+     if(konto.length >0 && komintent.length >0){
+     var data = {  konto:konto,komintent:komintent }
+     }
+     else if(konto.length>0 && komintent.length==0){
+       var data = {  konto:konto,komintent:test }
+     }
+   else if(konto.length==0 && komintent.length >0){
+     var data = {   konto:test,komintent:komintent }
+      }
+     console.log(data);
+
+    jQuery.ajax({
+        url:formurl,
+        type:'POST',
+        data:data,
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            var saldo=0;
+            jQuery(".kontalista-promena tbody").html('');
+            var s;
+            jQuery.each(response, function (index, item) {
+                jQuery(".kontalista-promena tbody").append(('<tr>' +
+                    '<td>' + item.konto + '</td>' +
+                    '<td>' + item.opis + '</td>' +
+                    '<td>' + item.komintent + '</td>' +
+                    '<td class="text-right">' + formatnumbermkd(item.dolzi) + '</td>' +
+                    '<td class="text-right">' + formatnumbermkd(item.pobaruva) + '</td>' +
+                    '</tr>'
+                    ));
+                saldo = saldo+ (item.pobaruva - item.dolzi);
+            });
+            jQuery(".kontalista-promena tfoot .saldo-konto").html(formatnumbermkd(saldo));
+            jQuery(".kontalista-promena").trigger("update");
+        }
+    });
+}
+
+function promena_samo_na_konto(konto){
+
+    var formurl = "/index.php/knizenje/nalog/promena_samo_na_konto";
+    var data= { konto:konto}
+    // var test=1;
+    // if(konto.length >0 && komintent.length >0){
+    // var data = {  konto:konto,komintent:komintent }
+    //// }
+    // else if(konto.length>0 && komintent.length==0){
+    //     var data = {  konto:konto,komintent:test }
+    // }
+    // else if(konto.length==0 && komintent.length >0){
+    //   var data = {   konto:test,komintent:komintent }
+    //  }
+    //  console.log(data);
+    jQuery.ajax({
+        url:formurl,
+        type:'POST',
+        data:data,
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            var saldo=0;
+            jQuery(".kontalista-promena tbody").html('');
+            var s;
+            jQuery.each(response, function (index, item) {
+                jQuery(".kontalista-promena tbody").append(('<tr>' +
+                    '<td>' + item.konto + '</td>' +
+                    '<td>' + item.opis + '</td>' +
+                    '<td>' + item.komintent + '</td>' +
+                    '<td class="text-right">' + formatnumbermkd(item.dolzi) + '</td>' +
+                    '<td class="text-right">' + formatnumbermkd(item.pobaruva) + '</td>' +
+                    '</tr>'
+                    ));
+                saldo = saldo+ (item.pobaruva - item.dolzi);
+            });
+            jQuery(".kontalista-promena tfoot .saldo-konto").html(formatnumbermkd(saldo));
+            jQuery(".kontalista-promena").trigger("update");
+        }
+    });
+}
+function promena_samo_na_komintent(komintent){
+
+    var formurl = "/index.php/knizenje/nalog/promena_samo_na_komintent";
+    var data= { komintent:komintent}
+    // var test=1;
+    // if(konto.length >0 && komintent.length >0){
+    // var data = {  konto:konto,komintent:komintent }
+    //// }
+    // else if(konto.length>0 && komintent.length==0){
+    //     var data = {  konto:konto,komintent:test }
+    // }
+    // else if(konto.length==0 && komintent.length >0){
+    //   var data = {   konto:test,komintent:komintent }
+    //  }
+    //  console.log(data);
+    jQuery.ajax({
+        url:formurl,
+        type:'POST',
+        data:data,
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            var saldo=0;
+            jQuery(".kontalista-promena tbody").html('');
+            var s;
+            jQuery.each(response, function (index, item) {
+                jQuery(".kontalista-promena tbody").append(('<tr>' +
+                    '<td>' + item.konto + '</td>' +
+                    '<td>' + item.opis + '</td>' +
+                    '<td>' + item.komintent + '</td>' +
+                    '<td class="text-right">' + formatnumbermkd(item.dolzi) + '</td>' +
+                    '<td class="text-right">' + formatnumbermkd(item.pobaruva) + '</td>' +
+                    '</tr>'
+                    ));
+                saldo = saldo+ (item.pobaruva - item.dolzi);
+            });
+            jQuery(".kontalista-promena tfoot .saldo-konto").html(formatnumbermkd(saldo));
+            jQuery(".kontalista-promena").trigger("update");
+        }
+    });
+}
+function delete_nalog(nalogid){
+    var r=confirm("Избриши налог");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/knizenje/nalog/delete_nalog";
+            var data = {  id:nalogid  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                   nalozi_popolnilista();
+                    jQuery(".nalogdetali tr:gt(1)").remove();
+                }
+            });
+            nalozi_popolnilista();
+        }
+    }
+}

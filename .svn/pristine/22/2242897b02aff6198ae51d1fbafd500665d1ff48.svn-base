@@ -1,0 +1,195 @@
+<div id="pregled_izvodi_form">
+	<?php
+	$delete      = img(array('src' => 'images/delete.png', 'width' => '15', 'height' => '15', 'class' => 'delete'));
+	$editIzvod   = img(array('src' => 'images/edit.png', 'width' => '15', 'height' => '15', 'class' => 'editIzvod'));
+	$deleteIzvod = img(array('src' => 'images/delete.png', 'width' => '15', 'height' => '15', 'class' => 'deleteIzvod'));
+	?>
+    <div class="nov-izvod-button">
+        <?php if (bis_check_access('izvodi_pregled_izvodi_nov_izvod_button')): ?>
+          <button class="button" onclick="izvodi_nov()"><span>Нов извод</span></button>
+            <?php endif ?>
+        <?php if (bis_check_access('izvodi_pregled_izvodi_baraj_button')): ?>
+          <button class="button cmdbaraj"><span>Барај</span></button>
+            <?php endif ?>
+    </div>
+    <div class="filterforma hiddencontent">
+            <form action="/index.php/izvodi/menu/search" method="post">
+                <div class="smetka">
+                    <div class="parametar-izvod">
+                        <span class="floatleft">Жиросметка:</span>
+						<?php
+						echo form_dropdown('zirosmetka', $zirosmetka, '', 'class="zirosmetka"  ');
+						?>
+<!--                        <span class="banka"></span>-->
+                    </div>
+                </div>
+            </form>
+    </div>
+	<div class="clear"></div>
+
+    <div class="zaedno">
+        <p class="naslovpregledizvodi"> ( <span class="vkupnostavki">0</span> ) Изводи по жиросметка</p>
+        <div class="predtabela">
+            <table class="tabela tabelaizvod" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Број</th>
+                    <th>Жиро сметка</th>
+                    <th>Банка</th>
+                    <th>Датум</th>
+                    <th>Одлив</th>
+                    <th>Прилив</th>
+                    <th>Предходна Состојба</th>
+                    <th>Сегашна Состојба</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="trow hiderow">
+                    <td><?= $deleteIzvod; ?> <?= $editIzvod; ?></td>
+                    <td class="izvodbroj"></td>
+                    <td class="izvodzirosmetka"></td>
+                    <td class="izvodzirosmetkaid hide"></td>
+                    <td class="bankazirosmetka"></td>
+                    <td class="izvoddatum"></td>
+                    <td class="sumaodliv"></td>
+                    <td class="sumapriliv"></td>
+                    <td class="prethodna"></td>
+                    <td class="segasna"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>	<div class="clear"></div>
+
+    <?php if (bis_check_access('izvodi_pregled_izvodi_nova_stavka_button')): ?>
+        <div class="nov-izvod-button novastavka">
+            <button class="button" onclick="izvodi_novastavka()"><span>Нова ставка</span></button>
+        </div>
+            <?php endif ?>
+    <div class="clear"></div>
+    <div class="stavka">
+        <p class="naslovpregledizvodistavki"> ( <span class="vkupnostavki">0</span> ) Ставки по извод</p>
+        <div class="predtabela">
+        <table class="tabela tabelastavka" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th>РБ.</th>
+                <th>Коминтент</th>
+                <th>Одлив</th>
+                <th>Прилив</th>
+                <th>Повик. број</th>
+                <th>Конто</th>
+                <th>Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='hiderow'>
+                <td class="stavkadbid hide"></td>
+                <td class="broj"></td>
+                <td class="naziv"></td>
+                <td class="odliv"></td>
+                <td class="priliv"></td>
+                <td class="povikuvackibroj"></td>
+                <td class="grupa"></td>
+                <td class="zabeleska"></td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".tabelaizvod").tablesorter();
+        jQuery(".tabelastavka").tablesorter();
+        jQuery(".zirosmetka").val("");
+        izvodi_popolnilista();
+        jQuery("#pregled_izvodi_form .zirosmetka").combobox();
+        jQuery('#pregled_izvodi_form .zirosmetka').live('change', function () {
+            izvodi_popolnilista();
+        });
+	    jQuery("#pregled_izvodi_form .cmdbaraj").live('click', function () {
+		    jQuery("#pregled_izvodi_form .filterforma").toggleClass("hiddencontent");
+        });
+        jQuery(".tabelaizvod").delegate("tr.trow", "click", function () {
+            jQuery(".tabelaizvod .trow").removeClass("active");
+            jQuery(this).addClass('active');
+            var izvodbroj = jQuery(this).find('.izvodbroj').text();
+            var zirosmetka = jQuery(this).find('.izvodzirosmetkaid').text();
+//            var zirosmetka = jQuery('.zirosmetka option:selected').val();
+            jQuery(this).siblings().removeClass('clicked');
+            jQuery(this).toggleClass('clicked');
+            if (izvodbroj) {
+                var data = {
+                    izvodbroj:izvodbroj,
+                    zirosmetka:zirosmetka
+                }
+                jQuery.ajax({
+                    url:"/index.php/izvodi/menu/getStavkaByIzvodBroj",
+                    type:'POST',
+                    data:data,
+                    dataType:'json',
+                    success:function (response) {
+//                        console.log(response);
+                        var vkupnostavki = response.length;
+                        jQuery(".tabelastavka").find("tr:gt(0)").not(":last").remove();
+                        var tr = jQuery('.tabelastavka tr:last');
+                        tr.removeClass('hiderow');
+                        var index = 1;
+                        for (var i = 0; i < response.length; i++) {
+                            var newrow = jQuery(tr).clone().insertBefore(tr);
+                            newrow.find('.broj').text(i+1*1);
+                            newrow.find('.stavkadbid').text(response[i].dbid);
+                            if (response[i].firma) newrow.find('.naziv').text(response[i].firma + " : " + response[i].firmaZiro);
+                            else newrow.find('.naziv').text('');
+                            newrow.find('.povikuvackibroj').text(response[i].zaPovikBroj);
+                            newrow.find('.grupa').text(response[i].konto);
+                            newrow.find('.zabeleska').text(response[i].komentar);
+                            if (response[i].tip == 40) {
+                                newrow.find('.odliv').text(formatnumbermkd(response[i].uplata));
+                                newrow.find('.priliv').text('');
+                            }
+                            if (response[i].tip == 50) {
+                                newrow.find('.priliv').text(formatnumbermkd(response[i].uplata))    ;
+                                newrow.find('.odliv').text('');
+                            }
+                            index++;
+                        }
+                        jQuery(".naslovpregledizvodistavki .vkupnostavki").html(vkupnostavki + " во листа");
+                        tr.addClass('hiderow');
+                        jQuery(".tabelastavka").trigger("update");
+                    }
+                });
+            }
+        });
+        jQuery('.tabelastavka tr').live("dblclick", function () {
+            var id = jQuery(this).find('.stavkadbid').text();
+            var formaction = "/index.php/izvodi/menu/editStavkaIzvod?id=" + id;
+            //
+            jQuery.ajax({
+                url:formaction,
+                success:function (response) {
+                    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+                    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                    jQuery("." + tempdialog).html(response);
+                    jQuery('div.' + tempdialog).dialog({
+                        autoOpen:true,
+                        width:"auto",
+                        //position:[20, 20],
+                        position:"center",
+                        modal:true,
+                        //dialogClass: 'dialogsotabovi',
+                        title:"Промени ставка",
+                        close:function (event, ui) {
+                            jQuery(this).dialog("destroy");
+                            jQuery(this).remove();
+                        }
+                    });
+                }
+            });
+        });
+
+    });
+</script>

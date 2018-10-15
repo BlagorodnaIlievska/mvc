@@ -1,0 +1,161 @@
+function novo_baranje(){
+    var formaction = '/index.php/javni_nabavki/javni_nabavki/novo_baranje';
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery.ajax({
+        url:formaction,
+        success:function (response) {
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery("." + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+//                width:"auto",
+                width:1024,
+                position:[00, 00],
+                modal:true,
+                dialogClass: 'dialogsotabovi',
+                title:"Ново барање",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/javni_nabavki/javni_nabavki/baranje_index',
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #baranje").html(response);
+                }
+            });
+            jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                cache:true,
+                ajaxOptions:{
+                    type:"POST"
+                }
+            });
+        }
+    });
+}
+function baranja_napolnilista(){
+
+    jQuery.ajax({
+        url:"/index.php/javni_nabavki/javni_nabavki/getBaranja",
+        type:'POST',
+
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            jQuery(".tbaranja tbody tr").removeClass("active");
+            jQuery(".tbaranja tbody").find("tr:gt(1)").remove();
+            var tr = jQuery('.tbaranja tr:last');
+            tr.removeClass('hiderow');
+            var vkupnostavki = response.length;
+            for (var i = 0; i < response.length; i++) {
+
+                var newrow = jQuery(tr).clone().insertAfter(tr);
+                newrow.attr("id", response[i].id);
+                newrow.find('.brojb').html(response[i].broj_baranje);
+                newrow.find('.datumb').html(response[i].datum_baranje);
+                newrow.find('.baranjem').html(response[i].baranje_mesec);
+                newrow.find('.baranjep').html(response[i].predmet_baranje);
+
+                newrow.find('.kl').html(response[i].klient);
+
+            }
+            tr.addClass('hiderow');
+
+            jQuery(".tbaranja .vkupnostavki").html(vkupnostavki + " во листа");
+            jQuery(".naslovvleznifakturi .vkupnostavki").html(vkupnostavki);
+            jQuery(".tbaranja").trigger("update");
+            //bind the delete event
+            jQuery('.tbaranja tbody .deletefaktura').click(function() {
+                var trow = jQuery(this).closest('tr');
+                var fakturaid = trow.attr('id');
+                // delete_vf(fakturaid);
+            });
+            jQuery(".tbaranja tbody .editfaktura").click(function () {
+                //  editfaktura(jQuery(this).parent());
+            });
+
+        }
+    });
+}
+function zemi_detali_baranje(dbid){
+    var id = {
+        id: dbid
+    }
+
+    jQuery.ajax({
+        url: "/index.php/javni_nabavki/javni_nabavki/getBaranjeDetali",
+        type: 'POST',
+        data: id,
+        dataType: 'json',
+        success: function(response) {
+            console.log(response);
+
+            jQuery(".stavki-baranje tbody tr").removeClass("active");
+            jQuery(".stavki-baranje tbody").find("tr:gt(1)").remove();
+            var tr = jQuery('.stavki-baranje tr:last');
+            tr.removeClass('hiderow');
+            var rb=1;
+            var num=1;
+
+            for (var i = 0; i < response.length; i++) {
+
+
+//                var newrow = jQuery(tr).clone().insertAfter(tr);
+//                //  newrow.attr("id", response[i].id);
+//                newrow.attr("id", response[i].id);
+//                newrow.attr("baranje_id", response[i].baranje_id);
+//                newrow.find('.rb').text(rb);
+//                newrow.find('.sif').text(response[i].sifra);
+//                newrow.find('.stav').text(response[i].stavka);
+//                newrow.find('.kold').html(response[i].kolicinad);
+//                newrow.find('.kolp').text(response[i].kolicinap);
+//
+//                newrow.find('.kolo').text(response[i].kolicinao);
+//
+//                rb++;
+                jQuery(".stavki-baranje tbody").append(('<tr class="detali" id="' + response[i].id + '" baranje_id="'+response[i].baranje_id+'">' +
+                     ' <td class="brisi"><img width="15" height="15" alt="" src="/images/delete.png"></td>'   +
+                    '<td><input type="text" style="width: 30px;" name="rb" value=" '+num+' " ></td>' +
+                    '<td><input type="text" name="sifra" value="'+response[i].sifra+'" ></td>' +
+                    '<td><input type="text" name="stavka" value="'+response[i].stavka+'" ></td>' +
+
+
+                    '<td><input type="text" name="kolicinad"  class="kolicinad" style="width: 80px" value=" '+response[i].kolicinad+' "></td>' +
+                    '<td><input type="text" name="kolicinap"  class="kolicinap" style="width: 80px" value="'+response[i].kolicinap+'"></td>' +
+                    '<td><input type="text" name="kolicinao" class="kolicinao" style="width: 80px" value="'+response[i].kolicinao+'"></td>' +
+                    '<td><input type="text" name="id" class="hideartikl hide" style="width: 80px" value="'+response[i].id+'"></td>' +
+                    '<td><input type="text" name="sifraid" class="hideartikl hide" style="width: 80px" value="'+response[i].SID+'"></td>' +
+                    '</tr>'
+                    ));
+                      num++;
+            }
+            tr.addClass('hiderow');
+
+
+        }
+    });
+}
+function delete_stavka_baranje(id,baranje_id){
+    var baranje_id=baranje_id;
+    var r=confirm("Избриши ставка");
+    if (r==true)
+    {
+
+
+        var formurl = "/index.php/javni_nabavki/javni_nabavki/delete_stavka_baranje";
+        var data = {  id:id  }
+        jQuery.ajax({
+            url:formurl,
+            type:'GET',
+            data:data,
+            success:function (response) {
+                zemi_detali_baranje(baranje_id);
+                jQuery(".tbaranja tr:gt(1)").remove();
+            }
+        });
+        zemi_detali_baranje(baranje_id);
+
+    }
+}

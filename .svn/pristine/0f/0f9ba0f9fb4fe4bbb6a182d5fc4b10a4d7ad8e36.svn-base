@@ -1,0 +1,68 @@
+<div class="editklasa iskluci-izmeni">
+<div class="faktura-arhivskibroj">
+    <label>Број на налог: </label>
+
+    <input type="text" name="brojnalog" style="margin-bottom: 5px;margin-left: 10px; "    class="brojnalog" value="<? echo $nalog[0]->broj;?>" readonly="brojnalog">      <br>
+</div>
+<div class="faktura-od-dobavuvac">
+
+    <div class="nalog-datum">
+        <label>Датум на налог:</label>
+
+        <input type="text" name="datum"  class="nalogdatum" value="<?echo $nalog[0]->datum;?>" readonly="datum">
+        <input type="hidden" name="tip" value="<?echo $nalog[0]->tip_na_nalog;?>" >
+    </div>
+    <div class="f-od-dobavuvac nov-nalog-datum">
+        <label>Зa која ОЕ:</label>
+        <?php echo form_dropdown('oddel', $oddel, $nalog[0]->oddel, 'class="nalogoddel"'); ?>
+    </div>
+</div>
+<fieldset>
+    <legend>Ставки во документот</legend>
+    <table class="stavki-nalog-detali" border="1" cellpadding="2" id="faktura">
+        <thead>
+        <tr>
+
+            <th>РБ</th>
+            <th class="konto">Конто</th>
+            <th>Бр.док.</th>
+
+            <th class="opis">Опис</th>
+            <th>Коминтент</th>
+            <th class="dolzi">Должи</th>
+            <th class="pobaruva">Побарува</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <?php if(is_array($nalog_detali)){ ?>
+            <?php $i=1; foreach($nalog_detali as $nalog1): ?>
+            <tr zadokid="<? echo $nalog1->dokid;?>" tip="<?echo $nalog[0]->tip_na_nalog; ?>" >
+
+                <td class="redenbroj text-right" readonly><?= $i; ?></td>
+                <td class="text-right" readonly><?= $nalog1->konto ?></td>
+                <td readonly><?= $nalog1->broj_dok ?></td>
+                <td readonly><?= $nalog1->opis ?></td>
+                <td readonly><?= $nalog1->komintent ?></td>
+                <td class="text-right" readonly><?= $nalog1->dolzi ?></td>
+                <td class="text-right" readonly><?= $nalog1->pobaruva ?></td>
+
+            </tr>
+                <?php $i++; ?>
+                <?php endforeach; ?>
+            <?php }; ?>
+        </tbody>
+    </table>
+    <!--    <div class="addstavka floatleft">
+            <button type="button" class="add button"><span>Додади ставка</span>
+            </button>
+       </div>
+        <div class="addstavka floatleft">
+            <button type="button" class="dodadiusluga button"><span>Додади услуга</span></button>
+        </div>      -->
+
+</fieldset>
+    </div>
+<script>
+
+</script>

@@ -1,0 +1,41 @@
+<div class="editklasa">
+    <form method="post" action="/index.php/konta/konta/update_klasa">
+        <input type="hidden" name="id" value="<?php echo $id ?>" />
+
+        <?php if ($tip=='klasa') {  ?>
+
+        Конто:<br />
+        <input type="text" value="<?php echo $sifranaklasa ?>" name="sifra"><br /><br/>
+        Опис на конто:<br />
+        <input type="text" value="<?php echo $opisnaklasa ?>" name="opis"><br />
+        <?php } elseif($tip=='grupa'){ ?>
+
+        Опис на група: <?php echo $opisnaklasa ?><br />
+        Шифра на група: <?php echo $sifranaklasa ?><br /><br />
+
+        Име на Група:<br />
+        <input type="text" value="<?php echo $opisnagrupa ?>" name="opis"><br />
+        Шифра на Група:<br />
+        <input type="text" value="<?php echo $sifranagrupa ?>" name="sifra"><br />
+
+
+        <?php } elseif($tip=='konto'){ ?>
+        Опис на Класа: <?php echo $opisnaklasa ?><br />
+        Шифра на Класа: <?php echo $sifranaklasa ?><br /><br />
+        Опис на Група: <?php echo $opisnagrupa ?><br />
+        Шифра на Група: <?php echo $sifranagrupa ?><br /><br />
+
+        Опис на конто:<br />
+        <input type="text" value="<?php echo $opisnakonto ?>" name="opis"><br />
+        Шифра на конто:<br />
+        <input type="text" value="<?php echo $sifranakonto ?>" name="sifra"><br />
+
+
+
+        <?php } ?>
+
+
+
+        <input type="button" class="ajaxklasiupdate button" value="Измени"><br/>
+    </form>
+</div>

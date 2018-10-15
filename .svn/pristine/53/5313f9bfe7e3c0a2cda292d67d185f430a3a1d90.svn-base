@@ -1,0 +1,254 @@
+<?php
+$datum_tmp = explode("/", $datum);
+$godina = $datum_tmp[0];
+$mesec = $datum_tmp[1];
+$den = $datum_tmp[2];
+$za_datum = $godina."-".$mesec."-".$den;
+?>
+<div class="planiranje-den-forma">
+    <form class="planiranje-aktivnosti-forma">
+    <div class="planiranje-korisnik-info">
+        <fieldset class="planiranje-korisnik-info-fieldset">
+            <legend>Податоци за вработен</legend>
+            <span><strong><?= $user[0]->ime . " " . $user[0]->prezime; ?></strong> за ден <strong><?= $datum; ?></strong></span><br />
+            <span class="izberi-smena">Избери смена</span>
+            <select class="izbor_smena" name="day<?= $den ?>">
+                <option <?php if(!isset($smena)) echo 'selected="selected"'; ?> value=""></option>
+                <option <?php if(isset($smena) && $smena == 0) echo 'selected="selected"'; ?> value="0">Слободен</option>
+                <option <?php if(isset($smena) && $smena == 1) echo 'selected="selected"'; ?> value="1">С1</option>
+                <option <?php if(isset($smena) && $smena == 2) echo 'selected="selected"'; ?> value="2">С2</option>
+                <option <?php if(isset($smena) && $smena == 3) echo 'selected="selected"'; ?> value="3">С3</option>
+                <option <?php if(isset($smena) && $smena == 4) echo 'selected="selected"'; ?> value="4">Д1</option>
+                <option <?php if(isset($smena) && $smena == 5) echo 'selected="selected"'; ?> value="5">Д2</option>
+                <option <?php if(isset($smena) && $smena == 6) echo 'selected="selected"'; ?> value="6">Одмор</option>
+            </select>
+            <input type="hidden" class="smenska_mapa_id" name="smenska_mapa_id" value="<?= $smena_id ?>" />
+            <input type="hidden" class="user_id" name="user_id" value="<?= $user_id ?>" />
+            <input type="hidden" class="datum_aktivnost" name="datum_aktivnost" value="<?= $za_datum ?>" />
+            <input type="hidden" class="month" name="month" value="<?= $mesec ?>" />
+            <input type="hidden" class="year" name="year" value="<?= $godina ?>" />
+        </fieldset>
+    </div>
+    <div class="pregled-tabela-aktivnosti">
+        <table class="tabela-aktivnosti">
+            <thead>
+                <tr>
+                    <th class="delete"></th>
+                    <th class="redenbroj">Р.Б</th>
+                    <th class="vreme-od">Време од</th>
+                    <th class="vreme-do">Време до</th>
+                    <th class="aktivnost">Активност</th>
+                    <th class="mesto">Место</th>
+                    <th class="pacient">Пациент</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            if(isset($aktivnosti) && is_array($aktivnosti))
+            {
+                $i = 0;
+                foreach($aktivnosti as $aktivnost){
+                $i++;
+                ?>
+                    <tr aktivnost_id="<?= $aktivnost->id; ?>">
+                        <td class="delete_aktivnost"><a class="delete" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a></td>
+                        <td class="redenbroj"><?= $i; ?></td>
+                        <td class="vreme"><input type="text" class="vreme" name="aktivnosti[<?= $i; ?>][vreme]" value="<?php echo $aktivnost->vreme; ?>" /></td>
+                        <td class="vreme_do"><input type="text" class="vreme_do" name="aktivnosti[<?= $i; ?>][vreme_do]" value="<?php echo $aktivnost->vreme_do; ?>" /></td>
+                        <td class="aktivnost"><input type="text" class="aktivnost" name="aktivnosti[<?= $i; ?>][aktivnost]" value="<?php echo $aktivnost->aktivnost; ?>" /></td>
+                        <td class="mesto"><input type="text" class="mesto" name="aktivnosti[<?= $i; ?>][mesto]" value="<?php echo $aktivnost->mesto; ?>" /></td>
+                        <td class="pacient_id">
+                            <select class="pacient_id pacient_dropdown" name="aktivnosti[<?= $i; ?>][pacient_id]" >
+                                <?php
+                                if($aktivnost->pacient_id > 0)
+                                {
+                                    foreach($pacienti as $pacient){ ?>
+                                        <option <?php if($pacient->id == $aktivnost->pacient_id) echo 'selected="selected"'; ?> value="<?= $pacient->id ?>"><?= $pacient->ime." ".$pacient->prezime; ?></option>
+                                <?php }
+                                }
+                                else { ?>
+                                    <option value=""></option>
+                                    <?php foreach($pacienti as $pacient){ ?>
+                                        <option value="<?= $pacient->id ?>"><?= $pacient->ime." ".$pacient->prezime; ?></option>
+                                    <?php }
+                                } ?>
+                            </select>
+                        </td>
+                        <td class="aktivnost_id hide"><input type="hidden" class="aktivnost_id" name="aktivnosti[<?= $i; ?>][id]" value="<?php echo $aktivnost->id; ?>" /></td>
+                        <td class="status hide"><input type="hidden" class="status" name="aktivnosti[<?= $i; ?>][status]" value="1" /></td>
+                    </tr>
+                <?php
+                }
+            }
+            ?>
+            </tbody>
+        </table>
+    </div>
+    <div class="zacuvaj-podatoci">
+<!--        <button type="button" class="button planiranje-dodadi-nova-aktivnost"><span>Нова активност</span></button>-->
+        <button type="button" class="button snimi-planiranje-podatoci"><span>Зачувај</span></button>
+    </div>
+    </form>
+</div>
+<script>
+    function aktivnost_pacient_option_values(){
+        return ''+ '<option value=""></option>' +
+            '<?php foreach($pacienti as $pacient) { echo '<option value="'.$pacient->id.'">'.$pacient->ime." ".$pacient->prezime. ' </option>'; } ?>';
+    }
+    function dodadi_nov_red_aktivnost(){
+        var redovi = jQuery(".tabela-aktivnosti tbody tr").length;
+        redovi = 1*redovi + 1*1;
+        jQuery(".tabela-aktivnosti tbody").append('<tr>' +
+            '<td class="delete_aktivnost">' + '<a class="delete" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' + '</td>' +
+            '<td class="redenbroj">' + redovi + '</td>' +
+            '<td class="vreme"><input type="text" class="vreme" name="aktivnosti['+redovi+'][vreme]" value="" /></td>' +
+            '<td class="vreme_do"><input type="text" class="vreme_do" name="aktivnosti['+redovi+'][vreme_do]" value="" /></td>' +
+            '<td class="aktivnost"><input type="text" class="aktivnost" name="aktivnosti['+redovi+'][aktivnost]" value="" /></td>' +
+            '<td class="mesto"><input type="text" class="mesto" name="aktivnosti['+redovi+'][mesto]" value="" /></td>' +
+            '<td class="pacient_id"><select class="pacient_id pacient_dropdown" name="aktivnosti['+redovi+'][pacient_id]" >'+aktivnost_pacient_option_values()+'</select></td>' +
+//            '<td class="aktivnost_id hide"><input type="hidden" class="aktivnost_id" name="aktivnosti['+redovi+'][id]" value="" /></td>' +
+            '<td class="status hide"><input type="hidden" class="status" name="aktivnosti[' + redovi + '][status]" value="0" /></td>' +
+            '</tr>');
+        jQuery('[name="aktivnosti[' + redovi + '][pacient_id]"]').combobox();
+    }
+    jQuery(document).ready(function () {
+        jQuery(".tabela-aktivnosti").tablesorter();
+        jQuery(".tabela-aktivnosti tbody select.pacient_id").combobox();
+
+        var smena_id = jQuery(".izbor_smena option:selected").val();
+        if(smena_id != 0 && smena_id != 6) {
+            jQuery(".pregled-tabela-aktivnosti").show();
+            dodadi_nov_red_aktivnost();
+        }
+        else jQuery(".pregled-tabela-aktivnosti").hide();
+
+        jQuery(".tabela-aktivnosti tbody tr :input").live("blur", function () {
+            var row = jQuery(this).closest("tr");
+            if(row.is(":last-child")) dodadi_nov_red_aktivnost();
+        });
+        jQuery(".tabela-aktivnosti tbody tr .delete").live("click", function () {
+            var row = jQuery(this).closest("tr");
+            var aktivnost_id = row.attr("aktivnost_id");
+            if(aktivnost_id) delete_planiranje_aktivnost(aktivnost_id, row);
+        });
+        jQuery(".izbor_smena").change(function () {
+            var smena = jQuery(".izbor_smena option:selected").val();
+            var broj_aktivnosti = jQuery(".tabela-aktivnosti tbody tr").length;
+            if(smena != 0 && smena != 6){
+                jQuery(".pregled-tabela-aktivnosti").show();
+                jQuery(".snimi-planiranje-podatoci").show();
+                if(broj_aktivnosti == 0) dodadi_nov_red_aktivnost();
+            } else if(smena == 0 && broj_aktivnosti>0){
+                jQuery(".snimi-planiranje-podatoci").hide();
+                alert("Избришете ги сите закажани активности за да зачувате!!!");
+            } else if(smena == 6 && broj_aktivnosti>0){
+                jQuery(".snimi-planiranje-podatoci").hide();
+                alert("Избришете ги сите закажани активности за да зачувате!!!");
+            }
+        });
+        jQuery(".snimi-planiranje-podatoci").click(function () {
+            var ovakopce = jQuery(this);
+            ovakopce.attr("disabled", "disabled");
+            jQuery(".tabela-aktivnosti tbody tr:last").remove();
+            var table_class = "tabela-aktivnosti";
+
+            jQuery.when(proveri_tabela_podatoci(table_class)).done(function(data){
+                if(data == 0) alert("Мора да ги пополните сите полиња!!!");
+                else {
+                    jQuery.when(zacuvaj_planiranje_den(ovakopce)).done(function(){
+                        var smena_id = jQuery(".izbor_smena option:selected").val();
+                        var smena = jQuery(".izbor_smena option:selected").text();
+
+                        if(smena_id ==0) jQuery(".smeni-poime tbody tr td.active p").html('Fr');
+                        else if(smena_id == 6) jQuery(".smeni-poime tbody tr td.active p").html("Od");
+                        else jQuery(".smeni-poime tbody tr td.active p").html(smena);
+
+                        destroyparentdialog(ovakopce);
+                    });
+                }
+            });
+        });
+
+        jQuery(".tabela-aktivnosti tbody tr td input.vreme").live("blur", function () {
+            var elem = jQuery(this);
+            var row = elem.closest("tr");
+            var ova_vreme = elem.val();
+            jQuery.when(proveri_format_vreme(ova_vreme)).done(function(data){
+                if(data == false) alert("Ве молиме внесете време во HH:MM формат!!!");
+                else{
+//                    if(proveri_period_vreme_od_do(row) == false) {
+//                        elem.val('');
+//                        alert("Грешка при внесување на период од-до!!!");
+//                    }
+                    if(proveri_period_vreme_prethodno(row) == false) {
+                        elem.val('');
+                        alert("имате закажано активност во овој период!!!");
+                    }
+                }
+            });
+        });
+
+        jQuery(".tabela-aktivnosti tbody tr td input.vreme_do").live("blur", function () {
+            var elem = jQuery(this);
+            var row = elem.closest("tr");
+            var ova_vreme = elem.val();
+            jQuery.when(proveri_format_vreme(ova_vreme)).done(function(data){
+                if(data == false) {
+                    elem.val('');
+                    alert("Ве молиме внесете време во HH:MM формат!!!");
+                }
+                else{
+                    if(proveri_period_vreme_od_do(row) == false) {
+                        elem.val('');
+                        alert("Грешка при внесување на период од-до!!!");
+                    }
+                }
+            });
+        });
+    });
+
+function proveri_period_vreme_prethodno(row)
+{
+    var row_prev = row.prev();
+    if(row_prev[0])
+    {
+        var current_vreme_od = row.find("input.vreme").val();
+        var vreme_od = row_prev.find("input.vreme").val();
+        var vreme_do = row_prev.find("input.vreme_do").val();
+
+        current_vreme_od = current_vreme_od.split(":");
+        var current_vreme_start = current_vreme_od.join("");
+
+        vreme_od = vreme_od.split(":");
+        var vreme_start = vreme_od.join("");
+
+        vreme_do= vreme_do.split(":");
+        var vreme_end = vreme_do.join("");
+
+        if(current_vreme_start >= vreme_start && current_vreme_start <= vreme_end) return false;
+        else return true;
+    }
+    return true;
+}
+function proveri_format_vreme(vreme)
+{
+    var hour = '^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$';
+
+    if ($.trim(vreme).match(hour) == null) return false;
+    else return true;
+}
+function proveri_period_vreme_od_do(row)
+{
+    var vreme_od = row.find("input.vreme").val();
+    var vreme_do = row.find("input.vreme_do").val();
+
+    vreme_od = vreme_od.split(":");
+    vreme_od = vreme_od.join("");
+
+    vreme_do = vreme_do.split(":");
+    vreme_do = vreme_do.join("");
+
+    if(vreme_od >= vreme_do) return false;
+    else return true;
+}
+</script>

@@ -1,0 +1,63 @@
+<div id="uplata_form">
+    <div class="uplata">
+        <fieldset>
+            <legend>Преглед на уплати по фактура</legend>
+        <table class="tuplata" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th>Сметка</th>
+                <th>Датум</th>
+                <th>Коминтент</th>
+                <th>Одлив</th>
+                <th>Прилив</th>
+                <th>Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='hiderow trow'>
+                <td class='smetka'></td>
+                <td class='dbid hide'></td>
+                <td class='datum'></td>
+                <td class='naziv'></td>
+                <td class='odliv'></td>
+                <td class='priliv'></td>
+                <td class='zabeleska'></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</fieldset>
+<script>
+    jQuery(document).ready(function() {
+        jQuery(".tuplata").tablesorter();
+        jQuery(".tuplata").trigger("update");
+//        var fakturaid = jQuery('.fakturaid').val();
+//        var data = {
+//            fakturaid: fakturaid
+//        }
+//        jQuery.ajax({
+//            url: "/index.php/vlezni_fakturi/faktura/getUplataFaktura",
+//            type: 'POST',
+//            data: data,
+//            dataType: 'json',
+//            success: function(response) {
+//                //console.log(response);
+//                jQuery(".tuplata").find("tr:gt(1)").remove();
+//                var tr = jQuery('.tuplata tr:last');
+//                tr.removeClass('hiderow');
+//                for ( var i = 0; i < response.length; i++ ) {
+//                    var newrow = jQuery(tr).clone().insertAfter(tr);
+//                    newrow.find('.dbid').text(response[i].dbid);
+//                    newrow.find('.smetka').text(response[i].smetka);
+//                    newrow.find('.datum').text(response[i].datum + " : " + response[i].broj);
+//                    newrow.find('.naziv').text(response[i].firmaIme + " : " + response[i].firmaSmetka);
+//                    newrow.find('.odliv').text(response[i].suma);
+//                    newrow.find('.priliv').text();
+//                    newrow.find('.zabeleska').text(response[i].zabeleska);
+//                }
+//                tr.addClass('hiderow');
+//            }
+//        });
+    });
+</script>

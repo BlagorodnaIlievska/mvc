@@ -1,0 +1,2 @@
+<p>The field has been created.</p>
+<br><?php echo anchor('users/site/main_area', 'Back to menu'); ?><br>

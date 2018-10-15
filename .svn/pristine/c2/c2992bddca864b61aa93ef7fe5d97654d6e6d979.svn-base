@@ -1,0 +1,54 @@
+<div id="sno_menu_form">
+<div class="filter-sno">
+    <?php
+    echo form_open('materijalno/sno/search');
+
+    echo form_label('Сериски број: ', 'sno');
+    $data = array(
+        'name' => 'sno',
+        'id'   => 'sno'
+    );
+    echo form_input($data);
+    ?>
+    <button type="button" class="button vlezbutton" id="vlez"><span>Влез</span></button>
+    <button type="button" class="button izlezbutton" id="izlez"><span>Излез</span></button>
+    <?php
+    echo form_close();
+    ?>
+</div>
+    <div class="prikaz">
+        <div class="predtabela">
+        <table class="sno" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th class="sbroj">Сериски броеви</th>
+                <th class="sifra">Шифра</th>
+                <th class="katbroj">Кат. Број</th>
+                <th class="stavka">Ставка</th>
+                <th class="klient">Клиент</th>
+                <th class="datum">Датум</th>
+                <th class="dokument">Документ</th>
+                <th class="magacin">Магацин</th>
+                <th class="faktura">Фактура</th>
+            </tr>
+
+            <?php
+
+            echo "<tr>";
+            echo "<td> <input type='text' class='s-broj medium'> </td>";
+            echo "<td> <input type='text' class='sifra medium'> </td>";
+            echo "<td> <input type='text' class='kat-broj medium'> </td>";
+            echo "<td> <input type='text' class='stavka big'> </td>";
+            echo "<td> <input type='text' class='klient big'> </td>";
+            echo "<td> <input type='text' class='datum medium' readonly> </td>";
+            echo "<td> <input type='text' class='dokument medium'> </td>";
+            echo "<td> <input type='text' class='magacin medium'> </td>";
+            echo "<td> <input type='text' class='faktura medium'> </td>";
+
+            echo "</tr>";
+
+            ?>
+        </table>
+        </div>
+    </div>
+
+</div>

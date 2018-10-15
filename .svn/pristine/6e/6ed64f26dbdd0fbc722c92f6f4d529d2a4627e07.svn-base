@@ -1,0 +1,111 @@
+<?php
+$data = explode("-",$faktura[0]->datum);
+$mesec = $data[1];
+$godina = $data[2];
+?>
+<div id="info_faktura_form">
+    <div class="levo">
+        Здравствена установа<br />
+        ЈЗУ ТОАРИЛУЦ<br />
+        Адреса<br />
+        ХХХ
+    </div>
+    <div class="desno">
+            Подрачна служба<br />
+            ФЗОМ Скопје
+    </div>
+    <h1>ФАКТУРА <?= $faktura[0]->textBroj; ?></h1> <br>
+    <div class="sredina">
+        <div class="finansii">
+            _____________________<br />
+            Трансакциска сметка<br />
+            ХХХ<br />
+            Банка депонент<br />
+            XXX<br />
+            Дејност: <?= $ustanova->ime; ?><br />
+<!--            Дејност: --><?//= $upaten_vo; ?><!--<br />-->
+            Број на лекување: <?= $broj_lekuvanje; ?>
+        </div>
+        <div class="data">
+            <label>Година:</label><?= $godina; ?><br>
+            <label>Месец:</label><?= $mesec; ?><br>
+            <label>Дата на фактура:</label><?= $faktura[0]->datum; ?><br>
+            <label>Валута на фактура хххх:</label><br>
+        </div>
+    </div>
+    <div class="stavkipopistabeladiv">
+        <table class="tabela-stavki-popis" border="1" cellpadding="2">
+            <thead>
+            <tr>
+                <th>Реден Број</th>
+                <th>Шифра на пакетот</th>
+                <th>Назив на пакетот</th>
+                <th>Број на пакети / денови</th>
+                <th>Референтна цена на пакет</th>
+                <th>Вкупен износ</th>
+            </tr>
+            <tr>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6(4*5)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php $stavki = $faktura[0]->stavki; if(is_array($stavki)){ ?>
+                <?php $i=1; foreach($stavki as $stavka): ?>
+                    <?php
+                    $ddv = $stavka->ddv;
+                    $vkupno = $stavka->kolicina*$stavka->cena;
+                    ?>
+                    <tr>
+                        <td class="redenbr centar-print"><?= $i; ?></td>
+                        <td class="sifra centar-print"><?= $stavka->sifra_paket; ?></td>
+                        <td class="naziv"><?= $stavka->stavka; ?></td>
+                        <td class="kolicina desno-print"><?= $stavka->kolicina; ?></td>
+                        <td class="referentna-cena desno-print"><?= $stavka->cena; ?></td>
+                        <td class="vkupno desno-print"><?= $vkupno; ?></td>
+                    </tr>
+                    <?php $i++; ?>
+                <?php endforeach; ?>
+            <?php }; ?>
+            </tbody>
+        </table>
+
+        <div class="vkupno-izlez">
+            <label>1. Вкупен износ на пакети</label>
+            <span class="cifra first"> <?= $faktura[0]->vkupno_iznos_paketi; ?></span><br />
+            <label>2. Вкупен износ на пресметана партиципација</label>
+            <span class="cifra"><?= $faktura[0]->presmetana_participacija; ?></span><br />
+            <label>3. Вкупен износ на наплатена партиципација</label>
+            <span class="cifra"><?= $faktura[0]->presmetana_participacija; ?></span><br />
+            <label>4. Вкупно за наплата од ФЗОМ</label>
+            <span class="cifra last"><?= $faktura[0]->vkupno_fzom; ?></span><br />
+        </div>
+            <div class="clearer"></div>
+        <div class="bottom">
+            <div class="levo-dole">
+                М.П.
+            </div>
+            <div class="desno-dole">
+                Директор<br />
+                ______________
+            </div>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    .vkupno-izlez {float: right;}
+    .sredina .data {position: absolute; top: 244px; left: 250px;}
+    .desno {position: absolute; right: 20px; top: 20px;}
+    .stavkipopistabeladiv {margin-top: 40px;}
+    #info_faktura_form h1 {margin-top: 50px; margin-bottom: 50px;}
+    .vkupno-izlez .cifra {border: 1px solid #000000; border-top:0; width: 84px !important; float: right; padding:0 2px;}
+    .vkupno-izlez label {margin-right: 95px;}
+    .bottom {clear: both; display: block; width: 100%; position: relative;}
+    .bottom .levo-dole {position: absolute; left: 50px; top: 40px;}
+    .bottom .desno-dole {position: absolute; right: 50px; top: 40px;}
+    th {background-color: transparent;}
+</style>

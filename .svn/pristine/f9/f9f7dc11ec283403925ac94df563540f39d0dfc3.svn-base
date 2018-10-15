@@ -1,0 +1,548 @@
+<?php
+
+class Kasi_model extends CI_Model
+{
+
+    public function getKasi($kasaid)
+    {
+        $d=date("Y-m-d");
+        $niza = array(540, 550);
+        $this->db->select('
+                        stavka.ID dbid,
+                        stavka.ZSID as kasaID,
+                        stavka.tip as tip,
+                        stavka.namena,
+                        stavka.tipID as grupaID,
+                        stavka.intBroj as intBroj,
+                        stavka.textBroj as textBroj,
+                        stavka.datum as datum,
+                        stavka.firmaID as firmaID,
+                        stavka.pacient_id as pacientID,
+                        stavka.z_uplata as suma,
+                        konta.sifra as konto,
+                        stavka.komentar as zabeleska,
+                        stavka.zaPovikBroj,
+                        stavka.kasa as kasa,
+                        stavka.sostojba as sostojba,
+                        firma.ime as firmaIme,
+                        bis_kasi.ime as kasaIme,
+                        bis_pacienti.ime as pacientIme,
+                        bis_pacienti.tatkovoime as pacientTatkovoIme,
+                        bis_pacienti.prezime as pacientPrezime
+                        ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_kasi', 'stavka.ZSID = bis_kasi.id', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->join('konta', 'stavka.tipID = konta.id', 'left');
+        if($kasaid!=0)  $this->db->where('stavka.kasa', $kasaid);
+        $this->db->where_in('stavka.tip', $niza);
+        $this->db->where('stavka.datum', $d);
+        $this->db->order_by('stavka.ID','desc');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function getKasa_print($kasaid, $kasa_id){
+
+        $d=date("Y-m-d");
+        $niza = array(540, 550);
+        $this->db->select('
+                        stavka.ID as dbid,
+                        stavka.ZSID as kasaID,
+                        stavka.tip as tip,
+                        stavka.namena,
+                        stavka.tipID as grupaID,
+                        stavka.intBroj as intBroj,
+                        stavka.textBroj as textBroj,
+                        stavka.datum as datum,
+                        stavka.firmaID as firmaID,
+                        stavka.pacient_id as pacientID,
+                        stavka.z_uplata as suma,
+                        konta.sifra as konto,
+                        stavka.komentar as zabeleska,
+                        stavka.zaPovikBroj,
+                        stavka.kasa as kasa,
+                        stavka.sostojba as sostojba,
+                        firma.ime as firmaIme,
+                        bis_kasi.ime as kasaIme,
+                        tip.tipIme as grupa,
+                        bis_pacienti.ime as pacientIme,
+                        bis_pacienti.tatkovoime as pacientTatkovoIme,
+                        bis_pacienti.prezime as pacientPrezime
+                        ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_kasi', 'stavka.ZSID = bis_kasi.id', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->join('konta', 'stavka.tipID = konta.id', 'left');
+        $this->db->join('tip', 'stavka.tipID = tip.tipID', 'left');
+        $this->db->where("stavka.ID", $kasa_id);
+        if($kasaid!=0)  $this->db->where('stavka.kasa', $kasaid);
+
+        $this->db->where_in('stavka.tip', $niza);
+        //$this->db->where('stavka.datum', $d);
+        $this->db->order_by('stavka.ID','desc');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+
+           // return $result;
+        } else {
+            $result = false;
+         //   return $result;
+        }
+
+return $result;
+    }
+    public function getSostojba()
+    {
+        $d=date("Y-m-d");
+        $niza = array(540, 550);
+        $this->db->select('
+
+                    stavka.tip as tip,
+
+                    stavka.z_uplata as suma
+
+                    ');
+        $this->db->from('stavka');
+
+        $this->db->join('bis_kasi', 'stavka.ZSID = bis_kasi.id', 'left');
+        $this->db->where_in('stavka.tip', $niza);
+        $this->db->where('stavka.datum <=', $d);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+     public function getKasa($id){
+    $niza=array(540,550);
+    $this->db->select('
+                    stavka.*,
+                    bis_kasi.ime as kasaIme
+                    ');
+    $this->db->from('stavka');
+    $this->db->join('bis_kasi', 'stavka.kasa = bis_kasi.id', 'left');
+    $this->db->where("stavka.ID", $id);
+    $this->db->where_in("stavka.tip", $niza);
+    $query = $this->db->get();
+    $return = $query->result();
+
+    return $return[0];
+}
+    public function getSifraKasa(){
+
+
+    }
+    public function getLastKasaBroj($id)
+    {
+        $this->db->select('broj,sifra');
+        $this->db->from('bis_kasi');
+        $this->db->where('id',$id);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result;
+    }
+
+    public function incrementKasaBroj($newbroj,$id)
+    {
+        $newbroj = array(
+            'broj' => $newbroj
+        );
+        $this->db->where('id', $id);
+        $query = $this->db->update('bis_kasi', $newbroj);
+        return $query;
+    }
+    public function getKasa_pri_prebaruvanje($id,$period1,$period2)
+{
+    $niza = array(540, 550);
+    $this->db->select(' stavka.*,
+                        konta.sifra as konto,
+                        firma.ime as firmaIme,
+                        bis_kasi.ime as kasaIme,
+                        bis_pacienti.ime as pacientIme,
+                        bis_pacienti.tatkovoime as pacientTatkovoIme,
+                        bis_pacienti.prezime as pacientPrezime
+                ');
+    $this->db->from('stavka');
+    if($id!=0)$this->db->where('stavka.kasa', $id);
+    $this->db->where('stavka.datum >=', $period1);
+    $this->db->where('stavka.datum <=', $period2);
+    $this->db->where_in('stavka.tip', $niza);
+    $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+    $this->db->join('konta', 'konta.id = stavka.tipID', 'left');
+    $this->db->join('bis_kasi', 'stavka.ZSID = bis_kasi.id', 'left');
+    $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+
+    $query = $this->db->get();
+    if($query->num_rows()>0)
+    {
+        $result = $query->result();
+    }
+    else
+    {
+        $result = false;
+    }
+    return $result;
+}
+    public function getKasa_pri_prebaruvanje_za_print($id,$period1,$period2)
+    {
+        $niza = array(540, 550);
+        $this->db->select(' stavka.*,
+                        konta.sifra as konto,
+                        firma.ime as firmaIme,
+                        bis_kasi.ime as kasaIme,
+                        tip.tipIme as grupa,
+                        bis_pacienti.ime as pacientIme,
+                        bis_pacienti.tatkovoime as pacientTatkovoIme,
+                        bis_pacienti.prezime as pacientPrezime
+                ');
+        $this->db->from('stavka');
+        if($id!=0)$this->db->where('stavka.kasa', $id);
+        $this->db->where('stavka.datum >=', bis_convert_date_usa_to_mk($period1));
+        $this->db->where('stavka.datum <=', bis_convert_date_usa_to_mk($period2));
+        $this->db->where_in('stavka.tip', $niza);
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('konta', 'konta.id = stavka.tipID', 'left');
+        $this->db->join('bis_kasi', 'stavka.ZSID = bis_kasi.id', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->join('tip', 'stavka.tipID = tip.tipID', 'left');
+
+        $query = $this->db->get();
+        if($query->num_rows()>0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function izlistaj_kasi($id)
+    {
+        $d=date("Y-m-d");
+        $niza = array(540, 550);
+        $this->db->select(' stavka.*,
+                        konta.sifra as konto,
+                        firma.ime as firmaIme,
+                        bis_kasi.ime as kasaIme,
+                        bis_kasi.id as idnakasa,
+                        bis_pacienti.ime as pacient_ime,
+                        bis_pacienti.prezime as pacient_prezime,
+                        bis_firmi.ime as zadolzen_oddel
+
+
+
+
+                ');
+        $this->db->from('stavka');
+        if($id!=0)$this->db->where('stavka.kasa', $id);
+     //   $this->db->where('stavka.datum >=', $period1);
+       // $this->db->where('stavka.datum =', $d);
+        $this->db->where_in('stavka.tip', $niza);
+        $this->db->where('stavka.broj_na_nalog_knizenje', 0);
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('konta', 'konta.id = stavka.tipID', 'left');
+        $this->db->join('bis_kasi', 'stavka.kasa = bis_kasi.id', 'left');
+        $this->db->join('bis_firmi', 'stavka.firma_id = bis_firmi.id', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->order_by('stavka.ID','desc');
+
+        $query = $this->db->get();
+        if($query->num_rows()>0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function getSostojba_pri_prebaruvanje($id,$period2)
+    {
+        $d=date("Y-m-d");
+        $niza = array(540, 550);
+
+        $this->db->from('stavka');
+        if($id!=0)$this->db->where('kasa', $id);
+        $this->db->where_in('tip', $niza);
+        $this->db->where('datum <=', $period2);
+        $query = $this->db->get();
+        if($query->num_rows()>0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+   public function getKasi_from_bis_kasi(){
+       $query = $this->db->get('bis_kasi');
+       return $query->result();
+   }
+    public function create_nov_odliv_priliv()
+    {
+        $pofaktura = $this->input->post('s-kasa');
+        $zadokument = '';
+        if(isset($pofaktura))
+        {
+            $zadokument = $this->input->post('zadokument');
+        }
+        if($this->input->post('odliv'))
+        {
+            $uplata = $this->input->post('odliv');
+            $tip = 540;
+            $sostojba= $this->input->post('prenesena_sostojba') - $this->input->post('odliv');
+        }
+        else
+        {
+            $uplata = $this->input->post('priliv');
+            $tip = 550;
+            $sostojba=$this->input->post('prenesena_sostojba') + $this->input->post('priliv');
+        }
+        $data = array(
+            'MFID' => 1,
+            'ZSID' => 0,
+            'datum' => $this->input->post('datum'),
+            'datum_zapis' => $this->input->post('datum'),
+            'datetime' => time(),
+            'sysDateCreated' => time(),
+            'intBroj' => $this->input->post('arhivskibrojint'),
+            'arhIntBroj' => $this->input->post('arhivskibrojint'),
+            'textBroj' => $this->input->post('broj'),
+            'arhTextBroj' => $this->input->post('broj'),
+            'tip' => $tip,
+            'z_uplata' => $uplata,
+            'tipID' => $this->input->post('grupa'),
+            'firmaID' => $this->input->post('firmaID'),
+
+            'komentar' => $this->input->post('zabeleska'),
+            'kasa'=>   $this->input->post('kasaid') ,
+            'zaDokID' => $zadokument,
+            'zaPovikBroj' => $this->input->post('s-brojfaktura'),
+            'namena'=>   $this->input->post('namena')  ,
+            'sostojba'=>$sostojba,
+            'tipID'=>$this->input->post('tipID')
+        );
+        $insert = $this->db->insert('stavka', $data);
+        if($insert){
+            $id = $this->db->insert_id();
+                $lastbroj = $this->getLastKasaBroj($this->input->post('kasaid'));
+                $newbroj =intval($lastbroj[0]->broj) +1;
+                $this->incrementKasaBroj($newbroj,$this->input->post('kasaid'));
+            //proveri dali fakturata e isplatena i update-iraj go statusot
+            $this->load->model('izvodi/izvodi_model');
+            if($zadokument) $this->izvodi_model->update_faktura_status($zadokument);
+        }
+        return $id;
+    }
+
+    public function delete_odliv_priliv($id)
+    {
+        $this->db->where('ID', $id);
+        $this->db->delete('stavka');
+    }
+    public function getSiteKasi()
+    {
+        $niza = array(540, 550);
+        $this->db->select('
+                    stavka.ID dbid,
+                    stavka.ZSID as kasaID,
+                    stavka.tip as tip,
+                    stavka.tipID as grupaID,
+                    stavka.intBroj as intBroj,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.firmaID as firmaID,
+                    stavka.pacient_id as pacientID,
+                    stavka.z_uplata as suma,
+                    stavka.komentar as zabeleska,
+                    stavka.zaPovikBroj,
+                    firma.ime as firmaIme,
+                    bis_kasi.ime as kasaIme,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.tatkovoime as pacientTatkovoIme,
+                    bis_pacienti.prezime as pacientPrezime
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_kasi', 'stavka.kasa = bis_kasi.id', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->where_in('stavka.tip', $niza);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function update_odliv_priliv()
+    {
+        if($this->input->post('odliv'))
+        {
+            $uplata = $this->input->post('odliv');
+            $tip = 540;
+        }
+        else
+        {
+            $uplata = $this->input->post('priliv');
+            $tip = 550;
+        }
+        $data = array(
+            'id'=>$this->input->post('id'),
+            'MFID' => 1,
+            'datum' => $this->input->post('datum'),
+            'sysDateChanged' => time(),
+            'tip' => $tip,
+            'z_uplata' => $uplata,
+            'tipID' => $this->input->post('tipID'),
+            'firmaID' => $this->input->post('firmaID'),
+            'komentar' => $this->input->post('zabeleska'),
+            'namena'=>   $this->input->post('namena')
+        );
+        $nalog_detali_id=$this->input->post('nalog_detali_id');
+        $broj_na_nalog=$this->input->post('broj_na_nalog');
+        $konto_id= $this->input->post('tipID');
+        $this->update_nalog($broj_na_nalog,$this->get_sifra_konto($konto_id));
+        $this->db->where('ID',$data['id']);
+        unset($data['id']);
+        $this->db->update('stavka', $data);
+        $faktura_id = $this->input->post("zadokument");
+        //proveri dali fakturata e isplatena i update-iraj go statusot
+        $this->load->model('izvodi/izvodi_model');
+        if($faktura_id) $this->izvodi_model->update_faktura_status($faktura_id);
+    }
+    function get_sifra_konto($id){
+        $this->db->select('konta.sifra');
+        $this->db->from('konta');
+        $this->db->where('konta.id',$id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result[0]->sifra;
+    }
+ function update_nalog($nalog_id,$sifra_konto){
+     $update=array('konto'=>$sifra_konto);
+     $this->db->where('nalog_id',$nalog_id);
+     $this->db->where('za_promena_konto',1);
+     $up = $this->db->update('nalog_detali', $update);
+     return $up;
+ }
+    function kasa_dropdown()
+    {
+        $this->db->select('id, ime');
+        $this->db->from('bis_kasi');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+           $dropdown[''] = 'сите';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime'];
+            }
+        }
+        return $dropdown;
+    }
+ public function pregled_na_kasa_prebaruvanje($klientid,$kasaid){
+     $niza = array(540, 550);
+     $this->db->select('
+                    stavka.ID dbid,
+                    stavka.ZSID kasaID,
+                    stavka.tip tip,
+                    stavka.tipID as grupaID,
+                    stavka.intBroj as intBroj,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.firmaID as firmaID,
+                    stavka.pacient_id as pacientID,
+                    stavka.z_uplata as suma,
+                    stavka.komentar as zabeleska,
+                    firma.ime as firmaIme,
+                    bis_kasi.ime as kasaIme,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.tatkovoime as pacientTatkovoIme,
+                    bis_pacienti.prezime as pacientPrezime
+                    ');
+     $this->db->from('stavka');
+     $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+     $this->db->join('bis_kasi', 'stavka.kasa = bis_kasi.id', 'left');
+     $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+     if($kasaid) $this->db->where('stavka.kasa', $kasaid);
+     //else $this->db->where('stavka.ZSID', 1);
+     if($klientid) $this->db->where('stavka.firmaID', $klientid);
+
+     $this->db->where_in('stavka.tip', $niza);
+     $this->db->order_by('stavka.ID');
+     $query = $this->db->get();
+     if($query->num_rows() > 0)
+     {
+         $result = $query->result();
+     }
+     else
+     {
+         $result = false;
+     }
+     return $result;
+ }
+
+public function getInfoKasa($fakturaid){
+    $this->db->select('stavka.textBroj as kasa_broj,stavka.namena as kasa_namena, stavka.komentar as kasa_zabeleska, stavka.z_uplata as kasa_suma, stavka.tip as kasa_tip,bis_kasi.ime as kasa_ime');
+    $this->db->from('stavka');
+    $this->db->where('stavka.zaDokID', $fakturaid);
+    $this->db->where('stavka.tip', 550);
+    $this->db->or_where('stavka.tip', 540);
+    $this->db->join('bis_kasi', 'stavka.kasa=bis_kasi.id');
+    $this->db->limit(1);
+    $q = $this->db->get();
+    if($q->num_rows()>0){
+        $res = $q->result();
+    }else{
+        $res = false;
+    }
+    return $res[0];
+}
+    public function get_celo_imeKasa($kasaid){
+        $this->db->select('bis_kasi.ime');
+        $this->db->from('bis_kasi');
+        $this->db->where('bis_kasi.id',$kasaid);
+        $q = $this->db->get();
+        if($q->num_rows()>0){
+            $res = $q->result();
+        }else{
+            $res = false;
+        }
+        return $res;
+    }
+}

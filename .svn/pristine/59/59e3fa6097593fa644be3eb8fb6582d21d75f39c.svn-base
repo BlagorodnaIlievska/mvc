@@ -1,0 +1,315 @@
+<?php
+
+class Kasa_model extends CI_Model{
+
+    public function create_magacin()
+    {
+        $insert_data = array(
+            'magIme' => $this->input->post('magacin_name'),
+            'MFID' => 1,
+            'magTip' => $this->input->post('tip_magacin'),
+            'magLokacija' => $this->input->post('magacin_lokacija')
+        );
+
+        $insert = $this->db->insert('magacin', $insert_data);
+        return $insert;
+    }
+  public function getKasa($id,$period1,$period2){
+      $niza = array(540, 550);
+      $this->db->from('stavka');
+
+      if($id!=0)$this->db->where('kasa', $id);
+    $this->db->where('datum >=', $period1);
+    $this->db->where('datum <=', $period2);
+      $this->db->where_in('tip', $niza);
+
+
+      $query = $this->db->get();
+      if($query->num_rows()>0)
+      {
+          $result = $query->result();
+      }
+      else
+      {
+          $result = false;
+      }
+      return $result;
+  }
+    public function create_artikl()
+    {
+        $data = array(
+            'sifra' => $this->input->post('sifra2'),
+            'katBroj' => $this->input->post('kat-broj') . "." . $this->input->post('kat-podbroj'),
+            'BarCode' => $this->input->post('barcode'),
+            'S1Ime' => $this->input->post('artikl'),
+            'MarkerID' => $this->input->post('proizvoditel'),
+            'SDDV' => $this->input->post('ddv'),
+            'Cen1' => $this->input->post('diler1'),
+            'Cen2' => $this->input->post('diler2'),
+            'Cen0' => $this->input->post('maloprodazna'),
+            'CeniSoDdv' => 1,
+            'EdMerka' => $this->input->post('edinicamerka'),
+            'SID0' => $this->input->post('kat-broj')
+        );
+
+        $insert = $this->db->insert('s1', $data);
+        return $insert;
+    }
+
+    public function createNovVlezIzlez()
+    {
+        if($this->input->post('odliv'))
+        {
+            $uplata = $this->input->post('odliv');
+            $tip = 540;
+        }
+        else
+        {
+            $uplata = $this->input->post('priliv');
+            $tip = 550;
+        }
+        $data = array(
+            'MFID' => 1,
+            'ZSID' => 1,
+            'datum' => $this->input->post('datum'),
+            'intBroj' => $this->input->post('broj'),
+            'textBroj' => $this->input->post('broj'),
+            'tip' => $tip,
+            'z_uplata' => $uplata,
+            'tipID' => $this->input->post('grupa'),
+            'firmaID' => $this->input->post('firmaid'),
+            'komentar' => $this->input->post('zabeleska'),
+            'kasa'=>   $this->input->post('kasa')
+        );
+
+        $insert = $this->db->insert('stavka', $data);
+        if($insert) $id = $this->db->insert_id();
+        return $id;
+    }
+
+    function kasa_dropdown()
+    {
+        $this->db->select('id, ime');
+        $this->db->from('bis_kasi');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = 'site';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime'];
+            }
+        }
+        return $dropdown;
+    }
+
+    function grupa_dropdown()
+    {
+        $this->db->select('tipID, tipIme');
+        $this->db->from('tip');
+        $this->db->order_by('tipID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = '';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['tipID']] = $row['tipIme'];
+            }
+        }
+        return $dropdown;
+    }
+
+    function proveri_firma($firma)
+    {
+        $this->db->select('
+                    firma.firmaID as firmaID,
+                    firma.ime as ime,
+                    firma.adresa as adresa,
+                    zirosmetki.TZSID as ziroSkaID,
+                    zirosmetki.tzsBroj as ziroSka
+                    ');
+        $this->db->from('firma');
+        $this->db->join('zirosmetki', 'firma.firmaID = zirosmetki.firmaID', 'left');
+        //$this->db->where('ime', $firma);
+        $this->db->like('firma.ime', $firma, 'after');
+        $query = $this->db->get();
+        if($query->num_rows() == 1)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function deleteStavkaKasa($id)
+    {
+        $this->db->where('ID', $id);
+        $query = $this->db->delete('stavka');
+        return $query;
+    }
+
+    public function getSiteKasi($d)
+    {
+        $niza = array(540, 550);
+        $this->db->select('
+                    stavka.ID dbid,
+                    stavka.ZSID as kasaID,
+                    stavka.tip as tip,
+                    stavka.tipID as grupaID,
+                    stavka.intBroj as intBroj,
+                    stavka.datum as datum,
+                    stavka.firmaID as firmaID,
+                    stavka.z_uplata as suma,
+                    stavka.komentar as zabeleska,
+                    firma.ime as firmaIme,
+                    bis_kasi.ime as kasaIme,
+                    tip.tipIme as grupa
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_kasi', 'stavka.ZSID = bis_kasi.id', 'left');
+        $this->db->join('tip', 'stavka.tipID = tip.tipID', 'left');
+        //$this->db->where('stavka.ZSID', 1);
+        $this->db->where_in('stavka.tip', $niza);
+        $this->db->where('stavka.datum', $d);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getLastKasaBroj()
+    {
+        $niza = array(540, 550);
+        $this->db->select('
+                    stavka.intBroj as intBroj,
+                    stavka.textBroj as textBroj
+                    ');
+        $this->db->from('stavka');
+        $this->db->where_in('stavka.tip', $niza);
+        $query = $this->db->get();
+        $totalrows = $query->num_rows();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            $result = $result[$totalrows-1];
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getPregledKasa($klientid, $grupaid, $kasaid)
+    {
+        $niza = array(540, 550);
+        $this->db->select('
+                    stavka.ID dbid,
+                    stavka.ZSID kasaID,
+                    stavka.tip tip,
+                    stavka.tipID as grupaID,
+                    stavka.intBroj as intBroj,
+                    stavka.datum as datum,
+                    stavka.firmaID as firmaID,
+                    stavka.z_uplata as suma,
+                    stavka.komentar as zabeleska,
+                    firma.ime as firmaIme,
+                    bis_kasi.ime as kasaIme,
+                    tip.tipIme as grupa
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_kasi', 'stavka.ZSID = bis_kasi.id', 'left');
+        $this->db->join('tip', 'stavka.tipID = tip.tipID', 'left');
+        if($kasaid) $this->db->where('stavka.ZSID', $kasaid);
+        //else $this->db->where('stavka.ZSID', 1);
+        if($klientid) $this->db->where('stavka.firmaID', $klientid);
+        if($grupaid) $this->db->where('stavka.tipID', $grupaid);
+        $this->db->where_in('stavka.tip', $niza);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getKasaById($id)
+    {
+        //$this->db->distinct();
+        $this->db->select('
+                    stavka.ID dbid,
+                    stavka.ZSID as kasaID,
+                    stavka.tip as tip,
+                    stavka.tipID as grupaID,
+                    stavka.intBroj as intBroj,
+                    stavka.datum as datum,
+                    stavka.firmaID as firmaID,
+                    stavka.z_uplata as suma,
+                    stavka.komentar as zabeleska,
+                    firma.ime as firmaIme,
+                    firma.adresa as adresa,
+                    kasi.kasaName as kasaIme,
+                    tip.tipIme as grupa,
+                    zirosmetki.tzsBroj as zirosmetka
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_kasi', 'stavka.ZSID =bis_kasi.id', 'left');
+        $this->db->join('tip', 'stavka.tipID = tip.tipID', 'left');
+        $this->db->join('zirosmetki', 'stavka.firmaID = zirosmetki.firmaID', 'left');
+        $this->db->where('stavka.ID', $id);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function updateVlezIzlez($id)
+    {
+        if($this->input->post('odliv'))
+        {
+            $uplata = $this->input->post('odliv');
+            $tip = 540;
+        }
+        else
+        {
+            $uplata = $this->input->post('priliv');
+            $tip = 550;
+        }
+        $update_data = array(
+            'tip' => $tip,
+            'z_uplata' => $uplata,
+            'tipID' => $this->input->post('grupa'),
+            'firmaID' => $this->input->post('firmaid'),
+            'komentar' => $this->input->post('zabeleska')
+        );
+
+        $this->db->where('stavka.ID', $id);
+        $update = $this->db->update('stavka', $update_data);
+        return $update;
+    }
+}

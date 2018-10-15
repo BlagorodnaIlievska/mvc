@@ -1,0 +1,59 @@
+<?php
+
+class Fields_data_model extends CI_Model{
+
+
+    public function create_field_data()
+    {
+        $new_field_data_insert_data = array(
+            'user_id' => $this->input->post('user_id'),
+            'field_id' => $this->input->post('field_id'),
+            'value' => $this->input->post('fd_value')
+        );
+
+        $insert = $this->db->insert('fields_data', $new_field_data_insert_data);
+        return $insert;
+    }
+
+    public function getAll()
+    {
+        $query = $this->db->get('fields_data');
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+
+    public function delete_field_data(){
+
+        $this->db->where('id', $this->uri->segment(4));
+        $this->db->delete('fields_data');
+    }
+
+    public function edit_field_data(){
+
+        $this->db->where('id', $this->uri->segment(4));
+        $query = $this->db->get('fields_data');
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+
+    public function update_field_data()
+    {
+        $field_data_update_data = array(
+            'user_id' => $this->input->post('user_id'),
+            'field_id' => $this->input->post('field_id'),
+            'value' => $this->input->post('fd_value')
+        );
+
+        $this->db->where('id', $this->input->post('row_id'));
+        $update = $this->db->update('fields_data', $field_data_update_data);
+        return $update;
+    }
+
+}

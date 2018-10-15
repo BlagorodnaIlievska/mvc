@@ -1,0 +1,262 @@
+<?php
+    $uloga=array(
+        '0'=>'избери',
+        '1'=>'доктор',
+        '2'=>'сестра',
+        '3'=>'волонтер'
+    );
+    $delete = img(array(
+        'src' => 'images/delete.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+
+    $pol=array(
+        '1'=>'машки',
+        '2'=>'женски'
+    );
+    $bracen_status=array(
+        '1'=>'во брак',
+        '2'=>'сам/а',
+        '3'=>'разведен/а'
+    );
+
+    $grupa=array('1'=>'Hirurg');
+    $obrazovanie=array(
+        '1'=>'ОО',
+        '2'=>'СС',
+        '3'=>'ВСС',
+        '4'=>'Мр.',
+        '5'=>'Доц.Др.',
+        '6'=>'Др'
+    );
+?>
+    <div class="nov-artikl">
+        <form action="/index.php/covecki_resursi/covecki/create_vraboten" method="post">
+            <div class="novvraboten-levomeni">
+                <fieldset>
+                <legend>Лични податоци</legend>
+                    <ul>
+                        <li><label>Име</label> <input type="text" name="ime" class="imevrab" /></li>
+                        <li><label>Презиме</label> <input type="text" name="prezime"  /></li>
+                        <li><label>Дат.раѓ </label><input type="text" name="datum_ragjanje" class="datumvrab"  /></li>
+                        <li><? echo form_label('Пол','pol');
+                           echo form_dropdown('pol',$pol,'','class="polvrab"');
+                        ?> </li>
+                        <li><label>Бр. платен список</label><input type="text" name="broj_platen_spisok" class="brojspisok"  /></li>
+                        <li><label>Бр. ЛК</label><input type="text" name="broj_licna_karta"  class="brojlicna" /></li>
+                        <li><label>Роден во</label> <input type="text" name="mesto_ragjanje" class="mestoragj" /></li>
+                        <li><label>Нац. припадност</label> <input type="text" name="nacionalna_pripadnost" class="nacionalnapripadnost" /></li>
+                        <li><label>ЕМБГ</label> <input type="text" name="embg" class="embgvrab"  /></li>
+                        <li><? echo form_label('Брачен статус','bracen_status');
+                        echo form_dropdown('bracen_status',$bracen_status,'','class="bracenstatus"');
+                        ?></li>
+                        <li><label>Жиросметка</label><input type="text" class="zirosmetka" name="zirosmetka" /></li>
+                        <li><label>Банка</label>
+                            <select name="banka_id" class="banka">
+                                <option value="0"></option>
+                                <?php foreach($banki as $banka){ ?>
+                                    <option value="<?= $banka->id; ?>"><?= $banka->ime; ?></option>
+                                <?php } ?>
+                            </select>
+                        </li>
+                        <li><label>Шифра на општина</label> <input type="text" name="sifra_opstina" class="nacionalnapripadnost" /></li>
+                    </ul>
+                </fieldset>
+            </div>
+            <div class="novvraboten-desnomeni">
+                <fieldset>
+                <legend>Работен однос</legend>
+                <div class="raboten-odnos-cr">
+                <label>Поч. на раб. однос/волонтерство</label> <input type="text" name="pocetok_raboten_odnos"  class="datumvrab"/>
+                </div>
+                <div class="raboten-odnos-cr">
+                <label>Крај на раб. однос/волонтерство </label><input type="text" name="kraj_raboten_odnos" class="datumvrab"  />
+                </div>
+                <div class="pravenosnov-raboten-odnos-cr">
+                <label>Правен основ( за завршување на раб. однос):</label> <input type="text" name="praven_osnov" class="pravenosnov" />
+                </div>
+                <div class="rabotenodnos-info-cr">
+                <label>Стаж </label><input type="text" name="staz"  class="stazvrab" /> год.<br>
+                <label>Претходен стаж</label> <input type="text" name="prethoden_staz"   class="prethodenstaz" /> год.<br>
+                <label>Вкупен стаж</label> <input type="text" name="vkupno_staz" class="vkupnostaz" /> год.<br>
+                <label>ЛД основица</label>  <input type="text" name="ld_osnovica" class="ldosnovica" /> год.<br>
+                <? echo form_label('Фирма','firma');
+                echo form_dropdown('firma',$firma,'','class="firmavrab"');
+                ?> <br>
+                <? echo form_label('Оддел','oddel');
+                echo form_dropdown('oddel',$oddel,'','class="oddelvrab"');
+                ?> <br>
+                <? echo form_label('Пододдел','pododdel');
+                echo form_dropdown('pododdel',$pododdel,'','class="pododdelvrab"');
+                ?> <br>
+                <? echo form_label('Работно место/класификација','klasifikacija');
+                echo form_dropdown('klasifikacija',$klasifikacija,'','class="rabmesto"');
+                ?> <br>
+                <? echo form_label('Сменска група','smenska_grupa');
+                echo form_dropdown('smenska_grupa',$smena,'','class="smenagrupa"');
+                ?> <br>
+                Број на факсимил (важи само за доктори) <input type="text" name="broj_faksimil"class="brojfaksimil" /><br>
+                </div>
+                </fieldset>
+            </div>
+            <div class="novvraboten-podmeni">
+                <fieldset>
+                    <legend>Податоци за образование</legend>
+                <? echo form_label('Образование ','obrazovanie');
+                echo form_dropdown('obrazovanie',$obrazovanie,'','class="obrazovanie"');
+                ?> <br>
+              <label class="broj-licenca">Број на лиценца/Уверение</label> <input type="text" name="broj_licenca" class="brojlicenca" />  <br>
+              <label class="vazi-od">Важи од</label><input type="text" name="vazi_od" class="datumvrab"  />  До <input type="text" name="vazi_do"  class="datumvrab" />
+                <br>
+                </fieldset>
+            </div>
+            <div class="novvraboten-podatoci-plata">
+                <fieldset>
+                    <label>Член на синдикат: </label><input type="checkbox" class="clen_na_sindikat" name="clen_na_sindikat" /><br />
+                    <label class="label-podatoci-plata">Коеф. здравство </label><input type="text" class="koef_zdravstvo" name="koef_zdravstvo" /><br />
+                    <label class="label-podatoci-plata osiguruvanje">Осигурување </label>
+                    <select name="osiguruvanje" class="osiguruvanje">
+                        <option value="0">Нема осигурување</option>
+                        <option value="1">Има осигурување</option>
+                    </select><br />
+                    <label class="label-podatoci-plata osiguruvanje">Член на лекарска комора </label>
+                    <select name="clen_lekarska_komora" class="clen_lekarska_komora">
+                        <option value="0">Не е член</option>
+                        <option value="1">Лекарска</option>
+                    </select><br />
+                    <label>Професор на Медицински Факултет: </label><input type="checkbox" class="profesor" name="profesor_medicinski_fakultet" /><br />
+                    <label class="label-podatoci-plata">Сложеност </label><input type="text" class="koef_slozenost" name="koef_slozenost" /><br />
+                    <label class="label-podatoci-plata">Услови на работа </label><input type="text" class="koef_uslovi_na_rabota" name="koef_uslovi_na_rabota" /><br />
+                    <label class="label-podatoci-plata">Раководно место </label><input type="text" class="koef_rakovodno_mesto" name="koef_rakovodno_mesto" /><br />
+                    <label class="label-podatoci-plata">Стаж </label><input type="text" class="koef_staz" name="koef_staz" />
+                </fieldset>
+            </div>
+            <br/>
+            <div class="addstavka floatright">
+                <button type="button" class="button snimi-forma"  izvrsi="reload_covecki_resursi()" poraka_uspesno="успешно снимен"
+                        poraka_neuspesno="Грешка при снимање"><span>Сними</span></button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        jQuery(document).ready(function() {
+
+            jQuery('.datumvrab').datepicker({dateFormat:'yy-mm-dd'});
+
+            jQuery(".novvraboten-desnomeni .oddelvrab").change(function () {
+
+                if($('.novvraboten-desnomeni .oddelvrab option:selected').val() != ''){
+                    var oddel_id = $('.novvraboten-desnomeni .oddelvrab option:selected').val();
+                    var url = "/index.php/covecki_resursi/covecki/pododdeli?oddel_id=" + oddel_id;
+                    jQuery.ajax({
+                        url: url,
+                        type: 'GET',
+
+                        dataType: 'json',
+                        success:function (response) {
+                            console.log(response);
+                            jQuery(".novvraboten-desnomeni .pododdelvrab").empty();
+                            jQuery.each(response, function(index, item){
+
+
+                                jQuery(".novvraboten-desnomeni .pododdelvrab").append($('<option>' + item + '</option>').val(index));
+
+                            });
+
+
+
+
+                        }
+                    });
+                }else{
+                    var url = "/index.php/covecki_resursi/covecki/all_pododdels";
+                    jQuery.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {},
+                        dataType: 'json',
+                        success:function (response) {
+
+                            console.log(response);
+                            jQuery(".novvraboten-desnomeni .pododdelvrab").empty();
+                            jQuery.each(response, function(index, item){
+
+
+                                jQuery(".novvraboten-desnomeni .pododdelvrab").append($('<option>' + item + '</option>').val(index));
+
+                            });
+
+
+
+
+                        }
+                    });
+
+                }
+
+            });
+            jQuery(".novvraboten-desnomeni .oddelvrab").keyup(function () {
+
+                if($('.novvraboten-desnomeni .oddelvrab option:selected').val() != ''){
+                    var oddel_id = $('.novvraboten-desnomeni .oddelvrab option:selected').val();
+                    var url = "/index.php/covecki_resursi/covecki/pododdeli?oddel_id=" + oddel_id;
+                    jQuery.ajax({
+                        url: url,
+                        type: 'GET',
+
+                        dataType: 'json',
+                        success:function (response) {
+
+                            console.log(response);
+                            jQuery('.novvraboten-desnomeni .pododdelvrab').empty();
+                            jQuery.each(response, function(index, item){
+
+
+                                jQuery(".novvraboten-desnomeni .pododdelvrab").append($('<option>' + item + '</option>').val(index));
+
+                            });
+
+
+
+
+                        }
+                    });
+                }
+                else{
+                    var url = "/index.php/covecki_resursi/covecki/all_pododdels";
+                    jQuery.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {},
+                        dataType: 'json',
+                        success:function (response) {
+                            console.log(response);
+                            jQuery(".novvraboten-desnomeni .pododdelvrab").empty();
+                            jQuery.each(response, function(index, item){
+
+
+                                jQuery(".novvraboten-desnomeni .pododdelvrab").append($('<option>' + item + '</option>').val(index));
+
+                            });
+
+
+
+
+                        }
+                    });
+
+                }
+
+
+
+            });
+
+        });
+    </script>

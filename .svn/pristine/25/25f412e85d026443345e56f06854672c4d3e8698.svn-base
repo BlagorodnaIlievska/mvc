@@ -1,0 +1,458 @@
+function zemiMaterijaliZaPriem2(priem) {
+    var formurl = "/index.php/pacienti/lekuvanja/zemiMaterijaliZaPriem";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: {id: priem},
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            if(response)
+            {
+                var vkupnostavki = response.length;
+                jQuery('.materijali-tabela tbody').html('');
+                jQuery.each(response, function (index, item) {
+                    if(response[index][0].edMerka > 0) var ed_merka = response[index][0].edMerka;
+                    else var ed_merka = "парче";
+                    jQuery('.materijali-tabela tbody').append(
+                        '<tr>' +
+                            '<td class="text-right">' + response[index][0].sifra + '</td>' +
+                            '<td class="nazivsal">' + response[index][0].naziv + '</td>' +
+                            '<td class="kolicina">' + response[index][0].kolicina + '</td>' +
+                            '<td class="edmerka">' + ed_merka + '</td>' +
+                            '<td class="magacin">' + response[index][0].magacin + '</td>' +
+                            '<td class="sredna_cena hide">' + response[index][0].sredna_cena + '</td>' +
+                        '</tr>'
+                    );
+                });
+                jQuery(".materijali .vkupnostavki").html(vkupnostavki);
+//                presmetajIznosFaktura();
+            }
+            else jQuery(".pregled-materijali").addClass("hide");
+        }
+    });
+}
+function lekuvanja_shalter_fakturapriem2(id) {
+    var elem = jQuery(".vkupna_cena_sam");
+    var priem_id = jQuery(".priem_id").val();
+    var cenasam = jQuery(".vkupna_cena_sam").val();
+    var cenafzom = jQuery(".vkupna_cena_fzom").val();
+    var participacija = jQuery(".participacija").val();
+    var oddel = jQuery(".firma_id").val();
+    var cena_dopolnitelni = formatbrojjs(jQuery(".vkupna_cena_paketi_dopolnitelni").val());
+    var formurl = "/index.php/pacienti/lekuvanja/fakturiraj_priem";
+    var data = {
+        id: id,
+        cenasam: cenasam,
+        cenafzom: cenafzom,
+        cena_dopolnitelni: cena_dopolnitelni,
+        participacija: participacija,
+        oddel: oddel
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            if (response.indexOf(":") >= 0) {
+                destroyparentdialog(elem);
+                var fakturi = response.split(":")
+                if(fakturi[0] > 0)
+                {
+                    var row = jQuery('<tr fakturaid = "'+ fakturi[0] +'" priem_id ="'+priem_id+'" faktura_za="0" ></tr>');
+                    if_info_priem(row, [20,20]);
+                }
+                if(fakturi[1] > 0)
+                {
+                    var row = jQuery('<tr fakturaid = "'+ fakturi[1] +'" priem_id ="'+priem_id+'" faktura_za="2" ></tr>');
+                    if_info_priem(row, [30,30]);
+                }
+                if(fakturi[2] > 0)
+                {
+                    var row = jQuery('<tr fakturaid = "'+ fakturi[2] +'" priem_id ="'+priem_id+'" faktura_za="2" ></tr>');
+                    if_info_priem(row, [40,40]);
+                }
+                lekuvanja_shalter_priemi();
+                lekuvanja_shalter_fondovski();
+            }
+        }
+    });
+}
+function pokaziMoeOsigFzoIframe() {
+
+    var formaction = "/index.php/pacienti/lekuvanja_pomosen/pokaziMoeOsigFzoIframe";
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+
+    jQuery.ajax({
+        url:formaction,
+        success:function (response) {
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery("." + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:[20, 20],
+                modal:true,
+                title:"Мое осигурување",
+                dialogClass: 'dialogsotabovi',
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function if_info_realen_priem(row, pozicija) {
+    var id = row.attr('fakturaid');
+    var priem = row.attr('priem_id');
+    var faktura_za = row.attr('faktura_za');
+    var formaction = "/index.php/pacienti/lekuvanja/priem_realen_trosok?priem=" + priem;
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+
+    jQuery.ajax({
+        url:formaction,
+        success:function (response) {
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery("." + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:((typeof pozicija == "undefined") ? [20, 20] : pozicija),
+                modal:false,
+                title:"Инфо Прием",
+                dialogClass: 'dialogsotabovi',
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function if_info_priem(row, pozicija) {
+    var id = row.attr('fakturaid');
+    var priem = row.attr('priem_id');
+    var faktura_za = row.attr('faktura_za');
+    var formaction = "/index.php/pacienti/lekuvanja/editIzleznaFaktura?id=" + id;
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+
+    jQuery.ajax({
+        url:formaction,
+        success:function (response) {
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery("." + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:((typeof pozicija == "undefined") ? [20, 20] : pozicija),
+                modal:false,
+                title:"Инфо Фактура",
+                dialogClass: 'dialogsotabovi',
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/pacienti/lekuvanja/editFaktura?id='+id+'&priem='+priem+'&faktura_za='+faktura_za,
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #editfaktura").html(response);
+                    jQuery('div.' + tempdialog+ ' #editfaktura input').attr("disabled","disabled");
+                    jQuery('div.' + tempdialog+ ' #editfaktura textarea').attr("disabled","disabled");
+                    jQuery('div.' + tempdialog+ ' #editfaktura select').attr("disabled","disabled");
+                    jQuery('div.' + tempdialog+ ' #editfaktura button').not('.kreirajkasa').remove();
+                    jQuery('div.' + tempdialog+ ' .kasa-faktura').removeClass("hide");
+                    if(row.hasClass('platena'))  {
+                        jQuery('div.' + tempdialog+ ' #editfaktura button.kreirajkasa').remove();
+                        jQuery('div.' + tempdialog+ ' #editfaktura div.printkasa').show();
+                    }
+                        if(faktura_za == 2){
+                        jQuery(".tvkupen-iznos-novafak tr.presmetana-participacija").hide();
+                        jQuery(".tvkupen-iznos-novafak tr.naplatena-participacija").hide();
+                        jQuery(".tvkupen-iznos-novafak tr.vkupno-fzom").hide();
+                    }
+                }
+            });
+            jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                cache:true,
+                ajaxOptions:{
+                    type:"POST"
+                }
+            });
+        }
+    });
+}
+function get_info_fakturi_za_priem(priem_id) {
+    var formaction = "/index.php/pacienti/lekuvanja/get_faktura_priem";
+    return jQuery.ajax({
+            url: formaction,
+            type: 'POST',
+            data: {id: priem_id},
+            dataType: 'json'
+        });
+}
+function get_if_info(faktura_id) {
+    var formaction = "/index.php/pacienti/lekuvanja/get_if_info";
+    jQuery.ajax({
+        url: formaction,
+        type: 'POST',
+        data: {id: faktura_id},
+        dataType: 'json',
+        success: function (response) {
+            var priem = jQuery('.pacienti-shalter-lista-aktivni-tabela tbody tr.active').attr("priem_id");
+            var redenbroj = jQuery('.pacienti-shalter-lista-fakturi-tabela tbody tr').length + 1*1;
+            if(response[0].valutaID == 0){ var valuta = "ден"; }
+            else if (response[0].valutaID == 1){ var valuta = "усд"; }
+            else if(response[0].valutaID == 2) { var valuta = "еур"; }
+
+            if(response[0].flagStatus == 0){ var platena = "НЕ"; var status_faktura = 'neplatena'; }
+            else if (response[0].flagStatus == 1){ var platena = "ДА"; var status_faktura = 'platena'; }
+
+            if(response[0].lekuvanje_fakturirano_za == 0){ var faktura_za = ""; }
+            else if (response[0].lekuvanje_fakturirano_za == 1){ var faktura_za = "партиципација"; }
+            else if(response[0].lekuvanje_fakturirano_za == 2) { var faktura_za = "дополнителни услуги"; }
+            else if(response[0].lekuvanje_fakturirano_za == 3) { var faktura_za = "придружба"; }
+
+            jQuery('.pacienti-shalter-lista-fakturi-tabela tbody').append(
+                '<tr class="'+status_faktura+'" fakturaid = "'+ faktura_id +'" priem_id = "'+ priem +'" komintent="pacient" faktura_za="'+response[0].lekuvanje_fakturirano_za+'" >' +
+                    '<td class="info">' +
+                        '<a href="javascript:" class="info-tr">' +
+                        '<img width="15" height="15" src="/images/information.png" alt="">' +
+                        '</a>' +
+                        '<a href="javascript:" class="faktura-tr">' + ' F' + '</a>' +
+                        '<a href="" class="presmetka-tr">' + ' P' + '</a>' +
+                    '</td>' +
+                    '<td class="redenbroj">' + redenbroj + '</td>' +
+                    '<td class="faktura_broj">' + response[0].arhTextBroj + '</td>' +
+                    '<td class="datum">' + response[0].datum + '</td>' +
+                    '<td class="pacient">' + response[0].ime + " " + response[0].tatkovoime + " " + response[0].prezime +'</td>' +
+                    '<td class="iznos">' + formatnumbermkd(response[0].presmetana_participacija)  + '</td>' +
+                    '<td class="valuta">' + valuta + '</td>' +
+                    '<td class="status_platena">' + platena + '</td>' +
+                    '<td class="oddel">'  + response[0].oddel + '</td>' +
+                    '<td class="faktura_za">'  + faktura_za + '</td>' +
+                '</tr>'
+            );
+            var lastrow = jQuery(".pacienti-shalter-lista-fakturi-tabela tbody tr:last");
+            lastrow.find(".info-tr").click(function () {
+                var trow = jQuery(this).closest('tr');
+                var faktura = trow.attr("fakturaid");
+                var priem = trow.attr("priem_id");
+                if_info_realen_priem(trow, [20,20]);
+            });
+            lastrow.find(".faktura-tr").click(function () {
+                var trow = jQuery(this).closest('tr');
+                var faktura = trow.attr("fakturaid");
+                var priem = trow.attr("priem_id");
+                if_info_priem(trow, [20,20]);
+            });
+            lastrow.find(".presmetka-tr").click(function () {
+                var pod_oddel = jQuery(".pacienti-shalter-lista-aktivni-tabela tbody tr.active").attr("pod_oddel");
+                var trow = jQuery(this).closest('tr');
+                var faktura = trow.attr("fakturaid");
+                var priem = trow.attr("priem_id");
+                if(pod_oddel == 3){
+                    jQuery(this).attr("href","/index.php/print/pdf?view=/index.php/pacienti/lekuvanja/presmetka_stacionar&id="+faktura+"&priem="+priem);
+                    jQuery(this).attr("target","_blank");
+                }
+                else{
+                    jQuery(this).attr("href","/index.php/print/pdf?view=/index.php/pacienti/lekuvanja/presmetka&id="+faktura+"&priem="+priem);
+                    jQuery(this).attr("target","_blank");
+                }
+            });
+        }
+    });
+}
+function get_faktura_priem(priem_id) {
+    var formaction = "/index.php/pacienti/lekuvanja/get_faktura_priem";
+    jQuery.ajax({
+        url: formaction,
+        type: 'POST',
+        data: {id: priem_id},
+        dataType: 'json',
+        success: function (response) {
+            console.log(response);
+            if (response != null) {
+                var fakturi = response[0].faktura_id;
+                if(fakturi.length > 1) var niza = fakturi.split(",");
+
+                var pozicija=10;
+                var pozicijab=[pozicija,pozicija];
+                jQuery.each(niza, function (index, item) {
+
+                    if_info_priem_shalter(item,pozicijab);
+                    pozicija=1*pozicija+50;
+                    pozicijab=[pozicija,pozicija]
+                });
+            }
+        }
+    });
+}
+function if_info_priem_shalter(id,pozicija) {
+    var formaction = "/index.php/pacienti/lekuvanja/editIzleznaFaktura?id=" + id;
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+
+    jQuery.ajax({
+        url:formaction,
+        success:function (response) {
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery("." + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:((typeof pozicija == "undefined") ? [20, 20] : pozicija),
+                modal:false,
+                title:"Инфо Фактура",
+                dialogClass: 'dialogsotabovi',
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/pacienti/lekuvanja/editFaktura?id='+id,
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #editfaktura").html(response);
+                    jQuery('div.' + tempdialog+ ' #editfaktura input').attr("disabled","disabled");
+                    jQuery('div.' + tempdialog+ ' #editfaktura textarea').attr("disabled","disabled");
+                    jQuery('div.' + tempdialog+ ' #editfaktura select').attr("disabled","disabled");
+                    jQuery('div.' + tempdialog+ ' #editfaktura button').remove();
+                }
+            });
+            jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                cache:true,
+                ajaxOptions:{
+                    type:"POST"
+                }
+            });
+        }
+    });
+}
+function kreirajKasaForma(faktura_id) {
+    var formaction = "/index.php/pacienti/lekuvanja/kreirajKasa?id="+faktura_id;
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery.ajax({
+        url: formaction,
+        data: {id: faktura_id},
+        success: function (response) {
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery("." + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                modal: true,
+                dialogClass: 'dialogsotabovi',
+                title: "Каса за фактура",
+                close: function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function snimiKasa(kopce) {
+//    console.log(data);
+    var data = kopce.closest("form").serialize();
+   // console.log(data);
+    var formurl = "/index.php/pacienti/lekuvanja/snimiKasa";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+            var index =  jQuery(".pacienti-shalter-lista-aktivni-tabela tbody tr.active").index() + 1*1;
+            destroyparentdialog(kopce);
+            jQuery.when(lekuvanja_shalter_priemi()).done(function(){
+                jQuery(".pacienti-shalter-lista-aktivni-tabela tbody tr:nth-child("+index+")").click();
+//                jQuery(".pacienti-shalter-lista-aktivni-tabela tbody tr:nth-child("+index+")").addClass("active");
+            });
+        }
+    });
+}
+
+function presmetajIznosPotroseniMaterijali() {
+    var vkupno = 0;
+    jQuery(".materijali-tabela tbody tr").each(function() {
+        var kolicina = parseInt(jQuery(this).find('.kolicina').html());
+        var sredna_cena = parseFloat(jQuery(this).find('.sredna_cena').html());
+        vkupno += kolicina*sredna_cena;
+    });
+    return vkupno;
+}
+function presmetajIznosFaktura() {
+    jQuery(".presmetki-participacija-priem tbody td.ceni").html('');
+    var izbor = jQuery(".participacija").val();
+    var vkupnacenapaketi = jQuery(".vkupna_cena_paketi").val();
+    var vkupnacenasam = jQuery(".vkupna_cena_sam").val();
+    var cenasam = 0;
+    var cenafzom = 0;
+    var cena_materijali = presmetajIznosPotroseniMaterijali();
+    if(izbor == 1)
+    {
+        cenasam = vkupnacenasam;
+        cenafzom = vkupnacenapaketi-vkupnacenasam;
+        jQuery(".vkupna_cena_fzom").val(cenafzom);
+        jQuery(".presmetki-participacija-priem .presmetana").html(formatnumbermkd(cenasam));
+        jQuery(".presmetki-participacija-priem .iznos-ne-na-tovar-fzom").html(formatnumbermkd(cenasam));
+        jQuery(".presmetki-participacija-priem .vkupno-naplata-fzom").html(formatnumbermkd(cenafzom));
+    }
+    if(izbor == 2)
+    {
+        cenafzom = vkupnacenapaketi;
+        jQuery(".vkupna_cena_sam").val(0);
+        jQuery(".vkupna_cena_fzom").val(cenafzom);
+        jQuery(".presmetki-participacija-priem .presmetana").html(formatnumbermkd(vkupnacenapaketi));
+        jQuery(".presmetki-participacija-priem .iznos-ne-na-tovar-fzom").html(formatnumbermkd(cenasam));
+        jQuery(".presmetki-participacija-priem .vkupno-naplata-fzom").html(formatnumbermkd(cenafzom));
+    }
+    if(izbor == 3)
+    {
+        cenasam = vkupnacenasam;
+        cenafzom = vkupnacenapaketi-vkupnacenasam;
+        jQuery(".vkupna_cena_fzom").val(cenafzom);
+        jQuery(".presmetki-participacija-priem .presmetana").html(formatnumbermkd(vkupnacenapaketi));
+        jQuery(".presmetki-participacija-priem .iznos-ne-na-tovar-fzom").html(formatnumbermkd(cenasam));
+        jQuery(".presmetki-participacija-priem .vkupno-naplata-fzom").html(formatnumbermkd(cenafzom));
+    }
+    if(izbor == 4)
+    {
+        cenasam = 1*vkupnacenapaketi + 1*cena_materijali;
+        jQuery(".vkupna_cena_sam").val(cenasam);
+        jQuery(".vkupna_cena_fzom").val(0);
+        jQuery(".presmetki-participacija-priem .presmetana").html(formatnumbermkd(cenasam));
+        jQuery(".presmetki-participacija-priem .iznos-ne-na-tovar-fzom").html(formatnumbermkd(cenasam));
+        jQuery(".presmetki-participacija-priem .vkupno-naplata-fzom").html(formatnumbermkd(cenafzom));
+    }
+    if(izbor == 5)
+    {
+        cenasam = 2*vkupnacenapaketi + 1*cena_materijali;
+        jQuery(".vkupna_cena_sam").val(cenasam);
+        jQuery(".vkupna_cena_fzom").val(0);
+        jQuery(".presmetki-participacija-priem .presmetana").html(formatnumbermkd(cenasam));
+        jQuery(".presmetki-participacija-priem .iznos-ne-na-tovar-fzom").html(formatnumbermkd(cenasam));
+        jQuery(".presmetki-participacija-priem .vkupno-naplata-fzom").html(formatnumbermkd(cenafzom));
+    }
+}
+function lekuvanja_getNewBrojVoDnevnik(pod_oddel) {
+
+    var formurl = "/index.php/pacienti/lekuvanja/get_new_broj_vo_dnevnik";
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: pod_oddel},
+        dataType: 'json',
+        success:function (response) {
+//            console.log(response);
+            jQuery(".broj_vo_dnevnik").val(response);
+        }
+    });
+}

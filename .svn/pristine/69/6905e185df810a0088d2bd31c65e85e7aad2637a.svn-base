@@ -1,0 +1,78 @@
+<div class="izmeni-vraboten-zapis">
+    <form action="/index.php/plati/vraboten_mesecni_promeni/update_vraboten_zapis" method="post">
+        <fieldset>
+            <legend>Нов запис</legend>
+            <div class="novvrabotenzapis-levomeni">
+                <ul>
+                <input type="hidden" name="id" value="<?= $id ?>"/>
+                <input type="hidden" name="vraboten_id" value="<?= $vraboten->id ?>"/>
+                <input type="hidden" name="mesec" value="<?= $mesec ?>"/>
+                <input type="hidden" name="godina" value="<?= $godina ?>"/>
+                <li>Вработен: <span class="vraboten"><strong><?= $vraboten->ime . " " . $vraboten->prezime; ?></strong></span></li>
+                    <li>Бодови: <input type="text" name="bodovi" value="<?= $zapis->bodovi ?>" /></li>
+                    <li>Службено патување: <input type="text" name="sluzbeno_patuvanje" value="<?= $zapis->sluzbeno_patuvanje ?>" /></li>
+                    <li>Сменско работење: <input type="text" name="smensko_rabotenje" value="<?= $zapis->smensko_rabotenje ?>" /></li>
+                    <li>Ноќен труд: <input type="text" name="noken_trud" value="<?= $zapis->noken_trud ?>" /></li>
+                    <li>Државни празници: <input type="text" name="drzavni_praznici" value="<?= $zapis->drzavni_praznici ?>" /></li>
+                    <li>Дежурство 1: <input type="text" name="dezurstvo_1" value="<?= $zapis->dezurstvo_1 ?>" /></li>
+                    <li>Дежурство 2: <input type="text" name="dezurstvo_2" value="<?= $zapis->dezurstvo_2 ?>" /></li>
+                    <li>Прекувремена работа 1: <input type="text" name="prekuvremena_rabota_1" value="<?= $zapis->prekuvremena_rabota_1 ?>" /></li>
+                    <li>Прекувремена работа 2: <input type="text" name="prekuvremena_rabota_2" value="<?= $zapis->prekuvremena_rabota_2 ?>" /></li>
+                    <li>Прекувремена работа 3: <input type="text" name="prekuvremena_rabota_3" value="<?= $zapis->prekuvremena_rabota_3 ?>" /></li>
+                    <li>Боледување 1, 70%: <input type="text" name="boleduvanje_1_70" value="<?= $zapis->boleduvanje_1_70 ?>" /></li>
+                    <li>Боледување 2, 80%: <input type="text" name="boleduvanje_2_80" value="<?= $zapis->boleduvanje_2_80 ?>" /></li>
+                    <li>Боледување 3, 90%: <input type="text" name="boleduvanje_3_90" value="<?= $zapis->boleduvanje_3_90 ?>" /></li>
+                    <li>Боледување над 30 дена: <input type="text" name="boleduvanje_nad_30_denovi" value="<?= $zapis->boleduvanje_nad_30_denovi ?>" /></li>
+                    <li>Боледување 4, 100%: <input type="text" name="boleduvanje_4_100" value="<?= $zapis->boleduvanje_4_100 ?>" /></li>
+                    <li>Годишен одмор: <input type="text" name="godisen_odmor" value="<?= $zapis->godisen_odmor ?>" /></li>
+                    <li>Ефективно работно време: <input type="text" name="efektivno_rabotno_vreme" style="width: 160px;" value="<?= $zapis->efektivno_rabotno_vreme ?>" /></li>
+                    <li>Неплатено отсуство: <input type="text" name="neplateno_otsustvo" value="<?= $zapis->neplateno_otsustvo ?>" /></li>
+                    <li>Заварување: <input type="text" name="zavaruvanje" value="<?= $zapis->zavaruvanje ?>" /></li>
+                    <li>Тежина на работа: <input type="text" name="tezina_na_rabota" value="<?= $zapis->tezina_na_rabota ?>" /></li>
+                    <li>Принуден одмор: <input type="text" name="prinuden_odmor" value="<?= $zapis->prinuden_odmor ?>" /></li>
+                    <li>ВКУПНО ЧАСОВИ: <input type="text" name="vkupno_casovi" value="<?= $zapis->vkupno_casovi ?>" /></li>
+                    </ul>
+            </div>
+            <div class="novvrabotenzapis-desnomeni">
+                <ul>
+                <li>Воена вежба: <input type="text" name="voena_vezba" value="<?= $zapis->voena_vezba ?>" /></li>
+                <li>Ненормирана режија: <input type="text" name="nenormirana_rezija" value="<?= $zapis->nenormirana_rezija ?>" /></li>
+                    <li>Касети: <input type="text" name="kaseti" value="<?= $zapis->kaseti ?>" /></li>
+                    <li>Повеќе часови: <input type="text" name="poveke_casovi" value="<?= $zapis->poveke_casovi ?>" /></li>
+                    <li>Помалку часови: <input type="text" name="pomalku_casovi" value="<?= $zapis->pomalku_casovi ?>" /></li>
+                    <li>Платено отсуство: <input type="text" name="plateno_otsustvo" value="<?= $zapis->plateno_otsustvo ?>" /></li>
+                    <li>Работа на норма: <input type="text" name="rabota_na_norma" value="<?= $zapis->rabota_na_norma ?>" /></li>
+                    <li>Време на чекање: <input type="text" name="vreme_na_cekanje" value="<?= $zapis->vreme_na_cekanje ?>" /></li>
+                    <li>Додаток 1: <input type="text" name="dodatok_1" value="<?= $zapis->dodatok_1 ?>" /></li>
+                    <li>Додаток 2: <input type="text" name="dodatok_2" value="<?= $zapis->dodatok_2 ?>" /></li>
+                    <li>Одбиток: <input type="text" name="odbitok" value="<?= $zapis->odbitok ?>" /></li>
+                    <li>Наставен денар: <input type="text" name="nastaven_denar" value="<?= $zapis->nastaven_denar ?>" /></li>
+                    <li>Износ бол. од претх. месец: <input type="text"  style="width: 160px;" name="iznos_boled_prethoden_mesec" value="<?= $zapis->iznos_boled_prethoden_mesec ?>" /></li>
+                    <li>Патни сметки: <input type="text" name="patni_smetki" value="<?= $zapis->patni_smetki ?>" /></li>
+                    <li>Помалку - повеќе бодови: <input type="text" name="razlika_bodovi" value="<?= $zapis->razlika_bodovi ?>" /></li>
+                    <li>Заем: <input type="text" name="zaem" value="<?= $zapis->zaem ?>" /></li>
+                    <li>Индивидуален фактор: <input type="text" name="individualen_faktor" value="<?= $zapis->individualen_faktor ?>" /></li>
+                    <li>Процент на учинок: <input type="text" name="procent_na_ucinok" value="<?= $zapis->procent_na_ucinok ?>" /></li>
+                    <li>Комора задршка: <input type="text" name="komora_zadrska" value="<?= $zapis->komora_zadrska ?>" /></li>
+                    <li>Аконтација: <input type="text" name="akontacija" value="<?= $zapis->akontacija ?>" /></li>
+                    <li>Задршки за телефон: <input type="text" name="zadrska_telefon" value="<?= $zapis->zadrska_telefon ?>" /></li>
+                    <li>Корекција: <input type="text" name="korekcija" value="<?= $zapis->korekcija ?>" /></li>
+                </ul>
+            </div>
+        </fieldset>
+        <div class="addstavka floatright">
+            <button type="button" class="button snimi-forma" izvrsi="getMesecniPromeni('<?= $mesec ?>', '<?= $godina ?>')" poraka_uspesno="Успешно изменетo"
+                    poraka_neuspesno="Грешка при снимање">
+                <span>Зачувај</span></button>
+        </div>
+    </form>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery('.datum_pocetok').datepicker();
+        jQuery('.datum_zatvaranje').datepicker();
+//        var currentDate = new Date();
+//        var godina = currentDate.getFullYear();
+//        jQuery(".godina").val(godina);
+    });
+</script >

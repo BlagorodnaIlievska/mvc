@@ -1,0 +1,79 @@
+<div id="postoecka_faktura_form">
+    <div class="postoecka-faktura">
+        <fieldset>
+            <?php
+            echo form_open('materijalno/faktura/proveri_vlezna_faktura'); ?>
+            <label>Број на документ</label>
+            <input type="text" class="filter-broj-faktura" name="filter-broj-faktura">
+            <input type="hidden" class="filter-firmaid" name="filter-firmaid">
+            <?php
+            $options = array(
+                '0'  => 'neplateni',
+                '1'  => 'plateni',
+                '2'  => 'site'
+            );
+            echo form_dropdown('tip-faktura', $options, '', 'id="tip-faktura"');
+            echo form_close();
+            ?>
+        </fieldset>
+        <br>
+        <p class="naslov" > ( <span class="vkupnostavki">0</span> ) Документи</p>
+        <table class="dokumenti" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th>Број</th>
+                <th>Датум</th>
+                <th>Коминтент</th>
+                <th>Вкупно</th>
+                <th>Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="hiderow">
+                <td class="broj"></td>
+                <td class="datum"></td>
+                <td class="klient"></td>
+                <td class="suma"></td>
+                <td class="zabeleska"></td>
+                <td class="zaDokID hide"></td>
+                <td class="bezddv hide"></td>
+                <td class="ddv hide"></td>
+            </tr>
+            </tbody>
+        </table>
+        <!--        <button type="button" class="faktura-ok button" name="faktura-ok"><span>Зачувај</span></button>-->
+    </div><br>
+</div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        jQuery('.filter-firmaid').val(jQuery('.firmaid').val());
+        var odliv = jQuery('.odliv1').val();
+        var priliv = jQuery('.priliv1').val();
+        if(odliv.length > 0)
+        {
+            getNeplateniVlezniFakturi();
+        }
+        if(priliv.length > 0)
+        {
+            getNeplateniIzlezniFakturi();
+        }
+        jQuery('.filter-broj-faktura').keyup(function(){
+            if(odliv > 0)
+            {
+                getNeplateniVlezniFakturi();
+            }
+            if(priliv > 0)
+            {
+                getNeplateniIzlezniFakturi();
+            }
+        });
+        jQuery('.dokumenti tr').live("dblclick", function(){
+            var ova = jQuery(this);
+            jQuery('.s-brojfaktura').val(ova.find('.broj').text());
+            jQuery('.zadokument').val(ova.find('.zaDokID').text());
+            destroyparentdialog(ova);
+        });
+    });
+</script>
+

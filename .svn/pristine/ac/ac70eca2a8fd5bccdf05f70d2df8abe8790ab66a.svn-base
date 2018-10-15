@@ -1,0 +1,35 @@
+<div class="novaedmerka">
+    <form action="/index.php/mkb/mkb/create_mkb" method="post">
+        <fieldset>
+
+
+            <legend>Нова</legend>
+            <ul class="mkb-nov">
+                <li><?  echo form_label('Главна група', 'mkb_glavna_id');
+                    echo form_dropdown('mkb_glavna_id',$mkb_glavna);
+                ?> </li>
+                <li><label>Шифра:</label>
+                <input type="text" name="sifra" /></li>
+                <li><label>Опис:</label>
+                <input type="text" name="opis" /></li>
+                <li><label>Неприфатена примарна дијагноза:</label>
+                <input type="text" name="neprifatena_primarna_dijagnoza" /></li>
+                <li><label>Возраст:</label>
+                <input type="text" name="vozrast" /></li>
+                <li><label>Пол:</label>
+                <input type="text" name="pol" /></li>
+                <li><label>Главна дијагностичка категорија:</label>
+                <input type="text" name="glavna_kategorija" /></li>
+            </ul>
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="mkb_popolnilista()" poraka_uspesno=" успешно снимена"
+                poraka_neuspesno="Грешка при снимање"
+                ><span>Сними</span></button>
+
+
+        <br/>
+    </form>
+
+</div>

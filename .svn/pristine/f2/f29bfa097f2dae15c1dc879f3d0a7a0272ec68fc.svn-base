@@ -1,0 +1,206 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+
+
+class Katalog1 extends CI_Controller{
+
+
+
+    function __construct()
+
+    {
+
+        parent::__construct();
+
+        //$this->is_logged_in();
+
+    }
+
+
+
+    public function new_katalog1()
+
+    {
+
+        //  $this->load->model('users/membership_model');
+
+        // $data['roles'] = $this->membership_model->get_roles_dropdown();
+
+        $this->load->view('podatoci/katalog1/katalog1_form');
+
+    }
+
+
+
+    public function create_katalog1()
+
+    {
+
+        $this->load->library('form_validation');
+
+        $this->form_validation->set_rules('SOIme', 'Ime na proizvod', 'trim|required');
+
+
+
+
+        if($this->form_validation->run() == FALSE)
+
+        {
+
+            $this->new_katalog1();
+
+        }
+
+        else
+
+        {
+
+            $this->load->model('podatoci/katalog1_model');
+
+            if($query = $this->katalog1_model->create_katalog1())
+
+            {
+
+                $data['main_content'] = 'podatoci/katalog1/katalog1_successful';
+
+                $this->load->view('includes/template', $data);
+
+            }
+
+            else
+
+            {
+
+                $this->load->view('podatoci/katalog1/katalog1_form');
+
+            }
+
+        }
+
+    }
+
+public function getAll(){
+    $this->load->model('podatoci/katalog1_model');
+    $query = $this->katalog1_model->getAll();
+    echo json_encode($query);
+}
+
+    public function getKat2()
+    {
+        $this->load->model('podatoci/katalog1_model');
+        $query = $this->katalog1_model->getKat2($this->input->post("id"));
+        echo json_encode($query);
+    }
+
+    public function view_katalog1()
+    {
+        $this->load->model('podatoci/katalog1_model');
+        $query = $this->katalog1_model->getAll();
+
+        $data['katalog1'] = $query;
+        $this->load->view('podatoci/katalog1/edit_katalog1_form', $data);
+    }
+
+
+
+    public function delete_katalog1(){
+
+
+
+        $this->load->model('podatoci/katalog1_model');
+
+        $this->katalog1_model->delete_katalog1();
+
+        $this->view_katalog1();
+
+    }
+
+
+
+    public function edit_katalog1(){
+
+
+
+        $this->load->model('podatoci/katalog1_model');
+
+
+        $query = $this->katalog1_model->edit_katalog1();
+
+        $data['main_content'] = 'podatoci/katalog1/update_katalog1_form';
+
+        $data['katalog1'] = $query;
+
+        $this->load->view('includes/template', $data);
+
+        $this->view_katalog1();
+
+    }
+
+
+
+    public function update_katalog1(){
+
+
+
+        $this->load->model('podatoci/katalog1_model');
+
+        $query = $this->katalog1_model->update_katalog1();
+
+
+
+        if($query)
+
+        {
+
+            echo "Field updated successfully";
+
+        }
+
+        else
+
+        {
+
+            echo "No row was found ... Please try again.";
+
+        }
+
+        $this->view_katalog1();
+
+    }
+
+public function view_katalog2(){
+    $this->load->model('podatoci/katalog1_model');
+    $this->load->model('podatoci/artikl_model');
+
+    $query=$this->artikl_model->get_katalog2($this->uri->segment(4));
+
+    //print_r($query); die();
+    $data['main_content']= 'podatoci/katalog1/update_katalog2_form';
+    $data['katalog2']=$query;
+    $this->load->view('includes/template', $data);
+
+}
+
+    public function is_logged_in()
+
+    {
+
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+
+        {
+
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+
+            die();
+
+        }
+
+    }
+
+
+
+}

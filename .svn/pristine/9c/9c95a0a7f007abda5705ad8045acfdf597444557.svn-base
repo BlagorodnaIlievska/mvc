@@ -1,0 +1,57 @@
+<div class="novaedmerka">
+    <form action="/index.php/smenska_grupa/smena/update_smena" method="post">
+        <fieldset>
+            <input type="hidden" name="id" value="<?php echo $lekar->id  ?>"/>
+            <fieldset>
+
+
+                <legend>Нов</legend>
+                <ul class="izmeni sifrarnik">
+                    <li><label>Архивски број:</label>
+                    <input type="text" name="arhivski_broj"  value="<?php echo $lekar->arhivski_broj;  ?>"/></li>
+                    <li><label>Данночен број:</label>
+                    <input type="text" name="danocen_broj"  value="<?php echo $lekar->danocen_broj;  ?>"/></li>
+                    <li><label>Шифра:</label>
+                    <input type="text" name="sifra_zu"  value="<?php echo $lekar->sifra_zu;  ?>"/></li>
+                    <li><label>Назив:</label>
+                    <input type="text" name="zdravstvena_ustanova"  value="<?php echo $lekar->zdravstvena_ustanova;  ?>"/></li>
+                    <li><label>Единица:</label>
+                    <input type="text" name="rabotna_edinica"  value="<?php echo $lekar->rabotna_edinica;  ?>"/></li>
+                    <li><label>Дејност:</label>
+                    <input type="text" name="dejnost" value="<?php echo $lekar->dejnost;  ?>" ></li>
+                    <li><label>Специјалност:</label>
+                    <input type="text" name="specijalnosti" value="<?php echo $lekar->specijalnosti;  ?>"  /></li>
+                    <li><label>Адреса:</label>
+                    <input type="text" name="adresa" value="<?php echo $lekar->adresa;  ?>" /></li>
+                    <li><label>Место:</label>
+                    <input type="text" name="mesto" value="<?php echo $lekar->mesto;  ?>" /></li>
+                    <li><label>Факсимил:</label>
+                    <input type="text" name="faksimil" value="<?php echo $lekar->faksimil;  ?>" /></li>
+                    <li class="ime"><label>Име:</label>
+                    <input type="text" name="ime" value="<?php echo $lekar->ime;  ?>" /></li>
+                    <li class="prezime"><label>Презиме:</label>
+                    <input type="text" name="prezime" value="<?php echo $lekar->prezime;  ?>" /></li>
+                    <li class="validen-od"><label>Валиден од:</label>
+                    <input type="text" name="validen_od" value="<?php echo $lekar->validen_od;  ?>" /></li>
+                    <li class="validen-do"><label>Валиден до:</label>
+                    <input type="text" name="validen_do" value="<?php echo $lekar->validen_do;  ?>" /></li>
+                    <li><label>Мед. сестра:</label>
+                    <input type="text" name="clen_na_tim" value="<?php echo $lekar->clen_na_tim;  ?>" /></li>
+                    <p>Редовна замена</p>
+                    <li><label>Факсимил:</label>
+                    <input type="text" name="faksimil_zamena" value="<?php echo $lekar->faksimil_zamena;  ?>" /></li>
+                    <li class="ime"><label>Име:</label>
+                    <input type="text" name="ime_zamena" value="<?php echo $lekar->ime_zamena;  ?>" /></li>
+                    <li class="prezime"><label>Презиме:</label>
+                    <input type="text" name="prezime_zamena" value="<?php echo $lekar->prezime_zamena;  ?>" /></li>
+                </ul>
+            </fieldset>
+
+        <button type="button" class="button snimi-forma" izvrsi="site_lekari_popolnilista()" poraka_uspesno=" успешно изменета"
+                poraka_neuspesno="Грешка при снимање"
+                ><span>Сними</span></button>
+
+        <br/>
+    </form>
+
+</div>

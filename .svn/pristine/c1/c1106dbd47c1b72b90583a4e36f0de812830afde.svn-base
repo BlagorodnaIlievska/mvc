@@ -1,0 +1,42 @@
+<?php
+
+class Samopridonesi_model extends CI_Model
+{
+
+    public function getSamopridonesi()
+    {
+        $query = $this->db->get('bis_samopridonesi');
+        return $query->result();
+    }
+
+
+    public function getSamopridones($id)
+    {
+        $this->db->where("id", $id);
+        $query = $this->db->get('bis_samopridonesi');
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_samopridonesi()
+    {
+        $insert_data = $this->input->post();
+        $insert      = $this->db->insert('bis_samopridonesi', $insert_data);
+        return $insert;
+    }
+
+
+    public function delete_samopridonesi($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_samopridonesi');
+    }
+
+    public function update_samopridonesi()
+    {
+        $field_update_data =	$this->input->post();
+        $this->db->where('id',$field_update_data['id']);
+        $this->db->update('bis_samopridonesi', $field_update_data);
+    }
+}

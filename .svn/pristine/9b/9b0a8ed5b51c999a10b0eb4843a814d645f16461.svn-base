@@ -1,0 +1,760 @@
+<?php
+
+class Izvodi_model extends CI_Model{
+    // tabela stavka
+    // tip=40 -> izvodi odliv
+    // tip=50 -> izvodi priliv
+    // MFID = 1 e koga zirosmetkata e nasa
+    // MFID <> 1 e koga e na druga fimra zirosmetkata
+    public function create_magacin()
+    {
+        $insert_data = array(
+            'magIme' => $this->input->post('magacin_name'),
+            'MFID' => 1,
+            'magTip' => $this->input->post('tip_magacin'),
+            'magLokacija' => $this->input->post('magacin_lokacija')
+        );
+
+        $insert = $this->db->insert('magacin', $insert_data);
+        return $insert;
+    }
+
+    public function copy_create_izvod()
+    {
+        $insert_data = array(
+            'MFID' => 1,
+            'datum' => $this->input->post('datum'),
+            'rokDatum' => $this->input->post('datum'),
+            'arhIntBroj' => 0,
+            'intBroj' => $this->input->post('brojizvod'),
+            'textBroj' => 1,
+//            'textBroj' => $this->input->post('brojizvod'),
+            'firmaID' => 0,
+            'p_osnova' => 0,
+            'p_ddv' => 0,
+            'p_vkupno' => 0,
+            'z_uplata' => 0,
+            'tip' => 50,
+            'ZSID' => $this->input->post('ZSID')
+        );
+
+        $insert = $this->db->insert('stavka', $insert_data);
+        if($insert) return "ok";
+        else return "false";
+    }
+
+    public function create_izvod($data)
+    {
+        $stavki = (isset($data['izvod-stavka']) ? $data['izvod-stavka'] : "");
+        unset($data['izvod-stavka']);
+
+        if (is_array($stavki)) {
+            if (count($stavki) > 0) {
+                foreach ($stavki as $stavka) {
+                    $this->zacuvajizvod_stavka($data, $stavka);
+                    if($stavka['zaDokID']) $this->update_faktura_status($stavka['zaDokID']);
+                }
+            }
+        }
+    }
+
+    public function zacuvajizvod_stavka($data, $stavka)
+    {
+        if($stavka['odliv'] > 0)
+        {
+            $stavka['z_uplata'] = $stavka['odliv'];
+            $stavka['tip'] = 40;
+        }
+        elseif($stavka['priliv'] > 0)
+        {
+            $stavka['z_uplata'] = $stavka['priliv'];
+            $stavka['tip'] = 50;
+        }
+        else
+        {
+            $stavka['z_uplata'] = 0;
+            $stavka['tip'] = 40;
+        }
+        unset($stavka['odliv']);
+        unset($stavka['priliv']);
+
+        $stavka['MFID'] = 1;
+        $stavka['ZSID'] = $data['ZSID'];
+        $stavka['intBroj'] = $data['brojizvod'];
+        $stavka['datum'] = bis_convert_date_mk_to_usa($data['datum']);
+        $stavka['datum_zapis'] = bis_convert_date_mk_to_usa($data['datum']);
+        $stavka['datetime'] = time();
+        $stavka['sysDateCreated'] = time();
+        $this->db->insert('stavka', $stavka);
+    }
+
+    public function create_stavka()
+    {
+        $pofaktura = $this->input->post('s-faktura');
+        $zadokument = '';
+        if(isset($pofaktura))
+        {
+            $zadokument = $this->input->post('zadokument');
+        }
+        if($this->input->post('s-odliv'))
+        {
+            $uplata = $this->input->post('s-odliv');
+            $tip = 40;
+        }
+        elseif($this->input->post('s-priliv'))
+        {
+            $uplata = $this->input->post('s-priliv');
+            $tip = 50;
+        }
+        else
+        {
+            $uplata = 0;
+            $tip = 40;
+        }
+
+        $insert_data = array(
+            'MFID' => 1,
+            'arhIntBroj' => 0,
+            'intBroj' => $this->input->post('bybroj'),
+            'textBroj' => $this->input->post('stavkabroj'),
+            'datum' => $this->input->post('bydatum'),
+            'ZSID' => $this->input->post('zirosmetkaid'),
+            'firmaZSmetkaID' => $this->input->post('firmazirosmetkaid'),
+            'firmaID' => $this->input->post('firmaid'),
+            'zaSifraID' => $this->input->post('s-sifra'),
+            'komentar' => $this->input->post('zabeleska'),
+            'tipID' => $this->input->post('grupa'),
+            'zaDokID' => $zadokument,
+            'zaPovikBroj' => $this->input->post('s-brojfaktura'),
+            'tip' => $tip,
+            'p_osnova' => 0,
+            'p_ddv' => 0,
+            'p_vkupno' => 0,
+            'z_uplata' => $uplata
+        );
+        $kontiranje=array(
+
+            'konto'=>$this->input->post('grupa'),
+            'suma'=>$uplata,
+            'tip'=>'izvod'
+        );
+        $insert = $this->db->insert('stavka', $insert_data);
+        $k=$this->db->insert('kontiranje',$kontiranje);
+        return $insert;
+    }
+
+    public function getStavkaIzvodById($id)
+    {
+        //$this->db->distinct();
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.zaSifraID as sifra,
+                    stavka.ZSID as zsid,
+                    stavka.komentar as zabeleska,
+                    stavka.tipID as grupaID,
+                    stavka.zaDokID as zaDokID,
+                    stavka.zaPovikBroj as brojFaktura,
+                    stavka.z_uplata as suma,
+                    stavka.tip as tip,
+                    firma.ime as firmaIme,
+                    firma.firmaID as firmaID,
+                    firma.adresa as firmaAdresa,
+                    bis_zirosmetki.zirosmetka as firmaZirosmetka,
+                    bis_zirosmetki.id as firmaZirosmetkaID
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_zirosmetki', 'stavka.firmaID = bis_zirosmetki.firma_id', 'left');
+        $this->db->where('stavka.ID', $id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function deleteIzvod($broj, $zirosmetka)
+    {
+        $niza = array(40, 50);
+        $this->db->where('intBroj', $broj);
+        $this->db->where('ZSID', $zirosmetka);
+        $this->db->where_in('tip', $niza);
+        $query = $this->db->delete('stavka');
+        return $query;
+    }
+
+    public function deleteStavkaIzvod($id)
+    {
+        $this->db->where('ID', $id);
+        $query = $this->db->delete('stavka');
+        return $query;
+    }
+
+    public function updateStavkaIzvod($id)
+    {
+        $pofaktura = $this->input->post('s-faktura');
+        $zadokument = '';
+        if(strlen($pofaktura) > 0)
+        {
+            $zadokument = $this->input->post('zadokument');
+        }
+        if($this->input->post('s-odliv'))
+        {
+            $uplata = $this->input->post('s-odliv');
+            $tip = 40;
+        }
+        elseif($this->input->post('s-priliv'))
+        {
+            $uplata = $this->input->post('s-priliv');
+            $tip = 50;
+        }
+        else
+        {
+            $uplata = 0;
+            $tip = 40;
+        }
+        $update_data = array(
+            'zaSifraID' => $this->input->post('s-sifra'),
+            'komentar' => $this->input->post('zabeleska'),
+//            'intBroj' => $this->input->post('bybroj'),
+//            'textBroj' => $this->input->post('bybroj'),
+            'datum' => $this->input->post('bydatum'),
+            'tipID' => $this->input->post('grupa'),
+            'zaDokID' => $zadokument,
+            'zaPovikBroj' => $this->input->post('s-brojfaktura'),
+            'z_uplata' => $uplata,
+            'tip' => $tip,
+            'komentar' => $this->input->post('zabeleska'),
+            'firmaID' => $this->input->post('firmaid')
+            //'datum' => $this->input->post('datum'),
+            // 'rokDatum' => $this->input->post('datum'),
+            //'intBroj' => $this->input->post('brojizvod'),
+            //'textBroj' => $this->input->post('brojizvod'),
+            //'ZSID   ' => $this->input->post('idnovazirosmetka')
+        );
+
+        $this->db->where('stavka.ID', $id);
+        $update = $this->db->update('stavka', $update_data);
+        return $update;
+    }
+
+    public function create_smetka()
+    {
+        $insert_data = array(
+            'zirosmetka' => $this->input->post('nova-zirosmetka'),
+            //'MFID' => 1,
+            'banka_id' => $this->input->post('nova-banka')
+        );
+        $insert = $this->db->insert('bis_zirosmetki', $insert_data);
+        if($insert) $id = $this->db->insert_id();
+        return $id;
+    }
+
+    public function getIzvodByZirosmetka($zirosmetka)
+    {
+        $tipniza = array(40, 50);
+//        $this->db->distinct();
+        $this->db->select('
+                    stavka.textBroj as textBroj,
+                    stavka.intBroj as intBroj,
+                    stavka.datum as datum,
+                    stavka.ZSID as ZSID,
+                    stavka.ID as ID,
+                    bis_zirosmetki.zirosmetka as zirosmetka,
+                    bis_zirosmetki.id as idzirosmetka,
+                    bis_banki.ime as BankaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('bis_zirosmetki', 'stavka.ZSID = bis_zirosmetki.id', 'left');
+        $this->db->join('bis_banki', 'bis_zirosmetki.banka_id = bis_banki.id', 'left');
+        if(isset($zirosmetka)) $this->db->where('stavka.ZSID', $zirosmetka);
+        $this->db->where_in('stavka.tip', $tipniza);
+        $this->db->group_by('zirosmetka, intBroj');
+        $this->db->order_by('stavka.intBroj');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            $novresult= '';
+            foreach($result as $row)
+            {
+                $row->odliv=$this->getOdlivPoIzvod($row->intBroj, $row->idzirosmetka);
+                $row->priliv=$this->getPrilivPoIzvod($row->intBroj, $row->idzirosmetka);
+                $row->prethodnasostojba = $this->getPrethodnaSostojbaZirosmetka($row->intBroj, $row->idzirosmetka);
+                $tempsostojba = $row->priliv - $row->odliv;
+                if($row->prethodnasostojba == 0) $row->segasnasostojba = $tempsostojba;
+                else $row->segasnasostojba = $row->prethodnasostojba + $tempsostojba;
+                $novresult[]=$row;
+            }
+            return $novresult;
+        }
+        else
+        {
+            $result = false;
+            return $result;
+        }
+    }
+
+    public function countIzvodByZirosmetka($zirosmetka)
+    {
+        $tipniza = array(40, 50);
+        $this->db->select('
+                    MAX(intBroj) as broj
+                    ');
+        $this->db->from('stavka');
+        if($zirosmetka > 0) $this->db->where('stavka.ZSID', $zirosmetka);
+        $this->db->where_in('stavka.tip', $tipniza);
+//        $this->db->where('stavka.intBroj', '1');
+//        $this->db->group_by('stavka.intBroj');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            return $result[0];
+        }
+    }
+
+    public function countStavkaByIzvod($zirosmetka, $izvodbroj)
+    {
+        $tipniza = array(40, 50);
+        $this->db->select('
+                    COUNT(id) as broj
+                    ');
+        $this->db->from('stavka');
+        if($zirosmetka > 0) $this->db->where('stavka.ZSID', $zirosmetka);
+        if($izvodbroj > 0) $this->db->where('stavka.intBroj', $izvodbroj);
+        $this->db->where_in('stavka.tip', $tipniza);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            return $result[0];
+        }
+    }
+
+    public function getStavkaByIzvodBroj($izvodbroj, $zirosmetka)
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.textBroj as textBroj,
+                    stavka.intBroj as intBroj,
+                    stavka.datum as datum,
+                    stavka.zaPovikBroj as zaPovikBroj,
+                    stavka.zaDokID as zaDokID,
+                    stavka.z_uplata as uplata,
+                    stavka.zaSifraID as sifra,
+                    stavka.ZSID as ZSID,
+                    stavka.komentar as komentar,
+                    stavka.tip as tip,
+                    stavka.tipID as kontoID,
+                    stavka.firmaID as firmaID,
+                    stavka.firmaZSmetkaID as firmaZiro,
+                    stavka.nalog_detali_id as nalog_detali_id,
+                    firma.ime as firma,
+                    bis_zirosmetki.zirosmetka as ZiroSmetka,
+                    konta.sifra as konto
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_zirosmetki', 'stavka.ZSID = bis_zirosmetki.id', 'left');
+        $this->db->join('konta', 'stavka.tipID = konta.id', 'left');
+        $this->db->where('intBroj', $izvodbroj);
+        $this->db->where('ZSID', $zirosmetka);
+        $this->db->order_by('stavka.ID','desc');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function prebarajIzvodi($klient, $smetka, $pogled)
+    {
+        $tipniza = array(40, 50);
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.zaPovikBroj as povikBroj,
+                    stavka.z_uplata as suma,
+                    stavka.ZSID as ZSID,
+                    stavka.firmaZSmetkaID as firmaZiro,
+                    stavka.komentar as zabeleska,
+                    stavka.tip as tip,
+                    firma.ime as firmaIme,
+                    konta.sifra as konto,
+                    bis_zirosmetki.zirosmetka as zirosmetka
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_zirosmetki', 'stavka.ZSID = bis_zirosmetki.id', 'left');
+        $this->db->join('konta', 'stavka.tipID = konta.id', 'left');
+        if($klient > 0) $this->db->where('stavka.firmaID', $klient);
+        if($smetka > 0) $this->db->where('stavka.ZSID', $smetka);
+        if($pogled > 0) $this->db->where('stavka.tip', $pogled);
+        else $this->db->where_in('stavka.tip', $tipniza);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function baraj_izvod_site()
+    {
+        $niza = array(40, 50);
+        $query = $this->db->select('
+                    stavka.ID as ID,
+                    stavka.textBroj as textBroj,
+                    stavka.intBroj as intBroj,
+                    stavka.datum as datum,
+                    stavka.zaPovikBroj as povikBroj,
+                    stavka.z_uplata as suma,
+                    stavka.komentar as zabeleska,
+                    stavka.tipID as tipID,
+                    bis_firmi.ime as firmaIme,
+                    bis_zirosmetki.id as idzirosmetka,
+                    bis_zirosmetki.zirosmetka as zirosmetka,
+                    bis_banki.ime as BankaIme
+                    ')
+            ->from('stavka')
+            ->join('bis_firmi', 'stavka.firmaID = bis_firmi.id', 'left')
+            ->join('bis_zirosmetki', 'stavka.ZSID = bis_zirosmetki.id', 'left')
+            ->join('bis_banki', 'bis_zirosmetki.banka_id = bis_banki.id', 'left')
+            ->where_in('stavka.tip', $niza)
+            ->where('stavka.textBroj', '1')
+            //->group_by('stavka.ZSID')
+            ->order_by('stavka.ID')
+            ->get();
+        $result = $query->result();
+        $novresult= '';
+        if($query->num_rows() > 0)
+        {
+            foreach($result as $row)
+            {
+                $row->odliv=$this->getOdlivPoIzvod($row->intBroj, $row->idzirosmetka);
+                $row->priliv=$this->getPrilivPoIzvod($row->intBroj, $row->idzirosmetka);
+                $row->prethodnasostojba = $this->getPrethodnaSostojbaZirosmetka($row->intBroj, $row->idzirosmetka);
+                $tempsostojba = $row->priliv - $row->odliv;
+                if($row->prethodnasostojba == 0) $row->segasnasostojba = $tempsostojba;
+                else $row->segasnasostojba = $row->prethodnasostojba + $tempsostojba;
+                $novresult[]=$row;
+            }
+        }
+        else
+        {
+            $novresult = false;
+        }
+        return $novresult;
+    }
+
+    public function getPrethodnaSostojbaZirosmetka($broj, $zirosmetka)
+    {
+        if($broj-1 > 0)
+        {
+            $prethodenizvod = $broj-1;
+            $odliv=$this->getOdlivPoIzvod($prethodenizvod, $zirosmetka);
+            $priliv=$this->getPrilivPoIzvod($prethodenizvod, $zirosmetka);
+            $sostojba = $priliv - $odliv;
+            return $sostojba;
+        }
+        else return 0;
+    }
+
+    public function getOdlivPoIzvod($broj, $zirosmetka)
+    {
+        $this->db->select('
+                    SUM(stavka.z_uplata) as suma
+                    ');
+        $this->db->from('stavka');
+        $this->db->where('stavka.intBroj',$broj);
+        $this->db->where('stavka.ZSID',$zirosmetka);
+        $this->db->where('stavka.tip', 40);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            return $result[0]->suma;
+        }
+        else
+        {
+            $result = false;
+            return $result;
+        }
+    }
+
+    public function getPrilivPoIzvod($broj, $zirosmetka)
+    {
+        $this->db->select('
+                    SUM(stavka.z_uplata) as suma,
+                    ');
+        $this->db->from('stavka');
+        $this->db->where('stavka.intBroj',$broj);
+        $this->db->where('stavka.ZSID',$zirosmetka);
+        $this->db->where('stavka.tip', 50);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            return $result[0]->suma;
+        }
+        else
+        {
+            $result = false;
+            return $result;
+        }
+    }
+
+    public function baraj_izvod_bezgrupa()
+    {
+        $this->db->select('textBroj, datum, firmaID, zaPovikBroj, z_uplata, ZSID, komentar');
+        $this->db->from('stavka');
+        $this->db->where(array('firmaID' => NULL));
+        //$this->db->where('firmaID IS NOT', null);
+        $this->db->order_by('ZSID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    function zirosmetka_dropdown()
+    {
+        $this->db->select('id, zirosmetka, id');
+        $this->db->from('bis_zirosmetki');
+//        $this->db->where('MFID', 1);
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[] = 'Сите';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['zirosmetka'];
+            }
+            // $dropdown[0] = 'Definiraj nova Smetka';
+        }
+        return $dropdown;
+    }
+
+    function getZirosmetkiZaKlient($firmaid)
+    {
+        $this->db->select('id, zirosmetka');
+        $this->db->from('bis_zirosmetki');
+        $this->db->where('firma_id', $firmaid);
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            $result = $query->result();
+            return $result;
+        }
+        else return false;
+    }
+
+    function banki_dropdown()
+    {
+        $this->db->select('id, ime');
+        $this->db->from('bis_banki');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = '';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime'];
+            }
+        }
+        return $dropdown;
+    }
+
+
+    function zirosmetka_site_dropdown()
+    {
+        $this->db->select('TZSID, tzsBroj, bankaID, MFID');
+        $this->db->from('zirosmetki');
+        $this->db->where('MFID', 1);
+        $this->db->order_by('TZSID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown['0'] = 'Сите';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['TZSID']] = $row['tzsBroj'];
+            }
+        }
+        return $dropdown;
+    }
+
+    function proveri_firma($firma)
+    {
+        $this->db->select('firmaID, ime, adresa, ziroSka');
+        $this->db->from('firma');
+        $this->db->where('ime', $firma);
+        $query = $this->db->get();
+        if($query->num_rows() == 1)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    function getKomintenti()
+    {
+        $this->db->select('firma.firmaID as id, firma.ime as ime');
+        $this->db->from('firma');
+        $query=$this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getIzvodPodatoci($broj, $zirosmetka)
+    {
+        $this->db->select('
+                stavka.*
+        ');
+        $this->db->from('stavka');
+        $this->db->where('stavka.intBroj', $broj);
+        $this->db->where('stavka.ZSID', $zirosmetka);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            $result[0]->stavka_izvod = $this->getStavkaByIzvodBroj($broj, $zirosmetka);
+        }
+        else
+        {
+//            print_r("bne");
+            $result = false;
+        }
+        return $result[0];
+    }
+    public function update_izvod($data)
+    {
+        $stavki = (isset($data['izvod-stavka']) ? $data['izvod-stavka'] : "");
+        unset($data['izvod-stavka']);
+
+        if (is_array($stavki)) {
+            if (count($stavki) > 0) {
+                foreach ($stavki as $stavka) {
+                    if(isset($stavka['delete']))
+                    {
+                        if($stavka['delete'] == 0) {
+                            $this->updateizvod_stavka($stavka['id'], $data, $stavka);
+                            if($stavka['zaDokID']) $this->update_faktura_status($stavka['zaDokID']);
+                        }
+                        if($stavka['delete'] == 1) $this->deleteizvod_stavka($stavka['id']);
+                    }
+                    else {
+                        $this->zacuvajizvod_stavka($data, $stavka);
+                        if($stavka['zaDokID']) $this->update_faktura_status($stavka['zaDokID']);
+                    }
+                }
+            }
+        }
+    }
+    public function deleteizvod_stavka($id)
+    {
+        $this->db->where('ID', $id);
+        $this->db->delete('stavka');
+    }
+    public function update_faktura_status($fak_id)
+    {
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $uplati = $this->vlezni_fakturi_model->getUplatiPoVleznaFaktura($fak_id);
+        $iznos = $this->vlezni_fakturi_model->getIznosVleznaFaktura($fak_id);
+        if($uplati >= $iznos)
+        {
+            $status["flagStatus"] = 1;
+            $this->db->where('ID', $fak_id);
+            $this->db->update('stavka', $status);
+        }
+    }
+    public function updateizvod_stavka($id, $data, $stavka)
+    {
+        if($stavka['odliv'] > 0)
+        {
+            $stavka['z_uplata'] = $stavka['odliv'];
+            $stavka['tip'] = 40;
+        }
+        elseif($stavka['priliv'] > 0)
+        {
+            $stavka['z_uplata'] = $stavka['priliv'];
+            $stavka['tip'] = 50;
+        }
+        else
+        {
+            $stavka['z_uplata'] = 0;
+            $stavka['tip'] = 40;
+        }
+        unset($stavka['odliv']);
+        unset($stavka['priliv']);
+        unset($stavka['delete']);
+        $konto_id=$stavka['tipID'];
+        $nalog_id=$data['broj_nalog'];
+        $nalog_detali_id=$stavka['nalog_detali_id'];
+
+        $stavka['ZSID'] = $data['ZSID'];
+        $stavka['intBroj'] = $data['brojizvod'];
+        $stavka['sysDateChanged'] = time();
+
+        $this->db->where('ID', $id);
+        $this->db->update('stavka', $stavka);
+        $this->update_nalog($nalog_id,$this->get_sifra_konto($konto_id),$nalog_detali_id);
+    }
+    function get_sifra_konto($id){
+        $this->db->select('konta.sifra');
+        $this->db->from('konta');
+        $this->db->where('konta.id',$id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result[0]->sifra;
+    }
+    public function update_nalog($nalog_id,$sifra_konto,$nalog_detali_id){
+        $update=array('konto'=>$sifra_konto);
+       $this->db->where('nalog_id',$nalog_id);
+        $this->db->where('id',$nalog_detali_id);
+        // $this->db->where('za_promena_konto',1);
+        $up = $this->db->update('nalog_detali', $update);
+        return $up;
+    }
+
+}

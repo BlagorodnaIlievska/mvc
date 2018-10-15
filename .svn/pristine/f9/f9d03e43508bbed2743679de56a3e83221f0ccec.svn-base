@@ -1,0 +1,124 @@
+<?php
+
+class Joins_model extends CI_Model{
+
+    function  join_firma_grad()
+    {
+        $query = $this->db->select('
+                   firma.firmaID,
+                   firma.ime,
+                   firma.sifrall,
+                   firma.adresa,
+                   firma.klTipID,
+                   firma.phone1,
+                   firma.phone2,
+                   firma.phone3,
+                   firma.fax,
+                   firma.email,
+                   firma.kontakt,
+                   firma.ziroSka,
+                   firma.edb,
+                   firma.kontFlag,
+                   firma.kojGoVodiID,
+                   banka.BankaIme as banka_ime,
+                   firma.komentar,
+                   komerc.komercName as komerc_ime,
+                   grad.GradIme as grad_ime')
+            ->from('firma')
+            ->join('grad', 'firma.gradID= grad.GradID')
+            ->join('komerc', 'firma.komercID=komerc.komercID')
+            ->join('banka','firma.bankaDBroj=banka.BankaID')
+               ->get();
+
+        /*  query za join i na tabelata fields_data za prikaz na site polinja za user
+         $query = $this->db->select('
+                   users.id,
+                   users.username,
+                   users.email,
+                   roles.name,
+                   fields_data.id as fd_id,
+                   fields_data.value,
+                   ')
+            ->from('users')
+            ->join('roles', 'users.role_id= roles.id')
+            ->join('fields_data','users.id= fields_data.user_id')
+            ->get();
+         */
+        return $query;
+    }
+
+    function  join_firma_komerc()
+    {
+        $query = $this->db->select('
+                   firma.firmaID,
+                   firma.ime,
+                   firma.sifrall,
+                   firma.adresa,
+                   firma.phone1,
+                   firma.phone2,
+                   firma.phone3,
+                   firma.fax,
+                   firma.email,
+                   komerc.komercName as komerc_ime')
+            ->from('firma')
+            ->join('komerc', 'firma.komercID= komerc.komercID')
+            ->get();
+
+
+        return $query;
+    }
+
+    function  join_firma_banka()
+    {
+        $query = $this->db->select('
+                   firma.firmaID,
+                   firma.ime,
+                   firma.sifrall,
+                   firma.adresa,
+                   firma.phone1,
+                   firma.phone2,
+                   firma.phone3,
+                   firma.fax,
+                   firma.email,
+                   banka.BankaIme as banka_ime')
+            ->from('firma')
+            ->join('banka', 'firma.bankaDBroj= banka.BankaID')
+            ->get();
+
+
+        return $query;
+    }
+
+    function  join_fieldsdata_users_fields()
+    {
+        $query = $this->db->select('
+                   fields_data.id,
+                   fields_data.value,
+                   users.username,
+                   fields.name
+                   ')
+            ->from('fields_data')
+            ->join('users', 'fields_data.user_id= users.id')
+            ->join('fields', 'fields_data.field_id= fields.id')
+            ->get();
+
+        return $query;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,44 @@
+<div class="podatoci-plata">
+    <div class="pridonesi">
+        <?php if (bis_check_access('sistemsko_podesuvanje_planiranje_pridonesi_nov_pridones_button')): ?>
+<!--        <div class="buttoncontainer">-->
+<!--            <button class="button" onclick="pridones_nov()">Нов придонес</button>-->
+<!--        </div>-->
+            <?php endif ?>
+        <div class="predtabela">
+            <table class="tabela-pridonesi">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>РБ</th>
+                    <th>Назив</th>
+                    <th>Жиросметка</th>
+                    <th>Стапка</th>
+                    <th>Цел на уплата</th>
+                    <th>Повик. број</th>
+                    <th>Банка депонент</th>
+                    <th>Уплатна сметка</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".tabela-pridonesi").tablesorter();
+        pridonesi_polnilista();
+        jQuery(".tabela-pridonesi tbody tr").live('click', function () {
+            jQuery(".tabela-pridonesi tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+        jQuery(".tabela-pridonesi .edit-tr").live('click', function () {
+            pridones_izmeni(jQuery(this).parent().parent().attr('pridonesi_id'));
+        });
+        jQuery(".tabela-pridonesi .delete-tr").live('click', function () {
+            pridones_delete(jQuery(this).parent().parent().attr('pridonesi_id'));
+        });
+    });
+</script >

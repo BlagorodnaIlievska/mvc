@@ -1,0 +1,116 @@
+<div class="baranje-form">
+    <?php echo form_open('javni_nabavki/javni_nabavki/create_dogovor'); ?>
+    <div class="f-od-dobavuvac broj">
+        <label>Коминтент:</label>
+        <?php echo form_dropdown('klient', $klient, '', 'class="baranjeklient"'); ?>
+        <img class="dodadiklient" width="15" height="15" alt="" src="/images/add.png">
+
+    </div>
+    <br>
+
+    <div class="f-od-dobavuvac broj">
+        <?php
+        echo form_label('Број на барање', 'broj_baranje');
+        echo form_input('broj_baranje', '', 'class="broj_baranje"');
+        ?>
+    </div>
+    <br>
+
+    <div class="f-od-dobavuvac broj">
+        <?php
+        echo form_label('Датум на барање', 'datum_baranje');
+        echo form_input('datum_dogovor', '', 'class="datum_baranje"');
+        ?>
+    </div>
+    <p style="text-align: center"> ПРЕДМЕТ : Барање за месец  <input type="text" style="width: 30px;" name="baranje_mesec"></p>
+    <div class="f-od-dobavuvac broj">
+    <input type="text" name="predmet_baranje"  style="width: 700px;" class="predmet_baranje">
+    </div>
+    <fieldset>
+        <legend>Врска со документи</legend>
+        <div class="vrska-so-dokumenti clearboth">
+            <div class="dogovor-proekt-kopcinja">
+
+                <button type="button" class="button vrskadogovori"
+                        formaction="/index.php/javni_nabavki/javni_nabavki/povrzi_dogovor">
+                    <span>Поврзи Договор</span></button>
+                <!--    <button type="button" class="novapriemnica button"
+                            formaction="/index.php/vlezni_fakturi/faktura/fakturaPriemnica">
+                        <span>Нова Приемница</span></button>  -->
+            </div>
+            <div class="dodadeni-priemnici">
+                <span class="dodadenipriemnici"></span>
+                <input type="hidden" class="vrskadokumenti" name="vrskadokumenti">
+                <input type="hidden" class="priemnica_id" name="priemnica_id">
+            </div>
+
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Ставки во барањето</legend>
+        <table class="stavki-baranje" border="1" cellpadding="2" id="baranje">
+            <thead>
+            <tr>
+
+                <th class="rb">РБ</th>
+                <th class="sifra">Шифра</th>
+                <th class="stavka">Ставка</th>
+                <th class="kolicinad">Количина од дог.</th>
+                <th class="kolicinap">Побарана количина</th>
+                <th class="kolicinao">Останува</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <input type="hidden" class="proverka" value="0">
+        <!--    <div class="addstavka floatleft">
+                <button type="button" class="add button"><span>Додади ставка</span>
+                </button>
+           </div>
+            <div class="addstavka floatleft">
+                <button type="button" class="dodadiusluga button"><span>Додади услуга</span></button>
+            </div>      -->
+
+    </fieldset>
+    <?php
+    echo form_close();
+    ?>
+</div>
+<script>
+    jQuery(document).ready(function () {
+          jQuery('.baranjeklient').combobox();
+        jQuery('.datum_baranje').datepicker();
+        jQuery('.datum_baranje').datepicker('setDate', new Date());
+        jQuery('.dodadiklient').click(function (e) {
+            var formaction = "/index.php/podatoci/klienti/nov";
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: 1100,
+                close: function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }}).load(formaction);
+            e.preventDefault();
+        });
+        jQuery('.vrskadogovori').click(function (e) {
+            klient=jQuery('.baranjeklient option:selected').val();
+            //console.log(klient);
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                data: {klient:klient},
+
+                width: 1100,
+                close: function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }}).load(jQuery(this).attr('formaction'));
+            e.preventDefault();
+        });
+    });
+</script>

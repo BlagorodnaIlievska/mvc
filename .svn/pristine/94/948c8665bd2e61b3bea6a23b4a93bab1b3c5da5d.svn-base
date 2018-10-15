@@ -1,0 +1,285 @@
+<div class="edit-ispratnica-form">
+    <?php
+    echo form_open('materijalno/interni/updateInterenTransfer');
+    ?>
+    <fieldset>
+        <legend>Интерна</legend>
+        <div class="left ispratnicabroj">
+            <input type="hidden" class="ispratnicaid" name="ispratnicaid" value="<?= $id; ?>">
+            <input type="hidden" class="priemnicaid" name="priemnicaid" value="<?= $priemnica; ?>">
+            <label>Број</label>
+            <span class="arhivskibroj"><?= $query[0]->textBroj; ?></span>
+        </div>
+        <div class="left">
+            <label>Датум</label>
+            <input type="text" name="datum" id="datum" value="<?= $query[0]->datum; ?>"><br>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Магацини</legend>
+        <div class="transfer-magacini">
+            <label>Од:</label>
+            <select name="magacin_od" class="magacin_od">
+                <option value="0"></option>
+                <?php foreach ($magacini as $magacin) { ?>
+                    <option value="<?php echo $magacin->id ?>" <?php echo ( $magacin->id == $magacin_od ? "selected" : "" ) ?> ><?php echo $magacin->ime ?></option>
+                <?php } ?>
+            </select>
+            <label>Во:</label>
+            <select name="magacin_vo" class="magacin_vo">
+                <option value="0"></option>
+                <?php foreach ($magacini as $magacin) { ?>
+                    <option value="<?php echo $magacin->id ?>"  <?php echo ( $magacin->id == $magacin_vo ? "selected" : "" ) ?> ><?php echo $magacin->ime ?></option>
+                <?php } ?>
+            </select>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Ставки во документот - Детално</legend>
+        <div class="predtabela">
+            <table class="internaispratnica">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Бр.</th>
+                    <th>Шифра</th>
+                    <th>Ставка</th>
+                    <th>Кол</th>
+                    <th>ЕМ</th>
+                    <th>Гарантен рок</th>
+                    <th>Употребливо до</th>
+                    <th>Сер. Бр.</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                if(is_array($stavki)) {
+                    $i = 0;
+                    foreach($stavki as $stavka) {
+                        $i++;
+                ?>
+                <tr class="detali" artikl_id="<?= $stavka->artikl_id; ?>">
+                    <td><a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a></td>
+                    <td class="redenbroj"><?= $i; ?></td>
+                    <td><input class="sifra" name="sifra[<?= $i; ?>]" value="<?= $stavka->sifra; ?>" /></td>
+                    <td><input class="stavka" name="stavka[<?= $i; ?>]" value="<?= $stavka->stavka; ?>" /></td>
+                    <td><input class="kolicina" name="kolicina[<?= $i; ?>]" value="<?= $stavka->kolicina; ?>" /></td>
+                    <td class="edmerka">
+                        <select name="edmerkaid[<?= $i; ?>]" class="edmerka-dropdown">
+                            <?php foreach($edinicamerka as $em){ ?>
+                            <option value="<?= $em->id; ?>"  <?php echo ( $em->id == $stavka->edMerkaId ? "selected" : "" ) ?> ><?= $em->ime_skrateno; ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td><input class="garantenrok" name="garantenrok[<?= $i; ?>]" value="<?= $stavka->garantenrok; ?>" /></td>
+                    <td><input class="upotreblivodo" name="upotreblivodo[<?= $i; ?>]" value="<?= $stavka->upotreblivodo; ?>" /></td>
+                    <td><input class="seriskibroj" name="seriskibroj[<?= $i; ?>]" value="<?= $stavka->seriskibroj; ?>" /></td>
+                    <td class="hide"><input type="hidden" class="SID" name="SID[<?= $i; ?>]" value="<?= $stavka->artikl_id; ?>" /></td>
+                    <td class="hide"><input type="hidden" class="dbid" name="dbid[<?= $i; ?>]" value="<?= $stavka->dbid; ?>" /></td>
+                    <td class="hide"><input type="hidden" class="brisistavka" name="brisistavka[<?= $i; ?>]" value="" /></td>
+                </tr>
+                <?php
+                    }
+                }
+                ?>
+                </tbody>
+            </table>
+        </div>
+        <div class="addstavka">
+            <button type="button" class="addtr button" formaction="/index.php/materijalno/priemnica/novaStavka"><span>Додади ставка</span>
+            </button>
+            <button type="button" class="novartikl button" formaction="/index.php/materijalno/priemnica/new_artikl">
+                <span>Нов артикл</span></button>
+        </div>
+    </fieldset>
+    <fieldset class="informacii-novapriemnica">
+        <legend>Информации за приемница</legend>
+        <div class="informacii">
+            <div class="zabeleska-novapriemnica floatleft">
+                <label>Забелешка</label>
+                <textarea  style="overflow-y:scroll;width:150%;resize: none;" class="zabeleska" name="zabeleska"><?= $query[0]->zabeleska; ?></textarea>
+            </div>
+        </div>
+    </fieldset>
+    <div class="submitbutton">
+        <button type="button" class="submitispratnica button"><span>Зачувај</span></button>
+<!--        <button type="button" class="submitispratnicakreirajfaktura button"><span>Зачувај и креирај фактура</span></button>-->
+    </div>
+    <?php echo form_close(); ?>
+    <div class="otkazibutton">
+        <button type="button" class="otkazipriemnica button"><span>Откажи</span></button>
+    </div>
+</div>
+
+<script>
+function mat_artikli_option_values(){
+    return '' + '<option value=""></option>'+
+        '<?php foreach($artikli as $artikal) { echo '<option value="'.$artikal->SID.'">'.$artikal->S1Ime.'</option>'; } ?>';
+}
+function mat_katbroj_option_values(){
+    return '' + '<option value=""></option>'+
+        '<?php foreach($katbroj as $kb) { echo '<option value="'.$kb->sifra.'">'.$kb->sifra.'</option>'; } ?>';
+}
+function mat_edmerka_option_values(){
+    return '' + '<option value=""></option>'+
+        '<?php foreach($edinicamerka as $edmerka) { echo '<option value="'.$edmerka->id.'">'.$edmerka->ime_skrateno.'</option>'; } ?>';
+}
+function addNewStavkaMaterijalno(targettabela){
+    var redenbroj = jQuery('.internaispratnica tbody tr').length;
+    if(redenbroj > 0) var newredenbroj = parseInt(redenbroj) + parseInt(1);
+    else var newredenbroj = 1;
+    jQuery(".internaispratnica tbody").append(('<tr class="detali" artikl_id="">' +
+        '<td>' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +'</td>' +
+        '<td class="redenbroj">' + newredenbroj + '</td>' +
+        '<td class="sifra">' + '<select class="sifra-dropdown" name="sifra['+newredenbroj+']">' + mat_katbroj_option_values() + '</select></td>' +
+        '<td class="artikli">' + '<select class="artikli-dropdown" name="artikli['+newredenbroj+']">' + mat_artikli_option_values() + '</select></td>' +
+        '<td>' + '<input class="kolicina" name="kolicina['+newredenbroj+']" value="" />' + '</td>' +
+        '<td class="edmerka"><select class="edmerka-dropdown" name="edmerkaid['+newredenbroj+']">'+mat_edmerka_option_values()+'</select></td>' +
+        '<td>' + '<input class="garantenrok" name="garantenrok['+newredenbroj+']" value="" />' + '</td>' +
+        '<td>' + '<input class="upotreblivodo" name="upotreblivodo['+newredenbroj+']" value="" />' + '</td>' +
+        '<td>' + '<input class="seriskibroj" name="seriskibroj['+newredenbroj+']" value="" />' + '</td>' +
+        '<td class="hide">' + '<input type="hidden" class="SID" name="SID['+newredenbroj+']" value="" />' + '</td>' +
+        '<td class="hide">' + '<input type="hidden" class="stavka" name="stavka['+newredenbroj+']" value="" />' + '</td>' +
+        '</tr>'
+        ));
+    var thisrow = jQuery('.internaispratnica tbody tr:last');
+    jQuery('.upotreblivodo').datepicker();
+    jQuery('.artikli-dropdown').combobox();
+    jQuery('.sifra-dropdown').combobox();
+    jQuery('.edmerka-dropdown').combobox();
+    jQuery(targettabela+" .delete-tr").click(function () {
+        var trow = jQuery(this).closest('tr');
+        trow.remove();
+        var i = 1;
+        jQuery(targettabela+' tbody tr').each(function(){
+            jQuery(this).find('.redenbroj').html(i);
+            i = 1*i + 1;
+        });
+    });
+}
+function addNewStavkaMaterijalnoLast(targettabela, currentrow){
+    if(currentrow.is(":last-child"))
+    {
+        var redenbroj = jQuery('.internaispratnica tbody tr').length;
+        if(redenbroj > 0) var newredenbroj = parseInt(redenbroj) + parseInt(1);
+        else var newredenbroj = 1;
+        jQuery(targettabela+" tbody").append(('<tr class="detali" artikl_id="">' +
+            '<td>' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +'</td>' +
+            '<td class="redenbroj">' + newredenbroj + '</td>' +
+            '<td class="sifra">' + '<select class="sifra-dropdown" name="sifra['+newredenbroj+']">' + mat_katbroj_option_values() + '</select></td>' +
+            '<td class="artikli">' + '<select class="artikli-dropdown" name="artikli['+newredenbroj+']">' + mat_artikli_option_values() + '</select></td>' +
+            '<td>' + '<input class="kolicina" name="kolicina['+newredenbroj+']" value="" />' + '</td>' +
+            '<td class="edmerka"><select class="edmerka-dropdown" name="edmerkaid['+newredenbroj+']">'+mat_edmerka_option_values()+'</select></td>' +
+            '<td>' + '<input class="garantenrok" name="garantenrok['+newredenbroj+']" value="" />' + '</td>' +
+            '<td>' + '<input class="upotreblivodo" name="upotreblivodo['+newredenbroj+']" value="" />' + '</td>' +
+            '<td>' + '<input class="seriskibroj" name="seriskibroj['+newredenbroj+']" value="" />' + '</td>' +
+            '<td class="hide">' + '<input type="hidden" class="SID" name="SID['+newredenbroj+']" value="" />' + '</td>' +
+            '<td class="hide">' + '<input type="hidden" class="stavka" name="stavka['+newredenbroj+']" value="" />' + '</td>' +
+            '</tr>'
+            ));
+        var thisrow = jQuery(targettabela+' tbody tr:last');
+        jQuery('.upotreblivodo').datepicker();
+        jQuery('.artikli-dropdown').combobox();
+        jQuery('.sifra-dropdown').combobox();
+        jQuery('.edmerka-dropdown').combobox();
+        jQuery(targettabela+" .delete-tr").click(function () {
+            var trow = jQuery(this).closest('tr');
+            trow.remove();
+            var i = 1;
+            jQuery(targettabela+' tbody tr').each(function(){
+                jQuery(this).find('.redenbroj').html(i);
+                i = 1*i + 1;
+            });
+        });
+    }
+}
+jQuery(document).ready(function () {
+    var dbid = jQuery(this).find('.ispratnicaid').val();
+    jQuery(".internaispratnica tbody .upotreblivodo").datepicker();
+//    mat_edit_interni_popolnilista_artikli_podokument(dbid,".internaispratnica");
+    var trow = jQuery(".internaispratnica tbody tr:last");
+    addNewStavkaMaterijalnoLast(".internaispratnica", trow);
+
+    jQuery('.izborklient').combobox();
+    jQuery('#datum').datepicker();
+    jQuery('.novartikl').click( function (e) {
+        artikli_nov();
+    });
+    jQuery('.otkazipriemnica').click(function () {
+        destroyparentdialog(jQuery(this));
+    });
+    jQuery(".artikli-dropdown").live("change", function(){
+        var elem = jQuery(this);
+        var stavka = jQuery(this).val();
+        getPodatociArtiklByStavkaInterni(stavka, elem);
+        var trow = jQuery(elem).closest("tr");
+        var magacin = jQuery(".magacin_od option:selected").val();
+        var kolicina = trow.find(".kolicina").val();
+        var artikl = trow.find(".SID").val();
+        if(kolicina > 0 && magacin > 0 && artikl > 0) proveriLagerMagacin(magacin,kolicina,artikl,elem);
+    });
+    jQuery(".sifra-dropdown").live("change", function(){
+        var elem = jQuery(this);
+        var katbroj = jQuery(this).val();
+        getPodatociArtiklByKatBrojInterni(katbroj, elem);
+        var trow = jQuery(elem).closest("tr");
+        var magacin = jQuery(".magacin_od option:selected").val();
+        var kolicina = trow.find(".kolicina").val();
+        var artikl = trow.find(".SID").val();
+        if(kolicina > 0 && magacin > 0 && artikl > 0) proveriLagerMagacin(magacin,kolicina,artikl,elem);
+    });
+    jQuery('.internaispratnica tbody tr .kolicina').live("change", function () {
+        var elem = jQuery(this);
+        var trow = jQuery(elem).closest("tr");
+        var magacin = jQuery(".magacin_od option:selected").val();
+        var kolicina = trow.find(".kolicina").val();
+        var artikl = trow.find(".SID").val();
+        if(kolicina > 0 && magacin > 0 && artikl > 0) proveriLagerMagacin(magacin,kolicina,artikl,elem);
+    });
+    jQuery('.magacin_od111').live("change", function () {
+        var elem = jQuery(this);
+        var trow = jQuery(elem).closest("tr");
+        var magacin = jQuery(".magacin_od option:selected").val();
+        var kolicina = trow.find(".kolicina").val();
+        var artikl = trow.find(".SID").val();
+        if(kolicina > 0 && magacin > 0 && artikl > 0) proveriLagerMagacin(magacin,kolicina,artikl,elem);
+    });
+    jQuery('.addtr').click(function () {
+        var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+        var formaction = jQuery(this).attr('formaction');
+        jQuery.ajax({
+            url:formaction,
+            success:function (response) {
+                jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                jQuery("." + tempdialog).html(response);
+                jQuery('div.' + tempdialog).dialog({
+                    autoOpen:true,
+                    width:"auto",
+                    position:"center",
+                    modal:true,
+                    dialogClass: 'dialogsotabovi',
+                    title:"Додади ставки",
+                    close:function (event, ui) {
+                        jQuery(this).dialog("destroy");
+                        jQuery(this).remove();
+                    }
+                });
+            }
+        });
+    });
+    jQuery('.submitispratnica').click(function () {
+        var ovakopce = jQuery(this);
+        var formaction = jQuery(this).closest("form").attr('action');
+        jQuery('.internaispratnica tbody tr:last').remove();
+        jQuery.ajax({
+            type: "post",
+            url: formaction,
+            data: jQuery(this).closest("form").serialize(),
+            success: function (response) {
+                mat_interni_popolnilista();
+                destroyparentdialog(ovakopce);
+            }
+        });
+    });
+});
+</script>

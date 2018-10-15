@@ -1,0 +1,168 @@
+<div class="zemja-glavnalista" xmlns="http://www.w3.org/1999/html">
+    <div class="zemjilista">
+        <?php if (bis_check_access('sistemsko_podesuvanje_bolnicko_rabotenje_sifrarnik_nova_zemja_button')): ?>
+            <div class="buttoncontainer">
+                <button class="button" onclick="zemja_novа()">Нова земја</button>
+
+
+            </div>
+            <?php endif ?>
+        <table class="tabela-zemjilista">
+            <thead>
+            <tr>
+                <th class="idzemja"></th>
+                <th class="zemja">Земја</th>
+                <th class="opiszemja"> &nbsp;Основ <br> Двојазичен образец/европска картичка </th>
+                <th class="sifrazemja">Шифра</th>
+
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+
+        </table>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".tabela-zemjilista").tablesorter();
+
+        zemji_polnilista();
+
+        jQuery(".tabela-zemjilista tbody tr").live('click', function () {
+            jQuery(".tabela-zemjilista tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+        jQuery(".tabela-zemjilista .edit-tr").live('click', function () {
+            zemja_izmeni(jQuery(this).parent().parent().attr('zemja_id'));
+        });
+        jQuery(".tabela-zemjilista .delete-tr").live('click', function () {
+            zemja_delete(jQuery(this).parent().parent().attr('zemja_id'));
+        });
+    });
+
+
+
+
+    function  zemji_polnilista()
+    {
+        var formurl = "/index.php/bolnicko_rabotenje_podatoci/zemji/polnilista";
+        jQuery.ajax({
+            url:formurl,
+            type:'GET',
+            data:{},
+            dataType:'json',
+            success:function (response) {
+//                console.log(response);
+                jQuery(".tabela-zemjilista tbody").html('');
+
+                jQuery.each(response, function (index, item) {
+                    //  console.log(item);
+
+                    jQuery(".tabela-zemjilista tbody").append(('<tr zemja_id="' + item.id + '">' +
+                            '<td>' +
+                            '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                            '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+
+                            '</td>' +
+                            '<td>' + item.zemja + '</td>' +
+                            '<td>' + item.opis + '</td>' +
+                            '<td>' + item.sifra + '</td>' +
+                            '</tr>'
+                            ));
+                });
+                jQuery(".tabela-zemjilista").trigger("update");
+
+
+            }
+        });
+    }
+
+    function zemja_izmeni(zemjaid) {
+        var formurl = "/index.php/bolnicko_rabotenje_podatoci/zemji/izmeni";
+        var data = {  id:zemjaid  }
+        jQuery.ajax({
+            url:formurl,
+            type:'GET',
+            data:data,
+            success:function (response) {
+
+                var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+                jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                jQuery('div.' + tempdialog).html(response);
+                jQuery('div.' + tempdialog).dialog({
+                    autoOpen:true,
+                    width:"auto",
+                    position:"center",
+                    title:"Измени земја",
+                    close:function (event, ui) {
+                        // Remove the dialog elements
+                        // Note: this will put the original div element in the dom
+                        jQuery(this).dialog("destroy");
+                        // Remove the left over element (the original div element)
+                        jQuery(this).remove();
+                    }
+                });
+
+            }
+        });
+
+    }
+
+    function zemja_delete(zemjaid){
+        var r=confirm("Избриши земја");
+        if (r==true)
+        {
+            var b=confirm("Дали сте сигурни?");
+            if (b==true)
+            {
+                var formurl = "/index.php/bolnicko_rabotenje_podatoci/zemji/delete_zemja";
+                var data = {  id:zemjaid  }
+                jQuery.ajax({
+                    url:formurl,
+                    type:'GET',
+                    data:data,
+                    success:function (response) {
+                        zemji_polnilista();
+                    }
+                });
+
+            }
+        }
+
+    }
+
+    function zemja_novа() {
+
+        var formurl = "/index.php/bolnicko_rabotenje_podatoci/zemji/nova_zemja";
+        jQuery.ajax({
+            url:formurl,
+            type:'GET',
+            data:{},
+            success:function (response) {
+                var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+                jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                jQuery('div.' + tempdialog).html(response);
+                jQuery('div.' + tempdialog).dialog({
+                    autoOpen:true,
+                    width:"auto",
+                    position:"center",
+                    title:"Нов град",
+                    close:function (event, ui) {
+                        // Remove the dialog elements
+                        // Note: this will put the original div element in the dom
+                        jQuery(this).dialog("destroy");
+                        // Remove the left over element (the original div element)
+                        jQuery(this).remove();
+                    }
+                });
+
+
+
+            }
+        });
+    }
+
+
+</script >

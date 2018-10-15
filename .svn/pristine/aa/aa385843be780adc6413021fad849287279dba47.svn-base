@@ -1,0 +1,9 @@
+.pregledgrupi.ddgrupa {width: 200px; margin-top: 10px; background-color:#f9f9f9}
+.ddsifra_dn {width: 100px; }
+.ddsifra_spec {width: 100px; }
+.ddsifra_dsg {width: 100px; }
+
+.ddnaziv_dn {width: 100px;}
+.ddnaziv_spec {width: 100px;}
+.ddnaziv_dsg {width: 100px;}
+.participacija , .tabela-artikli .barkod{text-align: right;}

@@ -1,0 +1,16 @@
+<div id="index" class="main-menu-tabs">
+    <ul>
+        <li><a href="/index.php/raporti/menu/pregled">Преглед</a></li>
+        <?php if (bis_check_access('vlezni_fakturi_pregled_na_dospeanost_fakturi_menu')): ?>
+        <li><a href="/index.php/vlezni_fakturi/pregled_dospeanost/menu">Преглед по доспеаност ВФ</a></li>
+        <?php endif ?>
+        <?php if (bis_check_access('izlezni_fakturi_pregled_dospeanost_menu')): ?>
+        <li><a href="/index.php/izlezni_fakturi/pregled_dospeanost/menu">Преглед по доспеаност ИФ</a></li>
+        <?php endif ?>
+
+        <!--        <li><a href="/index.php/raporti/menu/analiza_pari">Фин. Анализа Пари</a></li>-->
+<!--        <li><a href="/index.php/raporti/menu/analiza_fakturi">Фин. Анализа Фактури</a></li>-->
+<!--        <li><a href="/index.php/raporti/menu/lista_klienti">Топ Листа на Клиенти</a></li>-->
+<!--        <li><a href="/index.php/raporti/menu/presmetka_ddv">Пресметка на ДДВ</a></li>-->
+    </ul>
+</div>

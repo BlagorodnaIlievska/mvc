@@ -1,0 +1,29 @@
+<div id="update_banka_form">
+
+
+
+
+
+
+
+
+
+<form action="/index.php/podatoci/banka/update_banka" method="post">
+	<fieldset >
+        <legend>Банка</legend>
+
+	<input type="hidden" name="id" value="<?php echo $id ?>" />
+
+
+    Име на банка <br />
+    <input type="text" name="ime" value="<?php echo $ime ?>">
+   
+    <input type="button" value="Промени" class="snimi-forma"><br>
+    </fieldset>
+</form>
+
+
+
+
+
+</div>

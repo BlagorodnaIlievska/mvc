@@ -1,0 +1,245 @@
+<div class="izlez-form-fzom content-area">
+    <?php
+    $status_options = array('0' => 'Сите', '1' => 'Платени', '2' => 'Неплатени');
+    echo form_open('izlezni_fakturi/pregled_izlezni/nova_faktura');
+    ?>
+  <div class="vleznifak-top">
+<!--      <a href="/index.php/xml/generate/fzom">-->
+      <a>
+          <button type="button" class="button fzom-xml"><span>Генерирај XML фактура фзом</span></button>
+      </a>
+      <a>
+          <button type="button" class="button fzom-spec"><span>Генерирај XML спецификација</span></button>
+      </a>
+      <a href="" target="_blank" class="cmd-printlink-izlezni-fzom">
+          <button type="button" class="print"><span>Печати спец.</span></button>
+      </a>
+      <a href="" target="_blank" class="cmd-printlink-izlezni-faktura-fzom">
+          <button type="button" class="print"><span>Печати фактура</span></button>
+      </a>
+   </div>
+    <div class="filtermenu" style="display: none;">
+        <div class="filter-vleznifak">
+            <span>Период од:</span>
+            <input type="text" class="periodod pregledvlezna" name="periodod"/>
+            <span style="margin: 0 5px;">до:</span>
+            <input type="text" class="perioddo pregledvlezna" name="perioddo"/>
+        </div>
+        <div class="filter-vleznifak">
+            <label>Број:</label>
+            <input type="text" class="filterbrojfaktura pregledvlezna" name="filterbrojfaktura"
+                   formaction="/index.php/vlezni_fakturi/faktura/search_vlezna_faktura">
+        </div>
+        <div class="filter-vleznifak">
+            <?php
+            echo form_label('Коминтент: ', 'klient');
+            echo form_dropdown('klient', $klient, '', 'class="ddklient pregledvlezna"');
+            ?>
+        </div>
+        <div class="filter-vleznifak">
+            <?php
+            echo form_label('Пациент: ', 'pacient');
+            echo form_dropdown('pacient', $pacienti, '', 'class="ddpacient pregledvlezna"');
+            ?>
+        </div>
+        <div class="filter-vleznifak status-ui">
+            <?php
+            echo form_label('Статус:', 'status_options');
+            echo form_dropdown('status_options', $status_options, '', 'class="ddstatus pregledvlezna"');
+            ?>
+        </div>
+
+        <?php echo form_close(); ?>
+    </div>
+
+    <div class="izlezni-fakturi">
+    </div>
+    <div class="stavka">
+        <p class="naslovizleznifakturi" > ( <span class="vkupnostavki">0</span> ) Фактури за ФЗОМ</p>
+        <div class="predtabela">
+            <table class="tizleznifakturi" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th class="ac"></th>
+                    <th class="broj">Број</th>
+                    <th class="datum">Датум</th>
+                    <th class="klient">Коминтент</th>
+                    <th class="datum-od">Датум - Од</th>
+                    <th class="datum-do">Датум - До</th>
+                    <th class="osnova">Износ</th>
+                    <th class="valuta">Валута</th>
+                    <th>Оддел</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class='hiderow trow' fakturaid="">
+                    <td class="infofaktura1"><img width="15" height="15" alt="" src="/images/information.png"></td>
+                    <td class="broj"></td>
+                    <td class="datum"></td>
+                    <td class="klient"></td>
+                    <td class="datum-od"></td>
+                    <td class="datum-do"></td>
+                    <td class="osnova"></td>
+                    <td class="valuta"></td>
+                    <td class="odel"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <table class="sumiranje">
+            <tfoot>
+            <tr>
+                <td class="ac"></td>
+                <td class="broj"></td>
+                <td class="datum"></td>
+                <td class="vkupnolabel">Вкупно:</td>
+                <td class="osnovasum"></td>
+                <td></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="fzom-oddeli">
+        <p class="naslov-oddeli" > ( <span class="vkupnostavki">0</span> ) Фактури по оддел</p>
+        <div class="predtabela">
+            <table class="tabela-fzom-oddeli" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th class="ac"></th>
+                    <th class="oddel">Оддел</th>
+                    <th class="pod-oddel">Пододдел</th>
+                    <th class="vkupen-iznos">Вкупен износ</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="stavkadetail hide">
+        <p class="naslov" > ( <span class="vkupnostavki">0</span> ) Фактури по документот - Детално</p>
+        <div class="predtabela">
+            <table class="tstavkadetail" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th class="ac"></th>
+                    <th class="redenbr">РБ</th>
+                    <th class="broj-faktura">Број на фактура</th>
+                    <th class="broj-lekuvanje">Број на лекување</th>
+                    <th class="datum">Датум</th>
+                    <th class="klient">Коминтент</th>
+                    <th class="referentna-cena">Референтна цена</th>
+                    <th class="participacija">Партиципација</th>
+                    <th class="naplata-za-fzom">Наплата за ФЗОМ</th>
+                    <th class="valuta">Валута</th>
+                    <th class="oddel">Оддел</th>
+                    <th class="pododdel">Пододдел</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class='hiderow trow' fakturaid="">
+                    <td class="infofaktura"><img width="15" height="15" alt="" src="/images/information.png"></td>
+                    <td class="redenbroj"></td>
+                    <td class="broj-faktura"></td>
+                    <td class="broj-lekuvanje"></td>
+                    <td class="datum"></td>
+                    <td class="klient"></td>
+                    <td class="referentna-cena text-right"></td>
+                    <td class="participacija text-right"></td>
+                    <td class="naplata-za-fzom text-right"></td>
+                    <td class="valuta"></td>
+                    <td class="oddel"></td>
+                    <td class="pododdel"></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td class="infofaktura"></td>
+                        <td class="redenbroj"></td>
+                        <td class="broj-faktura"></td>
+                        <td class="broj-lekuvanje"></td>
+                        <td class="datum"></td>
+                        <td class="klient">ВКУПНО:</td>
+                        <td class="referentna-cena text-right"></td>
+                        <td class="participacija text-right">500,00</td>
+                        <td class="naplata-za-fzom text-right">600,00</td>
+                        <td class="valuta">ден.</td>
+                        <td class="oddel"></td>
+                        <td class="pododdel"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function izlezni_fakturi_fzom_getSelektirana(){
+        if ( jQuery(".izlez-form-fzom .tizleznifakturi tbody tr.active").attr("fakturaid") > 0 ) {
+            return jQuery(".izlez-form-fzom .tizleznifakturi tbody tr.active").attr("fakturaid") ;
+        } else {
+            return 0;
+        }
+    }
+jQuery(document).ready(function () {
+    jQuery('.periodod').datepicker({dateFormat:'yy-mm-dd'});
+    jQuery('.perioddo').datepicker({dateFormat:'yy-mm-dd'});
+
+    jQuery('.ddstatus, .ddklient, .ddpacient').combobox();
+    jQuery(".tizleznifakturi").tablesorter();
+    jQuery(".tstavkadetail").tablesorter();
+
+    if_fzom_napolnilista();
+    jQuery(".izlez-form-fzom .tizleznifakturi tbody tr").click(function(e){
+        jQuery(".izlez-form-fzom .tizleznifakturi tbody tr").removeClass("active");
+        jQuery(this).addClass('active');
+    });
+
+    jQuery(".izlez-form-fzom .cmd-printlink-izlezni-fzom").click(function(e){
+        if (izlezni_fakturi_fzom_getSelektirana()>0){
+//            console.log(izlezni_fakturi_fzom_getSelektirana());
+           jQuery(".cmd-printlink-izlezni-fzom").attr("href","/index.php/print/pdf?view=/index.php/izlezni_fakturi/faktura/specifikacija_print_if&id="+izlezni_fakturi_fzom_getSelektirana()+"&landscape");
+        } else {
+            alert("Ве молиме одберете фактура");
+            e.preventDefault();
+            return false;
+        }
+    });
+    jQuery(".izlez-form-fzom .cmd-printlink-izlezni-faktura-fzom").click(function(e){
+        if (izlezni_fakturi_fzom_getSelektirana()>0){
+//            console.log(izlezni_fakturi_fzom_getSelektirana());
+            jQuery(".cmd-printlink-izlezni-faktura-fzom").attr("href","/index.php/print/pdf?view=/index.php/izlezni_fakturi/faktura/fzom_faktura_print&id="+izlezni_fakturi_fzom_getSelektirana());
+        } else {
+            alert("Ве молиме одберете фактура");
+            e.preventDefault();
+            return false;
+        }
+    });
+    jQuery(".fzom-xml").click(function(e){
+        if (izlezni_fakturi_fzom_getSelektirana()>0){
+//            console.log(izlezni_fakturi_fzom_getSelektirana());
+            jQuery(".fzom-xml").attr("href","/index.php/xml/generate/fzom?id="+izlezni_fakturi_fzom_getSelektirana());
+            var href = jQuery('.izlez-form-fzom .fzom-xml').attr('href');
+            window.location.href = href;
+//            window.open(href, this.target);
+        } else {
+            alert("Ве молиме одберете фактура");
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    jQuery(".fzom-spec").click(function(e){
+        if (izlezni_fakturi_fzom_getSelektirana()>0){
+//            console.log(izlezni_fakturi_fzom_getSelektirana());
+            jQuery(".fzom-spec").attr("href","/index.php/xml/generate/sp?id="+izlezni_fakturi_fzom_getSelektirana());
+            var href = jQuery('.izlez-form-fzom .fzom-spec').attr('href');
+            window.location.href = href;
+        } else {
+            alert("Ве молиме одберете фактура");
+            e.preventDefault();
+            return false;
+        }
+    });
+});
+</script>

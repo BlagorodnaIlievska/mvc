@@ -1,0 +1,185 @@
+<div class="glavna-lekuvanja ">
+    <div class="buttoncontainer">
+    <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_uslugi_button')): ?>
+        <ul class="bojan-dropdownmenu">
+            <li>
+                <button type="button" class="button" onclick=""><span>Услуги</span></button>
+                <ul>
+                    <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_uslugi_uslugi_button')): ?>
+                        <li>
+                            <button onclick="priem_uslugi()" class="button">Услуги</button>
+                        </li>
+                    <?php endif ?>
+                    <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_uslugi_dopolnitelni_uslugi_button')): ?>
+                        <li>
+                            <button onclick="priem_dopolnitelni_uslugi()" class="button">Дополнителни Услуги</button>
+                        </li>
+                    <?php endif ?>
+                </ul>
+            </li>
+        </ul>
+    <?php endif ?>
+    <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_pregled_button')): ?>
+    <ul class="bojan-dropdownmenu">
+            <li>
+                <button type="button" class="button" onclick=""><span>Преглед</span></button>
+                <ul>
+                 <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_pregled_pocetna_sostojba_button')): ?>
+                    <li>
+                        <button type="button" class="button" onclick="lekuvanja_nov_pregled()"><span>Почетна Состојба</span></button>
+                    </li>
+                        <?php endif ?>
+                 <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_pregled_pregled_button')): ?>
+                    <li>
+                        <button type="button" class="button" onclick="lekuvanja_nov_pregled_dijagnoza()"><span>Преглед</span></button>
+                    </li>
+                        <?php endif ?>
+                </ul>
+            </li>
+        </ul>
+        <?php endif ?>
+        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_terapija_button')): ?>
+            <button type="button" class="button" onclick="priem_terapija()"><span>Терапија</span></button>
+                <?php endif ?>
+        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_naodi_button')): ?>
+            <ul class="bojan-dropdownmenu">
+                <li>
+                    <button type="button" class="button" onclick=""><span>Наоди</span></button>
+                    <ul>
+                        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_naodi_laboratoriski_naodi_button')): ?>
+                        <li>
+                            <button onclick="nov_laboratoriski_naod()" class="button">Лабораториски наод</button>
+                        </li>
+                            <?php endif ?>
+                        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_naodi_radiodijagnosticki_naodi_button')): ?>
+                        <li>
+                            <button onclick="nov_radiodijagnosticki_naod()" class="button">Радиодијагностички наод</button>
+                        </li>
+                            <?php endif ?>
+                        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_naodi_rezultati_biohemiski_analizi_button')): ?>
+                        <li>
+                            <button onclick="nov_rezultat_biohemija()" class="button">Резултати од биохемиски анализи
+                            </button>
+                        </li>
+                            <?php endif ?>
+                    </ul>
+                </li>
+            </ul>
+                <?php endif ?>
+        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_operacija_button')): ?>
+             <button type="button" class="button" onclick=""><span>Операција</span></button>
+                 <?php endif ?>
+        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_anestezija_button')): ?>
+             <button type="button" class="button" onclick=""><span>Анестезија</span></button>
+                 <?php endif ?>
+        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_upati_button')): ?>
+            <ul class="bojan-dropdownmenu">
+                <li>
+                    <button type="button" class="button" onclick=""><span>Упати</span></button>
+                    <ul>
+                        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_interklinicki_upat_button')): ?>
+                            <li>
+                                <button onclick="nov_interklinicki_upat()" class="button">Интер-клинички упат</button>
+                            </li>
+                            <?php endif ?>
+                        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_interbolnicki_upat_button')): ?>
+                        <li>
+                            <button onclick="nov_interbolnicki_upat()" class="button">Интер-болнички упат</button>
+                        </li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_interoddelenski_upat_button')): ?>
+                        <li>
+                            <button onclick="nov_interoddelenski_upat()" class="button">Интер-одделенски упат</button>
+                        </li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_upat_radiodijagnostika_button')): ?>
+                            <li>
+                                <button onclick="nov_radiodijagnosticki_upat()" class="button">Упат за радиодијагностика
+                                </button>
+                            </li>
+                            <?php endif ?>
+                        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_laboratoriski_upat_button')): ?>
+                            <li>
+                                <button onclick="nov_laboratoriski_upat()" class="button">Лабораториски упат</button>
+                            </li>
+                            <?php endif ?>
+                        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_bolnicki_upat_button')): ?>
+                            <li>
+                                <button onclick="nov_bolnicki_upat()" class="button">Болнички упат</button>
+                            </li>
+                            <?php endif ?>
+                        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_bolnicki_upat_button')): ?>
+                        <li>
+                            <button onclick="novo_konzilijarno_mislenje()" class="button">Конзилијарно мислење</button>
+                        </li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_potvrda_smrt_button')): ?>
+                            <li>
+                                <button onclick="potvrda_za_smrt()" class="button">Потврда за смрт</button>
+                            </li>
+                            <?php endif ?>
+                        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_otpusna_lista_button')): ?>
+                            <li>
+                                <button class="button" onclick="otpusna_lista()">Отпусна листа</button>
+                            </li>
+                            <?php endif ?>
+                    </ul>
+                </li>
+            </ul>
+        <?php endif ?>
+<!--        -->
+        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_obrasci_button')): ?>
+        <ul class="bojan-dropdownmenu">
+            <li>
+                <button type="button" class="button" onclick=""><span>Обрасци</span></button>
+                <ul>
+                    <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_naodi_laboratoriski_naodi_button')): ?>
+                    <li>
+                        <button onclick="obrazecc_nov()" class="button">Образец С</button>
+                    </li>
+                    <?php endif ?>
+                    <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_naodi_radiodijagnosticki_naodi_button')): ?>
+                    <li>
+                        <button onclick="nova_izjava()" class="button">Изјава</button>
+                    </li>
+                    <?php endif ?>
+                    <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_naodi_rezultati_biohemiski_analizi_button')): ?>
+                    <li>
+                        <button onclick="nova_izjava_soglasnost()" class="button">Изјава за согласност</button>
+                    </li>
+                    <?php endif ?>
+                    <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_naodi_radiodijagnosticki_naodi_button')): ?>
+                        <li>
+                            <button onclick="nov_zapis_za_priem()" class="button">Запис за прием</button>
+                        </li>
+                    <?php endif ?>
+                </ul>
+            </li>
+        </ul>
+        <?php endif ?>
+        <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_obrasci_button')): ?>
+        <ul class="bojan-dropdownmenu">
+            <li>
+                <button type="button" class="button" onclick=""><span>Рецепти</span></button>
+                <ul>
+                    <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_naodi_laboratoriski_naodi_button')): ?>
+                    <li>
+                        <button onclick="recepta_nova_obicna()" class="button">Нова рецепта</button>
+                    </li>
+                    <?php endif ?>
+                    <?php if (bis_check_access('bolnicko_lekuvanje_lekuvanje_naodi_radiodijagnosticki_naodi_button')): ?>
+                    <li>
+                        <button onclick="recepta_nova_stranski_osiguranik()" class="button">Нова рецепта за стран. ос.</button>
+                    </li>
+                    <?php endif ?>
+                </ul>
+            </li>
+        </ul>
+        <?php endif ?>
+    </div>
+    <div class="clear"></div>
+    <?php include('lekuvanja/lista_so_priemi.php') ?>
+</div>
+    <script>
+
+    </script>

@@ -1,0 +1,140 @@
+<div id="pregled_form">
+
+    <?php
+    echo form_open('kasa/menu/getPregledKasa');
+    echo form_label('Klient: ', 'klient');
+    echo form_dropdown('klient', $klient, '', 'class="ddklient pregledkasa"');
+    echo br();
+    echo form_label('Grupa: ', 'grupa');
+    echo form_dropdown('grupa', $grupa, '', 'class="ddgrupa pregledkasa"');
+    echo br();
+    echo form_label('Kasa: ', 'kasa');
+    echo form_dropdown('kasa', $kasa, '', 'class="ddkasa pregledkasa"');
+    echo form_close();
+    ?>
+    <br>
+    <div class="prikaz">
+        <table class="tabelapregledkasa" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th>Kasa</th>
+                <th>Datum</th>
+                <th>Broj</th>
+                <th>Klient</th>
+                <th>Odliv</th>
+                <th>Priliv</th>
+                <th>###</th>
+                <th>Grupa</th>
+                <th>Zabeleska</th>
+            </tr>
+            <?php
+            echo "<tr class='hiderow'>";
+            echo "<td> <input type='hidden' class='dbid' name='dbid'> <input type='text' class='kasa big' name='2kasa' readonly> </td>";
+            echo "<td> <input type='text' class='datum big' name='2datum' readonly> </td>";
+            echo "<td> <input type='text' class='broj medium' name='2broj' readonly> </td>";
+            echo "<td> <input type='text' class='klient big' name='2klient' readonly> </td>";
+            echo "<td> <input type='text' class='odliv medium' name='2odliv' readonly> </td>";
+            echo "<td> <input type='text' class='priliv medium' name='2priliv' readonly> </td>";
+            echo "<td> <input type='text' class='taraba medium'> </td>";
+            echo "<td> <input type='text' class='grupa big' name='2grupa' readonly> </td>";
+            echo "<td> <input type='text' class='zabeleska big' name='2zabeleska' readonly> </td>";
+            echo "</tr>";
+            ?>
+        </table>
+        <?php echo form_open('kasa/menu/pecati_pregled'); ?>
+        <input type="hidden" class="pdfklientid" name="pdfklientid"><br>
+        <input type="hidden" class="pdfgrupaid" name="pdfgrupaid"><br>
+        <input type="hidden" class="pdfkasaid" name="pdfkasaid"><br>
+        <input type="submit" value="Pecati" class="pecatikartica button" ><br>
+        <?php echo form_close(); ?>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('tr').live("dblclick", function(){
+            var id = jQuery(this).find('input[name=dbid]').val();
+            //console.log("clicked: ", id);
+            var formaction= "/index.php/kasa/menu/editVlezIzlezKasa?id=" + id;
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({
+                autoOpen: true,
+                width: 800,
+                close: function(event, ui){
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            }).load(formaction);
+        });
+        var data = {
+            data : 1
+        }
+        jQuery.ajax({
+            url: "/index.php/kasa/menu/getSiteKasi",
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+               //console.log(response);
+                jQuery(".tabelapregledkasa").find("tr:gt(1)").remove();
+                var tr = jQuery('.tabelapregledkasa tr:last');
+                tr.removeClass('hiderow');
+                for ( var i = 0; i < response.length; i++ ) {
+                    var newrow = jQuery(tr).clone().insertBefore(tr);
+                    newrow.find('input[name=dbid]').val(response[i].dbid);
+                    newrow.find('input[name=2kasa]').val(response[i].kasaIme);
+                    newrow.find('input[name=2datum]').val(response[i].datum);
+                    newrow.find('input[name=2broj]').val(response[i].intBroj);
+                    newrow.find('input[name=2klient]').val(response[i].firmaIme);
+                    newrow.find('input[name=2grupa]').val(response[i].grupa);
+                    newrow.find('input[name=2zabeleska]').val(response[i].zabeleska);
+                    if(response[i].tip == 540) newrow.find('input[name=2odliv]').val(response[i].suma);
+                    if(response[i].tip == 550) newrow.find('input[name=2priliv]').val(response[i].suma);
+                }
+                //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                tr.addClass('hiderow');
+            }
+        });
+        jQuery('.pregledkasa').live('change',function(){
+            var klient = jQuery('.ddklient option:selected').val();
+            var grupa = jQuery('.ddgrupa option:selected').val();
+            var kasa = jQuery('.ddkasa option:selected').val();
+            jQuery('.pdfklientid').val(klient);
+            jQuery('.pdfgrupaid').val(grupa);
+            jQuery('.pdfkasaid').val(kasa);
+            var formaction = jQuery(this).parent().attr('action');
+            //console.log(klient, grupa, kasa, formaction);
+            var data = {
+                klientid: klient,
+                grupaid: grupa,
+                kasaid: kasa
+            }
+            jQuery.ajax({
+                url: formaction,
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery(".tabelapregledkasa").find("tr:gt(1)").remove();
+                    var tr = jQuery('.tabelapregledkasa tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertBefore(tr);
+                        newrow.find('input[name=dbid]').val(response[i].dbid);
+                        newrow.find('input[name=2kasa]').val(response[i].kasaIme);
+                        newrow.find('input[name=2datum]').val(response[i].datum);
+                        newrow.find('input[name=2broj]').val(response[i].intBroj);
+                        newrow.find('input[name=2klient]').val(response[i].firmaIme);
+                        newrow.find('input[name=2grupa]').val(response[i].grupa);
+                        newrow.find('input[name=2zabeleska]').val(response[i].zabeleska);
+                        if(response[i].tip == 540) newrow.find('input[name=2odliv]').val(response[i].suma);
+                        if(response[i].tip == 550) newrow.find('input[name=2priliv]').val(response[i].suma);
+                    }
+                    //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                    tr.addClass('hiderow');
+                }
+             });
+        });
+    });
+</script>

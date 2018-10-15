@@ -1,0 +1,77 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Faktura extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('materijalno/materijalno_model');
+    }
+
+    public function index()
+    {
+        //$data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('materijalno/vlez_izlez/vlez/faktura_form');
+    }
+
+    public function povrzi_postoecka()
+    {
+        $this->load->model('podatoci/edmerki_model');
+        $data['magacini'] = $this->materijalno_model->magacinJquery();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $this->load->view('materijalno/vlez_izlez/vlez/postoecka_faktura_form', $data);
+    }
+
+    public function proveri_vlezna_faktura()
+    {
+        $brojfaktura = $this->input->post('brojfaktura');
+        $query = $this->materijalno_model->proveri_vlezna_faktura($brojfaktura);
+        echo json_encode($query);
+    }
+
+    public function FakturaPoPriemnicaMeni()
+    {
+        $this->load->view('materijalno/vlez_izlez/vlez/faktura_po_priemnica_meni');
+    }
+
+    public function getStavkiByPriemnica()
+    {
+        $id = $this->input->get('id');
+//        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->materijalno_model->getStavkiByPriemnica($id);
+        echo json_encode($query);
+    }
+
+    public function novaFakturaPoPriemnica()
+    {
+        $id = $this->input->get('id');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('podatoci/artikl_model');
+        $query = $this->materijalno_model->getPriemnicaByID($id);
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['katbroj']=$this->artikl_model->getAllKatBroj();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $data['ddv'] = $this->vlezni_fakturi_model->ddv_dropdown();
+        $data['id'] = $id;
+        $data['konto'] =$this->plan_model->getKonta();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['grupa'] = $this->plan_model->konto_dropdown();
+        $data['konto'] =$this->plan_model->getKonta();
+        $data['priemnica'] = $query->priemnica;
+        $data['stavki'] = $query->stavki;
+        $this->load->view('materijalno/vlez_izlez/vlez/nova_faktura_po_priemnica', $data);
+    }
+
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+}

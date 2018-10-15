@@ -1,0 +1,37 @@
+<div class="novkatalog">
+    <form action="/index.php/podatoci/katalog/create_katalog" method="post">
+        <fieldset>
+
+			<?php if ($tip == "katalog") { ?>
+            <legend>Нов Каталог</legend>
+			<?php } ?>
+			<?php if ($tip == "podkatalog") { ?>
+            <legend>Нов ПодКаталог</legend>
+            <input type="hidden" name="parent_id" value="<?php echo $glavenkatalog->id  ?>"/>
+			<?php } ?>
+			<?php if ($tip == "podkatalog") { ?>
+            Главен Каталог Име:<br/>
+			<?php echo $glavenkatalog->ime ?><br/><br/>
+            Главен Каталог Шифра:<br/>
+			<?php echo $glavenkatalog->sifra ?><br/><br/>
+			<?php } ?>
+            Име:<br/>
+            <input type="text" name="ime"/><br/>
+            Шифра:<br/>
+            <input type="text" name="sifra"/><br/>
+        </fieldset>
+        <br/>
+		<?php if ($tip == "katalog") { ?>
+        <button type="button" class="button snimi-forma" izvrsi="katalog_popolnilista()" poraka_uspesno="Каталогот е успешно снимен"
+                poraka_neuspesno="Грешка при снимање на каталог"
+                ><span>Сними</span></button>
+		<?php } else { ?>
+        <button type="button" class="button snimi-forma" izvrsi="katalog_popolnipodlista(<?php echo $glavenkatalog->id  ?>)"
+                poraka_uspesno="Каталогот е успешно снимен"
+                poraka_neuspesno="Грешка при снимање на каталог"
+                ><span>Сними</span></button>
+		<?php }   ?>
+        <br/>
+    </form>
+
+</div>

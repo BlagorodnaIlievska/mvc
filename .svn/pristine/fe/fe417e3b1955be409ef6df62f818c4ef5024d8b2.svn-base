@@ -1,0 +1,67 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Account extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+    }
+
+    public function view_accounts()
+    {
+        $this->load->model('users/accounts_model');
+        $this->load->model('users/joins_model');  // so ovoj join zemame za korisnicte koja role ja imaat od roles tabelata
+        //$query = $this->accounts_model->getAll(); //ova e za prikaz na site polinja od users tabelata
+        $query = $this->joins_model->join_users_roles();
+        $data['main_content'] = 'users/accounts/edit_accounts_form';
+        $data['accounts'] = $query;
+        $this->load->view('users/accounts/edit_accounts_form', $data);
+    }
+    public function delete_account(){
+
+        $this->load->model('users/accounts_model');
+        $this->accounts_model->delete_row();
+        $this->view_accounts();
+    }
+
+    public function edit_account(){
+
+        $this->load->model('users/accounts_model');
+        $this->load->model('users/membership_model');
+        $query = $this->accounts_model->edit_row();
+        $data['main_content'] = 'users/accounts/update_accounts_form';
+        $data['accounts'] = $query;
+        $data['roles'] = $this->membership_model->get_roles_dropdown();
+        $this->load->view('includes/template', $data);
+        $this->view_accounts();
+    }
+
+    public function update_account(){
+
+        $this->load->model('users/accounts_model');
+        $query = $this->accounts_model->update_row();
+
+        if($query)
+        {
+            echo "Account updated successfully";
+        }
+        else
+        {
+            echo "No row was found ... Please try again.";
+        }
+        $this->view_accounts();
+    }
+
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+
+}

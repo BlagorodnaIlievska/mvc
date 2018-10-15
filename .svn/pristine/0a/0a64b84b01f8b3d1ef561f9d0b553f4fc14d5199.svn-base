@@ -1,0 +1,150 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Izlez extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function menu()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['magacin'] = $this->materijalno_model->magacin_dropdown();
+
+        $this->load->view('materijalno/vlez_izlez/menu_form', $data);
+    }
+
+    public function izlez_roba()
+    {
+        $this->load->view('materijalno/vlez_izlez/izlez/izlez_roba_form');
+    }
+
+    public function ispratnica()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('podatoci/artikl_model');
+        $zabranetimagacini=$this->session->userdata('magacini');
+        $data['artikli']=$this->artikl_model->getAll_limitirano($zabranetimagacini);
+        $data['katbroj']=$this->artikl_model->getAllKatBroj_limitirano($zabranetimagacini);
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['magacini'] = $this->materijalno_model->magacinJquery();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('materijalno/vlez_izlez/izlez/ispratnica_form', $data);
+    }
+
+    public function updateIspratnica()
+    {
+        $id = $this->input->post('ispratnicaid');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->updateIspratnica($id);
+        echo json_encode($query);
+    }
+
+    public function confirmDeleteIspratnica()
+    {
+        $data['id'] = $this->input->get('id');
+        $this->load->view('materijalno/vlez_izlez/izlez/confirm_delete_ispratnica', $data);
+    }
+
+    public function deleteIspratnica()
+    {
+        $id = $this->input->post('ispratnicaid');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->deletePriemnica($id);
+        echo json_encode($query);
+    }
+
+    public function novaIspratnica()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->novaIspratnica();
+//        $query = $this->materijalno_model->getLastSrednaCenaArtikl(3860, 3333);
+        echo json_encode($query);
+    }
+
+    public function getNewBrojIspratnica()
+    {
+        $year = $this->input->post('year');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getNewBrojIspratnica($year);
+        echo json_encode($query);
+    }
+
+    public function getIspratnici()
+    {
+        $klientid = $this->input->get('klientid');
+        $pogledid = $this->input->get('pogledid');
+        $magacinid = $this->input->get('magacinid');
+        $this->load->model('materijalno/materijalno_model');
+        $query =  $this->materijalno_model->getIspratnici($klientid, $pogledid, $magacinid);
+        echo json_encode($query);
+    }
+
+    public function povratnica_menu()
+    {
+        $this->load->view('materijalno/vlez_izlez/povratnica/povratnica_menu_form');
+    }
+
+    public function povratnica()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('materijalno/vlez_izlez/povratnica/nova_povratnica_form', $data);
+    }
+
+    public function novaPovratnica()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->novaPovratnica();
+        echo json_encode($query);
+    }
+
+    public function proveriLagerMagacin()
+    {
+        $artikl = $this->input->get('artikl');
+        $magacin = $this->input->get('magacin');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->sostojbaArtiklMagacin($artikl, $magacin);
+        print_r($query); die();
+        echo json_encode($query);
+    }
+
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+
+    public function pecati_site_ispratnici(){
+
+        $klientid = $this->input->get('klientid');
+        $pogledid = $this->input->get('pogledid');
+        $magacinid = $this->input->get('magacinid');
+        $this->load->model('materijalno/materijalno_model');
+        $query =  $this->materijalno_model->getIspratnici($klientid, $pogledid, $magacinid);
+//stavi iminja kaj site
+        $data['klient'] = $klientid; $data['pogled'] = $pogledid;
+        $data['ispratnici'] = $query;
+        $data['main_content'] = 'materijalno/pecatenje/pecati_site_ispratnici';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+
+    public function ispratnica_stavki_tabela()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $id=$this->input->get("id");
+        $this->load->model('podatoci/artikl_model');
+        $stavki = $this->artikl_model->getArtikliPoDokument($id);
+        $data['stavki'] = $stavki;
+        $data['magacini'] = $this->materijalno_model->magacinJquery();
+        $this->load->view('materijalno/vlez_izlez/izlez/ispratnica_stavki_tabela', $data);
+    }
+}

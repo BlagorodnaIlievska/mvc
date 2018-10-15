@@ -1,0 +1,338 @@
+<?php
+
+class Upati_model extends CI_Model
+{
+
+    public function create_upat($data)
+    {
+        $data['firma_id']= $this->session->userdata('firma_id');
+        $data['doktor_id']= $this->session->userdata('doktor_id');
+        $insert = $this->db->insert('bis_upat', $data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+    public function create_obrazec($data)
+    {
+        $data['firma_id']= $this->session->userdata('firma_id');
+        $data['doktor_id']= $this->session->userdata('doktor_id');
+        $insert = $this->db->insert('obrazec_c', $data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    public function create_izjava($data){
+        $data['firma_id'] = $this->session->userdata('firma_id');
+        $data['doktor_id']= $this->session->userdata('doktor_id');
+        $insert = $this->db->insert('izjavi', $data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    public function create_izjava_soglasnost($data){
+        $data['firma_id'] = $this->session->userdata('firma_id');
+        $data['doktor_id']= $this->session->userdata('doktor_id');
+        $insert = $this->db->insert('izjavi', $data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    public function create_potvrda_za_smrt($data)
+    {
+        $insert = $this->db->insert('bis_potvrda_za_smrt', $data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    public function create_trebuvanje_za_krv($data)
+    {
+        
+        $insert = $this->db->insert('bis_trebuvanje_za_krv_i_krvni_produkti', $data);
+        return $insert;
+    }
+
+    public function create_otpusna_lista($data)
+    {
+        $data["datum_na_priem"] = bis_convert_date_mk_to_usa($data["datum_na_priem"]);
+        $data["datum_na_ispis"] = bis_convert_date_mk_to_usa($data["datum_na_ispis"]);
+        $insert = $this->db->insert('bis_otpusna_lista', $data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    public function create_mrtovecka_pridruznica($data)
+    {
+        
+        $insert = $this->db->insert('bis__mrtovecka_pridruznica', $data);
+        return $insert;
+    }
+
+    public function create_zapis_za_priem($data)
+    {
+        unset($data['datum']);
+        unset($data['vreme']);
+        unset($data['vo_organizaciona_edinica']);
+        $insert = $this->db->insert('bis_zapis_za_priem', $data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    public function create_pokana_za_konzilijaren_pregled($data)
+    {
+        
+        $insert = $this->db->insert('bis_pokana_za_konzilijaren_pregled', $data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+    public function create_biohemiska_analiza($data)
+    {
+        $insert = $this->db->insert('biohemiski_analizi', $data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    public function getUpati($priem_id)
+    {
+        $this->db->select('bis_upat.*,bis_firmi.ime as firma_ime,bis_firmi.sifra as firma_sifra');
+        $this->db->from('bis_upat');
+        $this->db->where('bis_upat.priem_id', $priem_id);
+        $this->db->join("bis_firmi","bis_firmi.id=bis_upat.firma_id","left");
+        $query = $this->db->get();
+        $this->load->model("covecki_resursi/covecki_resursi_model");
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            foreach ($result as $key => $row) {
+                $search = array(
+                    "radiodijagnosticki",
+                    "interklinicki",
+                    "interbolnicki",
+                    "interoddelenski",
+                    "laboratoriski_naod",
+                    "radiodijagnosticki_naod",
+                    "laboratoriski",
+                    "bolnicki",
+                    "konzolijarno_mislenje",
+                );
+                $replace =
+                    array(
+                        "Упат:Радио Дијаг.",
+                        "Упат:Интерклинички",
+                        "Упат:Интерболнички",
+                        "Упат:Интеродделенски",
+                        "Наод:Лабараториски Наод",
+                        "Наод:Радиодијагностички Наод",
+                        "Упат:Лабараториски",
+                        "Упат:Болнички",
+                        "Упат:Конзолијарно мислење",
+                    );
+                $result[$key]->tip_upat_label = str_replace($search, $replace, $result[$key]->tip_upat);
+                $result[$key]->doktor = $this->covecki_resursi_model->getDoktorImePrezime($row->doktor_id);
+            }
+            return $result;
+        } else return false;
+    }
+
+
+    public function getIzjavi($priem_id)
+    {
+        $this->db->select('izjavi.*,bis_firmi.ime as firma_ime,bis_firmi.sifra as firma_sifra');
+        $this->db->from('izjavi');
+        $this->db->where('izjavi.priem_id', $priem_id);
+        $this->db->join("bis_firmi","bis_firmi.id=izjavi.firma_id","left");
+        $query = $this->db->get();
+        $this->load->model("covecki_resursi/covecki_resursi_model");
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            foreach ($result as $key => $row) {
+                $search = array(
+                    "izjavi",
+                    "izjava_za_soglasnost",
+                );
+                $replace =
+                    array(
+                        "Образец:Изјава",
+                        "Образец:Изјава за согласност",
+                    );
+                $result[$key]->tip_upat_label = str_replace($search, $replace, $result[$key]->tip);
+                $result[$key]->doktor = $this->covecki_resursi_model->getDoktorImePrezime($row->doktor_id);
+            }
+            return $result;
+        } else return false;
+    }
+
+    public function getRecepti($priem_id)
+    {
+        $this->db->select('recepti.*,bis_firmi.ime as firma_ime,bis_firmi.sifra as firma_sifra');
+        $this->db->from('recepti');
+        $this->db->where('recepti.priem_id', $priem_id);
+        $this->db->join("bis_firmi","bis_firmi.id=recepti.firma_id","left");
+        $query = $this->db->get();
+        $this->load->model("covecki_resursi/covecki_resursi_model");
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            foreach ($result as $key => $row) {
+                $search = array(
+                    "recepta_stranski_osiguranik",
+                    "recepta_domasen_osiguranik",
+                );
+                $replace =
+                    array(
+                        "Рецепта:Странски осигураник.",
+                        "Рецепта:Домашен осигураник",
+                    );
+                $result[$key]->tip_upat_label = str_replace($search, $replace, $result[$key]->tip);
+                $result[$key]->doktor = $this->covecki_resursi_model->getDoktorImePrezime($row->doktor_id);
+            }
+            return $result;
+        } else return false;
+    }
+
+    public function getObrasci($priem_id)
+    {
+        $this->db->select('obrazec_c.*,bis_firmi.ime as firma_ime,bis_firmi.sifra as firma_sifra');
+        $this->db->from('obrazec_c');
+        $this->db->where('obrazec_c.priem_id', $priem_id);
+        $this->db->join("bis_firmi","bis_firmi.id=obrazec_c.firma_id","left");
+        $query = $this->db->get();
+        $this->load->model("covecki_resursi/covecki_resursi_model");
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            foreach ($result as $key => $row) {
+                $search = array(
+                    "obrazec_s",
+
+                );
+                $replace =
+                    array(
+                        "Образец:Образец С.",
+
+
+                    );
+                $result[$key]->tip_upat_label = str_replace($search, $replace, $result[$key]->tip);
+                $result[$key]->doktor = $this->covecki_resursi_model->getDoktorImePrezime($row->doktor_id);
+            }
+            return $result;
+        } else return false;
+    }
+    public function getPotvrdaZaSmrt($priem_id)
+    {
+        $this->db->select('bis_potvrda_za_smrt.*');
+        $this->db->from('bis_potvrda_za_smrt');
+        $this->db->where('bis_potvrda_za_smrt.priem_id', $priem_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result;
+        }
+        else return false;
+    }
+    public function getPotvrdaZaSmrtVrednosti($id)
+    {
+        $this->db->select('bis_potvrda_za_smrt.*');
+        $this->db->from('bis_potvrda_za_smrt');
+        $this->db->where('bis_potvrda_za_smrt.id', $id);
+//        $this->db->join("bis_firmi","bis_firmi.id=bis_upat.firma_id","left");
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result[0];
+        }
+        else return false;
+    }
+        public function getBiohemiskiAnalizi($id)
+    {
+        $this->db->select("biohemiski_analizi.*");
+        $this->db->from("biohemiski_analizi");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=biohemiski_analizi.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->where("biohemiski_analizi.priem_id", $id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result;
+        }
+        else return false;
+    }
+
+    public function create_recepta_obicna($data){
+        $data['firma_id'] = $this->session->userdata('firma_id');
+        $data['doktor_id'] = $this->session->userdata('doktor_id');
+        $insert = $this->db->insert('recepti', $data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    public function create_recepta_stranski_osig($data){
+        $data['firma_id'] = $this->session->userdata('firma_id');
+        $data['doktor_id'] = $this->session->userdata('doktor_id');
+        $insert = $this->db->insert('recepti', $data);
+        $insert_id = $this->db->insert_id();
+        return $insert_id;
+    }
+
+    public function getOtpusnaLista($priem_id)
+    {
+        $this->db->select('bis_otpusna_lista.*');
+        $this->db->from('bis_otpusna_lista');
+        $this->db->where('bis_otpusna_lista.priem_id', $priem_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result;
+        }
+        else return false;
+    }
+    public function getZapisZapriem($priem_id)
+    {
+        $this->db->select('bis_zapis_za_priem.*');
+        $this->db->from('bis_zapis_za_priem');
+        $this->db->where('bis_zapis_za_priem.priem_id', $priem_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result;
+        }
+        else return false;
+    }
+    public function delete_upat($id)
+    {
+        $this->db->where("id", $id);
+        $delete = $this->db->delete('bis_upat');
+        return $delete;
+    }
+    public function delete_potvrda_za_smrt($id)
+    {
+        $this->db->where("id", $id);
+        $delete = $this->db->delete('bis_potvrda_za_smrt');
+        return $delete;
+    }
+    public function delete_otpusna_lista($id)
+    {
+        $this->db->where("id", $id);
+        $delete = $this->db->delete('bis_otpusna_lista');
+        return $delete;
+    }
+    public function delete_rezultat_biohemija($id)
+    {
+        $this->db->where("id", $id);
+        $delete = $this->db->delete('biohemiski_analizi');
+        return $delete;
+    }
+    public function delete_izjava($id)
+    {
+        $this->db->where("id", $id);
+        $delete = $this->db->delete('izjavi');
+        return $delete;
+    }
+    public function delete_recepta($id)
+    {
+        $this->db->where("id", $id);
+        $delete = $this->db->delete('recepti');
+        return $delete;
+    }
+    public function delete_obrazec($id)
+    {
+        $this->db->where("id", $id);
+        $delete = $this->db->delete('obrazec_c');
+        return $delete;
+    }
+}

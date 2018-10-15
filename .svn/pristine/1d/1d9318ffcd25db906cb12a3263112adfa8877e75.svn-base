@@ -1,0 +1,108 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+
+class Plan extends CI_Controller
+{
+
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('finansiski_plan/plan_model');
+    }
+
+
+    public function new_stavka()
+    {
+        //$this->load->model('podatoci/grad_model');
+        //   $data['grad']=$this->grad_model->get_grad_dropdown();
+        //  $data['grad']=$this->podatoci_model->get_grad_dropdown();
+        //$data['oddel']        = $this->start_model->get_oddel();
+        //$data['pododdel']     = $this->start_model->get_pododdel();
+
+        $data['konto']=$this->plan_model->konto_dropdown();
+
+        $this->load->view('finansiski_plan/nova', $data);
+
+    }
+
+    public function prebaruvanje_po_godina()
+    {
+        echo json_encode($this->plan_model->prebaruvanje_po_godina($this->input->post('godinaid')));
+    }
+
+    public function create_stavka()
+    {
+        if ($query = $this->plan_model->create_stavka()) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+
+    public function view_stavka()
+    {
+        $this->load->view('finansiski_plan/lista');
+    }
+
+    public function izmeni_stavka()
+    {
+
+            $data['id']            =$this->input->get('id') ;
+
+            $stavka                =$this->plan_model->getStavka($this->input->get('id'));
+            $data['stavka']        =$stavka;
+            $data['konto']         =$stavka[0]->konto;
+            $data['nazivnastavka'] =$stavka[0]->naziv ;
+            $data['k1']            =$stavka[0]->k1 ;
+            $data['k2']            =$stavka[0]->k2;
+            $data['k3']            =$stavka[0]->k3;
+            $data['k4']            =$stavka[0]->k4 ;
+            $data['vk']            =$stavka[0]->vkupno ;
+
+            $data['planmodel']=$this->plan_model;
+
+        $this->load->view('finansiski_plan/izmeni', $data);
+
+    }
+
+    public function delete_stavka()
+    {
+        $res = $this->plan_model->delete_stavka($this->input->get('stavkaid'));
+
+        if($res){
+            echo "ok";
+        }else
+        {
+            echo "error";
+        }
+    }
+
+    public function getStavki()
+    {
+        echo json_encode($this->plan_model->getStavki());
+    }
+
+    public function update_stavka()
+    {
+        $query = $this->plan_model->update_stavka();
+        if ($query) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+
+    public function setKlasa(){
+        $klasaid=$this->input->get("klasaid");
+        $query = $this->session->set_userdata($klasaid);
+
+    }
+    function index(){
+        $data['main_content'] = 'finansiski_plan/index';
+        $this->load->view('includes/template', $data);
+    }
+
+}

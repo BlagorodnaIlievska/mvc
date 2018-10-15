@@ -1,0 +1,38 @@
+<?php
+if(isset($aktivnosti) && is_array($aktivnosti))
+{
+    $i = 0;
+    foreach($aktivnosti as $aktivnost){
+        $i++;
+        ?>
+        <tr aktivnost_id="<?= $aktivnost->id; ?>">
+            <td class="delete_aktivnost"><a class="delete" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a></td>
+            <td class="redenbroj"><?= $i; ?></td>
+            <td class="vreme"><input type="text" class="vreme" name="aktivnosti[<?= $i; ?>][vreme]" value="<?php echo $aktivnost->vreme; ?>" /></td>
+            <td class="vreme_do"><input type="text" class="vreme_do" name="aktivnosti[<?= $i; ?>][vreme_do]" value="<?php echo $aktivnost->vreme_do; ?>" /></td>
+            <td class="aktivnost"><input type="text" class="aktivnost" name="aktivnosti[<?= $i; ?>][aktivnost]" value="<?php echo $aktivnost->aktivnost; ?>" /></td>
+            <td class="mesto"><input type="text" class="mesto" name="aktivnosti[<?= $i; ?>][mesto]" value="<?php echo $aktivnost->mesto; ?>" /></td>
+            <td class="pacient_id">
+                <select class="pacient_id pacient_dropdown" name="aktivnosti[<?= $i; ?>][pacient_id]" >
+                    <?php
+                    if($aktivnost->pacient_id > 0)
+                    {
+                        foreach($pacienti as $pacient){ ?>
+                            <option <?php if($pacient->id == $aktivnost->pacient_id) echo 'selected="selected"'; ?> value="<?= $pacient->id ?>"><?= $pacient->ime." ".$pacient->prezime; ?></option>
+                        <?php }
+                    }
+                    else { ?>
+                        <option value=""></option>
+                        <?php foreach($pacienti as $pacient){ ?>
+                            <option value="<?= $pacient->id ?>"><?= $pacient->ime." ".$pacient->prezime; ?></option>
+                        <?php }
+                    } ?>
+                </select>
+            </td>
+            <td class="aktivnost_id hide"><input type="hidden" class="aktivnost_id" name="aktivnosti[<?= $i; ?>][id]" value="<?php echo $aktivnost->id; ?>" /></td>
+            <td class="status hide"><input type="hidden" class="status" name="aktivnosti[<?= $i; ?>][status]" value="1" /></td>
+        </tr>
+    <?php
+    }
+}
+?>

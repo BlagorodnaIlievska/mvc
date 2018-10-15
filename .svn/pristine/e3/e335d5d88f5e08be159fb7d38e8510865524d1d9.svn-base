@@ -1,0 +1,35 @@
+<?php if (!defined('BASEPATH')) {
+exit('No direct script access allowed');
+}
+
+
+class Pregled_trosoci extends CI_Controller
+{
+
+
+    function __construct()
+    {
+    parent::__construct();
+    $this->load->model('finansiski_plan/plan_model');
+    }
+
+    public function view()
+    {
+        $data['konto']  =   $this->plan_model->konto_dropdown();
+
+        $this->load->view('finansiski_plan/pregled_trosoci', $data);
+    }
+
+    public function prebaruvanje_po_period()
+    {
+        $datum1 = $this->input->post('datum1');
+        $dattum2= $this->input->post('datum2');
+
+        echo json_encode($this->plan_model->prebaruvanje_po_period_trosoci($datum1,$dattum2));
+    }
+
+    public function getTrosoci()
+    {
+        echo json_encode($this->plan_model->getTrosoci2());
+    }
+}

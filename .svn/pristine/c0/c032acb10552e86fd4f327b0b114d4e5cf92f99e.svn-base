@@ -1,0 +1,11 @@
+.edmerkalista  {
+    width: 365px;
+    float: left;
+}
+.edmerka-glavnalista .buttoncontainer { margin-top:10px; margin-bottom:10px; }
+.gradlista  {
+    width: 365px;
+    float: left;
+    margin-top: 10px;
+}
+.grad-glavnalista .buttoncontainer { margin-top:10px; margin-bottom:10px; }

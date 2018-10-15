@@ -1,0 +1,151 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Interni extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function menu()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['magacin'] = $this->materijalno_model->magacin_dropdown();
+        $this->load->view('materijalno/vlez_izlez/menu_form', $data);
+    }
+
+    public function interen_transfer()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('start/start_model');
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('podatoci/edmerki_model');
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['katbroj']=$this->artikl_model->getAllKatBroj();
+        $data['magacini'] = $this->start_model->getMagacini();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('materijalno/vlez_izlez/interni/interna_ispratnica', $data);
+    }
+
+    public function editInterna()
+    {
+        $id = $this->input->get('id');
+        $priemnica = $this->input->get('priemnicaid');
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('start/start_model');
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('podatoci/edmerki_model');
+        $query = $this->materijalno_model->getVleznaRoba($id);
+        $stavki = $this->artikl_model->getArtikliPoDokument($id);
+        $data['id'] = $id;
+        $data['priemnica'] = $priemnica;
+        $data['query'] = $query;
+        $data['stavki'] = $stavki;
+        $data['magacin_od'] = $stavki[0]->magacinId;
+        $data['magacin_vo'] = $stavki[0]->magacinVo;
+        bis_debug($stavki, "stavki");
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['katbroj']=$this->artikl_model->getAllKatBroj();
+        $data['magacini'] = $this->start_model->getMagacini();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('materijalno/vlez_izlez/interni/edit_interna_roba_form', $data);
+    }
+
+    public function getInterniIspratnici()
+    {
+        $klientid = $this->input->get('klientid');
+       // $pogledid = $this->input->get('pogledid');
+        $magacinid = $this->input->get('magacinid');
+        $this->load->model('materijalno/materijalno_model');
+        $query =  $this->materijalno_model->getInterniIspratnici($klientid, $magacinid);
+        echo json_encode($query);
+    }
+
+    public function novInterenTransfer()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->novInterenTransfer();
+        echo json_encode($query);
+    }
+
+    public function editInternaRobaMenu()
+    {
+        $data['id'] = $this->input->get('id');
+        $this->load->view('materijalno/vlez_izlez/interni/edit_interna_roba_menu', $data);
+    }
+
+    public function updateInterenTransfer()
+    {
+        $id = $this->input->post('ispratnicaid');
+        $priemnica = $this->input->post('priemnicaid');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->updateInterenTransfer($id,$priemnica);
+        echo json_encode($query);
+    }
+
+    public function getAllInterni()
+    {
+//        $stavka = $this->input->post('stavka');
+//        $katbroj = $this->input->post('katbroj');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getAllInterni();
+        echo json_encode($query);
+    }
+
+    public function deleteInterni()
+    {
+        $id = $this->input->get('id');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->deleteInterni($id);
+        echo json_encode($query);
+    }
+
+    public function getInterniDetali()
+    {
+        $id = $this->input->get('id');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getInterniDetali($id);
+        echo json_encode($query);
+    }
+
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+    public function pecati_site_interni(){
+
+        $klientid = $this->input->get('klientid');
+        $pogledid = $this->input->get('pogledid');
+        $magacinid = $this->input->get('magacinid');
+        $this->load->model('materijalno/materijalno_model');
+        $query =  $this->materijalno_model->getInterniIspratnici($klientid, $pogledid, $magacinid);
+//stavi iminja kaj site
+        $data['klient'] = $klientid; $data['pogled'] = $pogledid;
+        $data['interni'] = $query;
+        $data['main_content'] = 'materijalno/pecatenje/pecati_site_interni';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+
+    public function print_stavki_InInternaIspratnica(){
+        $klientid = $this->input->get('klientid');
+        $magacinid = $this->input->get('magacinid');
+        $id = $this->input->get('id');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getInterniDetali($id);
+
+        $data['stavki_ii'] = $query;
+$data['int_is'] = $this->materijalno_model->getInternaIspratnica_one($klientid, $magacinid, $id);
+$data['main_content'] = 'materijalno/pecatenje/pecati_stavki_interna_ispratnica';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+}

@@ -1,0 +1,23 @@
+<div class="novkatalog">
+    <form action="/index.php/korisnici/ulogi/create_uloga" method="post">
+        <fieldset>
+
+
+            <legend>Нова Улога</legend>
+
+
+            Име на улогата:<br/>
+            <input type="text" name="uloga_ime"/><br/>
+
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="uloga_popolnilista()" poraka_uspesno="Улогата е успешно снимена"
+                poraka_neuspesno="Грешка при снимање на улогата"
+                ><span>Сними</span></button>
+
+
+        <br/>
+    </form>
+
+</div>

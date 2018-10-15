@@ -1,0 +1,347 @@
+<?php
+
+/**
+ * Class Trezor_model
+ * @package     Bis
+ * @subpackage  BisFinance
+ * @category    Trezor
+ * @author      Bojan
+ */
+class Trezor_model extends CI_Model
+{
+
+    /**
+     * @var
+     */
+    var $kliendid;
+    /**
+     * @var
+     */
+    var $datum;
+    /**
+     * @var
+     */
+    var $ciklus;
+
+    /**
+     * @var array
+     */
+    var $rows = array();
+    /**
+     * @var
+     */
+    var $filename;
+    /**
+     * Constructor
+     */
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model("vlezni_fakturi/vlezni_fakturi_model");
+
+    }
+
+    /**
+     * @param $id
+     */
+    function loadKUC($id)
+    {
+        $this->db->where('id', $id);
+        $query = $this->db->get("bis_trezor_pratki");
+        $result = $query->result();
+        $result = $result[0];
+
+        $this->kliendid = $result->klient;
+        $this->datum = $result->datum;
+
+        $tmpdatum=explode("-", $result->datum);
+
+        $this->ciklus = $result->brojnaciklusi;
+        $this->filename='N'.  $tmpdatum[0] . $tmpdatum[1] . substr($tmpdatum[2],2,2)  . $this->ciklus . '.KUC';
+        $this->db->where('pratka_id', $id);
+        $query = $this->db->get("bis_trezor_pratki_podatoci");
+
+        $this->rows = $query->result();
+
+    }
+
+
+    /**
+     * @param array $data
+     * @return mixed
+     */
+    function getPratki($data = array())
+    {
+
+        $query = $this->db->query("SELECT a.* FROM bis_trezor_pratki a")->result();
+        foreach ($query as $key => $row) {
+            $res = $this->db->select("SUM(iznos),COUNT(id)")->from('bis_trezor_pratki_podatoci')->where('pratka_id', $row->id)->get()->result_array();
+
+            $query[$key]->brojnapodatoci = $res[0]['COUNT(id)'];
+            $query[$key]->kontrolenzbir = $res[0]['SUM(iznos)'];
+
+        }
+        return $query;
+    }
+
+    /**
+     * @param $faktura_id
+     * @return array
+     */
+    function getPlateniKontaPoFaktura($faktura_id)
+    {
+        $platenikonta = $this->db->select("*")
+            ->from("bis_trezor_pratki_podatoci")
+            ->where('faktura_id', $faktura_id)
+            ->get()
+            ->result();
+        $platenikontanovi = array();
+        foreach ($platenikonta as $konto) {
+            $platenikontanovi[$konto->konto] = $konto->iznos;
+        }
+        return $platenikontanovi;
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    function getPratka($id)
+    {
+        $this->db->where('id', $id);
+        $query = $this->db->get('bis_trezor_pratki');
+        $result = $query->result();
+        return $result[0];
+    }
+
+    /**
+     * @param $pratka_id
+     * @return mixed
+     */
+    function getPratkaPodatoci($pratka_id)
+    {
+        $this->db->where('pratka_id', $pratka_id);
+        $query = $this->db->get("bis_trezor_pratki_podatoci");
+        return $query->result();
+    }
+
+    /**
+     * @return string
+     */
+    function generateKUC()
+    {
+        $kucdata = "1";
+        $kucdata .= substr($this->kliendid, 0, 6);
+         $kucdata .= $this->formatdatum($this->datum);
+//        $kucdata .= $this->datum;
+
+        $brojnapodatoci = count($this->rows);
+        $kucdata .= str_pad($this->ciklus, 7, "0") + $brojnapodatoci;
+
+
+        $kontrolenzbir = 0;
+        foreach ($this->rows as $row) {
+            $kontrolenzbir += $row->iznos;
+        }
+        $kontrolenzbir = explode(".", number_format($kontrolenzbir, 2, ".", ""));
+
+        $kucdata .= '+';
+        $kucdata .= str_pad($kontrolenzbir[0], "15", "0", STR_PAD_LEFT);
+        $kucdata .= ',' . $kontrolenzbir[1];
+        $kucdata .= "\r\n";
+
+        foreach ($this->rows as $rowkeyx => $rowvalx) {
+            foreach ($rowvalx as $objkeyx => $objkeyxval) {
+
+
+                $this->rows[$rowkeyx]->$objkeyx = iconv("UTF-8", "Windows-1251", $objkeyxval);
+            }
+        }
+        $i = 1;
+        foreach ($this->rows as $row) {
+            $kucdata .= 2000000 + $i;
+            $kucdata .= str_pad($row->smetkanazadolzuvanje, "15", "0", STR_PAD_LEFT);
+            $kucdata .= str_pad($row->podsmetkanazadolzuvanje, "15", chr(32), STR_PAD_RIGHT);
+            $kucdata .= str_pad($row->konto, "6", "0", STR_PAD_LEFT);
+            $kucdata .= str_pad($row->prognazadolzuvanje, "2", '0', STR_PAD_LEFT);
+            $kucdata .= str_pad($row->cel, "70", " ", STR_PAD_RIGHT);
+            $kucdata .= str_pad($row->sifra, "6", '0', STR_PAD_LEFT);
+
+            $kucdata .= "+" . str_pad(number_format($row->iznos, 2, ",", ""), "18", "0", STR_PAD_LEFT);
+            $kucdata .= str_pad($row->smetkanaprimacot, "18", "0", STR_PAD_LEFT);
+            $kucdata .= str_pad($row->nazivnaprimacot, "70", chr(32), STR_PAD_RIGHT);
+            $kucdata .= str_pad($row->podsmetkanaprimacot, "15", chr(32), STR_PAD_RIGHT);
+            $kucdata .= str_pad($row->kontonaprimacot, "6", chr(32), STR_PAD_RIGHT);
+            $kucdata .= str_pad($row->programanaprimacot, "2", chr(32), STR_PAD_RIGHT);
+            $kucdata .= str_pad($row->povikuvanjenabrojnaprimacot, "24", chr(32), STR_PAD_RIGHT);
+            $kucdata .= str_pad($row->vidobrazec, "2", "0", STR_PAD_LEFT);
+            $kucdata .= str_pad($row->nacin, "1", "0", STR_PAD_LEFT);
+            $kucdata .= str_pad($row->edb, "13", "0", STR_PAD_LEFT);
+
+            $i++;
+            $kucdata .= "\r\n";
+        }
+
+
+        return $kucdata;
+
+    }
+
+    /**
+     * @param $datum
+     * @return mixed
+     */
+    private function formatdatum($datum)
+    {
+        $datum = bis_convert_date_mk_to_usa($datum);
+        return str_replace("-", "", $datum);
+    }
+
+    /**
+     * @param $data
+     */
+    public function insertPratka($data)
+    {
+        $data['datum'] = $this->formatdatum($data['datum']);
+        $this->db->insert("bis_trezor_pratki", $data);
+    }
+
+    /**
+     * @param $id
+     * @param $data
+     */
+    public function updatePratka($id, $data)
+    {
+        $data['datum'] = $this->formatdatum($data['datum']);
+        $this->db->where("id", $id)->update("bis_trezor_pratki", $data);
+
+    }
+
+    /**
+     * @param $id
+     */
+    public function deletePratka($id)
+    {
+        $this->db->where("id", $id)->delete("bis_trezor_pratki");
+        $this->db->where("pratka_id", $id)->delete("bis_trezor_pratki_podatoci");
+
+    }
+
+    /**
+     * @param $data
+     * @return bool
+     */
+    public function insertPratkaPodatok($data)
+    {
+        $konto = $data['konto'];
+
+
+        if (!is_array($data['konto'])) {
+            $this->db->insert("bis_trezor_pratki_podatoci", $data);
+            return true;
+        }
+
+
+        unset($data['konto']);
+
+        foreach ($konto as $konto_key => $konto_val) {
+
+            $data['konto'] = $konto_key;
+            $data['iznos'] = $konto_val;
+            if ($konto_val != 0) {
+                $this->db->insert("bis_trezor_pratki_podatoci", $data);
+//                $insert_id=$this->db->insert_id();
+//                $this->insertVleznaFakturaUplata($data['faktura_id'], $data['iznos'], $insert_id,$konto_key);
+            }
+
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $id
+     * @return bool
+     */
+    function getPratkaPodatociToEdit($id)
+    {
+        $this->db->where('id', $id);
+        $query = $this->db->get("bis_trezor_pratki_podatoci");
+        if ($query->num_rows == 1) {
+            $result = $query->result();
+            return $result[0];
+        } else return false;
+    }
+
+    /**
+     * @param $data
+     */
+    public function updatePratkaPodatok($data)
+    {
+        $id = $data['id'];
+        unset($data['id']);
+
+        $this->db->where("id", $id);
+        $this->db->update("bis_trezor_pratki_podatoci", $data);
+    }
+
+    /**
+     * @param $podatok_id
+     * @return mixed
+     */
+    public function getPodatok($podatok_id)
+    {
+
+        $this->db->where('id', $podatok_id);
+        $query = $this->db->get('bis_trezor_pratki_podatoci');
+        $result = $query->result();
+        return $result[0];
+    }
+
+    /**
+     * @param $id
+     * @return bool
+     */
+    public function deletePratkaPodatok($id)
+    {
+//        OVA NE SE KORISTI POVEKE UPLATA SE VRSI SAMO PO IZVOD
+//       DA TRGNE I DEKA E UPLATENA
+//        $this->deleteStavkaPovrzanaSoPodatok($id);
+
+        $this->db->where("id", $id);
+        $query = $this->db->delete("bis_trezor_pratki_podatoci");
+        if ($query) return true;
+        else return false;
+    }
+
+    /**
+     * @param $podatok_id
+     */
+    public function deleteStavkaPovrzanaSoPodatok($podatok_id)
+    {
+        $this->db->where('nalog_detali_id', $podatok_id);
+        $this->db->delete('stavka');
+    }
+
+    /**
+     * @param $faktura_id
+     * @param $suma
+     * @param $trezor_podatok_id
+     * @param $konto
+     */
+    public function insertVleznaFakturaUplata($faktura_id, $suma, $trezor_podatok_id, $konto)
+    {
+        // NEMA DA JA KORISTIME OVAA FUNKCIJA KE SI GI MARKIRAAT PLATENITE VLEZNI PO IZVOD
+        // INSERT vo stavka
+        // tip = 60
+        // zaDokID 	= id to na fakturata
+        // z_uplata = sumata kolku e uplateno po taa faktura
+        $data['z_uplata'] = $suma;
+        $data['zaDokID'] = $faktura_id;
+        $data['tip'] = 60;
+        $data['nalog_detali_id'] = $trezor_podatok_id;
+        $data['trezor_konto_broj'] = $konto;
+        $this->db->insert('stavka', $data);
+        $this->vlezni_fakturi_model->update_faktura_status($faktura_id);
+    }
+}

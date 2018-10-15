@@ -1,0 +1,752 @@
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+class Lekuvanja extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+        bis_checkusage();
+        $this->load->model('pacienti/pacienti_model');
+    }
+    function edit_priem(){
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $this->load->model('start/start_model');
+        $this->load->model('site_lekari/lekar_model');
+        $this->load->model('podatoci/cenovnik_model');
+        $this->load->model('pacienti/pacienti_pomosen_model');
+        $id=$this->input->post('priem_id');
+        $priem = $this->pacienti_pomosen_model->getFullPriem($id);
+        $priem_osig = $this->pacienti_pomosen_model->getPriemOsiguruvanje($priem->osiguruvanje_id);
+        $priem_pridruznik = $this->pacienti_pomosen_model->getPriemPridruznik($priem->pridruznik_id);
+        bis_debug( $priem, "priem");
+
+        $data['priem'] = $priem;
+        $data['priem_osig'] = $priem_osig;
+        $data['priem_pridruznik'] = $priem_pridruznik;
+        $data['paketi_dsg'] = $this->cenovnik_model->getPaketiSoCenaDsg();
+        $data['pridruznik_uslugi']=$this->pacienti_model->getPridruznikUslugi();
+        $data['dok']=$this->covecki_resursi_model->getDoktoriB($priem->firma_id);
+        $data['ustanovi']=$this->lekar_model->lekari_dropdownB();
+        $data['osnov_osiguruvanje']=$this->covecki_resursi_model->osnov_osig_dropdown();
+//        $data['pododeli']= $this->start_model->getPodOdeli($this->session->userdata('firma_id'));
+        $data['pododeli']= $this->start_model->getPodOdeliSoOddeli();
+        $this->load->view('pacienti/edit_priem', $data);
+    }
+
+    function getFullPriem(){
+        $this->load->model('pacienti/pacienti_pomosen_model');
+        $id=$this->input->post('id');
+
+        $prieminfo=$this->pacienti_pomosen_model->getFullPriem($id);
+        echo json_encode($prieminfo);
+    }
+
+    public function delete_priem() {
+        $id = $this->input->post("id");
+        $query = $this->pacienti_model->delete_priem($id);
+        echo json_encode($query);
+    }
+
+    function pregled()
+    {
+        $id=12;
+        $this->load->model('korisnici/korisnici_model');
+        $this->load->model('podatoci/cenovnik_model');
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $zabranetimagacini=$this->session->userdata('magacini');
+        // $data['doktori']=$this->korisnici_model->getKorisniciPoImeNaUloga('доктор');
+        $data['paketi'] = $this->cenovnik_model->getPaketiSoCena();
+        $data['pacient'] = $this->pacienti_model->getPacient2($this->input->post("priem_id"));
+        $data['dok']=$this->covecki_resursi_model->getDoktori();
+        $data['artikli'] = $this->artikl_model->getAll_limitirano($zabranetimagacini);
+        $data['momentalenstatus'] = "Амбуланта";
+        $this->load->view('pacienti/lekuvanja/pregled', $data);
+    }
+    function pregleddijagnoza()
+    {
+        $this->load->model('korisnici/korisnici_model');
+        $this->load->model('podatoci/cenovnik_model');
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $this->load->model('start/start_model');
+        $participacija = $this->pacienti_model->getParticipacijaID($this->input->post("priem_id"));
+        $upaten_vo = $this->pacienti_model->getUpatenVo($this->input->post("priem_id"));
+       // print_r($upaten_vo); die();
+        $dozvoleni_magacini = $this->start_model->getDozvoleniMagacini();
+//        bis_debug($dozvoleni_magacini,'magacini');
+        if($upaten_vo->upaten_vo == 1) {
+            $paketi2 = $this->cenovnik_model->getPaketiSoCenaSpec();
+            $cenovnik = 4;
+            $momentalen_status = $upaten_vo->pod_oddel_ime;
+        }
+        if($upaten_vo->upaten_vo == 2) {
+            $paketi2 = $this->cenovnik_model->getPaketiSoCenaDb();
+            $cenovnik = 3;
+            $momentalen_status = $upaten_vo->pod_oddel_ime;
+        }
+        if($upaten_vo->upaten_vo == 3) {
+            $paketi2 = $this->cenovnik_model->getPaketiSoCenaDsg();
+            $cenovnik = 2;
+            $momentalen_status = $upaten_vo->pod_oddel_ime;
+        }
+        $zabranetimagacini=$this->session->userdata('magacini');
+        $data['magacini'] = $this->start_model->getMagacini();
+        $data['dijagnozi'] =  $this->cenovnik_model->getDijagnozi();
+        $data['upaten_vo'] = $upaten_vo->upaten_vo;
+
+        $data['cenovnik'] = $cenovnik;
+        $data['paketi_2'] = $paketi2;
+        $data['paketi'] = $this->cenovnik_model->getPaketiSoCena();
+        $data['paketi_dsg'] = $this->cenovnik_model->getPaketiSoCenaDsg();
+        $data['paketi_db'] = $this->cenovnik_model->getPaketiSoCenaDb();
+        $data['paketi_spec'] = $this->cenovnik_model->getPaketiSoCenaSpec();
+        $data['pacient'] = $this->pacienti_model->getPacient2($this->input->post("priem_id"));
+        $data['vlezno_dsg'] = $this->pacienti_model->getVleznoDsg($this->input->post("priem_id"));
+        $data['dok']=$this->covecki_resursi_model->getDoktori();
+        $data['participacija']=$participacija;
+        $data['artikli'] = $this->artikl_model->getAll_limitirano($zabranetimagacini);
+       // print_r($data['artikli']); die();
+        $data['dozvoleni_magacini'] = $dozvoleni_magacini;
+        $data['momentalenstatus'] = $momentalen_status;
+
+        $this->load->view('pacienti/lekuvanja/pregled_dijagnoza', $data);
+    }
+
+    function edit_pregleddijagnoza()
+    {
+        $this->load->model('korisnici/korisnici_model');
+        $this->load->model('podatoci/cenovnik_model');
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $this->load->model('start/start_model');
+        $zabranetimagacini=$this->session->userdata('magacini');
+        $pregled_id = $this->input->post("dok_id");
+        $pregled = $this->pacienti_model->getPregled($pregled_id);
+        $pregled_upatna_dijagnoza = $this->pacienti_model->getUpatnaDijagnoza($pregled->dijagnoza_upatna);
+        $pregled_dijagnozi = $this->pacienti_model->getDijagnoziByPregled($pregled_id);
+        $pregled_izvrseniuslugi = $this->pacienti_model->getIzvrseniUslugi($pregled_id);
+        $pregled_potrosenmaterijal = $this->pacienti_model->getPotMaterijaliByPregled($pregled_id);
+        $pregled_terapija = $this->pacienti_model->getTerapijaByPregled($pregled_id);
+        $pregled_recepti = $this->pacienti_model->getReceptiByPregled($pregled_id);
+        $pregled_naplatauslugi = $this->pacienti_model->getUslugiByPregled($pregled_id);
+        $pregled_dopuslugi = $this->pacienti_model->getDopUslugiByPregled($pregled_id);
+
+        $dozvoleni_magacini = $this->start_model->getDozvoleniMagacini();
+        $participacija = $this->pacienti_model->getParticipacijaID($this->input->post("priem_id"));
+        $upaten_vo = $this->pacienti_model->getUpatenVo($this->input->post("priem_id"));
+//        bis_debug($pregled,'pregled');
+        if($upaten_vo->upaten_vo == 1) {
+            $paketi2 = $this->cenovnik_model->getPaketiSoCenaSpec();
+            $cenovnik = 4;
+            $momentalen_status = $upaten_vo->pod_oddel_ime;
+        }
+        if($upaten_vo->upaten_vo == 2) {
+            $paketi2 = $this->cenovnik_model->getPaketiSoCenaDb();
+            $cenovnik = 3;
+            $momentalen_status = $upaten_vo->pod_oddel_ime;
+        }
+        if($upaten_vo->upaten_vo == 3) {
+            $paketi2 = $this->cenovnik_model->getPaketiSoCenaDsg();
+            $cenovnik = 2;
+            $momentalen_status = $upaten_vo->pod_oddel_ime;
+            $data['pregled_bolnickidenovi'] =  $this->pacienti_model->getBolnickiDenoviByPregled($pregled_id);
+        }
+        $data['magacini'] = $this->start_model->getMagacini();
+        $data['pregled_podatoci'] =  $pregled;
+        $data['pregled_upatna_dijagnoza'] =  $pregled_upatna_dijagnoza;
+        $data['pregled_dijagnozi'] =  $pregled_dijagnozi;
+        $data['pregled_izvrseniuslugi'] =  $pregled_izvrseniuslugi;
+        $data['pregled_potrosenmaterijal'] =  $pregled_potrosenmaterijal;
+        $data['pregled_terapija'] =  $pregled_terapija;
+        $data['pregled_recepti'] =  $pregled_recepti;
+        $data['pregled_naplatauslugi'] =  $pregled_naplatauslugi;
+        $data['pregled_dopuslugi'] =  $pregled_dopuslugi;
+        $data['dijagnozi'] =  $this->cenovnik_model->getDijagnozi();
+        $data['upaten_vo'] = $upaten_vo->upaten_vo;
+        $data['cenovnik'] = $cenovnik;
+        $data['paketi_2'] = $paketi2;
+        $data['paketi'] = $this->cenovnik_model->getPaketiSoCena();
+        $data['paketi_dsg'] = $this->cenovnik_model->getPaketiSoCenaDsg();
+        $data['paketi_db'] = $this->cenovnik_model->getPaketiSoCenaDb();
+        $data['paketi_spec'] = $this->cenovnik_model->getPaketiSoCenaSpec();
+        $data['pacient'] = $this->pacienti_model->getPacient2($this->input->post("priem_id"));
+        $data['vlezno_dsg'] = $this->pacienti_model->getVleznoDsg($this->input->post("priem_id"));
+        $data['dok']=$this->covecki_resursi_model->getDoktori();
+        $data['participacija']=$participacija;
+        $data['artikli'] = $this->artikl_model->getAll_limitirano($zabranetimagacini);
+        $data['dozvoleni_magacini'] = $dozvoleni_magacini;
+        $data['momentalenstatus'] = $momentalen_status;
+        $this->load->view('pacienti/lekuvanja/edit_pregled_dijagnoza', $data);
+    }
+
+    function copy_edit_pregleddijagnoza()
+    {
+        $this->load->model('korisnici/korisnici_model');
+        $this->load->model('podatoci/cenovnik_model');
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $this->load->model('start/start_model');
+
+        $pregled_id = $this->input->post("dok_id");
+        $pregled = $this->pacienti_model->getPregled($pregled_id);
+        $pregled_dijagnozi = $this->pacienti_model->getDijagnoziByPregled($pregled_id);
+        $pregled_izvrseniuslugi = $this->pacienti_model->getIzvrseniUslugi($pregled_id);
+        $pregled_potrosenmaterijal = $this->pacienti_model->getPotMaterijaliByPregled($pregled_id);
+        $pregled_terapija = $this->pacienti_model->getTerapijaByPregled($pregled_id);
+        $pregled_recepti = $this->pacienti_model->getReceptiByPregled($pregled_id);
+        $pregled_naplatauslugi = $this->pacienti_model->getUslugiByPregled($pregled_id);
+        $pregled_dopuslugi = $this->pacienti_model->getDopUslugiByPregled($pregled_id);
+
+        $participacija = $this->pacienti_model->getParticipacijaID($this->input->post("priem_id"));
+        $upaten_vo = $this->pacienti_model->getUpatenVo($this->input->post("priem_id"));
+//        bis_debug($pregled,'pregled');
+        $zabranetimagacini=$this->session->userdata('magacini');
+        if($upaten_vo->upaten_vo == 1) {
+            $paketi2 = $this->cenovnik_model->getPaketiSoCenaSpec();
+            $cenovnik = 4;
+            $momentalen_status = $upaten_vo->pod_oddel_ime;
+        }
+        if($upaten_vo->upaten_vo == 2) {
+            $paketi2 = $this->cenovnik_model->getPaketiSoCenaDb();
+            $cenovnik = 3;
+            $momentalen_status = $upaten_vo->pod_oddel_ime;
+        }
+        if($upaten_vo->upaten_vo == 3) {
+            $paketi2 = $this->cenovnik_model->getPaketiSoCenaDsg();
+            $cenovnik = 2;
+            $momentalen_status = $upaten_vo->pod_oddel_ime;
+        }
+        $data['magacini'] = $this->start_model->getMagacini();
+        $data['pregled_podatoci'] =  $pregled;
+        $data['pregled_dijagnozi'] =  $pregled_dijagnozi;
+        $data['pregled_izvrseniuslugi'] =  $pregled_izvrseniuslugi;
+        $data['pregled_potrosenmaterijal'] =  $pregled_potrosenmaterijal;
+        $data['pregled_terapija'] =  $pregled_terapija;
+        $data['pregled_recepti'] =  $pregled_recepti;
+        $data['pregled_naplatauslugi'] =  $pregled_naplatauslugi;
+        $data['pregled_dopuslugi'] =  $pregled_dopuslugi;
+        $data['dijagnozi'] =  $this->cenovnik_model->getDijagnozi();
+        $data['upaten_vo'] = $upaten_vo->upaten_vo;
+        $data['cenovnik'] = $cenovnik;
+        $data['paketi_2'] = $paketi2;
+        $data['paketi'] = $this->cenovnik_model->getPaketiSoCena();
+        $data['paketi_dsg'] = $this->cenovnik_model->getPaketiSoCenaDsg();
+        $data['paketi_db'] = $this->cenovnik_model->getPaketiSoCenaDb();
+        $data['paketi_spec'] = $this->cenovnik_model->getPaketiSoCenaSpec();
+        $data['pacient'] = $this->pacienti_model->getPacient2($this->input->post("priem_id"));
+        $data['vlezno_dsg'] = $this->pacienti_model->getVleznoDsg($this->input->post("priem_id"));
+        $data['dok']=$this->covecki_resursi_model->getDoktori();
+        $data['participacija']=$participacija;
+        $data['artikli'] = $this->artikl_model->getAll_limitirano($zabranetimagacini);
+        $data['momentalenstatus'] = $momentalen_status;
+        $this->load->view('pacienti/lekuvanja/edit_pregled_dijagnoza', $data);
+
+    }
+    function uslugi()
+    {
+        $priem_id = $this->input->post("priem_id");
+        $this->load->model('podatoci/cenovnik_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $data['paketi'] = $this->cenovnik_model->getPaketiSoCena();
+        $data['paketi_dsg'] = $this->cenovnik_model->getPaketiSoCenaDsg();
+        $data['paketi_db'] = $this->cenovnik_model->getPaketiSoCenaDb();
+        $data['paketi_spec'] = $this->cenovnik_model->getPaketiSoCenaSpec();
+        $data['pacient'] = $this->pacienti_model->getPacient2($this->input->post("priem_id"));
+        $data['uslugi']=$this->pacienti_model->zemiPaketiZaPriem($priem_id);
+//        $temp = $this->pacienti_model->zemiPaketiZaPriem($priem_id);
+//        bis_debug($temp,'Uslugi');
+        $this->load->view('pacienti/lekuvanja/uslugi', $data);
+    }
+
+    function dopolnitelni_uslugi()
+    {
+        $priem_id = $this->input->post("priem_id");
+        $this->load->model('podatoci/cenovnik_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $data['paketi'] = $this->cenovnik_model->getPaketiSoCena();
+        $data['paketi_dsg'] = $this->cenovnik_model->getPaketiSoCenaDsg();
+        $data['paketi_db'] = $this->cenovnik_model->getPaketiSoCenaDb();
+        $data['paketi_spec'] = $this->cenovnik_model->getPaketiSoCenaSpec();
+        $data['pacient'] = $this->pacienti_model->getPacient2($this->input->post("priem_id"));
+        $data['uslugi']=$this->pacienti_model->zemiDopolnitelniPaketiZaPriem($priem_id);
+        $this->load->view('pacienti/lekuvanja/dopolnitelni_uslugi', $data);
+//        bis_debug($this->pacienti_model->zemiDopolnitelniPaketiZaPriem($priem_id),'Uslugi');
+    }
+
+    function terapija()
+    {
+        $priem_id = $this->input->post("priem_id");
+        $this->load->model('podatoci/cenovnik_model');
+        $data['terapija'] = $this->pacienti_model->zemiTerapijaZaPriem($priem_id);
+//        bis_debug($this->pacienti_model->zemiTerapijaZaPriem($priem_id),'terapjia');
+        $this->load->view('pacienti/lekuvanja/terapija', $data);
+    }
+
+    function nov_priem()
+    {
+        $this->load->model('korisnici/korisnici_model');
+        $this->load->model('site_lekari/lekar_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $this->load->model('start/start_model');
+        $data['pacient_id']=$this->input->post("pacient_id");
+        $data['dok']=$this->covecki_resursi_model->getDoktoriB();
+        $data['ustanovi']=$this->lekar_model->lekari_dropdownB();
+        $data['pododeli']= $this->start_model->getPodOdeli($this->session->userdata('firma_id'));
+        $this->load->view('pacienti/lekuvanja/nov_priem', $data);
+    }
+
+    function nov_priem_interen(){
+        $this->load->view('pacienti/lekuvanja/nov_priem_interen');
+    }
+
+    public function getPriemi()
+    {
+         $firma=$this->input->post('firma');
+        //print_r($firma); die();
+    //    if (count($this->input->post()) > 0) {
+      //      $result = $this->pacienti_model->getPriemi($this->input->post());
+      //  } else {
+            $result = $this->pacienti_model->getPriemi($firma);
+      //  }
+
+        echo json_encode($result);
+    }
+
+    public function getPriemByCriteria()
+    {
+        $pacient = $this->input->post("pacient");
+        $broj = $this->input->post("brojlekuvanje");
+        $priem = $this->input->post("priem");
+        $dijagnoza = $this->input->post("dijagnoza");
+        $period_od = ($this->input->post("period_od"));
+        $period_do = ($this->input->post("period_do"));
+        $result = $this->pacienti_model->getPriemByCriteria($pacient, $broj, $priem, $dijagnoza, $period_od, $period_do);
+        echo json_encode($result);
+    }
+
+    public function getPregledi()
+    {
+        $result = $this->pacienti_model->getPregledi($this->input->post('id'));
+        echo json_encode($result);
+    }
+    public function getPreglediDijagnozi()
+    {
+        $result = $this->pacienti_model->getPreglediDijagnozi($this->input->post('id'));
+        echo json_encode($result);
+    }
+    public function nov_pregled()
+    {
+        $result = $this->pacienti_model->nov($this->input->post());
+        echo $result;
+    }
+
+    public function izbrisi_pregled()
+    {
+        $result = $this->pacienti_model->izbrisi($this->input->post('id'));
+        echo $result;
+    }
+
+    public function izmeni_pregled()
+    {
+        $result = $this->pacienti_model->izbrisi($this->input->post('id'));
+        echo $result;
+    }
+
+    public function zacuvajpregled()
+    {
+        $data = $this->input->post();
+        $result = $this->pacienti_model->zacuvajpregled($data);
+        echo $result;
+    }
+    public function zacuvajpregleddijagnoza()
+    {
+        $data = $this->input->post();
+        $result = $this->pacienti_model->zacuvajpregleddijagnoza($data);
+        echo $result;
+    }
+    public function updatepregleddijagnoza()
+    {
+        $data = $this->input->post();
+        $result = $this->pacienti_model->updatepregleddijagnoza($data);
+        echo $result;
+    }
+    public function zacuvajpriemuslugi()
+    {
+        $data = $this->input->post();
+        $result = $this->pacienti_model->zacuvajpriemuslugi($data);
+        echo $result;
+    }
+    public function zacuvajpriemdopolnitelniuslugi()
+    {
+        $data = $this->input->post();
+        $result = $this->pacienti_model->zacuvajpriemdopolnitelniuslugi($data);
+        echo $result;
+    }
+    public function updatepriemterapija()
+    {
+        $data = $this->input->post();
+        $result = $this->pacienti_model->updatepriemterapija($data);
+        echo $result;
+    }
+
+    public function fakturiraj_priem()
+    {
+        $priem_id = $this->input->get("id");
+        $result = $this->pacienti_model->generiraj_izleznafaktura($priem_id);
+        echo json_encode($result);
+    }
+
+    public function getShalterPriemi()
+    {
+        $data=$this->input->post();
+       //  print_r($data); die();
+        //$firma=$this->input->post('firma');
+        $result = $this->pacienti_model->getShalterPriemi($data);
+//        bis_debug($result, "result");
+        echo json_encode($result);
+    }
+    public function getShalterPriemiFondovski()
+    {
+        $data=$this->input->post();
+      //  print_r($data); die();
+        $result = $this->pacienti_model->getShalterPriemiFondovski($data);
+//        bis_debug($result, "result");
+        echo json_encode($result);
+    }
+    public function get_faktura_priem()
+    {
+        $result = $this->pacienti_model->get_faktura_priem($this->input->post("id"));
+        echo json_encode($result);
+    }
+    public function getShalterFakturirani()
+    {
+        $result = $this->pacienti_model->getShalterFakturirani();
+        echo json_encode($result);
+    }
+    public function zemiPacientPriemInfo()
+    {
+        $priem_id = $this->input->get("id");
+        $result = $this->pacienti_model->zemiPacientPriemInfo($priem_id);
+        echo json_encode($result);
+    }
+    public function zemiPaketiZaPriem()
+    {
+        $priem_id = $this->input->get("id");
+        $result = $this->pacienti_model->zemiPaketiZaPriem($priem_id);
+        echo json_encode($result);
+    }
+    public function zemiDopolnitelniPaketiZaPriem()
+    {
+        $priem_id = $this->input->get("id");
+        $result = $this->pacienti_model->zemiDopolnitelniPaketiZaPriem($priem_id);
+        echo json_encode($result);
+    }
+    public function zemiMaterijaliZaPriem()
+    {
+        $priem_id = $this->input->get("id");
+        $result = $this->pacienti_model->zemiMaterijaliZaPriem($priem_id);
+        echo json_encode($result);
+    }
+    function informacii_fakturiranje_priem()
+    {
+        $this->load->model('kasi/kasi_model');
+        $priem_id = $this->input->get("id");
+        $upaten_vo = $this->pacienti_model->getUpatenVo($priem_id);
+        $dijagnoza = $this->pacienti_model->getUpatnaDijagnozaZaPriem($priem_id);
+        if($upaten_vo->upaten_vo == 3) $data['bolnicki_denovi'] = $this->pacienti_model->zemiBolnickiDenoviZaPriem($priem_id);
+        $participacija = $this->pacienti_model->getParticipacijaID($priem_id);
+        $data['priem_id'] = $priem_id;
+        $data['participacija'] = $participacija;
+        $data['dijagnoza'] = $dijagnoza;
+        $data['komintenti'] = $this->pacienti_model->getKomintenti();
+        $data['osnov_osiguruvanje'] = $this->pacienti_model->getOsnovOsiguruvanje($priem_id);
+        $data['oddel'] = $this->pacienti_model->getOddelZaPriem($priem_id);
+        $data['kasi'] = $this->kasi_model->kasa_dropdown();
+        $data['data_priem'] = $this->pacienti_model->getShalterPriemByID($priem_id);
+        $this->load->view('pacienti/lekuvanja/informacii_fakturiranje_priem', $data);
+//        bis_debug( $this->pacienti_model->getShalterPriemByID($priem_id) , "data priem");
+    }
+    function getPriemid(){
+       echo json_encode($this->pacienti_model->getPriemid($this->input->post("id")));
+    }
+    function getPriemInfo(){
+        $this->load->view('pacienti/lekuvanja/informacii_fakturiranje_priem');
+    }
+
+    public function editIzleznaFaktura()
+    {
+        $data['id'] = $this->input->get('id');
+        $this->load->view('pacienti/izlezni_fakturi/edit_faktura_meni', $data);
+    }
+
+    public function editFaktura()
+    {
+        $id = $this->input->get('id');
+        $priem_id = $this->input->get('priem');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/edmerka_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $upaten_vo = $this->pacienti_model->getUpatenVo($priem_id);
+        if($upaten_vo->upaten_vo == 1) {  $data['print'] = '/index.php/izlezni_fakturi/faktura/print_izlezna_faktura&id='.$id.'&priem='.$priem_id;
+                                          $data['print_kasa']='/index.php/kasi/kasi/print_kasa_od_bolnicko&fakturaid='.$id;
+        }
+        if($upaten_vo->upaten_vo == 2) {  $data['print'] = '/index.php/izlezni_fakturi/faktura/faktura_db_print_if&id='.$id.'&priem='.$priem_id;
+                                          $data['print_kasa']='/index.php/kasi/kasi/print_kasa_od_bolnicko&fakturaid='.$id;
+        }
+        if($upaten_vo->upaten_vo == 3)  { $data['print'] = '/index.php/izlezni_fakturi/faktura/faktura_stacionar_print_if&id='.$id.'&priem='.$priem_id;
+            $data['print_kasa']='/index.php/kasi/kasi/print_kasa_od_bolnicko&fakturaid='.$id;
+        }
+        $query = $this->izlezni_fakturi_model->editIzleznaFakturaPriem($id);
+        $data['id'] = $id;
+        $data['query'] = $query;
+        $data['querydetails'] =  $this->izlezni_fakturi_model->getIzleznaDetali($id);
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $data['grupa'] = $this->plan_model->konto_dropdown();
+        $data['edinicamerka'] = $this->edmerka_model->edmerka_dropdown();
+        $this->load->view('pacienti/izlezni_fakturi/edit_faktura', $data);
+    }
+
+    public function priem_realen_trosok()
+    {
+        $priem_id = $this->input->get('priem');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+//        $pacient = $this->pacienti_model->getPacient2($priem_id);
+        $priem_info = $this->pacienti_model->getPriemid($priem_id);
+        $query = $this->pacienti_model->getRealenTrosok($priem_id);
+        $query2 = $this->pacienti_model->getPotroseniMaterijaliByPriem($priem_id);
+        $data['querydetails'] =  $query;
+        $data['materijali'] =  $query2;
+        $data['priem'] = $priem_info[0];
+//        bis_debug($query2, "materijali");
+        $this->load->view('pacienti/izlezni_fakturi/realen_trosok', $data);
+    }
+    function kreirajKasa()
+    {
+        $this->load->model('kasi/kasi_model');
+        $this->load->model('start/start_model');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $faktura_id = $this->input->get("id");
+        $query = $this->izlezni_fakturi_model->editIzleznaFakturaPriem($faktura_id);
+        $data['faktura_id'] = $faktura_id;
+
+        $data['query'] = $query;
+        $data['kasi'] = $this->kasi_model->kasa_dropdown();
+        $data['dozvoleni_kasi']=$this->start_model->getDozvoleniKasi();
+        $this->load->view('pacienti/izlezni_fakturi/kreiraj_kasa', $data);
+    }
+    public function snimiKasa()
+    {
+        $data = $this->input->post();
+        $result = $this->pacienti_model->kreirajKasaZaPriem($data);
+        echo json_encode($result);
+    }
+    public function zatvorilekuvanje(){
+        $id=$this->input->post('id');
+        $this->pacienti_model->updateStatusPriem($id,40);
+    }
+    public function vratilekuvanje(){
+        $id=$this->input->post('id');
+        $this->pacienti_model->updateStatusPriem($id,0);
+    }
+    public function zapisiDatumZatvoranjeNaPriem(){
+        $id=$this->input->post('id');
+        $this->pacienti_model->zapisiDatumZatvoranjeNaPriem($id);
+    }
+    public function clearDatumZatvoranjeNaPriem(){
+        $id=$this->input->post('id');
+        $this->pacienti_model->clearDatumZatvoranjeNaPriem($id);
+    }
+    public function getCenaZaUsluga(){
+        $id = $this->input->post('id');
+        $result = $this->pacienti_model->getCenaZaUsluga($id);
+        echo json_encode($result);
+    }
+    public function getCenaZaBolnickiDen(){
+        $id = $this->input->post('id');
+        $result = $this->pacienti_model->getCenaZaBolnickiDen($id);
+        echo json_encode($result);
+    }
+    public function get_if_info(){
+        $id=$this->input->post('id');
+        $result = $this->pacienti_model->get_if_info($id);
+        echo json_encode($result);
+    }
+    function lekuvanje_info()
+    {
+        $priem_id = $this->input->get("id");
+        $this->load->model('podatoci/cenovnik_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $data['priem_id'] = $priem_id;
+        $data['osnov_osiguruvanje'] = $this->pacienti_model->getOsnovOsiguruvanje($priem_id);
+        $data['pacient'] = $this->pacienti_model->zemiPacientPriemInfo($priem_id);
+        $data['paketi'] = $this->cenovnik_model->getPaketiSoCena();
+        $data['uslugi']=$this->pacienti_model->zemiDopolnitelniPaketiZaPriem($priem_id);
+        $this->load->view('pacienti/lekuvanja/lekuvanje_info', $data);
+    }
+
+    public function presmetka()
+    {
+        $id = $this->input->get("id");
+        $priem = $this->input->get("priem");
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $faktura=(array)$this->izlezni_fakturi_model->infoIzleznaFaktura($id);
+        $ustanova = $this->pacienti_model->getUstanovaInfo($faktura[0]->firma_id);
+        $pododdel_id =  $this->pacienti_model->getPododdelZaPriem($priem);
+        $pododdel_info = $this->pacienti_model->getPododdelInfo($pododdel_id);
+        $dijagnoza=$this->pacienti_model->get_dijagnoza_priem($priem);
+        $upaten_vo=$this->pacienti_model->getUpatenVo($priem);
+        $faksimil=$this->pacienti_model->getFaksimilDoktor($priem);
+        if($upaten_vo->upaten_vo == 1) {
+            $sostav_paketi=$this->pacienti_model->getPriemSostavPaketi($priem);
+            if($sostav_paketi) $data['sostav_paketi'] = $sostav_paketi[0]->sostav_paket;
+            else $data['sostav_paketi'] = '';
+        }
+        $potrosen_materijal = $this->pacienti_model->getPotroseniMaterijaliByPriem($priem);
+      //  print_r($potrosen_materijal); die();
+//        bis_debug($faktura, "fak");
+        $data['main_content'] = 'pacienti/presmetki/presmetka_print';
+        $data['pacient'] = $this->pacienti_model->getPacientFullPoPriemId($priem);
+        $data['id'] = $id;
+        $data['pot_materijal']=$potrosen_materijal;
+        $data['dijagnoza'] = $dijagnoza;
+
+        $data['osnov_na_osloboduvanje'] = $this->pacienti_model->getOsnovOsiguruvanje($priem);
+        $data['participacija_id']= $this->pacienti_model->getOsnovOsiguruvanjeParticipacijaID($priem);
+        //print_r($data['participacija_id']); die();
+        $data['faktura'] = $faktura;
+        $data['ustanova'] = $ustanova;
+        $data['pododdel'] = $pododdel_info;
+        $data['upaten_vo'] = $upaten_vo->upaten_vo;
+        $data['broj_lekuvanje'] = $priem;
+        $data['faksimil'] = $faksimil;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$faktura);
+    }
+    public function presmetka_stacionar()
+    {
+        $id = $this->input->get("id");
+        $priem = $this->input->get("priem");
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $faktura=(array)$this->izlezni_fakturi_model->infoIzleznaFaktura($id);
+        $ustanova = $this->pacienti_model->getUstanovaInfo($faktura[0]->firma_id);
+        $pododdel_id =  $this->pacienti_model->getPododdelZaPriem($priem);
+        $pododdel_info = $this->pacienti_model->getPododdelInfo($pododdel_id);
+        $dijagnoza = $this->pacienti_model->get_dijagnoza_priem($priem);
+        $dopolnitelni_uslugi = $this->pacienti_model->getDopUslugiByPriem($priem);
+        $potrosen_materijal = $this->pacienti_model->getPotroseniMaterijaliByPriem($priem);
+
+        $data['dop_uslugi'] = $dopolnitelni_uslugi;
+        $data['pot_materijal'] = $potrosen_materijal;
+      // print_r($potrosen_materijal); die();
+        $data['bolnicki_denovi'] = $this->pacienti_model->getBolnickiDenoviZaPriem($priem);
+
+        $data['main_content'] = 'pacienti/presmetki/presmetka_stacionar_print';
+        $data['pacient'] = $this->pacienti_model->getPacientFullPoPriemId($priem);
+        $data['id'] = $id;
+        $data['dijagnoza'] = $dijagnoza;
+       // print_r($dijagnoza); die();
+        $data['osnov_na_osloboduvanje'] = $this->pacienti_model->getOsnovOsiguruvanje($priem);
+        $data['participacija_id']= $this->pacienti_model->getOsnovOsiguruvanjeParticipacijaID($priem);
+      //  print_r($data['participacija_id']); die();
+
+        $data['faktura'] = $faktura;
+        $data['ustanova'] = $ustanova;
+        $data['pododdel'] = $pododdel_info;
+        $data['broj_lekuvanje'] = $priem;
+        $html=$this->load->view('includes/print_template', $data,true);
+//        bis_debug($dijagnoza, "dijagnoza");
+//        bis_debug($data['bolnicki_denovi'], "denovi");
+        echo bis_fill_input_values($html,$faktura);
+    }
+
+    public function autocomplete_dijagnozi()
+    {
+        $this->load->model('podatoci/cenovnik_model');
+        $sifra = $this->input->get("name_startsWith");
+        $limit = $this->input->get("maxRows");
+        $cb = $this->input->get("callback");
+
+        $query =  $this->cenovnik_model->getAutocompleteDijagnozi($sifra, $limit);
+
+        echo $cb.'('.json_encode($query).');';
+    }
+    public function autocomplete_paketi()
+    {
+        $this->load->model('podatoci/cenovnik_model');
+        $sifra = $this->input->get("name_startsWith");
+        $limit = $this->input->get("maxRows");
+        $cb = $this->input->get("callback");
+
+        $query =  $this->cenovnik_model->getAutocompletePaketiSoCena($sifra, $limit);
+                         //print_r($query); die();
+        echo $cb.'('.json_encode($query).');';
+    }
+    public function autocomplete_potrosenmaterijal()
+    {
+        $this->load->model('podatoci/artikl_model');
+        $text = $this->input->get("name_startsWith");
+        $limit = $this->input->get("maxRows");
+        $cb = $this->input->get("callback");
+        $zabranetimagacini=$this->session->userdata('magacini');
+        $query =  $this->artikl_model->getAutocompleteArtikli($text, $limit);
+                   //print_r($query); die();
+        echo $cb.'('.json_encode($query).');';
+    }
+    public function autocomplete_uslugizanaplata()
+    {
+        $this->load->model('podatoci/cenovnik_model');
+        $text = $this->input->get("name_startsWith");
+        $limit = $this->input->get("maxRows");
+        $cb = $this->input->get("callback");
+        $upaten_vo = $this->input->get("upaten_vo");
+
+        if($upaten_vo == 1) $query = $this->cenovnik_model->getAutocompletePaketiSoCenaSpec($text, $limit);
+        elseif($upaten_vo == 2) $query = $this->cenovnik_model->getAutocompletePaketiSoCenaDb($text, $limit);
+        elseif($upaten_vo == 3) $query = $this->cenovnik_model->getAutocompletePaketiSoCenaDsg($text, $limit);
+
+        echo $cb.'('.json_encode($query).');';
+    }
+    public function autocomplete_cenovnikuslugi()
+    {
+        $this->load->model('podatoci/cenovnik_model');
+        $text = $this->input->get("name_startsWith");
+        $limit = $this->input->get("maxRows");
+        $cb = $this->input->get("callback");
+        $cenovnik = $this->input->get("cenovnik");
+
+        if($cenovnik == 1) $query = $this->cenovnik_model->getAutocompletePaketiSoCena($text, $limit);
+        elseif($cenovnik == 2) $query = $this->cenovnik_model->getAutocompletePaketiSoCenaDsg($text, $limit);
+        elseif($cenovnik == 3) $query = $this->cenovnik_model->getAutocompletePaketiSoCenaDb($text, $limit);
+        elseif($cenovnik == 4) $query = $this->cenovnik_model->getAutocompletePaketiSoCenaSpec($text, $limit);
+
+        echo $cb.'('.json_encode($query).');';
+    }
+    public function autocomplete_bolnickidenovistacionar()
+    {
+        $this->load->model('podatoci/cenovnik_model');
+        $text = $this->input->get("name_startsWith");
+        $limit = $this->input->get("maxRows");
+        $cb = $this->input->get("callback");
+
+        $query =  $this->cenovnik_model->getAutocompleteBolnickiDenoviStacionar($text, $limit);
+
+        echo $cb.'('.json_encode($query).');';
+    }
+    public function get_new_broj_vo_dnevnik()
+    {
+        $id=$this->input->post('id');
+        $result = $this->pacienti_model->get_new_broj_vo_dnevnik($id);
+        echo json_encode($result);
+    }
+
+
+//    function testsuma(){
+//        $query = $this->pacienti_model->presmetajSumaBolnickiDenovi(434);
+//        bis_debug($query, "suma");
+//    }
+}

@@ -1,0 +1,55 @@
+
+
+
+<div>
+
+
+
+
+
+
+    <?php
+
+
+    echo form_open('podatoci/fin_grupi/create_tip');
+    echo form_label('Родител на тип','grupaID');
+    echo form_dropdown('grupaID',$grupa);
+
+
+
+    ?><br><br>
+
+    <?php
+    echo form_label('Име на тип','tipIme');
+    echo form_input('tipIme', '');echo br();echo br();
+    echo form_label('Тип :');?>
+    <br>
+
+  <?  echo form_label('Приход','prihod');
+    echo form_checkbox('prihod', set_value('prihod',1,'TRUE'));?>
+    <?echo form_label('Расход','rashod');
+    echo form_checkbox('rashod', set_value('rashod',1,'TRUE'));?><br>
+    <br>
+    <?echo form_label('Место :');?><br>
+    <?echo form_label('Жиро','ziro');
+    echo form_checkbox('ziro', set_value('ziro',1,'TRUE'));?>
+    <?echo form_label('Каса','kasa');
+    echo form_checkbox('kasa', set_value('kasa',1,'TRUE')); ?>
+    <br>
+
+    <input type="button" class="ajaxcreateform button" value="Додади"><br />
+
+
+
+    <?php
+
+    echo validation_errors('<p class="error">');
+
+    echo form_close();
+
+    ?>
+
+
+
+
+</div>

@@ -1,0 +1,48 @@
+<?php
+if(isset($stavki) && is_array($stavki))
+{
+    $i = 0;
+    foreach($stavki as $stavka){
+        $i++;
+        ?>
+        <tr class="detali" artikl_id="<?= $stavka->artikl_id; ?>">
+            <td><a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a></td>
+            <td class="redenbroj"><?= $i; ?></td>
+            <td><input class="sifra" name="sifra[<?= $i; ?>]" value="<?= $stavka->sifra; ?>" readonly /></td>
+            <td><input class="stavka" name="stavka[<?= $i; ?>]" value="<?= $stavka->stavka; ?>" /></td>
+            <td><input class="kolicina" name="kolicina[<?= $i; ?>]" value="<?= $stavka->kolicina; ?>" /></td>
+            <td class="edmerka"><?= $stavka->edMerkaIme; ?></td>
+            <td>
+                <select class="magacin" name="magacin[<?= $i; ?>]">
+                    <?php
+                    if($stavka->magacinId > 0)
+                    {
+                        foreach($magacini as $magacin){ ?>
+                            <option <?php if($magacin->id == $stavka->magacinId) echo 'selected="selected"'; ?> value="<?= $magacin->id ?>"><?= $magacin->ime; ?></option>
+                        <?php }
+                    }
+                    else { ?>
+                        <option value=""></option>
+                        <?php foreach($magacini as $magacin){ ?>
+                            <option value="<?= $magacin->id ?>"><?= $magacin->ime; ?></option>
+                        <?php }
+                    } ?>
+                </select>
+            </td>
+            <td><input class="garantenrok" name="garantenrok[<?= $i; ?>]" value="<?= $stavka->garantenrok; ?>" /></td>
+            <td><input class="upotreblivodo" name="upotreblivodo[<?= $i; ?>]" value="<?= $stavka->upotreblivodo; ?>" /></td>
+            <td><input class="seriskibroj" name="seriskibroj[<?= $i; ?>]" value="<?= $stavka->seriskibroj; ?>" /></td>
+            <td class="hide"><input type="hidden" class="SID" name="SID[<?= $i; ?>]" value="<?= $stavka->artikl_id; ?>" /></td>
+            <td class="hide"><input type="hidden" class="dbid" name="dbid[<?= $i; ?>]" value="<?= $stavka->dbid; ?>" /></td>
+            <td class="hide"><input type="hidden" class="edmerkaid" name="edmerkaid[<?= $i; ?>]" value="<?= $stavka->edMerkaId; ?>" /></td>
+            <td class="hide"><input type="hidden" class="brisistavka" name="brisistavka[<?= $i; ?>]" /></td>
+        </tr>
+    <?php
+    }
+}
+?>
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        jQuery("select.magacin").combobox();
+    });
+</script>

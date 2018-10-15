@@ -1,0 +1,28 @@
+<div class="tiket-doktor">
+    <div class="tiket-doktor-pregledi">
+        <table class="tiket-doktor-pregledi-tabela">
+            <caption>Листа на чекање</caption>
+            <tbody>
+            <tr>
+                <td>11:19</td><td>Бојан Николовски</td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="tiket-doktor-pregledi-tabela-idnina">
+            <caption>27-03-2013</caption>
+            <tbody>
+            <tr>
+                <td>12:20</td><td>Антонио Николовски</td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="tiket-doktor-pregledi-tabela-idnina">
+            <caption>29-03-2013</caption>
+            <tbody>
+            <tr>
+                <td>10:20</td><td>Бојан Николовски</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

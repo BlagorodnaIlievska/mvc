@@ -1,0 +1,266 @@
+<div id="pregled_form">
+    <?php
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    ?>
+    <br>
+    <div class="tab-zirosmetki">
+        <p class="naslovzirosmetki" > ( <span class="vkupnostavki">0</span> ) Жиросметки</p>
+        <div class="predtabela">
+        <table class="t-zirosmetki" border="1" cellspacing="2" cellpadding="2">
+        <thead>
+        <tr>
+            <th>Сметка</th>
+            <th>Банка</th>
+            <th class="sostojba">Состојба</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class='hiderow'>
+            <td class="smetka"></td>
+            <td class="banka"></td>
+            <td class="sostojba"></td>
+            </tr>
+        </tbody>
+        </table>
+        </div>
+        <table class="sumiranje">
+            <tfoot>
+            <tr>
+                <td colspan="2">Вкупно:</td>
+                <td class="vkupno"></td>
+            </tr>
+            </tfoot>
+        </table>
+        <a href="" target="_blank" class="cmd-printlink-zirosmetki">
+            <button type="button" class="pecatikartica print"><span>Печати</span></button>
+        </a>
+    </div>
+    <div class="tab-dolznici">
+        <p class="naslovdolznici" > ( <span class="vkupnostavki">0</span> )  Должници</p>
+        <div class="predtabela">
+        <table class="t-dolznici" border="1" cellspacing="2" cellpadding="2">
+        <thead>
+        <tr>
+            <th>Должници</th>
+            <th class="sostojba">Состојба</th>
+<!--            <th>Забелешка</th>-->
+        </tr>
+        </thead>
+        <tbody>
+        <tr class='hiderow'>
+            <td class="klient"></td>
+            <td class="sostojba"></td>
+<!--            <td class="zabeleska"></td>-->
+            </tr>
+        </tbody>
+        </table>
+        </div>
+        <table class="sumiranje">
+            <tfoot>
+            <tr>
+                <td colspan="1">Вкупно:</td>
+                <td class="vkupno"></td>
+            </tr>
+            </tfoot>
+        </table>
+        <a href="" target="_blank" class="cmd-printlink-dolznici">
+            <button type="button" class="pecatikartica print"><span>Печати</span></button>
+        </a>
+    </div>
+    <div class="tab-gotovina">
+        <p class="naslovgotovina" > ( <span class="vkupnostavki">0</span> )  Готовина</p>
+        <div class="predtabela">
+        <table class="t-gotovina" border="1" cellspacing="2" cellpadding="2">
+        <thead>
+        <tr>
+            <th>Каса</th>
+            <th class="sostojba">Состојба</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class='hiderow'>
+            <td class="kasa"></td>
+            <td class="sostojba"></td>
+            </tr>
+        </tbody>
+        </table>
+        </div>
+        <table class="sumiranje">
+            <tfoot>
+            <tr>
+                <td colspan="1">Вкупно:</td>
+                <td class="vkupno"></td>
+            </tr>
+            </tfoot>
+        </table>
+        <a href="" target="_blank" class="cmd-printlink-gotovina">
+            <button type="button" class="pecatikartica print"><span>Печати</span></button>
+        </a>
+    </div>
+    <div class="tab-nasdolg">
+        <p class="naslovnasdolg" > ( <span class="vkupnostavki">0</span> )  Наш долг</p>
+        <div class="predtabela">
+        <table class="t-nasdolg" border="1" cellspacing="2" cellpadding="2">
+        <thead>
+            <tr>
+                <th>Коминтент</th>
+                <th class="sostojba">Состојба</th>
+<!--                <th>Забелешка</th>-->
+            </tr>
+        </thead>
+        <tbody>
+        <tr class='hiderow'>
+            <td class="klient"></td>
+            <td class="sostojba"></td>
+<!--            <td class="zabeleska"></td>-->
+            </tr>
+        </tbody>
+        </table>
+        </div>
+        <table class="sumiranje">
+            <tfoot>
+            <tr>
+                <td colspan="1">Вкупно:</td>
+                <td class="vkupno"></td>
+            </tr>
+            </tfoot>
+        </table>
+        <a href="" target="_blank" class="cmd-printlink-nasdolg">
+            <button type="button" class="pecatikartica print"><span>Печати</span></button>
+        </a>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery(".t-zirosmetki").tablesorter();
+        jQuery(".t-dolznici").tablesorter();
+        jQuery(".t-gotovina").tablesorter();
+
+        ;
+        var data = { data: 1 }
+        jQuery.ajax({
+            url: '/index.php/raporti/menu/get_sostojba_zirosmetki',
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+                //console.log(response);
+                jQuery(".t-zirosmetki").find("tr:gt(1)").remove();
+                var tr = jQuery('.t-zirosmetki tr:last');
+                var vkupnouplata = 0;
+                tr.removeClass('hiderow');
+                for ( var i = 0; i < response.length; i++ ) {
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.find('.smetka').html(response[i].zirosmetka);
+                    newrow.find('.banka').html(response[i].BankaIme);
+                    newrow.find('.sostojba').html(formatnumbermkd(response[i].uplata));
+                    vkupnouplata = 1*vkupnouplata + 1*response[i].uplata;
+                }
+                tr.addClass('hiderow');
+                jQuery(".tab-zirosmetki .sumiranje tfoot .vkupno").html(formatnumbermkd(vkupnouplata));
+                jQuery(".naslovzirosmetki .vkupnostavki").html(response.length);
+                jQuery(".t-zirosmetki").trigger("update");
+            }
+        });
+            jQuery.ajax({
+                url: '/index.php/raporti/menu/getSostojbaKasi',
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                  //  console.log(response);
+                    jQuery(".t-gotovina").find("tr:gt(1)").remove();
+                    var vkupnouplata = 0;
+                    var tr = jQuery('.t-gotovina tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('.kasa').html(response[i].kasaIme);
+                        newrow.find('.sostojba').html(formatnumbermkd(response[i].suma));
+                        vkupnouplata = 1*vkupnouplata + 1*response[i].suma;
+                    }
+                    tr.addClass('hiderow');
+                    jQuery(".tab-gotovina .sumiranje tfoot .vkupno").html(formatnumbermkd(vkupnouplata));
+                    jQuery(".naslovgotovina .vkupnostavki").html(response.length);
+                    jQuery(".t-gotovina").trigger("update");
+                }
+            });
+        jQuery.ajax({
+            url: '/index.php/raporti/menu/izvestaiNasDolg',
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+                //console.log("sostojba:  ", response);
+                jQuery(".t-nasdolg").find("tr:gt(1)").remove();
+                var vkupnouplata = 0;
+                var tr = jQuery('.t-nasdolg tr:last');
+                tr.removeClass('hiderow');
+                for ( var i = 0; i < response.length; i++ ) {
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.find('.klient').html(response[i].firmaIme);
+                    newrow.find('.sostojba').html(formatnumbermkd(response[i].vkupno));
+                    newrow.find('.zabeleska').html(response[i].zabeleska);
+                    vkupnouplata = 1*vkupnouplata + 1*response[i].vkupno;
+                }
+                tr.addClass('hiderow');
+                jQuery(".tab-nasdolg .sumiranje tfoot .vkupno").html(formatnumbermkd(vkupnouplata));
+                jQuery(".naslovnasdolg .vkupnostavki").html(response.length);
+                jQuery(".t-nasdolg").trigger("update");
+            }
+        });
+        jQuery.ajax({
+            url: '/index.php/raporti/menu/izvestaiDolznici',
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+//                console.log(response);
+                jQuery(".t-dolznici").find("tr:gt(1)").remove();
+                var vkupnouplata = 0;
+                var tr = jQuery('.t-dolznici tr:last');
+                tr.removeClass('hiderow');
+                for ( var i = 0; i < response.length; i++ ) {
+                    if(response[i].firmaID > 0)
+                    {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('.zabeleska').html(response[i].zabeleska);
+                        newrow.find('.klient').html(response[i].firmaIme);
+                        newrow.find('.sostojba').html(formatnumbermkd(parseFloat(response[i].vkupno).toFixed(2)));
+                        vkupnouplata = 1*vkupnouplata + 1*response[i].vkupno;
+                    }
+                    if(response[i].pacientID > 0)
+                    {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('.zabeleska').html(response[i].zabeleska);
+                        var pacientIme = response[i].pacientIme+" "+response[i].pacientTatkovoIme+" "+response[i].pacientPrezime;
+                        newrow.find('.klient').html(pacientIme);
+                        newrow.find('.sostojba').html(formatnumbermkd(parseFloat(response[i].pacientIznos).toFixed(2)));
+                        vkupnouplata = 1*vkupnouplata + 1*response[i].pacientIznos;
+                    }
+                }
+                tr.addClass('hiderow');
+                jQuery(".tab-dolznici .sumiranje tfoot .vkupno").html(formatnumbermkd(vkupnouplata));
+                jQuery(".naslovdolznici .vkupnostavki").html(response.length);
+                jQuery(".t-dolznici").trigger("update");
+            }
+        });
+    });
+jQuery(".cmd-printlink-zirosmetki").click(function(){
+jQuery(".cmd-printlink-zirosmetki").attr("href","/index.php/print/pdf?view=/index.php/raporti/menu/pecati_site_zirosmetki");
+ });
+    jQuery(".cmd-printlink-dolznici").click(function(){
+        jQuery(".cmd-printlink-dolznici").attr("href","/index.php/print/pdf?view=/index.php/raporti/menu/pecati_site_dolznici");
+    });
+    jQuery(".cmd-printlink-gotovina").click(function(){
+        jQuery(".cmd-printlink-gotovina").attr("href","/index.php/print/pdf?view=/index.php/raporti/menu/pecati_site_gotovini");
+    });
+    jQuery(".cmd-printlink-nasdolg").click(function(){
+        jQuery(".cmd-printlink-nasdolg").attr("href","/index.php/print/pdf?view=/index.php/raporti/menu/pecati_site_nasidolgovi");
+    });
+</script>

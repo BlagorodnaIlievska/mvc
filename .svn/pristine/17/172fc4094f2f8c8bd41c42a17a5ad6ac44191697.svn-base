@@ -1,0 +1,323 @@
+.neplatena.grafic tr td {
+    background-color: #ff3333;
+    color: yellow;
+}
+
+.platena.grafic tr td {
+    background-color: #33ff99;
+    color: #222222;
+}
+
+.grafic tr td {
+    font-size: 14px;
+}
+
+.grafic tr th {
+    padding: 0 5px;
+}
+
+table.grafic {
+    margin: 0;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+#fin_grupiranje_form h4 {
+    margin-top: 10px
+}
+
+.label-select label {
+    font-size: 14px;
+    white-space: nowrap;
+    margin-bottom: 5px;
+    line-height: 2.2;
+}
+
+.label-select {
+    width: 395px;
+    margin-bottom: 5px;
+}
+fieldset.rok-na-plakanje-novafak {float: left; }
+fieldset.vkupno-novafak {clear: none;}
+fieldset.vleznidospeanost { margin: 10px 0; width: 515px;}
+fieldset.vlezniperiod { margin: 10px 0; width: 500px;}
+.naslov, .naslovvleznifakturi, .naslovdospeanost, .naslovperiod, .naslovperioddetali,
+.naslovidnina, .naslovdenes, .naslovminato {background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;padding: 1px;margin: 5px 0 0 0;}
+.f-od-dobavuvac select {width: 200px;}
+.faktura-od-dobavuvac .f-od-dobavuvac {float: left;margin-right: 10px;}
+.faktura-od-dobavuvac .datum {float: right;margin-right: 0px;}
+/*.faktura-od-dobavuvac .broj {width: 12%;}*/
+/*.faktura-od-dobavuvac .klient {width: 12%;}*/
+.dogovor-proekt select {width:200px;}
+.dogovor-proekt {float: left; margin-right: 10px;}
+.dogovor-proekt-kopcinja {float: left;}
+.dogovor-proekt-kopcinja .kopirajkop {margin-left: 55px;}
+.status-na-novafak {margin-left: 235px;float: left;}
+.dogovor-form span {font-size: 14px;}
+.promenikurs-valuta {margin-left: 15px;}
+.jazik-valuta {margin-left: 15px;}
+.clearboth {clear: both;}
+.prikazi-konto-novafak {margin-right: 15px;}
+.kontoddv5-novafak label , .kontoddv5-novafak select {float: left;line-height: 1.8;margin-right: 5px;}
+.kontoddv18-novafak label , .kontoddv18-novafak select {float: left;line-height: 1.8;margin-right: 5px;}
+.kontoddv5-novafak {margin-right:15px;margin-left: 15px;}
+.istokonto-novafak {margin: 0 15px;}
+.dogovor-form table {margin:0}
+.f-od-dobavuvac input {width: 105px;}
+.dogovor-form .tnabavki tr td input {width:100%;}
+.dogovor-form .addstavka {clear: none;margin-top: 10px;margin-right: 10px;}
+#edit_faktura_form .addstavka {clear: none;margin-top: 10px;}
+.greybar {height:20px;width: 100%;background-color: #CCC;}
+.roknaplakanje-novafak {float:left;width: 500px; clear:both;}
+.rok-za-plakanje {}
+.ostanato-uplati-novafak p {margin: 0;font-size: 14px;}
+.vkupen-iznos-novafak {float: right;}
+.vleznidole {clear: both;float: left;width:100% !important;}
+.ls-status-novafak {float: left;margin-right: 5px;}
+.ls-status-novafak label {float:left;line-height: 1.8;}
+.ls-status-novafak select , .ls-status-novafak input {float: left;margin-left:5px;}
+.dogovor-form .submitbutton .otkazibutton {float: right;}
+div.snimi {float: left; clear: left;}
+div.drugo {float: right;width: 410px;}
+.drugo div {float: left;margin-left: 10px;}
+.filter-vleznifak label {font-size: 14px;line-height: 1.7;margin-bottom: 5px;white-space: nowrap;float: left;margin:0 5px;}
+.filter-vleznifak input , .filter-vleznifak select , .filter-vleznifak span {float: left;}
+.vlez-form .stavka {clear: both;}
+.filter-vleznifak span {line-height: 1.6;}
+.reset {clear: both;}
+.filtermenu.prikazano {float: left;margin: 10px 0;width: 100%;}
+.tstavkadetail {margin: 0;}
+.editfaktura{cursor: pointer;width: 16px;}
+.deletefaktura{cursor: pointer;width: 16px;}
+.infofaktura{cursor: pointer;width: 16px;}
+.zabeleska-novafak {clear: both;width: 100%;}
+.zabeleska-novafak .zabeleska {width: 99%;}
+tr.active td {
+    background-color: #add8e6 !important;
+}
+td.active {
+    background-color: #add8e6 !important;
+}
+.tvleznifakturi .datum, .tvleznifakturi .broj , .sumiranje .datum , .sumiranje .broj {
+    overflow: hidden;
+    width: 90px;
+}
+.tvleznifakturi .osnova, .tvleznifakturi .ddv, .tvleznifakturi .vkupno  {
+    width: 116px;
+    overflow: hidden;
+}
+.vlez-form .sumiranje .osnova , .vlez-form  .sumiranje .ddv , .vlez-form  .sumiranje .vkupno {
+    width: 114px;
+}
+.tvleznifakturi .klient , .sumiranje .klient {
+    max-width: 300px;
+    overflow: hidden;
+    width: 300px;
+}
+.tvleznifakturi tfoot tr td,
+.tstavkadetail  tfoot tr td ,
+.sumiranje {
+    padding-top: 0px;
+    border-left: medium none;
+    border-right: medium none;
+    color:  #003399 ;
+    font-weight: bold;
+}
+.tvleznifakturi .vkupnolabel  {
+    text-align: right;
+}
+.tvleznifakturi tfoot tr,
+.tstavkadetail tfoot tr {
+    border-left: 1px solid #AABCFE;
+    border-right: 1px solid #AABCFE;
+    border-bottom: 1px solid #AABCFE;
+}
+.rok-na-plakanje-novafak {width: 500px;display: inline;float: left;margin-bottom: 10px;}
+.vkupno-novafak {float: right;display: inline;}
+.otkazi-snimi-novafak {width: 100%;clear: both;margin-top: 10px;height: 30px;}
+.filter-fingrup , .period-klient-filter , .filter-dospeanost {margin-top: 10px;}
+.f-od-dobavuvac label {float: left;line-height: 1.6;}
+.novapr-novafak {float: left;margin-right: 10px;margin-bottom: 5px;}
+.novapr-novafak-info .novapr-novafak {float:left;}
+.novapr-novafak-info .novapr-novafak input {margin-right:10px;}
+.novapr-novafak-info {clear: both;}
+.periodod, .perioddo, .ddstatus {width: 90px; }
+div.dodadeni-priemnici {clear: both; padding-top: 5px;}
+.f-od-dobavuvac.klient {float: none; margin: 0px auto; width: 300px; clear: none;}
+.f-od-dobavuvac.oddel {float: none; margin-top :2px; width: 330px; clear: none;}
+.f-od-dobavuvac.datum {width: 200px; margin-top: -39px;}
+.otkazi-snimi-novafak .drugo div {float: right;}
+.grupafilter-pk {float: left;margin-right: 10px;}
+#editfaktura {clear: both;min-width: 500px;}
+.artiklivlez3 {
+    float: left;margin-right: 10px;line-height: 2.5;
+}
+.artiklivlez2 {
+    clear: both;
+    float: left;
+    line-height: 2.5;
+}
+.artiklivlez1 {
+    float: left;line-height: 2.5;margin-right: 10px;
+}
+
+.artikl.novartikl {margin-right: 0;}
+.konto1p {width: 80px;}
+.konto2p {width: 25px;}
+#vnesi-dogovor {min-width: 945px;}
+#vnesi-dogovor .kolicina {
+    width: 100px;
+}
+/*#vnesi-dogovor .tnabavki .bezddv,*/
+/*#vnesi-dogovor .tnabavki .vkupno1,*/
+/*#vnesi-dogovor .tnabavki .vkupnoddv,*/
+
+/*#vnesi-dogovor .tnabavki .vkupno2*/
+/*{*/
+/*width: 100%;*/
+/*}*/
+#vnesi-dogovor .tnabavki input {
+    padding: 0px;
+    margin: 0px;
+}
+.vlez-form .stavkadetail {
+    margin-top: 25px;
+}
+div.periodkonto, div.perioddatum {float: left;}
+div.idnina, div.prikaz {clear: both; padding-top: 10px;}
+div.filter-dospeanost label, div.periodkonto label {float: left;  line-height: 1.6;}
+div.filter-dospeanost .pdklient {float: left;}
+table.tabelaidnina .suma, table.tabelaidnina .uplati, table.tabelaidnina .vkupno {text-align: right}
+table.sumiranje .vkupnolabel {font-weight: bold;}
+table.tabeladenes .suma, table.tabeladenes .uplati, table.tabeladenes .vkupno {text-align: right}
+table.tabelaminato .suma, table.tabelaminato .uplati, table.tabelaminato .vkupno {text-align: right}
+.tnabavki .ui-combobox a.ui-button {
+    display: none;
+}
+.sumiranje td.valuta {width: 60px;}
+/*.sumiranje td {border-right: 1px solid transparent;border-left: 1px solid transparent;}*/
+.sumiranje .rok {width: 80px;}
+.sumidnina .rok {width: 80px;}
+.sumidnina .number {min-width: 52px;}
+.dogovor-form .f-od-dobavuvac.klient .ui-combobox .ui-combobox-input.ui-autocomplete-input {width: 160px !important;}
+#dogovor td .ui-combobox-input {width: 100% !important;}
+#dogovor td.katbroj {width: 130px;}
+#dogovor th.dedeve {width: 30px;}
+th.del {width: 16px;}
+.kraen-datum-novafak {margin: 5px 0;}
+.komitent-ui .ui-combobox-input , .periodkonto .ui-combobox-input , .filter-dospeanost .ui-combobox-input , .izlez-form .filter-vleznifak .ui-combobox-input , .parametar-izvod .ui-combobox-input {width: 160px !important;}
+.status-ui .ui-combobox-input , .izlez-form .status-ui .ui-combobox-input {width: 100px !important;}
+.f-od-dobavuvac.klient .ui-combobox-input {width: 160px !important;}
+.tabeladenes th.rok , .tabelaidnina th.rok , .tabelaminato th.rok {width: 75px !important;}
+.tabeladenes th.number {width: 38px !important;}
+.tabeladenes th.datum , .tabelaminato th.datum {width: 75px !important;}
+.grupafilter-pk .perioddatum input {width: 90px;}
+#edit_artikl_form {padding: 20px;}
+.tvleznifakturi td.zabeleska {width: 230px;}
+.klient.vkupnolabel {
+
+    width: 213px;
+}
+.tvleznifakturi th.klient {width: 200px;}
+#vlezizlez table , .tabelaidnina , .tabelaminato , .tabeladenes {table-layout: fixed;}
+#vlezizlez table tr td , .tabelaidnina tr td , .dospeanost tr td , .tabeladenes tr td , .tabelaminato tr td {overflow: hidden;}
+th.ac {width: 16px;}
+.ac.tablesorter-header {width: 0px;}
+.valuta.tablesorter-header {
+    width: 55px;
+}
+.vrzanidok.tablesorter-header {
+    width: auto;
+}
+
+.odel.tablesorter-header {
+    width: auto;
+}
+.tabelaminato td {overflow: hidden;}
+.vlez-form .sumiranje .valuta , .vlez-form .sumiranje .zabeleska, .vlez-form .sumiranje .odel {width: auto;}
+.vlez-form .tstavkadetail .redenbr {width: 25px;}
+.vlez-form .tstavkadetail .sifra {width: 70px}
+.vlez-form .tstavkadetail .kolicina {width: 30px}
+.vlez-form .tstavkadetail .edicinamerka {width: 30px;}
+.vlez-form .tstavkadetail .cena {width: 80px}
+.vlez-form .tstavkadetail .ddv {width: 40px;}
+.vlez-form .tstavkadetail .vkupno {width: 110px;}
+.vlez-form .tstavkadetail .stavka {width: auto}
+
+/*VLEZNI FAKTURI DETALEN PREGLED PO DOSPEANOST*/
+.tabelaidnina th.broj , .tabeladenes th.broj , .tabelaminato th.broj {width: 75px !important;  }
+.tabelaidnina th.datum , .tabeladenes th.datum ,.tabelaminato th.datum {width: 75px !important;  }
+.tabelaidnina th.klient , .tabeladenes th.klient , .tabelaminato th.klient {width: 216px;}
+.tabelaidnina th.iznos , .tabeladenes th.iznos , .tabelaminato th.iznos {width: 116px;}
+.tabelaidnina th.uplati , .tabeladenes th.uplati , .tabelaminato th.uplati {width: 116px;}
+.tabelaidnina th.dolg , .tabeladenes th.dolg , .tabelaminato th.dolg {width: 116px;}
+.tabelaidnina th.zabeleska , .tabelaidnina th.zabeleska , .tabelaminato th.zabeleska {width: auto}
+
+.idnina .sumidnina .rok  , .sumiranje.sumdenes .rok , .sumiranje.summinato .rok ,
+.idnina .sumidnina .broj , .sumiranje.sumdenes .broj, .sumiranje.summinato .broj ,
+.idnina .sumidnina .datum , .sumiranje.sumdenes .datum ,.sumiranje.summinato .datum {width: 89px;}
+.idnina .sumidnina .klient , .sumiranje.sumdenes .klient , .sumiranje.summinato .klient  {width: 230px;}
+.idnina .sumidnina .osnovasum  , .sumiranje.sumdenes .osnovasum , .sumiranje.summinato .osnovasum ,
+.idnina .sumidnina .vkupnoddv , .sumiranje.sumdenes .vkupnoddv , .sumiranje.summinato .vkupnoddv ,
+.idnina .sumidnina .vkupnovkupno , .sumiranje.sumdenes .vkupnovkupno.vkupno , .sumiranje.summinato .vkupnovkupno {width: 130px !important;}
+.idnina .sumidnina .zabeleska , .sumiranje.sumdenes .zabeleska , .sumiranje.summinato .zabeleska {width: auto !important}
+
+.sumiranje.sumidnina , .sumiranje.sumdenes , .sumiranje.summinato {table-layout: fixed}
+.sumiranje.sumidnina td , .sumiranje.sumdenes td , .sumiranje.summinato td {overflow: hidden;}
+/*++*/
+
+
+.period_klient .sumiranje.sumklienti .vkupnoddv ,
+.period_klient .sumiranje.sumklienti .osnovasum {width: 130px !important;}
+
+.sumiranje.sumfakturi .osnovasum ,
+.sumiranje.sumfakturi .vkupnoddv ,
+.sumiranje.sumfakturi .vkupnovkupno {width: 114px !important;}
+
+td.number , td.broj , .katbroj , td.povikuvackibroj , td.sifra , td.sifra , .tabelastavka .grupa  {text-align: right;}
+#edit_faktura_form .tnabavki td input {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.kraen-datum-novafak .rok {margin-left: 24px;}
+
+.vlez-form .stavka .predtabela .tvleznifakturi {table-layout: fixed;}
+.vlez-form .stavka .predtabela .tvleznifakturi td {overflow: hidden;}
+
+.vlez-form .stavka table.sumiranje .deletefaktura ,
+.vlez-form .stavka table.sumiranje .editfaktura ,
+.vlez-form .stavka table.sumiranje .infofaktura {width: 14px !important;}
+
+
+.dp-vlez .stavka .sumiranje .osnova, .dp-vlez .stavka .sumiranje .ddv, .dp-vlez .stavka .sumiranje .vkupno { width: 130px !important; }
+
+.sumiranje.sumfakturi.sumvlezni-pk .osnovasum ,
+.sumiranje.sumfakturi.sumvlezni-pk .vkupnoddv ,
+.sumiranje.sumfakturi.sumvlezni-pk .vkupnovkupno {width: 130px !important;}
+.sumiranje.sumfakturi.sumizlezni-pk .vkupnovkupno {width: 130px !important;}
+#dogovor .dogovor-form  #dogovor.tnabavki td.katbroj input,
+#dogovor .dogovor-form  #dogovor.tnabavki td.artikli input,
+#dogovor .dogovor-form  #dogovor.tnabavki td.kontodetali input,
+#dogovor .dogovor-form  #dogovor.tnabavki td input.kolicina,
+#dogovor .dogovor-form  #dogovor.tnabavki td input.koeficient,
+#dogovor .dogovor-form  #dogovor.tnabavki td input.bezddv {background-color: #FFF !important;}
+#dogovor .dogovor-form  #dogovor.tnabavki td.katbroj input.katbrojusluga {background-color: transparent !important;}
+
+#dogovor .dogovor-form  #dogovor.tnabavki td input.koeficient {text-align: right;}
+#dogovor .dogovor-form  #dogovor.tnabavki td.bezddv {width: 65px;}
+#dogovor .dogovor-form  #dogovor.tnabavki td.edmerka {width: 65px;}
+
+.roknaplakanje-novafak .rok-za-plakanje .datum_zapis {float: right; margin-left: 15px; width: 90px;}
+.info-vlezna-faktura .tnabavki tr td input {background-color: transparent !important;}
+.tvleznifakturi th.preostanata-obvrska {width: 145px;}
+.tvleznifakturi td.preostanata-obvrska {text-align: right;}
+.edit_faktura_form td.artikli input.artikli {background-color: #FFF;}
+.cmd-step2.floatright {margin-top: 10px;}
+.fieldset-trezor fieldset {clear: none;float: left;height: 265px;}
+.f-trezor-2 {float: right !important;}
+.fieldset-trezor {float: left; width: 100%;}
+.pod-f-trezor input {width: 120px; margin-right: 80px;}
+.tablekonto {margin-top: 10px;}
+.trezor-novapratkapodatok-form .snimi-forma {float: right;margin-top: 0;}
+.predmet_baranje { margin-left: 150px; margin-right: 50px; height: 150px;}

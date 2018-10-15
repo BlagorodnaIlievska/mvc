@@ -1,0 +1,50 @@
+<div id="update_komerc_form">
+
+
+
+
+
+
+
+    <?php
+    if(isset($komerc)){
+
+        foreach($komerc as $row) {
+
+            $k0=$row->komercID;
+            $k1=$row->komercName;
+            $k2=$row->aktiven;
+
+
+
+        }
+    }
+    ?>
+
+
+
+    <h1>Комерцијалист</h1>
+
+    <?php echo form_open('podatoci/komerc/update_komerc');?>
+
+    <?php echo form_hidden('komercID', $k0);?>
+
+    <?php echo form_label('Име на комерцијалист:', 'komercName');?><br>
+
+    <?php echo form_input('komercName', $k1, 'komercName');?>
+
+    <?php echo form_label('Активен?:', 'aktiven');?><br>
+
+    <?php echo form_checkbox('aktiven', '1', TRUE);?>
+
+
+
+    <input type="button" value="Промени" class="ajaxsubmitform"><br>
+
+
+
+    <?php echo form_close(); ?>
+
+
+
+</div>

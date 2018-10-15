@@ -1,0 +1,41 @@
+function recepta() {
+    var formurl = "/index.php/kartici/recepta/nova_recepta";
+   // if (lekuvanja_getaktiven_priemid() == 0) {
+     //   alert("Ве молиме одберете прием");
+     //   return false;
+  //  }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+      //  data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+           // lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                title: "Нова рецепта",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}

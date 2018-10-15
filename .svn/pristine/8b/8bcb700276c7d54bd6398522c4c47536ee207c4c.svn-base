@@ -1,0 +1,62 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Pregled_dospeanost extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+    }
+
+    public function menu()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('pacienti/pacienti_model');
+      //  $queryIdnina = $this->izlezni_fakturi_model->getAll_idnina();
+       // $queryDenes = $this->izlezni_fakturi_model->getAll_denes();
+       // $queryMinato = $this->izlezni_fakturi_model->getAll_pominatrok();
+       // $data['idnina'] = $queryIdnina;
+       // $data['denes'] = $queryDenes;
+       // $data['minato'] = $queryMinato;
+        $data['klient'] = $this->materijalno_model->klient_site_dropdown();
+        $data['pacienti'] = $this->pacienti_model->pacienti_site_dropdown();
+        $this->load->view('izlezni_fakturi/pregled_dospeanost/menu_form', $data);
+    }
+
+    public  function getDospeanostKlient()
+    {
+        $klientid = $this->input->post('klientid');
+        $pacientid = $this->input->post('pacientid');
+        $query = $this->izlezni_fakturi_model->getDospeanostKlient($klientid,$pacientid);
+        echo json_encode($query);
+    }
+
+
+    public function pecati_dospeanost_idnina(){
+        $klientid = $this->input->get('klientid');
+        $pacientid = $this->input->get('pacientid');
+        $query = $this->izlezni_fakturi_model->getAll_idnina($klientid,$pacientid);
+        $data['dosp_idnina'] = $query;
+        $data['main_content'] = 'izlezni_fakturi/pecatenje/faktura_idnina';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+    public function pecati_dospeanost_denes(){
+        $klientid = $this->input->get('klientid');
+        $pacientid = $this->input->get('pacientid');
+        $query = $this->izlezni_fakturi_model->getAll_denes($klientid,$pacientid);
+        $data['dosp_denes'] = $query;
+        $data['main_content'] = 'izlezni_fakturi/pecatenje/faktura_denes';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+    public function pecati_dospeanost_minato(){
+        $klientid = $this->input->get('klientid');
+        $pacientid = $this->input->get('pacientid');
+        $query = $this->izlezni_fakturi_model->getAll_pominatrok($klientid,$pacientid);
+        $data['dosp_minato'] = $query;
+        $data['main_content'] = 'izlezni_fakturi/pecatenje/faktura_minato';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+}

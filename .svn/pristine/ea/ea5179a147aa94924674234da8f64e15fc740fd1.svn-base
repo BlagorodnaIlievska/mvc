@@ -1,0 +1,95 @@
+<div class="mesecen-parametar-lista">
+    <div class="mesecen-parametar">
+
+        <div class="filtermenu-mesecniparametri">
+            <div class="filter-mesec">
+                <span class="spanmesec">Месец: </span>
+<!--                --><?php //echo form_dropdown('mesec',$mesec, '', 'class="mesec-mp novapresmetka"'); ?>
+                <select name="mesec" class="mesec-mp novapresmetka">
+                    <?php
+                    foreach($mesec as $key => $val)
+                    { ?>
+                        <option value="<?= $key; ?>"><?php echo $val; ?></option>
+                    <?php } ?>
+                </select>
+                <span class="spangodina">Година: </span>
+                <select name="godina" class="godina-mp novapresmetka">
+                    <?php
+                    for ($i=2010; $i<2026; $i++)
+                    { ?>
+                        <option value="<?= $i; ?>"><?php echo $i; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+            <?php if (bis_check_access('planiranje_resursi_mesecni_parametri_nov_button')): ?>
+            <div class="buttoncontainer">
+                <button type="button" class="kreirajmesecenparametar button">
+                    <span>Креирај нов</span>
+                </button>
+            </div>
+            <?php endif ?>
+        </div>
+        <div class="predtabela">
+            <table class="tabela-mesecni-parametri">
+                <thead>
+                <tr>
+                    <th class="edit"></th>
+                    <th class="redenbroj">РБ</th>
+                    <th class="mesec">Месец</th>
+                    <th class="godina">Година</th>
+                    <th class="maksimum-chasovi">Макс. број на часови</th>
+                    <th class="bruto-prosek">Бруто просек ЛД</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        var currentDate = new Date();
+        var currentmesec = currentDate.getMonth()+1;
+        var currentgodina = currentDate.getFullYear();
+        jQuery(".mesec-mp").val(currentmesec);
+        jQuery(".godina-mp").val(currentgodina);
+        jQuery(".tabela-mesecni-parametri").tablesorter();
+        mesecni_parametri_polnilista();
+        jQuery(".tabela-mesecni-parametri tbody tr").live('click', function () {
+            jQuery(".tabela-mesecni-parametri tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+        jQuery(".tabela-mesecni-parametri .edit-tr").live('click', function () {
+            mesecen_parametar_izmeni(jQuery(this).parent().parent().attr('mesecen_parametar_id'));
+        });
+        jQuery(".tabela-mesecni-parametri .delete-tr").live('click', function () {
+            mesecen_parametar_delete(jQuery(this).parent().parent().attr('mesecen_parametar_id'));
+        });
+        jQuery(".novmesecenparametar").live("click", function () {
+            if (jQuery(".filtermenu-mesecniparametri").hasClass("prikazano")) {
+                jQuery(".filtermenu-mesecniparametri").hide(500);
+                jQuery(".filtermenu-mesecniparametri").removeClass("prikazano");
+            } else {
+                jQuery(".filtermenu-mesecniparametri").show(500);
+                jQuery(".filtermenu-mesecniparametri").addClass("prikazano");
+            }
+        });
+        jQuery('.kreirajmesecenparametar').click(function () {
+            var currentDate = new Date();
+            var currentmesec = currentDate.getMonth()+1;
+            var currentgodina = currentDate.getFullYear();
+            var mesec = jQuery(".mesec-mp").val();
+            var godina = jQuery(".godina-mp").val();
+            if(currentgodina < godina)
+            {
+                alert("Погрешна година!!!");
+            }
+            else
+            {
+                if(currentmesec < mesec) alert("Погрешен месец!!!");
+                else  proveri_mesecen_parametar(mesec, godina);
+            }
+        });
+    });
+</script >

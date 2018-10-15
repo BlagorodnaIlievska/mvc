@@ -1,0 +1,55 @@
+<fieldset class="novklient">
+    <legend>Нов комитент</legend>
+    <?php
+    echo form_open('podatoci/klient/create_klient');?>
+    <ul class="novklient-ul">
+
+        <li><?  echo form_label('Име на клиент','ime');?>  <?  echo form_input('ime', ''); ?> </li>
+        <li><?  echo form_label('Адреса ','ime');?> <?  echo form_input('adresa',''); ?> </li>
+   <? //echo form_input('sifrall', set_value('sifrall', 'Шифра2')); ?>
+        <li><? echo form_label('Град ','grad');?> <? echo form_dropdown('grad', $grad );?> </li>
+        <li><? echo form_label('Лице за контакт','kontakt'); echo form_input('kontakt', ''); ?> </li>
+        <li> <? echo form_label('Позиција  ','pozicija');  echo form_input('pozicija', ''); ?> </li>
+        <li><?  echo form_label('Телефон1','phone1'); echo form_input('phone1', ''); ?> </li>
+        <li><? echo form_label('Телефон2 ','phone1'); echo form_input('phone2',''); ?> </li>
+        <li><? echo form_label('Мобилен1 ','phone3'); echo form_input('phone3',''); ?> </li>
+        <li><? echo form_label('Мобилен2 ','phone4'); echo form_input('phone4',''); ?> </li>
+        <li><? echo form_label('Факс ','fax'); echo form_input('fax',''); ?> </li>
+        <li><? echo form_label('Е-пошта','email'); echo form_input('email',''); ?> </li>
+        <li>
+  <?php echo form_label('Тип на клиент:','klTipID');
+    $options = array(
+        '0'  => 'A',
+        '1'    => 'B',
+
+    );
+    echo form_dropdown('klTipID', $options,'bla'); ?>
+        </li>
+        <li class="z-smetka"><? echo form_label('Жиро сметка','ziroSka');echo form_input('ziroSka', '');echo form_dropdown('banka', $banka ); ?> </li>
+        <li><? echo form_label('Даночен број','edb'); echo form_input('edb', ''); ?> </li>
+   <? //echo form_input('kontFlag', set_value('kontFlag', 'Kont flag')); ?>
+
+        <li>
+    <?php echo form_label('Тип на клиент:','kontFlag');
+    $options1 = array(
+        '1'  => 'фирма',
+        '2'    => 'интерно конто',
+        '3'    => 'физичко лице',
+    );
+    echo form_dropdown('kontFlag', $options1,'bla'); ?>
+        </li>
+   <!-- //echo form_input('kojGoVodiID', set_value('kojGoVodiID', 'Кој го води'));-->
+        <li class="klient-komentar"><? echo form_label('Коментар','komentar');?>
+    <textarea  style="overflow-y:scroll;width:99%;resize: none;" class="opis" name="opis"></textarea>
+        </li>
+
+    </ul>
+    <input type="button" class="ajaxcreateform button" value="Додади">
+
+    <?php
+    echo validation_errors('<p class="error">');
+    echo form_close();
+    ?>
+
+
+</fieldset>

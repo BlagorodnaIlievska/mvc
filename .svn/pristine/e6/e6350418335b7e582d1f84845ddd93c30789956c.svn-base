@@ -1,0 +1,12 @@
+<div id="vnesi_roba_form_otpisnica" class="pop-menu-tabs">
+    <ul>
+
+        <li><a href="#otpisnica">Требовање</a></li>
+    </ul>
+    <div id="otpisnica"></div>
+    <!--        <div id="faktura"></div>-->
+    <!--        <div id="priemnici"></div>-->
+</div>
+
+
+

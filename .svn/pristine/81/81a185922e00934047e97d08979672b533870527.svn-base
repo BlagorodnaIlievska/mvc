@@ -1,0 +1,32 @@
+<div class="novpaket">
+    <fieldset>
+        <legend>Ново пакет</legend>
+        <form accept-charset="utf-8" method="post" action="/index.php/paketi/paket/create_paket">
+            <input type="hidden" name="parent_grupa" value="<?php echo $idnagrupa ?>" />
+            <input type="hidden" name="parent_podgrupa" value="<?php echo $idnapodgrupa ?>" />
+            Група: <?php echo $nazivnagrupa ?><br /><br />
+
+
+            Подгрупа: <?php echo $nazivnapodgrupa ?><br /><br />
+
+
+
+            Пакет:<br />
+            <input type="text" value="" name="naziv"><br />
+
+            Шифра:<br />
+            <input type="text" value="" name="sifra"><br />
+
+            Цена:<br />
+            <input type="text" value="" name="cena"><br />
+
+            <br/>
+            <input type="button" class="ajaxpaketcreateform button" value="Додади"><br/>
+        </form>
+    </fieldset>
+</div>
+    <script>
+        jQuery(document).ready(function() {
+            jQuery('.vaziod').datepicker({dateFormat:'yy-mm-dd'});
+        });
+    </script>

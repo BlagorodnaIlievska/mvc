@@ -1,0 +1,81 @@
+<html>
+<head>
+</head>
+<body>
+
+<p align='center'>Pregled na vlezna roba</p>
+
+<table  border='1'   width='150' height='60' align='center'>
+    <tr>
+
+        <td>No.</td>
+        <td>Sifra</td>
+        <td>Sifra2</td>
+        <td>Kat. Br.</td>
+        <td>Stavka</td>
+        <td>Kol</td>
+        <td>EM</td>
+        <td>Cena</td>
+        <td>Vkupno</td>
+        <td>Ser. No</td>
+
+
+    </tr>
+
+    <?php
+    $reden=1;
+    $kolicina=0;
+    $cenabezddv=0;
+    $ddv=0;
+    $cena=0;
+    $vkupno=0;
+    $sevkupno=0;
+    if(isset($q)){
+        foreach($q as $row1){
+
+            $kolicina=$row->kolicina;
+
+
+            $cena=$row->cena;
+
+            $vkupno=$cena*$kolicina;
+
+            echo "<tr>" ;
+
+            echo "<td width='20'>" . $reden . "</td>";
+            echo "<td width='40'>" . $row->sifra. "</td>";
+            echo "<td width='40'>" . $row->sifra2. "</td>";
+            echo "<td width='40'>" .$row->katBroj."</td>";
+            echo "<td width='40'>" .$row->stavka."</td>";
+            echo "<td width='40'>".$kolicina."</td>";
+            echo "<td width='40'></td>";
+            echo "<td width='40'>".$cena. "</td>";
+            echo "<td width='40'>".$vkupno. "</td>";
+            echo "<td width='40'></td>";
+
+            $reden=$reden+1;
+
+
+            echo " </tr>";
+
+        }
+    }
+    else {echo 'Vo momentov nema kasi';}
+    ?>
+
+</table>
+<br>
+<br>
+<br>
+<div style="float: left; width: 50%;" >
+
+    Примил <br>
+    _____________________________
+</div>
+<div style="float: right; width: 50%;">
+
+    Издал <br>
+    _____________________________
+</div>
+</body>
+</html>

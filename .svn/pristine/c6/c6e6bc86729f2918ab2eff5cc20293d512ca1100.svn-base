@@ -1,0 +1,44 @@
+<div class="krediti-lista">
+    <div class="krediti">
+        <?php if (bis_check_access('planiranje_resursi_krediti_nov_kredit_button')): ?>
+        <div class="buttoncontainer">
+            <button class="button" onclick="kredit_nov()">Нов кредит</button>
+        </div>
+            <?php endif ?>
+        <div class="kredititabela">
+        <p class="naslovkrediti" > ( <span class="vkupnostavki">0</span> ) <span class="status">Кредити</span></p>
+        <div class="predtabela">
+            <table class="tabela-krediti">
+                <thead>
+                <tr>
+                    <th class="edit"></th>
+                    <th class="redenbroj">РБ</th>
+                    <th class="vraboten">Вработен</th>
+                    <th class="kreditor">Кредитор</th>
+                    <th class="iznos-rata">Износ на рата</th>
+                    <th class="iznos-kredit">Износ на кредит</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".tabela-krediti").tablesorter();
+        krediti_polnilista();
+        jQuery(".tabela-krediti tbody tr").live('click', function () {
+            jQuery(".tabela-krediti tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+        jQuery(".tabela-krediti .edit-tr").live('click', function () {
+            kredit_izmeni(jQuery(this).parent().parent().attr('kredit_id'));
+        });
+        jQuery(".tabela-krediti .delete-tr").live('click', function () {
+            kredit_delete(jQuery(this).parent().parent().attr('kredit_id'));
+        });
+    });
+</script >

@@ -1,0 +1,448 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Faktura extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+
+    }
+
+    public function index()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['katbroj']=$this->artikl_model->getAllKatBroj();
+        $data['ddv'] = $this->vlezni_fakturi_model->ddv_dropdown();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $data['konto'] =$this->plan_model->getKonta();
+        $data['grupa'] = $this->plan_model->konto_dropdown();
+        $this->load->view('izlezni_fakturi/faktura/faktura_form', $data);
+    }
+
+    public function fzom()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $this->load->model('podatoci/edmerka_model');
+        $this->load->model('podatoci/artikl_model');
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+
+      //  $data['grupa'] = $this->materijalno_model->grupa_dropdown();
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['edinicamerka'] = $this->edmerka_model->edmerka_dropdown();
+        $data['ddv'] = $this->vlezni_fakturi_model->ddv_dropdown();
+        $data['oddel'] = $this->session->userdata('firma_id');
+        $this->load->view('izlezni_fakturi/faktura/faktura_fzom_form', $data);
+    }
+
+    public function ministerstvo()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $this->load->model('podatoci/edmerka_model');
+        $this->load->model('podatoci/artikl_model');
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        //$data['grupa'] = $this->materijalno_model->grupa_dropdown();
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['edinicamerka'] = $this->edmerka_model->edmerka_dropdown();
+        $data['ddv'] = $this->vlezni_fakturi_model->ddv_dropdown();
+        $this->load->view('izlezni_fakturi/faktura/faktura_ministerstvo_form', $data);
+    }
+
+    public function print_izlezna_faktura_firma()
+    {
+        $id = $this->input->get("id");
+        $priem_id = $this->input->get("priem");
+        $faktura=(array)$this->izlezni_fakturi_model->infoIzleznaFaktura($id);
+        $data['main_content'] = 'izlezni_fakturi/faktura/info_faktura_form';
+        $data['id'] = $id;
+        $data['faktura'] = $faktura;
+        $data['upaten_vo'] = 'Амбуланта';
+        $data['broj_lekuvanje'] = $priem_id;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$faktura);
+    }
+
+    public function print_izlezna_faktura()
+    {
+        $this->load->model("start/start_model");
+        $id = $this->input->get("id");
+        $priem_id = $this->input->get("priem");
+        if(!$priem_id) $priem_id = $this->izlezni_fakturi_model->getBrojLekuvanjeZaFaktura($id);
+
+        $faktura=(array)$this->izlezni_fakturi_model->infoIzleznaFakturaPacient($id);
+        $pod_oddel = $this->start_model->getFirmaIme($faktura[0]->firma_id);
+        $data['main_content'] = 'izlezni_fakturi/faktura/info_faktura_pacient_form';
+        $data['id'] = $id;
+        $data['faktura'] = $faktura;
+        $data['pod_oddel'] = $pod_oddel;
+        $data['upaten_vo'] = 'Амбуланта';
+        $data['broj_lekuvanje'] = $priem_id;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$faktura);
+    }
+    public function print_izlezna_faktura_fzom()
+    {
+        $id = $this->input->get("id");
+        $faktura=(array)$this->izlezni_fakturi_model->infoIzleznaFaktura($id);
+        $data['main_content'] = 'izlezni_fakturi/faktura/info_faktura_form_fzom';
+        $data['id'] = $id;
+        $data['faktura'] = $faktura;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$faktura);
+    }
+    public function print_izlezna_faktura_min()
+    {
+        $id = $this->input->get("id");
+        $faktura=(array)$this->izlezni_fakturi_model->infoIzleznaFaktura($id);
+        $data['main_content'] = 'izlezni_fakturi/faktura/info_faktura_form_min';
+        $data['id'] = $id;
+        $data['faktura'] = $faktura;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$faktura);
+    }
+    public function create_faktura_fzom()
+    {
+        $query = $this->izlezni_fakturi_model->create_faktura_fzom();
+        echo json_encode($query);
+    }
+    public function create_faktura_ministerstvo()
+    {
+        $query = $this->izlezni_fakturi_model->create_faktura_ministerstvo();
+        echo json_encode($query);
+    }
+
+    public function getLastIFBroj()
+    {
+        $query = $this->izlezni_fakturi_model->getLastIFBroj();
+        echo json_encode($query);
+    }
+
+    public function dodaj_stavka(){
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->artikl_model->getAll();
+        $data['proizvoditeli'] = $this->materijalno_model->proizvoditel_dropdown();
+        $data['artikl'] = $query;
+        $this->load->view('izlezni_fakturi/faktura/new_stavka_form', $data);
+    }
+
+    public function dodaj_stavka_paket(){
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->artikl_model->getAll();
+        $data['proizvoditeli'] = $this->materijalno_model->proizvoditel_dropdown();
+        $data['artikl'] = $query;
+        $this->load->view('izlezni_fakturi/faktura/new_stavka_paket', $data);
+    }
+
+    public function getArtikli(){
+        $proizvoditel = $this->input->post('proizvoditelid');
+        $stavka = $this->input->post('stavka');
+        $katbroj = $this->input->post('katbroj');
+        $sifra2 = $this->input->post('sifra2');
+        $query = $this->izlezni_fakturi_model->getArtikli($proizvoditel, $stavka, $katbroj, $sifra2);
+        echo json_encode($query);
+    }
+
+    public function getPaketi(){
+        $proizvoditel = $this->input->post('proizvoditelid');
+        $stavka = $this->input->post('stavka');
+        $katbroj = $this->input->post('katbroj');
+        $sifra2 = $this->input->post('sifra2');
+        echo json_encode($this->izlezni_fakturi_model->getPaketi($proizvoditel, $stavka, $katbroj, $sifra2));
+    }
+
+    public function editFaktura()
+    {
+        $id = $this->input->get('id');
+        $komintent = $this->input->get('komintent');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $query_detali = $this->izlezni_fakturi_model->getIzleznaDetali($id);
+        if($komintent == "firma") $komintent_dropdown = $this->materijalno_model->klient_dropdown();
+        if($komintent == "pacient") $komintent_dropdown = $this->izlezni_fakturi_model->pacienti_dropdown();
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['katbroj']=$this->artikl_model->getAllKatBroj();
+        $data['ddv'] = $this->vlezni_fakturi_model->ddv_dropdown();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['konto'] =$this->plan_model->getKonta();
+        $data['id'] = $id;
+        $data['query'] = $this->izlezni_fakturi_model->editIzleznaFaktura($id);;
+        $data['query_detali'] = $query_detali;
+        $data['komintent'] = $komintent;
+        $data['klient'] = $komintent_dropdown;
+        $data['grupa'] = $this->plan_model->konto_dropdown();
+        $this->load->view('izlezni_fakturi/faktura/edit_faktura_form', $data);
+//        bis_debug($query,'Fak');
+//        bis_debug($query_detali,'Fak Detali');
+    }
+
+    public function editFakturaPaket()
+    {
+        $id = $this->input->get('id');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->izlezni_fakturi_model->editIzleznaFakturaPaket($id);
+        $data['id'] = $id;
+        $data['query'] = $query;
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+     //   $data['grupa'] = $this->materijalno_model->grupa_dropdown();
+        $this->load->view('izlezni_fakturi/faktura/edit_faktura_paket', $data);
+    }
+
+    public function deleteStavkaIzleznaFaktura()
+    {
+        $id = $this->input->post('id');
+        $query = $this->izlezni_fakturi_model->deleteStavkaIzleznaFaktura($id);
+        echo json_encode($query);
+    }
+
+    public function updateFaktura()
+    {
+        $id = $this->input->post('fakturaid');
+        $query = $this->izlezni_fakturi_model->updateFaktura($id);
+        echo json_encode($query);
+    }
+
+    public function updateFakturaPaket()
+    {
+        $id = $this->input->post('fakturaid');
+        $query = $this->izlezni_fakturi_model->updateFakturaPaket($id);
+        echo json_encode($query);
+    }
+
+    public function editUplata()
+    {
+        $id = $this->input->get('id');
+        $data['id'] = $id;
+        $this->load->view('izlezni_fakturi/uplata/uplata_form', $data);
+    }
+
+    public function getUplataFaktura()
+    {
+        $fakturaid = $this->input->post('fakturaid');
+        $query = $this->izlezni_fakturi_model->getUplataFaktura($fakturaid);
+        echo json_encode($query);
+    }
+
+    public function editPriemnica()
+    {
+        $id = $this->input->get('id');
+        $data['id'] = $id;
+        $this->load->view('izlezni_fakturi/priemnica/priemnica_form', $data);
+    }
+
+    public function getPriemniciIzleznaFaktura()
+    {
+        $fakturaid = $this->input->post('fakturaid');
+        $query = $this->izlezni_fakturi_model->getPriemniciIzleznaFaktura($fakturaid);
+        echo json_encode($query);
+    }
+
+    public function povrziIspratnica()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $data['magacin'] = $this->materijalno_model->magacin_dropdown();
+        $data['klient'] = $this->materijalno_model->klient_site_dropdown();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['konto'] =$this->plan_model->getKonta();
+        $this->load->view('izlezni_fakturi/faktura/povrzi_ispratnica', $data);
+    }
+
+    public function povrziLekuvanje()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $data['magacin'] = $this->materijalno_model->magacin_dropdown();
+        $data['klient'] = $this->materijalno_model->klient_site_dropdown();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['konto'] =$this->plan_model->getKonta();
+        $this->load->view('izlezni_fakturi/faktura/povrzi_lekuvanje', $data);
+    }
+
+    public function fakturaIspratnica()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('podatoci/artikl_model');
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['katbroj']=$this->artikl_model->getAllKatBroj();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['magacini'] = $this->materijalno_model->magacinJquery();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('izlezni_fakturi/ispratnica/nova_ispratnica', $data);
+    }
+
+    public function getIzlezniFakturiZaFzom()
+    {
+        $data = $this->input->get();
+        $this->load->helper('bisglobal_helper');
+        $query = $this->izlezni_fakturi_model->getIzlezniFakturiZaFzom($data);
+//        bis_debug($data, "Data");
+//        bis_debug($query, "Query");
+        echo json_encode($query);
+    }
+
+    public function getIzlezniFakturiZaMinisterstvo()
+    {
+        $query = $this->izlezni_fakturi_model->getIzlezniFakturiZaMinisterstvo();
+//        bis_debug($query, "Minist Query");
+        echo json_encode($query);
+    }
+
+    public function getLekuvanja()
+    {
+        $query = $this->izlezni_fakturi_model->getLekuvanja();
+        echo json_encode($query);
+    }
+
+    public function getLekuvanjaByBroj()
+    {
+        $query = $this->izlezni_fakturi_model->getLekuvanjaByBroj();
+        echo json_encode($query);
+    }
+
+    public function getFakturiZaFzomByOddelPododdel()
+    {
+        $id = $this->input->post('fakturaid');
+        $query = $this->izlezni_fakturi_model->getFakturiZaFzomByOddelPododdel($id);
+//        bis_debug($query, "Query");
+        echo json_encode($query);
+    }
+
+    public function getUslugiDropdown()
+    {
+        $cenovnik = $this->input->get('cenovnik');
+        $this->load->model('podatoci/cenovnik_model');
+        if($cenovnik == 1) $uslugi = $this->cenovnik_model->getPaketiSoCena();
+        if($cenovnik == 2) $uslugi = $this->cenovnik_model->getPaketiSoCenaDsg();
+        if($cenovnik == 3) $uslugi = $this->cenovnik_model->getPaketiSoCenaDb();
+        if($cenovnik == 4) $uslugi = $this->cenovnik_model->getPaketiSoCenaSpec();
+        echo json_encode($uslugi);
+    }
+
+    public function getPodatociUsluga(){
+        $id = $this->input->post('usluga_id');
+        $cenovnik = $this->input->post('cenovnik');
+        $this->load->model('podatoci/cenovnik_model');
+        if($cenovnik == 1) $query = $this->cenovnik_model->getPaketiSoCenaByID($id);
+        if($cenovnik == 2) $query = $this->cenovnik_model->getPaketiSoCenaDsgByID($id);
+        if($cenovnik == 3) $query = $this->cenovnik_model->getPaketiSoCenaDbByID($id);
+        if($cenovnik == 4) $query = $this->cenovnik_model->getPaketiSoCenaSpecByID($id);
+//        bis_debug($query, "Query");
+        echo json_encode($query);
+    }
+
+    public function faktura_stacionar_print_if()
+    {
+        $id = $this->input->get("id");
+        $priem_id = $this->input->get("priem");
+        $this->load->model('pacienti/pacienti_model');
+        $faktura=(array)$this->izlezni_fakturi_model->infoIzleznaFaktura($id);
+        $ustanova = $this->pacienti_model->getUstanovaInfo($faktura[0]->firma_id);
+        $data['main_content'] = 'izlezni_fakturi/faktura/faktura_stacionar_print';
+        $data['id'] = $id;
+        $data['faktura'] = $faktura;
+        $data['ustanova'] = $ustanova;
+        $data['upaten_vo'] = 'Стационар';
+        $data['broj_lekuvanje'] = $priem_id;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$faktura);
+    }
+
+    public function faktura_db_print_if()
+    {
+        $id = $this->input->get("id");
+        $priem_id = $this->input->get("priem");
+        $this->load->model('pacienti/pacienti_model');
+        $faktura=(array)$this->izlezni_fakturi_model->infoIzleznaFaktura($id);
+        $ustanova = $this->pacienti_model->getUstanovaInfo($faktura[0]->firma_id);
+        $data['main_content'] = 'izlezni_fakturi/faktura/faktura_db_print';
+        $data['id'] = $id;
+        $data['faktura'] = $faktura;
+        $data['ustanova'] = $ustanova;
+        $data['upaten_vo'] = 'Дневна болница';
+        $data['broj_lekuvanje'] = $priem_id;
+        $html=$this->load->view('includes/print_template', $data,true);
+//        bis_debug($faktura,"faktura");
+        echo bis_fill_input_values($html,$faktura);
+    }
+
+    public function specifikacija_print_if()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('pacienti/pacienti_model');
+        $faktura= $this->izlezni_fakturi_model->getFzomSpecifikacija($id);
+        $ustanova = $this->pacienti_model->getUstanovaInfo($faktura['fzom'][0]->firma_id);
+        $data['main_content'] = 'izlezni_fakturi/faktura/specifikacija_print';
+        $data['id'] = $id;
+        $data['fzom_faktura'] = $faktura;
+        $data['ustanova'] = $ustanova;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$faktura);
+    }
+
+    public function fzom_faktura_print()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('pacienti/pacienti_model');
+        $faktura= $this->izlezni_fakturi_model->getFakturaFzom($id);
+        $paketi= $this->izlezni_fakturi_model->groupPaketiZaFzomFaktura($id);
+        $ustanova = $this->pacienti_model->getUstanovaInfo($faktura->firma_id);
+        bis_debug($ustanova,'ustanova');
+        $data['main_content'] = 'izlezni_fakturi/faktura/faktura_fzom_print';
+        $data['id'] = $id;
+        $data['paketi'] = $paketi;
+        $data['faktura'] = $faktura;
+        $data['ustanova'] = $ustanova;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$paketi);
+    }
+
+    public function fzom_faktura_pododdel_print()
+    {
+        $fakturaid = $this->input->get('id');
+        $oddel = $this->input->get('oddel');
+        $pododdel = $this->input->get('pododdel');
+        $this->load->model('pacienti/pacienti_model');
+
+        $data['main_content'] = 'izlezni_fakturi/faktura/faktura_fzom_pododdel_print';
+        $data['faktura'] = $fakturaid;
+        $data['paketi']   = $this->izlezni_fakturi_model->getPaketiZaFzomFakturaPododdel($fakturaid, $oddel, $pododdel);
+        $data['faktura']  = $this->izlezni_fakturi_model->getFakturaFzom($fakturaid);
+        $data['ustanova'] = $this->pacienti_model->getUstanovaInfo($oddel);
+//        bis_debug($faktura,'fak');
+        $html=$this->load->view('includes/print_template', $data,true);
+
+        echo bis_fill_input_values($html,$data['paketi'] );
+    }
+
+    public function specifikacija_pododdel_print_if()
+    {
+        $fakturaid = $this->input->get('id');
+        $oddel = $this->input->get('oddel');
+        $pododdel = $this->input->get('pododdel');
+        $this->load->model('pacienti/pacienti_model');
+        $faktura= $this->izlezni_fakturi_model->getPaketiZaFzomSpecifikacijaPododdel($fakturaid, $oddel, $pododdel);
+        $ustanova = $this->pacienti_model->getUstanovaInfo($faktura[0]->firma_id);
+        $data['main_content'] = 'izlezni_fakturi/faktura/specifikacija_pododdel_print';
+        $data['id'] = $fakturaid;
+        $data['fzom_faktura'] = $faktura;
+        $data['ustanova'] = $ustanova;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$faktura);
+    }
+}

@@ -1,0 +1,55 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Menu extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+
+
+    }
+    function index(){
+        //bis_debug($_SERVER,'BServer');
+        $this->load->model('pacienti/pacienti_model');
+        $this->load->model('korisnici/korisnici_model');
+        $this->load->model('site_lekari/lekar_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $this->load->model('start/start_model');
+        $this->load->model('podatoci/cenovnik_model');
+        $data['paketi_dsg'] = $this->cenovnik_model->getPaketiSoCenaDsg();
+        $data['pridruznik_uslugi']=$this->pacienti_model->getPridruznikUslugi();
+        $data['dok']=$this->covecki_resursi_model->getDoktoriB($this->session->userdata('firma_id'));
+        $data['ustanovi']=$this->lekar_model->lekari_dropdownB();
+        $data['osnov_osiguruvanje']=$this->covecki_resursi_model->osnov_osig_dropdown();
+        $data['pododeli']= $this->start_model->getDozvoleniPodOdeli($this->session->userdata('firma_id'));
+        $data['oddel']= $this->pacienti_model->getOddelIme($this->session->userdata('firma_id'));
+        $data['main_content'] = 'pacienti/lista';
+        $this->load->view('includes/template', $data);
+    }
+    function lekuvanja(){
+        bis_checkusage();
+        $data['main_content'] = 'pacienti/lekuvanja';
+        $this->load->view('includes/template', $data);
+
+    }
+    function podatoci(){
+        bis_checkusage();
+        $data['main_content']='bolnicko_rabotenje_podatoci/index';
+        $this->load->view('includes/template', $data);
+    }
+    function trebuvanje(){
+        bis_checkusage();
+        $data['main_content']='trebuvanje/index';
+        $this->load->view('includes/template', $data);
+    }
+    function upati(){
+        bis_checkusage();
+        $data['main_content']='upati/index';
+        $this->load->view('includes/template', $data);
+    }
+    function shalter(){
+        bis_checkusage();
+        $data['main_content']='pacienti/shalter';
+        $this->load->view('includes/template', $data);
+    }
+}

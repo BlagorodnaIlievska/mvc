@@ -1,0 +1,237 @@
+<div id="kartici_form">
+
+    <?php echo form_open('materijalno/kartici/get_artikl_data'); ?>
+    <div class="magacintest">
+        <span class="span-magacin">Магацин:</span>
+        <select name="magacin" class="magacin izbor magacinkombo">
+            <option value="0"></option>
+            <?php foreach ($magacini as $magacin) { ?>
+                <option value="<?php echo $magacin->id ?>"><?php echo $magacin->ime ?></option>
+            <?php } ?>
+        </select>
+    </div>
+    <div class="artikltest">
+        <span class="span-artikl"> Артикл:</span>
+        <select name="artikl" class="izbor artikl artiklkombo">
+            <option value="0"></option>
+            <?php foreach ($artikli as $artikl) { ?>
+                <option value="<?php echo $artikl->SID ?>"><?php echo '('.$artikl->sifra.') '.$artikl->S1Ime ?></option>
+            <?php } ?>
+        </select>
+    </div>
+    <?php echo form_close(); ?>
+    <br>
+    <div class="prikaz">
+        <p class="naslovkartici" > ( <span class="vkupnostavki">0</span> )  Картици</p>
+        <div class="predtabela">
+        <table class="tkartici" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th>Датум</th>
+                <th>Документ</th>
+                <th>Коминтент</th>
+                <th>Влез</th>
+                <th>Излез</th>
+                <th class="edmerka">ЕМ</th>
+                <th>Состојба</th>
+                <th>Влезна цена</th>
+                <th>Средна цена</th>
+                <th>Вкупно</th>
+                <th>Забелешка</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class='hiderow'>
+            <td class='datum'></td>
+            <td class='dokument'></td>
+            <td class='klient'></td>
+            <td class='vlez'></td>
+            <td class='izlez'></td>
+            <td class='edmerka'></td>
+            <td class='sostojba'></td>
+            <td class='cenavlez'></td>
+            <td class='cenasredna'></td>
+            <td class='cenavkupno'></td>
+            <td class='zabeleska'></td>
+            </tr>
+        </tbody>
+        </table>
+        </div>
+        <?php if (bis_check_access('materijalno_vlez_izlez_kartici_pecati_button')): ?>
+        <a href="" target="_blank" class="cmd-printlink-kartici">
+            <button type="button" class="pecatikartica print"><span>Печати</span></button>
+        </a>
+            <?php endif ?>
+    </div>
+    <?php echo form_open('materijalno/kartici/pecati_kartica'); ?>
+    <input type="hidden" class="pdfartiklid" name="pdfartiklid"><br>
+
+<!--    <button type="button"  class="test" ><span>тест</span></button><br>-->
+    <?php echo form_close(); ?>
+
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.izbor.artikl').combobox();
+        jQuery('.magacin.izbor').combobox();
+        jQuery("table.tkartici").tablesorter();
+        jQuery('option:selected').attr('selected', false);
+
+        jQuery(".test").click(function(){
+//            console.log(jQuery(".magacinkombo").val());
+//            console.log(jQuery(".artiklkombo").val());
+            jQuery("div.magacintest .ui-combobox-input").val('');
+            jQuery("div.artikltest .ui-combobox-input").val('');
+        });
+
+        jQuery('.izbor').live('change',function(){
+            var artiklid = jQuery('.artikl option:selected').val();
+            var magacinid = jQuery('.magacin option:selected').val();
+            jQuery('.pdfartiklid').val(artiklid);
+                var data = {
+                    artiklid: artiklid,
+                    magacinid: magacinid
+                };
+                jQuery.ajax({
+                    type: "post",
+                    url: "/index.php/materijalno/kartici/getArtiklKartica",
+                    data: data,
+                    dataType: 'json',
+                    success:  function(response){
+//                        console.log(response);
+                        var pozitiva = [710, 719, 726];
+                        var negativa = [715, 720, 729, 90];
+                        var sostojba = 0;
+                        jQuery(".tkartici").find("tr:gt(0)").not(":last").remove();
+                        var tr = jQuery('.tkartici tr:last');
+                        tr.removeClass('hiderow');
+                        for ( var i = 0; i < response.length; i++ ) {
+                            var newrow = jQuery(tr).clone().insertBefore(tr);
+                            newrow.find('.datum').html(response[i].datum);
+                            newrow.find('.klient').html(response[i].firmaIme);
+                            newrow.find('.cenavlez').html(formatnumbermkd(response[i].vleznacena));
+                            newrow.find('.cenasredna').html(formatnumbermkd(response[i].srednacena));
+                            newrow.find('.edmerka').html(response[i].edMerka);
+                            if(response[i].vleznacena > 0) newrow.find('.cenavkupno').html(formatnumbermkd(parseInt(response[i].kolicina) * parseInt(response[i].vleznacena)));
+                            if(response[i].tip == 710)
+                            {
+                                newrow.find('.dokument').html(response[i].broj);
+                                newrow.find('.vlez').html(response[i].kolicina);
+                                sostojba = sostojba + parseInt(response[i].kolicina);
+                                newrow.find('.sostojba').html(sostojba);
+                                newrow.find('.cenavkupno').html(formatnumbermkd(1*response[i].kolicina*response[i].vleznacena));
+                            }
+                            if(response[i].tip == 720)
+                            {
+                                newrow.find('.dokument').html(response[i].broj);
+                                newrow.find('.izlez').html(response[i].kolicina);
+                                sostojba = sostojba - parseInt(response[i].kolicina);
+                                newrow.find('.sostojba').html(response[i].sostojba);
+                                newrow.find('.cenavkupno').html(formatnumbermkd(1*response[i].kolicina*response[i].srednacena));
+                            }
+                            if(response[i].tip == 90)
+                            {
+                                newrow.find('.dokument').html(response[i].broj);
+                                newrow.find('.izlez').html(response[i].kolicina);
+                                sostojba = sostojba - parseInt(response[i].kolicina);
+                                newrow.find('.sostojba').html(response[i].sostojba);
+                                newrow.find('.cenavkupno').html(formatnumbermkd(1*response[i].kolicina*response[i].srednacena));
+                            }
+                            if(response[i].tip == 715)
+                            {
+                                newrow.find('.dokument').html(response[i].broj);
+                                newrow.find('.izlez').html(response[i].kolicina);
+                                sostojba = sostojba - parseInt(response[i].kolicina);
+                                newrow.find('.sostojba').html(response[i].sostojba);
+                            }
+                            if(response[i].tip == 719)
+                            {
+                                newrow.find('.dokument').html(response[i].broj);
+                                newrow.find('.vlez').html(response[i].kolicina);
+                                sostojba = sostojba + parseInt(response[i].kolicina);
+                                newrow.find('.sostojba').html(response[i].sostojba);
+                            }
+                            if(response[i].tip == 726)
+                            {
+                                newrow.find('.dokument').html(response[i].broj);
+                                newrow.find('.vlez').html(response[i].kolicina);
+                                sostojba = sostojba + parseInt(response[i].kolicina);
+                                newrow.find('.sostojba').html(response[i].sostojba);
+                            }
+                            if(response[i].tip == 729)
+                            {
+                                newrow.find('.dokument').html(response[i].broj);
+                                newrow.find('.izlez').html(response[i].kolicina);
+                                sostojba = sostojba - parseInt(response[i].kolicina);
+                                newrow.find('.sostojba').html(response[i].sostojba);
+                            }
+                        }
+                        tr.addClass('hiderow');
+                        jQuery(".naslovkartici .vkupnostavki").html(response.length);
+                        jQuery(".tkartici").trigger("update");
+                    }
+                });
+        });
+        jQuery('.izbor1').live('change',function(){
+            var selected = jQuery(this).has('[selected]');
+            var selectedvalue = jQuery(this).val();
+            //console.log(selectedvalue);
+            if(selected)
+            {
+                var formaction=jQuery(this).parent().attr('action');
+                var formmethod=jQuery(this).parent().attr('method');
+                var dialogid=jQuery(this).parent().parent().parent().parent();
+                //console.log(jQuery(this).parent().serialize());
+                var podatoci = { sifraId: selectedvalue };
+                jQuery.ajax({
+                    type: "post",
+                    url: formaction,
+                    data: podatoci,
+                    dataType: 'json',
+                    success:  function(data){
+                        jQuery('.artikl option:selected').attr('selected', false);
+//                        console.log(data);
+                        var id = data[0].SID;
+                        var ime = data[0].S1Ime;
+//                        console.log(id, " : " ,ime);
+                        //jQuery('.artikl').find("option:contains('+artikl+')").attr('selected', 'selected');
+                        var proverka = jQuery('.artikl option[value="'+id+'"]').length;
+//                        console.log(proverka);
+                        //jQuery('.artikl option[value="'+id+'"]').attr('selected', 'selected');
+                        jQuery('.artikl option[value="'+id+'"]').attr('selected', 'selected').val();
+                        //console.log(jQuery('.artikl option[value="'+id+'"]').attr('selected', 'selected').val());
+                        //dialogid.dialog("destroy").remove();
+                        //var tabs = jQuery('.sub-menu-tabs');
+                        //var selected = tabs.tabs('option', 'selected');
+                        //jQuery(".sub-menu-tabs").tabs('load',selected);
+                    }
+                });
+            }
+            else
+            {
+                console.log('ne');
+            }
+        });
+
+
+        jQuery(".cmd-printlink-kartici").click(function(){
+
+            var artiklid = jQuery('.artikl option:selected').val();
+            var magacinid = jQuery('.magacin option:selected').val();
+
+            /*   jQuery.ajax({
+
+                   url:'/index.php/materijalno/vlez_izlez/pecati_site_priemnici?magacinid='+ magacinid + '&klientid=' + klientid + '&pogledid=' + pogledid,
+                   type:'GET',
+
+                   dataType:'json',
+                  success:function (response) {}
+                });
+*/
+            jQuery(".cmd-printlink-kartici").attr("href","/index.php/print/pdf?view=/index.php/materijalno/kartici/pecati_site_kartici&magacinid="+ magacinid + "&artiklid="  + artiklid);
+
+
+        });
+    });
+</script>

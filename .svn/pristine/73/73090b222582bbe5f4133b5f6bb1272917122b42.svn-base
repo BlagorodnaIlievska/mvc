@@ -1,0 +1,65 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+
+class Krediti extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function lista()
+    {
+        $this->load->view('plati/krediti/lista');
+    }
+
+    public function nov_kredit()
+    {
+        $this->load->model('plati/krediti_model');
+        $data['vraboteni']    = $this->krediti_model->vraboteni_dropdown();
+        $data['kreditori']    = $this->krediti_model->kreditori_dropdown();
+        $this->load->view('plati/krediti/nov_kredit', $data);
+    }
+
+    public function izmeni()
+    {
+        $this->load->model('plati/krediti_model');
+        $kredit = $this->krediti_model->getKredit($this->input->get("id"));
+        $data['vraboteni']    = $this->krediti_model->vraboteni_dropdown();
+        $data['kreditori']    = $this->krediti_model->kreditori_dropdown();
+        $data['kredit']    = $kredit;
+        $this->load->view('plati/krediti/izmeni', $data);
+    }
+
+    public function polnilista()
+    {
+        $this->load->model('plati/krediti_model');
+        $return = $this->krediti_model->getKrediti();
+        echo json_encode($return);
+    }
+
+    public function create_kredit()
+    {
+        $this->load->model('plati/krediti_model');
+        $this->krediti_model->create_kredit();
+        echo "ok";
+    }
+
+    public function update_kredit()
+    {
+        $this->load->model('plati/krediti_model');
+        $this->krediti_model->update_kredit() ;
+        echo 'ok';
+
+    }
+
+    public function delete_kredit()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('plati/krediti_model');
+        $this->krediti_model->delete_kredit($id);
+        echo "ok";
+    }
+}

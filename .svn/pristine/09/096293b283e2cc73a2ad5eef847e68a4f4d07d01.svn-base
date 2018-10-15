@@ -1,0 +1,23 @@
+<div class="novkatalog">
+    <form action="/index.php/podatoci/proizvoditeli/create_proizvoditel" method="post">
+        <fieldset>
+
+
+            <legend>Нов Производител</legend>
+
+
+            Име:<br/>
+            <input type="text" name="ime"/><br/>
+
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="proizvoditel_popolnilista()" poraka_uspesno="Производителот е успешно снимен"
+                poraka_neuspesno="Грешка при снимање на производител"
+                ><span>Сними</span></button>
+
+
+        <br/>
+    </form>
+
+</div>

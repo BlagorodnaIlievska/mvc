@@ -1,0 +1,42 @@
+<?php
+
+class Pridonesi_model extends CI_Model
+{
+
+    public function getPridonesi()
+    {
+        $query = $this->db->get('bis_pridonesi');
+        return $query->result();
+    }
+
+
+    public function getPridones($id)
+    {
+        $this->db->where("id", $id);
+        $query = $this->db->get('bis_pridonesi');
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_pridonesi()
+    {
+        $insert_data = $this->input->post();
+        $insert      = $this->db->insert('bis_pridonesi', $insert_data);
+        return $insert;
+    }
+
+
+    public function delete_pridonesi($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_pridonesi');
+    }
+
+    public function update_pridonesi()
+    {
+        $field_update_data =	$this->input->post();
+        $this->db->where('id',$field_update_data['id']);
+        $this->db->update('bis_pridonesi', $field_update_data);
+    }
+}

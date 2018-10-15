@@ -1,0 +1,392 @@
+function izvodi_nov(){
+        jQuery.ajax({
+            url:'/index.php/izvodi/menu/nov_izvod',
+            success:function (response) {
+                var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+                jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                jQuery("." + tempdialog).html(response);
+                jQuery('div.' + tempdialog).dialog({
+                    autoOpen:true,
+                    width:"auto",
+                    position:[20, 20],
+                    modal:true,
+                    title:"Нов извод",
+                    close:function (event, ui) {
+                        jQuery(this).dialog("destroy");
+                        jQuery(this).remove();
+                    }
+                });
+                jQuery('div.' + tempdialog + ' select').combobox();
+            }
+        });
+}
+function izvodi_zacuvajnov(kopce) {
+    var data = kopce.closest("form").serialize();
+    var formurl = "/index.php/izvodi/menu/create_izvod";
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+        success: function (response) {
+//            console.log(response);
+            destroyparentdialog(kopce);
+            izvodi_popolnilista();
+        }
+    });
+}
+function izvodi_updateizvod(kopce) {
+    var data = kopce.closest("form").serialize();
+    var formurl = "/index.php/izvodi/menu/update_izvod";
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+        success: function (response) {
+//            console.log(response);
+            destroyparentdialog(kopce);
+            izvodi_popolnilista();
+            nalozi_popolnilista();
+        }
+    });
+}
+function izvodiPrebaruvanje(){
+    var data = {
+        klientid: 0,
+        smetkaid: 0,
+        pogledid: 0
+    }
+    jQuery.ajax({
+        url: "/index.php/izvodi/menu/prebarajIzvodi",
+        type: 'POST',
+        data: data,
+        dataType: 'json',
+        success: function(response) {
+//            console.log(response);
+            var vkupnostavki = response.length;
+            jQuery(".tabelasmetka").find("tr:gt(1)").remove();
+            var tr = jQuery('.tabelasmetka tr:last');
+            tr.removeClass('hiderow');
+            for ( var i = 0; i < response.length; i++ ) {
+                var newrow = jQuery(tr).clone().insertAfter(tr);
+                newrow.find('.dbid').html(response[i].dbid);
+                newrow.find('.smetka').html(response[i].zirosmetka);
+                newrow.find('.datum').html(response[i].datum);
+                newrow.find('.broj').html(response[i].textBroj);
+                newrow.find('.naziv').html(response[i].firmaIme + " : " + response[i].firmaZiro);
+                newrow.find('.povikuvackibroj').html(response[i].povikBroj);
+                newrow.find('.konto').html(response[i].konto);
+                newrow.find('.zabeleska').html(response[i].zabeleska);
+                if(response[i].tip == 40)
+                {
+                    newrow.find('.odliv').html(formatnumbermkd(response[i].suma));
+                    newrow.find('.priliv').html('');
+                }
+                if(response[i].tip == 50)
+                {
+                    newrow.find('.priliv').html(formatnumbermkd(response[i].suma));
+                    newrow.find('.odliv').html('');
+                }
+            }
+            jQuery(".naslovsearch .vkupnostavki").html(vkupnostavki + " во листа");
+            tr.addClass('hiderow');
+            jQuery(".tabelasmetka").trigger("update");
+        }
+    });
+}
+function izvodi_popolnilista(){
+    jQuery(".tabelastavka").find("tr:gt(0)").not(":last").remove();
+    var lasttr = jQuery('.tabelastavka tr:last');
+    lasttr.addClass('hiderow');
+    var zirosmetka = jQuery('.zirosmetka option:selected').val();
+    var formaction = '/index.php/izvodi/menu/getIzvodByZirosmetka';
+    var data = {
+        zirosmetkaid:zirosmetka
+    }
+    jQuery.ajax({
+        url:formaction,
+        type:'POST',
+        data:data,
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            var vkupnostavki = response.length;
+            jQuery(".tabelaizvod").find("tr:gt(1)").remove();
+            var tr = jQuery('.tabelaizvod tr:last');
+            tr.removeClass('hiderow');
+            jQuery(".banka").html('');
+            for (var i = 0; i < response.length; i++) {
+                jQuery(".banka").html(response[i].BankaIme);
+                var newrow = tr.clone().insertBefore(tr);
+                newrow.find('.izvodbroj').html(response[i].intBroj);
+                newrow.find('.izvodzirosmetka').html(response[i].zirosmetka);
+                newrow.find('.izvodzirosmetkaid').html(response[i].idzirosmetka);
+                newrow.find('.bankazirosmetka').html(response[i].BankaIme);
+                newrow.find('.izvoddatum').html(response[i].datum);
+                newrow.find('.sumapriliv').html(formatnumbermkd(response[i].priliv));
+                newrow.find('.sumaodliv').html(formatnumbermkd(response[i].odliv));
+                newrow.find('.prethodna').html(formatnumbermkd(response[i].prethodnasostojba));
+                newrow.find('.segasna').html(formatnumbermkd(response[i].segasnasostojba));
+                newrow.attr("izvod_id",response[i].ID);
+            }
+            jQuery('#pregled_izvodi_form .tabelaizvod tbody tr .deleteIzvod').click(function() {
+                var trow = jQuery(this).closest('tr');
+                var broj = trow.find('.izvodbroj').text();
+                var zirosmetka = trow.find('.izvodzirosmetkaid').text();
+                delete_izvod(broj, zirosmetka);
+            });
+            jQuery('#pregled_izvodi_form .tabelaizvod tbody tr .editIzvod').click(function() {
+                var trow = jQuery(this).closest('tr');
+                var broj = trow.find('.izvodbroj').html();
+                var zirosmetka = trow.find('.izvodzirosmetkaid').html();
+                edit_izvod(broj, zirosmetka);
+            });
+            jQuery(".naslovpregledizvodi .vkupnostavki").html(vkupnostavki + " во листа");
+            tr.addClass('hiderow');
+            jQuery(".tabelaizvod").trigger("update");
+            if(vkupnostavki > 0) jQuery(".tabelaizvod tbody tr:first").click();
+        }
+    });
+
+
+}
+//function izvodi_novastavka(){
+//    var rowCount = jQuery('.tabelaizvod tbody tr.active').attr("izvod_id");
+//    var formaction= "/index.php/izvodi/menu/nova_stavka";
+//    if(rowCount > 0)
+//    {
+//        jQuery.ajax({
+//            url:formaction,
+//            success:function (response) {
+//                var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+//                jQuery("body").append('<div class="' + tempdialog + '"></div>');
+//                jQuery("." + tempdialog).html(response);
+//                jQuery('div.' + tempdialog).dialog({
+//                    autoOpen:true,
+//                    width:"auto",
+//                    //position:[20, 20],
+//                    position:"center",
+//                    modal:true,
+//                    //dialogClass: 'dialogsotabovi',
+//                    title:"Нова ставка",
+//                    close:function (event, ui) {
+//                        jQuery(this).dialog("destroy");
+//                        jQuery(this).remove();
+//                    }
+//                });
+//            }
+//        });
+//    }
+//    else alert("Избери извод ...");
+//}
+function izvodi_novastavka(){
+    var rowCount = jQuery('.tabelaizvod tbody tr.active').attr("izvod_id");
+    if(rowCount > 0)
+    {
+        var trow = jQuery('.tabelaizvod tbody tr.active');
+        var broj = trow.find('.izvodbroj').html();
+        var zirosmetka = trow.find('.izvodzirosmetkaid').html();
+        edit_izvod(broj, zirosmetka);
+    }
+    else alert("Избери извод ...");
+}
+
+function getNeplateniVlezniFakturi(){
+    var elem = jQuery('.filter-broj-faktura');
+    var brojfaktura = jQuery('.filter-broj-faktura').val();
+    var firmaid = jQuery('.filter-firmaid').val();
+    if(brojfaktura.length > 0) var data = { brojfaktura: brojfaktura, firmaid: firmaid }
+    else var data = { brojfaktura: 0, firmaid: firmaid }
+    jQuery.ajax({
+        url:"/index.php/vlezni_fakturi/pregled_vlezni/getNeplateniVlezniFakturi",
+        type:'POST',
+        data: data,
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            if(response)
+            {
+                jQuery(".dokumenti tbody").find("tr:not(:last)").remove();
+                var tr = jQuery('.dokumenti tr:last');
+                tr.removeClass('hiderow');
+                var vkupnostavki = response.length;
+                for (var i = 0; i < response.length; i++) {
+                    var newrow = jQuery(tr).clone().insertBefore(tr);
+//                        newrow.attr("fakturaid", response[i].dbid);
+                    newrow.find('.broj').html(response[i].broj);
+                    newrow.find('.datum').html(response[i].datum);
+                    newrow.find('.klient').html(response[i].firmaIme);
+                    newrow.find('.suma').html(response[i].vkupno);
+                    newrow.find('.zabeleska').html(response[i].zabeleska);
+                    newrow.find('.zaDokID').html(response[i].dbid);
+                }
+                tr.addClass('hiderow');
+            }
+            else
+            {
+                destroyparentdialog(elem);
+                var activerow = jQuery(".tabela-izvod-stavki tbody tr.active");
+                activerow.find('.s-faktura').attr('checked', false);
+                alert("Нема неплатени влезни фактури за овој коминтент!!!");
+            }
+        }
+    });
+}
+
+
+function getNeplateniIzlezniFakturi(){
+    var brojfaktura = jQuery('.filter-broj-faktura').val();
+    var firmaid = jQuery('.filter-firmaid').val();
+    console.log(firmaid,brojfaktura);
+    if(brojfaktura.length > 0) var data = { brojfaktura: brojfaktura, firmaid: firmaid }
+    else var data = { brojfaktura: 0, firmaid: firmaid }
+    jQuery.ajax({
+        url:"/index.php/izlezni_fakturi/pregled_izlezni/getNeplateniIzlezniFakturi",
+        type:'POST',
+        data: data,
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            if(response)
+            {
+            jQuery(".dokumenti tbody").find("tr:not(:last)").remove();
+            var tr = jQuery('.dokumenti tr:last');
+            tr.removeClass('hiderow');
+            var vkupnostavki = response.length;
+            for (var i = 0; i < response.length; i++) {
+                var newrow = jQuery(tr).clone().insertBefore(tr);
+//                        newrow.attr("fakturaid", response[i].dbid);
+                newrow.find('.broj').html(response[i].broj);
+                newrow.find('.datum').html(response[i].datum);
+                newrow.find('.klient').html(response[i].firmaIme);
+                newrow.find('.suma').html(response[i].vkupno);
+                newrow.find('.zabeleska').html(response[i].zabeleska);
+                newrow.find('.zaDokID').html(response[i].dbid);
+            }
+            tr.addClass('hiderow');
+        }
+        else
+        {
+            //destroyparentdialog(elem);
+    var activerow = jQuery(".tabela-izvod-stavki tbody tr.active");
+    activerow.find('.s-faktura').attr('checked', false);
+    alert("Нема неплатени влезни фактури за овој коминтент!!!");
+}
+        }
+    });
+}
+function delete_izvod(broj, zirosmetka){
+    console.log(broj,zirosmetka);
+    var r=confirm("Избриши извод");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/izvodi/menu/deleteIzvod";
+            var data = {
+                broj:broj,
+                zirosmetka:zirosmetka
+            }
+            jQuery.ajax({
+                url:formurl,
+                type:'POST',
+                data:data,
+                success:function (response) {
+                    izvodi_popolnilista();
+                }
+            });
+            izvodi_popolnilista();
+        }
+    }
+}
+function edit_izvod(broj, zirosmetka){
+//    console.log(broj,zirosmetka);
+    var formurl = "/index.php/izvodi/menu/editIzvod";
+    var data = {
+        broj:broj,
+        zirosmetka:zirosmetka
+    }
+    jQuery.ajax({
+        url:formurl,
+        type:'POST',
+        data:data,
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"1024",
+                position:[0, 0],
+                modal:true,
+                title:"Измени извод",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function getNewStavkaBrojByIzvod(){
+    var zirosmetka = jQuery('.tabelaizvod tr.clicked').find('.izvodzirosmetkaid').text();
+    var izvodbroj = jQuery('.tabelaizvod tr.clicked').find('.izvodbroj').text();
+    var data = {
+        zirosmetka: zirosmetka,
+        izvodbroj: izvodbroj
+    };
+    jQuery.ajax({
+        url:"/index.php/izvodi/menu/countStavkaByIzvod",
+        type:'POST',
+        data:data,
+        dataType:'json',
+        success:function (response) {
+            var lastbroj = response.broj;
+            var nextbroj = Number(lastbroj) + 1;
+            jQuery('.stavkabroj').val(nextbroj);
+        }
+    });
+}
+function prebaruvanje_izvodi_popolnilista(){
+    // jQuery(this).find('[value=""]').remove();
+    jQuery(".tabelastavka2").find("tr:gt(0)").not(":last").remove();
+    var lasttr = jQuery('.tabelastavka2 tr:last');
+    lasttr.addClass('hiderow');
+    var zirosmetka = jQuery('.zirosmetka option:selected').val();
+    var formaction = '/index.php/izvodi/menu/getIzvodByZirosmetka';
+    var data = {
+        zirosmetkaid:zirosmetka
+    }
+    jQuery.ajax({
+        url:formaction,
+        type:'POST',
+        data:data,
+        dataType:'json',
+        success:function (response) {
+            var vkupnostavki = response.length;
+            jQuery(".tabelaizvod2").find("tr:gt(1)").remove();
+            var tr = jQuery('.tabelaizvod2 tr:last');
+            tr.removeClass('hiderow');
+            jQuery(".banka").text('');
+            for (var i = 0; i < response.length; i++) {
+                jQuery(".banka").text(response[i].BankaIme);
+                var newrow = tr.clone().insertBefore(tr);
+                newrow.find('.izvodbroj').text(response[i].intBroj);
+                newrow.find('.izvodzirosmetka').text(response[i].zirosmetka);
+                newrow.find('.izvodzirosmetkaid').text(response[i].idzirosmetka);
+                newrow.find('.izvoddatum').text(response[i].datum);
+                newrow.find('.sumapriliv').text(response[i].priliv[0].suma);
+                newrow.find('.sumaodliv').text(response[i].odliv[0].suma);
+                newrow.find('.prethodna').text(response[i].prethodna);
+                newrow.find('.segasna').text(response[i].segasna);
+                newrow.attr("izvod_id",response[i].ID);
+            }
+            jQuery(".naslovsearchizvodi .vkupnostavki").html(vkupnostavki + " во листа");
+            tr.addClass('hiderow');
+            jQuery(".tabelaizvod2").trigger("update");
+            if(vkupnostavki > 0) jQuery(".tabelaizvod2 tbody tr:first").click();
+        }
+    });
+}

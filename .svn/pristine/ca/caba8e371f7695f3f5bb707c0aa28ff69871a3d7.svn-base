@@ -1,0 +1,115 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Javni_nabavki extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function dogovori()
+    {
+
+        $this->load->view('javni_nabavki/dogovori');
+    }
+    public function baranja()
+    {
+
+        $this->load->view('javni_nabavki/baranja');
+    }
+    public function dogovor_baranje()
+    {
+
+        $this->load->view('javni_nabavki/dogovor_baranje');
+    }
+    public function dogovor_vlezna_faktura()
+    {
+
+        $this->load->view('javni_nabavki/dogovor_vlezna_faktura');
+    }
+    public function baranje_vlezna_faktura(){
+
+        $this->load->view('javni_nabavki/baranje_vlezna_faktura');
+    }
+    public function nov_dogovor(){
+
+            $this->load->view('javni_nabavki/vnesi_dogovor');
+
+
+    }
+    public function dogovor_index()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('podatoci/artikl_model');
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['katbroj']=$this->artikl_model->getAllKatBroj();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $data['oddel']=$this->vlezni_fakturi_model->oddel_dropdown();
+        $data['ddv'] = $this->vlezni_fakturi_model->ddv_dropdown();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['konto'] =$this->plan_model->getKonta();
+        $data['konto220'] =$this->plan_model->getKonta220();
+        $data['konto198'] =$this->plan_model->getKonta198();
+        $data['grupa'] = $this->plan_model->konto_dropdown();
+        $this->load->view('javni_nabavki/nov_dogovor', $data);
+    }
+    public function create_dogovor(){
+        $this->load->model('javni_nabavki/javni_nabavki_model');
+        $query = $this->javni_nabavki_model->create_dogovor();
+        echo json_encode($query);
+    }
+    public function create_baranje(){
+        $this->load->model('javni_nabavki/javni_nabavki_model');
+        $query = $this->javni_nabavki_model->create_baranje();
+        echo json_encode($query);
+    }
+    public function getDogovori(){
+        $this->load->model('javni_nabavki/javni_nabavki_model');
+        $query = $this->javni_nabavki_model->getDogovori();
+        echo json_encode($query);
+    }
+    public function novo_baranje(){
+
+        $this->load->view('javni_nabavki/vnesi_baranje');
+
+
+    }
+    public function baranje_index()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('podatoci/artikl_model');
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['katbroj']=$this->artikl_model->getAllKatBroj();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $data['oddel']=$this->vlezni_fakturi_model->oddel_dropdown();
+        $data['ddv'] = $this->vlezni_fakturi_model->ddv_dropdown();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['konto'] =$this->plan_model->getKonta();
+        $data['konto220'] =$this->plan_model->getKonta220();
+        $data['konto198'] =$this->plan_model->getKonta198();
+        $data['grupa'] = $this->plan_model->konto_dropdown();
+        $this->load->view('javni_nabavki/novo_baranje', $data);
+    }
+    public function povrzi_dogovor(){
+         $data['klient']=$this->input->get('klient');
+
+         $this->load->view('javni_nabavki/povrzi_dogovor',$data);
+    }
+    public function getDogovorDetali(){
+        $this->load->model('javni_nabavki/javni_nabavki_model');
+        $id=$this->input->post('id');
+        $query = $this->javni_nabavki_model->getDogovorDetali($id);
+        echo json_encode($query);
+    }
+    public function getBaranja(){
+        $this->load->model('javni_nabavki/javni_nabavki_model');
+        $query = $this->javni_nabavki_model->getBaranja();
+        echo json_encode($query);
+    }
+}

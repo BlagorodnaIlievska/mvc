@@ -1,0 +1,39 @@
+<div class="podatoci-plata">
+    <div class="samopridonesi">
+        <?php if (bis_check_access('sistemsko_podesuvanje_planiranje_resursi_samopridonesi_nov_samopridones_button')): ?>
+        <div class="buttoncontainer">
+            <button class="button" onclick="samopridones_nov()">Нов самопридонес</button>
+        </div>
+            <?php endif ?>
+        <div class="predtabela">
+            <table class="tabela-samopridonesi">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>РБ</th>
+                    <th>Назив</th>
+                    <th>Процент</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".tabela-samopridonesi").tablesorter();
+        samopridonesi_polnilista();
+        jQuery(".tabela-samopridonesi tbody tr").live('click', function () {
+            jQuery(".tabela-samopridonesi tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+        jQuery(".tabela-samopridonesi .edit-tr").live('click', function () {
+            samopridones_izmeni(jQuery(this).parent().parent().attr('samopridonesi_id'));
+        });
+        jQuery(".tabela-samopridonesi .delete-tr").live('click', function () {
+            samopridones_delete(jQuery(this).parent().parent().attr('samopridonesi_id'));
+        });
+    });
+</script >

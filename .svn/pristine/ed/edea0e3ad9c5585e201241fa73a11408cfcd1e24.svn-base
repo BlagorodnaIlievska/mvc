@@ -1,0 +1,31 @@
+<?php
+$this->load->helper('lista_helper.php');
+
+$modul="vraboteni";
+$buttons=array("vraboteni_nov()"=>"Нов вработен") ;
+$collons=array("delete"=>"",
+               "edit"=>"",
+               "ime"=>"Име",
+               "prezime"=>"Презиме",
+               "adresa"=>"Адреса",
+               "embg"=>"ЕМБГ"
+);
+
+tabela($modul,$buttons,$collons);
+
+?>
+
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".vraboteni-tabela").tablesorter();
+        vraboteni_popolnilista();
+
+        jQuery(".vraboteni-tabela .edit-tr").live("click",function(){
+            vraboteni_izmeni(jQuery(this).parent().parent().attr("id"));
+        });
+        jQuery(".vraboteni-tabela .delete-tr").live("click",function(){
+            vraboteni_delete(jQuery(this).parent().parent().attr("id"));
+        });
+
+    });
+</script>

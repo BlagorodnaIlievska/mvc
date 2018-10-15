@@ -1,0 +1,53 @@
+<h1>Create a new field data</h1>
+
+<fieldset>
+    <legend>Field Data Information</legend><br>
+
+    <?php
+    echo form_open('users/fields_data/create_field_data');
+    $user_id = 'id="userDrop"';
+    echo form_label('Username', 'user_id');
+    echo form_dropdown('user_id', $users, isset($jobData->user_id) ? $jobData->user_id : $this->input->post('user_id'), $user_id );
+    ?><br>
+    <?php
+    $field_id = 'id="fieldDrop"';
+    echo form_label('Field', 'field_id');
+    echo form_dropdown('field_id', $fields, isset($jobData->field_id) ? $jobData->field_id : $this->input->post('field_id'), $field_id );
+    ?><br><br>
+    <?php
+    echo form_input('fd_value', set_value('fd_value', 'Value'));
+    //echo form_submit('submit', 'Submit');
+    ?>
+    <input type="button" value="Submit" class="ajaxcreateform"><br>
+
+    <?php
+    echo validation_errors('<p class="error">');
+    echo form_close();
+    ?>
+</fieldset>
+
+<script>
+    jQuery(function() {
+        jQuery('#userDrop').change(function() {
+            jQuery.ajax({
+                type: 'POST',
+                url: "<?php echo site_url('users/ajax/getFieldOdUser'); ?>",
+                data: "user_id=" + jQuery('#userDrop').val(),
+                dataType: 'json',
+                success: function(data){
+                    console.log(data);
+                    jQuery('#fieldDrop').empty();
+                    //jQuery('ul.test').text(data);
+                    if(data != null){
+                        var options = '';
+                        for (var i = 0; i < data.length; i++)
+                        {
+                            options += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                        }
+                        jQuery('#fieldDrop').html(options);
+                    }
+                }
+            });
+        });
+    });
+</script>

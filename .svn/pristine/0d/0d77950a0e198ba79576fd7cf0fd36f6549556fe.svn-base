@@ -1,0 +1,28 @@
+<div class="novodel">
+    <fieldset>
+        <legend>Ново конто</legend>
+        <form accept-charset="utf-8" method="post" action="/index.php/konta/konta/create_konto">
+          <input type="hidden" name="parent_klasa" value="<?php echo $idnaklasa ?>" />
+            <input type="hidden" name="parent_grupa" value="<?php echo $idnagrupa ?>" />
+            Класа: <?php echo $sifranaklasa ?><br /><br />
+            Опис на класа: <?php echo $opisnaklasa ?><br />
+
+
+            Група: <?php echo $sifranagrupa ?><br /><br />
+            Опис на Група: <?php echo $opisnagrupa ?><br />
+
+
+            Конто:<br />
+            <input type="text" value="" name="sifra"><br />
+            Опис на конто:<br />
+            <input type="text" value="" name="opis"><br />
+
+            <!--      Адреса:<br />
+                  <input type="text" value="" name="adresa"><br />
+                  Даночен број:<br />
+                  <input type="text" value="" name="danocenbroj"><br />  -->
+            <br/>
+            <input type="button" class="ajaxkontocreateform button" value="Додади"><br/>
+        </form>
+    </fieldset>
+</div>

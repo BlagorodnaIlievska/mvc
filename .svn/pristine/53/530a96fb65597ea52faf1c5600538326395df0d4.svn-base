@@ -1,0 +1,74 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Kartici extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function get_artikl_data()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $sifraId = $this->input->post('sifraId');
+        $query = $this->materijalno_model->get_artikl_data($sifraId);
+        echo json_encode($query);
+    }
+
+    public function getArtiklKartica()
+    {
+        $artiklid = $this->input->post('artiklid');
+        $magacinid = $this->input->post('magacinid');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getArtiklKartica($artiklid, $magacinid);
+        echo json_encode($query);
+    }
+    public function getArtiklKarticaPrazna()
+    {
+        $artiklid = $this->input->post('artiklid');
+        $magacinid = $this->input->post('magacinid');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getArtiklKartica($artiklid, $magacinid);
+        echo json_encode($query);
+    }
+    public function pecati_kartica(){
+        $this->load->helper('to_pdf');
+        $this->load->model('materijalno/materijalno_model');
+        $pdfartiklid=$this->input->post('pdfartiklid');
+
+
+        $q = $this->materijalno_model->getArtiklKartica($pdfartiklid);
+        //print_r($q); die();
+        $data['q']=$q;
+        $html = $this->load->view('materijalno/pecatenje/pecati_kartici', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+    }
+
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+    public function pecati_site_kartici(){
+$artiklid = $this->input->get('artiklid'); $magacinid = $this->input->get('magacinid');
+
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getArtiklKartica($artiklid, $magacinid);
+//stavi iminja kaj site
+
+        $data['kartici'] = $query;
+         // print_r($query); die();
+
+        $data['main_content'] = 'materijalno/pecatenje/pecati_kartici';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+}

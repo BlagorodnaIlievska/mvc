@@ -1,0 +1,73 @@
+<div class="internaispratnica">
+    <p style="text-align: center">Преносница</p><br/><br/>
+    <div style="margin-top: 20px; margin-bottom: 50px;">
+        <div style="float: left; width: 500px;">
+        <p style="float: left">
+            <label>Број: <? echo $int_is->textBroj; ?></label><br/>
+            <label>Датум: <? echo $int_is->datum; ?></label><br/>
+            <?php
+            $vrzanidok = '';
+            foreach($int_is->dokumenti as $dok){
+                $vrzanidok .=  '<span>' .  $dok->textBroj . '</span>';
+            }
+            ?>
+
+
+            <label>Фактура: <? echo $vrzanidok; ?></label>
+        </p></div>
+        <div style="float: left">
+        <p>
+            <label>Магацин од: <? echo $int_is->magacin_od;?></label><br/>
+            <label>Магацин во: <? echo $int_is->magacin_vo;?></label>
+
+        </p></div>
+    </div>
+    <div style="padding-top: 80px">
+    <table border="1" align="center" style="margin-top: 20px;">
+        <thead>
+        <tr>
+            <th>Бр.</th>
+            <th>Шифра</th>
+            <th>Кат. Број</th>
+            <th>Ставка</th>
+            <th>Кол</th>
+            <th>ЕМ</th>
+            <th>Гарантен рок</th>
+            <th>Употребливо до</th>
+            <th>Сер. Бр.</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        $br = 1;
+        foreach($stavki_ii as $stavka){
+?>
+            <tr>
+                <td style="padding-left: 3px; padding-right: 3px;"><? echo $br; ?></td>
+                <td style="padding-left: 3px; padding-right: 3px;"><? echo $stavka->sifra; ?></td>
+                <td style="padding-left: 3px; padding-right: 3px;"><? echo $stavka->katBroj; ?></td>
+                <td style="padding-left: 3px; padding-right: 3px;"> <? echo $stavka->stavka; ?></td>
+                <td style="padding-left: 3px; padding-right: 3px;"> <? echo $stavka->kolicina; ?></td>
+                <td style="padding-left: 3px; padding-right: 3px;"> <? echo $stavka->edMerka; ?></td>
+                <td style="padding-left: 3px; padding-right: 3px;"><? $stavka->garanten_rok; ?></td>
+                <td style="padding-left: 3px; padding-right: 3px;"><? $stavka->upotreblivo_do; ?></td>
+                <td style="padding-left: 3px; padding-right: 3px;"><? $stavka->SerNo; ?></td>
+            </tr>
+
+            <?php
+        }
+        ?>
+        </tbody>
+    </table>
+    </div>
+    <div style="float: left; width: 50%;" >
+
+        Примил <br>
+        _____________________________
+    </div>
+    <div style="float: right; width: 50%;">
+
+        Издал <br>
+        _____________________________
+    </div>
+</div>

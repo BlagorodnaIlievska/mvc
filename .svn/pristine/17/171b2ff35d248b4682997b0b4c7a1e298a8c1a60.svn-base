@@ -1,0 +1,35 @@
+<?php
+$month = date("m");
+?>
+<div class="span1">
+    <table>
+        <tr>
+            <td>
+                <select name="smena" id="smena">
+                    <option class="smena" value='0'> Сите </option>
+                    <?php foreach($smeni as $s){ ?>
+                        <option class="smena" value='<?php echo $s->id ?>' ><?php echo $s->ime; ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+            <td>
+                <select id="month" name="month" size="1">
+                    <option class="month" <?php if($month == '01') echo 'selected="selected"'; ?> value="01">Јануари</option>
+                    <option class="month" <?php if($month == '02') echo 'selected="selected"'; ?> value="02">Фебруари</option>
+                    <option class="month" <?php if($month == '03') echo 'selected="selected"'; ?> value="03">Март</option>
+                    <option class="month" <?php if($month == '04') echo 'selected="selected"'; ?> value="04">Април</option>
+                    <option class="month" <?php if($month == '05') echo 'selected="selected"'; ?> value="05">Мај</option>
+                    <option class="month" <?php if($month == '06') echo 'selected="selected"'; ?> value="06">Јуни</option>
+                    <option class="month" <?php if($month == '07') echo 'selected="selected"'; ?> value="07">Јули</option>
+                    <option class="month" <?php if($month == '08') echo 'selected="selected"'; ?> value="08">Август</option>
+                    <option class="month" <?php if($month == '09') echo 'selected="selected"'; ?> value="09">Септември</option>
+                    <option class="month" <?php if($month == '10') echo 'selected="selected"'; ?> value="10">Октомври</option>
+                    <option class="month" <?php if($month == '11') echo 'selected="selected"'; ?> value="11">Ноември</option>
+                    <option class="month" <?php if($month == '12') echo 'selected="selected"'; ?> value="12">Декември</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<?php $this->load->view('planiranje/tabela'); ?>

@@ -1,0 +1,196 @@
+<div class="vlez-form content-area">
+
+    <?php
+    $status_options=array(
+        '0'=>'Plateni',
+        '1'=>'Ne plateni',
+        '2'=>'Site'
+    );
+    $nacin_options=array(
+        '0'=>'Site',
+        '1'=>'Virmanski',
+        '2'=>'Vo gotovo',
+        '3'=>'Kompenzacija'
+    );
+    $godina = array(
+        '0'=>'izberete godina',
+        '1' => '2008',
+        '2' => '2009',
+        '3' => '2010',
+        '4' => '2011',
+        '5' => '2012',
+        '6' => '2013'
+    );
+    $mesec = array(
+        '0'=>'izberete mesec',
+        '01' => 'Januari',
+        '02' => 'Februari',
+        '03' => 'Mart',
+        '04' => 'April',
+        '05' => 'Maj',
+        '06' => 'Juni',
+        '07' => 'Juli',
+        '08' => 'Avgust',
+        '09' => 'Septemvri',
+        '10' => 'Oktomvri',
+        '11' => 'Noemvri',
+        '12' => 'Dekemvri'
+    );
+    $den =array(
+        '0'=>'izberete den',
+        '01'=>'1',
+        '02'=>'2',
+        '03'=>'3',
+        '04'=>'4',
+        '05'=>'5',
+        '06'=>'6',
+        '07'=>'7',
+        '08'=>'8',
+        '09'=>'9',
+        '10'=>'10',
+        '11'=>'11',
+        '12'=>'12',
+        '13'=>'13',
+        '14'=>'14',
+        '15'=>'15',
+        '16'=>'16',
+        '17'=>'17',
+        '18'=>'18',
+        '19'=>'19',
+        '20'=>'20',
+        '21'=>'21',
+        '22'=>'22',
+        '23'=>'23',
+        '24'=>'24',
+        '25'=>'25',
+        '26'=>'26',
+        '27'=>'27',
+        '28'=>'28',
+        '29'=>'29',
+        '30'=>'30',
+        '31'=>'31'
+    );
+    echo form_open('profakturi/profaktura/nova_faktura');
+
+
+    ?>
+
+    <input type="button" value="Nova faktura" class="magacinbutton button"><br>
+    <input type="button" value="Baraj" class="barajbutton button"><br>
+    <div class="vlezni-fakturi">
+        <?php
+        echo "<div class=\"label-select \"> ";
+        echo form_label('Status:','status_options');
+        echo form_dropdown('status_options',$status_options,'','class="ddstatus pregledkasa"');
+        echo "</div>";
+        echo "<div class=\"label-select \"> ";
+        echo form_label('Nacin:','nacin_options');
+        echo form_dropdown('nacin_options',$nacin_options,'','class="ddnacin pregledkasa"');
+        echo "</div>";
+        echo "<div class=\"label-select \"> ";
+        echo form_label('Klient: ', 'klient');
+        echo form_dropdown('klient', $klient, '', 'class="ddklient pregledkasa"');
+        echo "</div>";;
+        echo form_label('Godina:','godina');
+        echo form_dropdown('godina',$godina);
+        echo form_label('Mesec:','mesec');
+        echo form_dropdown('mesec',$mesec   );
+        echo form_label('Den:','den');
+        echo form_dropdown('den',$den);
+        echo form_close();
+        ?>
+    </div>
+    <br>
+
+    <div class="stavka">
+        <table class="tabelasmetka" border="1" cellspacing="2" cellpadding="2">
+
+
+            <th>Broj</th>
+            <th>Datum</th>
+
+            <th>Klient</th>
+            <th>Osnova</th>
+            <th>DDV</th>
+            <th>Vkupno</th>
+            <th>Zabeleska</th>
+
+
+            <?php
+
+            echo "<tr>";
+            echo "<td> <input type='text' class='number medium' name='broj' > </td>";
+            echo "<td> <input type='text' class='datum medium' name='datum' > </td>";
+
+            echo "<td> <input type='text' class='klient big' name='klient' > </td>";
+            echo "<td> <input type='text' class='number medium' name='osnova'> </td>";
+            echo "<td> <input type='text' class='number medium' name='ddv' > </td>";
+            echo "<td> <input type='text' class='vkupno medium' name='vkupno'> </td>";
+            echo "<td> <input type='text' class='zabeleska big'name='zabeleska' a> </td>";
+
+            echo "</tr>";
+
+            ?>
+        </table>
+    </div>
+
+</div>
+
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.pregledkasa').live('change',function(){
+            var klient = jQuery('.ddklient option:selected').val();
+            var status = jQuery('.ddstatus option:selected').val();
+            var nacin = jQuery('.ddnacin option:selected').val();
+            var formaction = "/index.php/profakturi/profaktura/pregled";
+            //console.log(klient, grupa, kasa, formaction);
+            var data = {
+                klientid: klient,
+                nacinid: nacin,
+                statusid: status
+            }
+            jQuery.ajax({
+                url: formaction,
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery(".tabelasmetka").find("tr:gt(1)").remove();
+                    var tr = jQuery('.tabelasmetka tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('input[name=broj]').val(response[i].textBroj);
+                        newrow.find('input[name=datum]').val(response[i].datum + " : Broj " + response[i].textBroj);
+
+                        newrow.find('input[name=klient]').val(response[i].firma);
+                        newrow.find('input[name=osnova]').val(response[i].p_osnova);
+                        newrow.find('input[name=ddv]').val(response[i].p_ddv);
+                        newrow.find('input[name=vkupno]').val(response[i].p_vkupno);
+                        newrow.find('input[name=zabeleska]').val(response[i].komentar);
+                    }
+                    //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                    tr.addClass('hiderow');
+                }
+            });
+        });
+
+        jQuery('.magacinbutton').click(function()
+        {
+            var formaction=jQuery(this).parent().attr('action');
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({ autoOpen: true, width: 1100 }).load(formaction);
+        });
+        jQuery('.barajbutton').click(function()
+        {
+            var formaction="/index.php/profakturi/profaktura/baraj";
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({ autoOpen: true, width: 700}).load(formaction);
+        });
+
+    });
+</script>

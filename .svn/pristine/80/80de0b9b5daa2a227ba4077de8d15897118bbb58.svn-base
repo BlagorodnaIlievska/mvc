@@ -1,0 +1,92 @@
+<div id="info_faktura_form">
+<div class="faktura-od-dobavuvac">
+    <div class="f-od-dobavuvac broj">
+        <label>Број на фактура:</label>
+        <input type="text" class="fakturabroj" name="broj" value="<?= $faktura[0]->textBroj; ?>">
+    </div>
+    <div class="f-od-dobavuvac klient">
+        <label>Коминтент:</label>
+        <input type="text" class="komintent" name="komintent" value="<?= $faktura[0]->firmaIme; ?>">
+    </div>
+    <div class="f-od-dobavuvac1 datum">
+        <label>Датум :</label>
+        <input type="text" name="datum" class="fakturadatum" value="<?= $faktura[0]->datum; ?>">
+    </div>
+    <?php if(isset($faktura[0]->dokumenti)): ?>
+    <div class="f-od-dobavuvac1 vrzani-dokumenti">
+        <label>Врзани документи :</label>
+        <input type="text" name="vrzani-dokumenti" class="vrzani-dokumenti" value="<?= $faktura[0]->dokumenti; ?>">
+    </div>
+    <?php endif; ?>
+    <div class="konto">
+        <label>Конто :</label>
+        <input type="text" name="konto" class="fakturakonto" value="<?= $faktura[0]->konto; ?>">
+    </div>
+</div>
+<div class="stavkipopistabeladiv">
+            <table class="tabela-stavki-popis" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th>РБ</th>
+                    <th>Шифра</th>
+                    <th>Ставка</th>
+                    <th class='kontodetali'>Конто</th>
+                    <th>Кол</th>
+                    <th>ЕМ</th>
+                    <th>Цена</th>
+                    <th>Вк. без ДДв</th>
+                    <th>%ДДВ</th>
+                    <th>Вк.ДДВ</th>
+                    <th>Вк. со ДДВ</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php $stavki = $faktura[0]->stavki; if(is_array($stavki)){ ?>
+                    <?php $i=1; foreach($stavki as $stavka): ?>
+                    <?php
+                        $ddv = $stavka->ddv;
+                        $vkupno_bezddv = $stavka->kolicina*$stavka->cena;
+                        $vkupno_ddv = ($vkupno_bezddv*$ddv)/100;
+                        $vkupno_so_ddv = $vkupno_bezddv + $vkupno_ddv;
+                    ?>
+                        <tr>
+                            <td class="redenbr"><?= $i; ?></td>
+                            <td class="sifra"><?= $stavka->sifra2; ?></td>
+                           <!-- $stavka->stavka -->
+                            <td class="stavka"><?= $stavka->naziv; ?></td>
+                            <td class="konto"><?= $stavka->kontoSifra; ?></td>
+                            <td class="kolicina centar-print"><?= $stavka->kolicina; ?></td>
+                            <td class="edmerka centar-print"><?= $stavka->edMerkaIme; ?></td>
+                            <td class="cena desno-print"><?= $stavka->cena; ?>&nbsp;ден.</td>
+                            <td class="vkupno_bezddv desno-print"><?= $vkupno_bezddv; ?>&nbsp;ден.</td>
+                            <td class="ddv desno-print"><?= $ddv ?></td>
+                            <td class="vkupno_ddv desno-print"><?= $vkupno_ddv; ?>&nbsp;ден.</td>
+                            <td class="vkupno_so_ddv desno-print"><?= $vkupno_so_ddv; ?>&nbsp;ден.</td>
+                        </tr>
+                        <?php $i++; ?>
+                    <?php endforeach; ?>
+                <?php }; ?>
+                </tbody>
+            </table>
+</div>
+<div class="informacii_plakjanje">
+    <label>Рок на плаќање: </label>
+    <input type="text" name="rok" class="rok_na_plakjanje" value="<?= $faktura[0]->rokPlat; ?>">
+    <label>Краен датум: </label>
+    <input type="text" name="kraen_datum" class="kraen_datum" value="<?= $faktura[0]->rokDatum; ?>">
+</div>
+<div class="ceni">
+    <label>Вкупно основица: </label>
+    <input type="text" name="konto" class="fakturakonto" value="<?= $faktura[0]->p_osnova; ?>">
+    <label>Ддв 5%: </label>
+    <input type="text" name="konto" class="fakturakonto" value="<?= $faktura[0]->vkupno_ddv_5; ?>">
+    <label>Ддв 18%: </label>
+    <input type="text" name="konto" class="fakturakonto" value="<?= $faktura[0]->vkupno_ddv_18; ?>">
+    <label>Вкупно со ддв: </label>
+    <input type="text" name="konto" class="fakturakonto" value="<?= $faktura[0]->p_vkupno; ?>">
+</div>
+</div>
+
+<style type="text/css">
+    th {background-color: transparent !important;}
+</style>

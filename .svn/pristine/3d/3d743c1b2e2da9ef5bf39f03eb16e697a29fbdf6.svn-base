@@ -1,0 +1,798 @@
+function nov_interklinicki_upat() {
+//console.log("hbijh");
+    var formurl = "/index.php/upati/upati/nov_interklinicki";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+        alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                title: "Нов интер-клинички упат",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+function nov_interbolnicki_upat() {
+    //console.log("ne");
+   var formurl = "/index.php/upati/upati/nov_inter_bolnicki";
+   // var formurl = "/index.php/kartici/inter_bolnicki/nov_inter_bolnicki";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+        alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+        lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                modal: true,
+                title: "Нов интер-болнички упат",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+}
+function nov_interoddelenski_upat() {
+    var formurl = "/index.php/upati/upati/nov_inter_oddelenski_upat";
+    //var formurl = "/index.php/kartici/inter_oddelenski/nov_inter_oddelenski_upat";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+     alert("Ве молиме одберете прием");
+    return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+       lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                modal: true,
+                title: "Нов интер-одделенски упат",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+}
+function nov_radiodijagnosticki_upat() {
+    var formurl = "/index.php/upati/upati/nov_radiodijagnosticki";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+        alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                title: "Нов упат за радиодијагностика-2",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+
+function obrazecc_nov() {
+    var formurl = "/index.php/upati/upati/nov_obrazecc";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+         alert("Ве молиме одберете прием");
+         return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+         lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                modal: true,
+                title: "Нов образец - С",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+}
+function nova_izjava() {
+    var formurl = "/index.php/upati/upati/nova_izjava";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+          alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+           lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                modal: true,
+                title: "Нова изјава",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+}
+function nova_izjava_soglasnost(){
+    var formurl = "/index.php/upati/upati/nova_izjava_soglasnost";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+          alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+   lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                modal: true,
+                title: "Нова изјава за согласност",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+}
+function nov_zapis_za_priem(){
+    var formurl = "/index.php/upati/upati/nov_zapis_za_priem";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+        alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_zapis_priem_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                modal: true,
+                title: "Нов запис за прием",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+}
+function recepta_nova_obicna() {
+    var formurl = "/index.php/upati/upati/nova_recepta_obicna";
+    //var formurl = "/index.php/kartici/recepta/nova_recepta_obicna";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+        alert("Ве молиме одберете прием");
+          return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+           lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                modal: true,
+                title: "Нова рецепта",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+}
+function recepta_nova_stranski_osiguranik() {
+    var formurl = "/index.php/upati/upati/nova_recepta_stranski_osiguranik";
+ //var formurl = "/index.php/kartici/recepta/nova_recepta_stranski_osiguranik";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+          alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+        lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                modal: true,
+                title: "Нова рецепта за странски осигураник",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+}
+function nov_radiodijagnosticki_naod() {
+    var formurl = "/index.php/upati/upati/nov_radiodijagnosticki_naod";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+        alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                title: "Нов радиодијагностички наод",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+function nov_laboratoriski_upat() {
+    var formurl = "/index.php/upati/upati/nov_laboratoriski_upat";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+        alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                title: "Нов лабораториски упат",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+function nov_laboratoriski_naod() {
+    var formurl = "/index.php/upati/upati/nov_laboratoriski_naod";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+        alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                title: "Нов лабораториски наод",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+function nov_rezultat_biohemija() {
+    var formurl = "/index.php/upati/upati/nov_rezultat_biohemija";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+        alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                title: "Нов резултат од биохемиски анализи",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+function nov_bolnicki_upat() {
+    var formurl = "/index.php/upati/upati/nov_bolnicki_upat";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+        alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                title: "Нов болнички упат",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+function novo_konzilijarno_mislenje() {
+
+    var formurl = "/index.php/upati/upati/novo_konz_mislenje";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+          alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+       lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                modal: true,
+                title: "Ново конзилијарно мислење",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+}
+function potvrda_za_smrt() {
+    var formurl = "/index.php/upati/upati/nova_potvrda_za_smrt";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+        alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                title: "Нова потврда",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+
+
+
+
+
+function trebuvanje_za_krv() {
+    var formurl = "/index.php/upati/upati/novo_trebuvanje_za_krv";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+        alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                title: "Требување за крв и крвни продукти",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+
+function otpusna_lista() {
+    var formurl = "/index.php/upati/upati/nova_otpusna_lista";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+        alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+          //  lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            lekuvanja_potpolnipacientinfo_otpusnalista(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                title: "Отпусна листа",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+
+function mrtovecka_pridruznica() {
+    var formurl = "/index.php/upati/upati/nova_mrtovecka_pridruznica";
+    if (lekuvanja_getaktiven_priemid() == 0) {
+        alert("Ве молиме одберете прием");
+        return false;
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                title: "Мртовечка придружница",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+
+function pokana_za_konzilijaren_pregled() {
+    var formurl = "/index.php/upati/upati/nova_pokana_za_konzilijaren_pregled";
+
+    if (lekuvanja_getaktiven_priemid() == 0) {
+        alert("Ве молиме одберете прием");
+        return false;
+    }
+
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {priem_id:lekuvanja_getaktiven_priemid()},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            lekuvanja_potpolnipacientinfo(tempdialog, lekuvanja_getaktiven_priemid());
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                title: "Покана за конзилијарен преглед",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+      }
+    });
+}

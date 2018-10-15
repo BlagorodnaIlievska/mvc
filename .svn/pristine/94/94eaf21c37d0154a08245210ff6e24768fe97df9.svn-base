@@ -1,0 +1,231 @@
+<?php
+
+class Plan_model extends CI_Model
+{
+
+
+    public function create_stavka(){
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('plan', $new_field_insert_data);
+        $kontiranje=array(
+            'konto'=>$this->input->post('konto'),
+            'suma'=>0
+
+        );
+        $k=$this->db->insert('kontiranje',$kontiranje);
+        return $insert;
+    }
+    public function delete_stavka($id)
+    {
+        $this->db->where('id',$id );
+      $delete =  $this->db->delete('plan');
+        return $delete;
+    }
+    public function update_stavka()
+    {
+        $field_update_data = $this->input->post();
+        $this->db->where('plan.id', $this->input->post('id'));
+        $update = $this->db->update('plan', $field_update_data);
+
+        return $update;
+    }
+
+
+
+    public function getAll_stavka()
+    {
+        $this->db->select('*');
+        $this->db->from('plan');
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+
+    public function getStavka($id)
+    {
+        $this->db->select('plan.id,plan.naziv,plan.k1,plan.k2,plan.k3,plan.k4,plan.vkupno,konta.sifra as konto');
+        $this->db->join('konta','plan.konto=konta.id');
+        $this->db->where('plan.id', $id);
+        $this->db->order_by('konta.id');
+        $query = $this->db->get('plan');
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public function getKonta()
+    {
+        //$this->db->where('parent_klasa',0);
+        $query = $this->db->get('konta');
+        return $query->result();
+    }
+    public function getKonta198()
+    {
+        $this->db->like('sifra','198', 'after');
+        $query = $this->db->get('konta');
+        return $query->result();
+    }
+    public function getKonta220()
+    {
+        $this->db->select('id, sifra');
+        $this->db->from('konta');
+        $this->db->like('sifra','220', 'after');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = '';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['sifra'];
+            }
+        }
+        return $dropdown;
+    }
+    public function getStavki()
+    {
+        $this->db->select('plan.id,plan.naziv,plan.k1,plan.k2,plan.k3,plan.k4,plan.vkupno,konta.sifra as konto');
+        $this->db->join('konta','plan.konto=konta.id');
+        $this->db->order_by('konta.id');
+        $this->db->where('plan.godina','2013');
+        $query = $this->db->get('plan');
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+
+    public function konto_dropdown()
+    {
+        $this->db->select('id, sifra');
+        $this->db->from('konta');
+       // $this->db->where('parent_klasa',0);
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        $dropdown[0]='Сите';
+        if($query->num_rows() > 0){
+           // $dropdown[''] = '';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['sifra'];
+            }
+        }
+        return $dropdown;
+    }
+  public function getTrosoci(){
+    $d=date("Y-m-d");
+    $this->db->select_sum('stavkadetali.cenaDdv');
+    $this->db->select('plan.vkupno as vkupno,konta.sifra as konto,stavka.datum');
+    $this->db->group_by('stavkadetali.konto');
+    $this->db->where('stavkadetali.datum <=',$d);
+      $this->db->where('plan.godina','2013');
+    $this->db->from('stavkadetali');
+    $this->db->order_by('konta.id');
+    $this->db->join('konta','stavkadetali.konto=konta.id');
+    $this->db->join('plan','stavkadetali.konto=plan.konto');
+    $this->db->join('stavka','stavka.ID=stavkadetali.ID');
+    $query=$this->db->get();
+    return $query->result();
+}
+    public function prebaruvanje_po_period_trosoci($datum1,$datum2){
+        //$this->db->select('plan.*, konta.*');
+        $this->db->select('plan.vkupno as vkupno,konta.sifra as konto,konta.id as id, plan.naziv as naziv');
+        $this->db->from('plan');
+        $this->db->join('konta','plan.konto=konta.id');
+        // $this->db->where('plan.godina','2013');
+        $this->db->order_by('plan.konto');
+        $query=$this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            foreach($result as $res)
+            {
+                $res->potrosen_iznos = $this->getPotrosenIznosPoKontoPeriod($res->id,$datum1,$datum2);
+            }
+            return $result;
+        }
+        else return false;
+    }
+//    public function getTrosoci2(){
+//
+//
+//       $this->db->select_sum('stavka.z_uplata');
+//
+//        $this->db->select('plan.vkupno as vkupno,konta.sifra as konto, plan.naziv as naziv');
+//        $this->db->group_by('stavka.tipID');
+//       // $this->db->where('plan.godina','2013');
+//        $this->db->where('stavka.tip',40);
+//
+//        $this->db->from('plan');
+//        $this->db->order_by('konta.id');
+//        $this->db->join('konta','plan.konto=konta.id','left');
+//        $this->db->join('stavka','stavka.tipID=plan.konto','left');
+//
+//        $query=$this->db->get();
+//
+//         return $query->result();
+//
+//    }
+    public function getTrosoci2()
+    {
+        //$this->db->select('plan.*, konta.*');
+        $this->db->select('plan.vkupno as vkupno,konta.sifra as konto,konta.id as id, plan.naziv as naziv');
+        $this->db->from('plan');
+        $this->db->join('konta','plan.konto=konta.id');
+       // $this->db->where('plan.godina','2013');
+        $this->db->order_by('plan.konto');
+        $query=$this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            foreach($result as $res)
+            {
+                $res->potrosen_iznos = $this->getPotrosenIznosPoKonto($res->id);
+            }
+            return $result;
+        }
+        else return false;
+    }
+    public function getPotrosenIznosPoKonto($konto_id)
+    {
+        $this->db->select_sum('z_uplata');
+        $this->db->where('tipID', $konto_id);
+        $this->db->where('stavka.tip',40) ;
+        $this->db->from('stavka');
+        $query=$this->db->get();
+
+        $result = $query->result();
+        if($result[0]->z_uplata > 0) return $result[0]->z_uplata;
+        else return 0;
+    }
+    public function getPotrosenIznosPoKontoPeriod($konto_id,$datum1,$datum2)
+    {
+        $this->db->select_sum('z_uplata');
+        $this->db->where('tipID', $konto_id);
+        $this->db->where('stavka.tip',40) ;
+        $this->db->where('stavka.datum >',bis_convert_date_usa_to_mk($datum1));
+        $this->db->where('stavka.datum <=',bis_convert_date_usa_to_mk($datum2));
+        $this->db->from('stavka');
+        $query=$this->db->get();
+
+        $result = $query->result();
+        if($result[0]->z_uplata > 0) return $result[0]->z_uplata;
+        else return 0;
+    }
+    public function prebaruvanje_po_godina($godinaid){
+        $this->db->select('plan.id,plan.naziv,plan.k1,plan.k2,plan.k3,plan.k4,plan.vkupno,konta.sifra as konto');
+        $this->db->where('plan.godina',$godinaid);
+        $this->db->join('konta','plan.konto=konta.id');
+        $this->db->order_by('konta.id');
+        $query = $this->db->get('plan');
+        return $query->result();
+
+    }
+}

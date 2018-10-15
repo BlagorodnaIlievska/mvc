@@ -1,0 +1,607 @@
+<?php
+
+class Artikl_model extends CI_Model
+{
+    public function generateSrednaCenaArtikli(){
+        $pozitiva = array(710, 719, 726);
+        $negativa = array(715, 720, 729, 90);
+        $this->db->select("det.*,stavka.tip");
+        $this->db->from('det');
+        $this->db->order_by('detID');
+        $this->db->where_in('stavka.tip', $pozitiva);
+        $this->db->or_where_in('stavka.tip', $negativa);
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $result=$this->db->get()->result();
+        bis_debug($result,'$result');
+        $artikli=array();
+        $poslednasrednacena=array();
+        foreach($result as $row){
+            if (isset( $artikli[$row->SID])) {
+                $arrindex=count($artikli[$row->SID])-1;
+                $nextindex=$arrindex+1;
+                $previndex=$arrindex;
+            } else {
+
+                $nextindex=0;
+            }
+            $artikli[$row->SID][$nextindex]['detID']=$row->detID;
+            $artikli[$row->SID][$nextindex]['tip']=$row->tip;
+            $artikli[$row->SID][$nextindex]['SID']=$row->SID;
+            $artikli[$row->SID][$nextindex]['kolicina']=$row->kolicina;
+            $artikli[$row->SID][$nextindex]['cena']=$row->cena;
+
+            if ($nextindex==0){
+                $artikli[$row->SID][$nextindex]['SRDCena']=$row->cena;
+                $artikli[$row->SID][$nextindex]['sostojba']=$row->kolicina;
+            } else {
+
+
+                if (in_array($row->tip,$pozitiva)){
+                    $artikli[$row->SID][$nextindex]['sostojba'] = $artikli[$row->SID][$previndex]['sostojba'] + $row->kolicina ;
+                    if(($artikli[$row->SID][$previndex]['sostojba']+$row->kolicina)!=0)$srednacena=(($artikli[$row->SID][$previndex]['sostojba'] * $artikli[$row->SID][$previndex]['SRDCena']) + ($row->kolicina*$row->cena)) / ($artikli[$row->SID][$previndex]['sostojba']+$row->kolicina);
+                    $poslednasrednacena[$row->SID] = $srednacena;
+
+                } else {
+                    $artikli[$row->SID][$nextindex]['sostojba'] = $artikli[$row->SID][$previndex]['sostojba'] - $row->kolicina ;
+
+                    $srednacena= (isset($poslednasrednacena[$row->SID]) ? $poslednasrednacena[$row->SID]:0) ;
+                }
+
+                $artikli[$row->SID][$nextindex]['SRDCena']=$srednacena;
+
+            }
+
+
+
+
+        }
+        foreach($artikli as $index=>$tmp_keys){
+            foreach($artikli[$index] as $row){
+                $data['SRDCena']=$row['SRDCena'];
+                $this->db->where('detID',$row['detID']);
+                $this->db->update("det",$data);
+            }
+        }
+
+        bis_debug($artikli,'sredna');
+
+
+    }
+
+
+	public function create_magacin()
+	{
+		$insert_data = array('magIme' => $this->input->post('magacin_name'), 'MFID' => 1, 'magTip' => $this->input->post('tip_magacin'), 'magLokacija' => $this->input->post('magacin_lokacija'));
+		$insert = $this->db->insert('magacin', $insert_data);
+		return $insert;
+	}
+	public function proveri_artikl_postoi($sifra, $ime)
+	{
+		$this->db->where("sifra = '$sifra' OR S1Ime='$ime' ");
+		$query = $this->db->get('s1');
+		if ($query->num_rows > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function create_artikl()
+	{
+		$data = $this->input->post();
+		if ($this->proveri_artikl_postoi($data['sifra'], $data['S1Ime'])) {
+			return '';
+		}
+		unset($data['sliki']);
+		unset($data['dokumenti']);
+		$insert    = $this->db->insert('s1', $data);
+		$artikalid = $this->db->insert_id();
+
+		$datadir = "data/artikli/$artikalid";
+		mkdir($datadir);
+		mkdir($datadir . "/dokumenti/");
+		mkdir($datadir . "/sliki/");
+
+		foreach ($_FILES["dokumenti"]['tmp_name'] as $tempkey => $tempfile) {
+			move_uploaded_file($tempfile, $datadir . "/dokumenti/" . $_FILES["dokumenti"]['name'][$tempkey]);
+		}
+		foreach ($_FILES["sliki"]['tmp_name'] as $tempkey => $tempfile) {
+			move_uploaded_file($tempfile, $datadir . "/sliki/" . $_FILES["sliki"]['name'][$tempkey]);
+		}
+
+
+		return $insert;
+	}
+
+	public function getAll()
+{
+    $this->db->select("s1.*, bis_edmerki.ime_dolgo as edMerkaIme");
+    $query = $this->db->from('s1');
+    $this->db->join('bis_edmerki', 'bis_edmerki.id = s1.EdMerka', 'left');
+    $query = $this->db->get();
+    if ($query->num_rows > 0) {
+        $result = $query->result();
+        foreach ($result as $artikal) {
+            $sliki              = $this->getSliki($artikal->SID);
+            $artikal->slika     = (isset($sliki[0]['link']) ? $sliki[0]['link'] : "");
+            $artikal->sliki     = $sliki;
+            $artikal->dokumenti = $this->getDokumenti($artikal->SID);
+            $novartikal[]       = $artikal;
+        }
+        return $novartikal;
+    }
+}
+    public function getAll_limitirano($zabranetimagacini)
+    {
+        //$pole=array($zabranetimagacini);
+        $this->db->select("s1.*, bis_edmerki.ime_dolgo as edMerkaIme");
+        $this->db->where_in('det.magacin',$zabranetimagacini);
+        $query = $this->db->from('s1');
+        $this->db->join('bis_edmerki', 'bis_edmerki.id = s1.EdMerka', 'left');
+        $this->db->join('det','det.SID=s1.SID','left');
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $result = $query->result();
+            foreach ($result as $artikal) {
+               // $sliki              = $this->getSliki($artikal->SID);
+                //$artikal->slika     = (isset($sliki[0]['link']) ? $sliki[0]['link'] : "");
+                //$artikal->sliki     = $sliki;
+               // $artikal->dokumenti = $this->getDokumenti($artikal->SID);
+                $novartikal[]       = $artikal;
+            }
+            return $novartikal;
+        }
+    }
+    public function getAutocompleteArtikli($ime, $limit)
+    {
+        $this->db->select("s1.*, bis_edmerki.ime_dolgo as edMerkaIme");
+        $this->db->from('s1');
+        $this->db->join('bis_edmerki', 'bis_edmerki.id = s1.EdMerka', 'left');
+        $this->db->like("S1Ime", $ime, 'both');
+        $this->db->or_like("sifra", $ime, 'both');
+        $this->db->limit($limit);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $result = $query->result();
+            foreach ($result as $artikal) {
+                $sliki              = $this->getSliki($artikal->SID);
+                $artikal->slika     = (isset($sliki[0]['link']) ? $sliki[0]['link'] : "");
+                $artikal->sliki     = $sliki;
+                $artikal->dokumenti = $this->getDokumenti($artikal->SID);
+                $novartikal[]       = $artikal;
+            }
+            return $novartikal;
+        }
+    }
+
+
+    function getAllKatBroj()
+    {
+        $this->db->select('s1.*, bis_edmerki.ime_dolgo as edMerkaIme');
+        $this->db->from('s1');
+        $this->db->join('bis_edmerki', 'bis_edmerki.id = s1.EdMerka', 'left');
+        $query = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            foreach ($result as $artikal) {
+                $sliki              = $this->getSliki($artikal->SID);
+                $artikal->slika     = (isset($sliki[0]['link']) ? $sliki[0]['link'] : "");
+                $artikal->sliki     = $sliki;
+                $artikal->dokumenti = $this->getDokumenti($artikal->SID);
+                $novartikal[]       = $artikal;
+            }
+            return $novartikal;
+        }
+    }
+    function getAllKatBroj_limitirano($zabranetimagacini)
+    {
+        $this->db->select('s1.*, bis_edmerki.ime_dolgo as edMerkaIme');
+        $this->db->from('s1');
+        $this->db->where_in('det.magacin',$zabranetimagacini);
+        $this->db->join('bis_edmerki', 'bis_edmerki.id = s1.EdMerka', 'left');
+        $this->db->join('det','det.SID=s1.SID','left');
+        $query = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            foreach ($result as $artikal) {
+                $sliki              = $this->getSliki($artikal->SID);
+                $artikal->slika     = (isset($sliki[0]['link']) ? $sliki[0]['link'] : "");
+                $artikal->sliki     = $sliki;
+                $artikal->dokumenti = $this->getDokumenti($artikal->SID);
+                $novartikal[]       = $artikal;
+            }
+            return $novartikal;
+        }
+    }
+
+    public function getAllDDV()
+    {
+        $this->db->select('ddvID, ddvVal');
+        $this->db->from('ddv');
+        $this->db->order_by('ddvID');
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $result = $query->result();
+            return $result;
+        }
+    }
+
+    public function getArtiklByCriteria($stavka, $katbroj)
+    {
+        $this->db->select("s1.SID, s1.S1Ime, s1.sifra, s1.katBroj, s1.opis_artikl, s1.EdMerka, s1.ddv as ddv, bis_edmerki.ime_dolgo as edMerkaIme");
+        $query = $this->db->from('s1');
+        $this->db->join('bis_edmerki', 'bis_edmerki.id = s1.EdMerka', 'left');
+        if(strlen($stavka) > 0) $this->db->like("S1Ime",$stavka, "both");
+        if(strlen($katbroj) > 0) $this->db->like("katBroj",$katbroj, "both");
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $result = $query->result();
+            foreach ($result as $artikal) {
+                $sliki              = $this->getSliki($artikal->SID);
+                $artikal->slika     = (isset($sliki[0]['link']) ? $sliki[0]['link'] : "");
+                $artikal->sliki     = $sliki;
+                $artikal->dokumenti = $this->getDokumenti($artikal->SID);
+                $novartikal[]       = $artikal;
+            }
+            return $novartikal;
+        }
+    }
+
+    public function getArtikliPoDokument($id){
+        $this->db->select(" det.kolicina as kolicina,
+                            det.detID as dbid,
+                            det.stavka as stavka,
+                            det.SID as artikl_id,
+                            det.edinica_merka as edMerkaId,
+                            det.magacin as magacinId,
+                            det.magacin_vo as magacinVo,
+                            det.DDV as ddv,
+                            det.konto as kontoid,
+                            det.garanten_rok as garantenrok,
+                            det.upotreblivo_do as upotreblivodo,
+                            det.SRDCena as SRDCena,
+                            det.SerNo as seriskibroj,
+                            s1.sifra as sifra,
+                            s1.katBroj as katBroj,
+                            s1.ddv as ddv,
+                    s1.konto as kontoID,
+                            bis_edmerki.ime_dolgo as edMerkaIme,
+                            bis_edmerki.ime_skrateno as edMerkaImeSkrateno,
+                            bis_magacin.ime as magacin
+                            ");
+        $this->db->from("det");
+        $this->db->join('s1', 's1.SID = det.SID', 'left');
+        $this->db->join('bis_magacin', 'bis_magacin.id = det.magacin', 'left');
+        $this->db->join('bis_edmerki', 'bis_edmerki.id = det.edinica_merka', 'left');
+        $this->db->where("det.ID",$id);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $result = $query->result();
+            return $result;
+        }
+    }
+	public function getSliki($id)
+	{
+		$sliki        = array();
+		$datadir      = "data/artikli/$id";
+		$datadirsliki = $datadir . "/sliki/";
+		if (is_dir($datadirsliki)) {
+			if ($handle = opendir($datadirsliki)) {
+				while (false !== ($entry = readdir($handle))) {
+					if ($entry == "." || $entry == "..") {
+						continue;
+					}
+					$sliki[] = array("ime" => $entry, "link" => "/" . $datadirsliki . $entry);
+				}
+			}
+		}
+
+		return $sliki;
+	}
+
+	public function getDokumenti($id)
+	{
+		$dokumenti        = array();
+		$datadir          = "data/artikli/$id";
+		$datadirdokumenti = $datadir . "/dokumenti/";
+		if (is_dir($datadirdokumenti)) {
+			if ($handle = opendir($datadirdokumenti)) {
+				while (false !== ($entry = readdir($handle))) {
+					if ($entry == "." || $entry == "..") {
+						continue;
+					}
+					$dokumenti[] = array("ime" => $entry, "link" => "/" . $datadirdokumenti . $entry);
+				}
+			}
+		}
+
+		return $dokumenti;
+	}
+
+	public function izbrisidokumentodartikal($id, $ime)
+	{
+
+		$datadir          = "data/artikli/$id";
+		$datadirdokumenti = $datadir . "/dokumenti/";
+		unlink($datadirdokumenti . $ime);
+	}
+
+	public function izbrisisliki($id)
+	{
+		$sliki=$this->getSliki($id);
+		$datadir      = "data/artikli/$id";
+		$datadirsliki = $datadir . "/sliki/";
+		foreach( $sliki as $slika){
+		unlink($datadirsliki.$slika['ime']);
+		}
+
+	}
+
+	public function delete_artikl($id)
+	{
+		$this->db->where('SID', $id);
+		$this->db->delete('s1');
+	}
+
+	public function edit_artikl($id)
+	{
+		$this->db->where('SID', $id);
+		$query  = $this->db->get('s1');
+		$result = $query->result();
+		if ($query->num_rows > 0) {
+			return $result[0];
+		}
+	}
+
+	public function update_artikl()
+	{
+		$field_update_data = $this->input->post();
+		$artikalid=$field_update_data['SID'];
+		$datadir = "data/artikli/$artikalid";
+		unset($field_update_data['SID']);
+		unset($field_update_data['sliki']);
+		unset($field_update_data['dokumenti']);
+		$this->db->where('SID', $this->input->post('SID'));
+		$update = $this->db->update('s1', $field_update_data);
+		if (isset($_FILES["dokumenti"]['tmp_name'][0])) {
+			foreach ($_FILES["dokumenti"]['tmp_name'] as $tempkey => $tempfile) {
+				move_uploaded_file($tempfile, $datadir . "/dokumenti/" . $_FILES["dokumenti"]['name'][$tempkey]);
+			}
+		}
+		if (isset($_FILES["sliki"]['tmp_name'][0])) {
+			foreach ($_FILES["sliki"]['tmp_name'] as $tempkey => $tempfile) {
+
+				$this->izbrisisliki($artikalid);
+				move_uploaded_file($tempfile, $datadir . "/sliki/" . $_FILES["sliki"]['name'][$tempkey]);
+			}
+		}
+
+
+		return $update;
+	}
+
+	public function create_proizvoditel()
+	{
+		$insert_data = array('markerIme' => $this->input->post('new-proizvoditel-ime'));
+
+		$insert = $this->db->insert('marker', $insert_data);
+
+		return $insert;
+	}
+
+	function proveri_faktura($brojfaktura)
+	{
+		$this->db->select('textBroj, datum, firmaID, p_vkupno, p_osnova, p_ddv');
+		$this->db->from('stavka');
+		$this->db->where('textBroj', $brojfaktura);
+		$query = $this->db->get();
+		if ($query->num_rows() == 1) {
+			$result = $query->result();
+		} else {
+			$result = false;
+		}
+
+		return $result;
+	}
+
+
+	function magacin_dropdown()
+	{
+		$this->db->select('magacinID, magIme');
+		$this->db->from('magacin');
+		$this->db->order_by('magacinID');
+		$query    = $this->db->get();
+		$dropdown = array();
+		if ($query->num_rows() > 0) {
+			foreach ($query->result_array() as $row) {
+				$dropdown[$row['magacinID']] = $row['magIme'];
+			}
+
+			$new_row            = $row['magacinID'] + 1;
+			$dropdown[$new_row] = 'site';
+		}
+
+		return $dropdown;
+	}
+
+	function grupa_dropdown()
+	{
+		$this->db->select('grupaID, grupaIme');
+		$this->db->from('grupa');
+		$this->db->order_by('grupaID');
+		$query    = $this->db->get();
+		$dropdown = array();
+		if ($query->num_rows() > 0) {
+
+			foreach ($query->result_array() as $row) {
+				$dropdown[$row['grupaID']] = $row['grupaIme'];
+			}
+		}
+
+		return $dropdown;
+	}
+
+	function klient_dropdown()
+	{
+		$this->db->select('firmaID, ime');
+		$this->db->from('firma');
+		$this->db->order_by('ime');
+		$query    = $this->db->get();
+		$dropdown = array();
+        $dropdown[0]='Сите';
+		if ($query->num_rows() > 0) {
+
+			foreach ($query->result_array() as $row) {
+				$dropdown[$row['firmaID']] = $row['ime'];
+			}
+		}
+
+		return $dropdown;
+	}
+
+    function artikl_dropdown()
+    {
+        $this->db->select('SID, S1Ime');
+        $this->db->from('s1');
+        $this->db->order_by('S1Ime');
+        $query    = $this->db->get();
+        $dropdown = array();
+        $dropdown[0]='Сите';
+        if ($query->num_rows() > 0) {
+
+            foreach ($query->result_array() as $row) {
+
+                $dropdown[$row['SID']] = $row['S1Ime'];
+            }
+        }
+
+        return $dropdown;
+    }
+
+	function katbroj_dropdown()
+	{
+		$this->db->select('SOID, SOIme');
+		$this->db->from('s0');
+		$this->db->order_by('SOID');
+		$query    = $this->db->get();
+		$dropdown = array();
+		if ($query->num_rows() > 0) {
+
+			foreach ($query->result_array() as $row) {
+				$dropdown[$row['SOID']] = $row['SOIme'];
+			}
+		}
+
+		return $dropdown;
+	}
+
+	function proizvoditel_dropdown()
+	{
+		$this->db->select('markerID, markerIme');
+		$this->db->from('marker');
+		$this->db->order_by('markerID');
+		$query    = $this->db->get();
+		$dropdown = array();
+		if ($query->num_rows() > 0) {
+
+			foreach ($query->result_array() as $row) {
+				$dropdown[$row['markerID']] = $row['markerIme'];
+			}
+		}
+
+		return $dropdown;
+	}
+
+	function edinicamerka_dropdown()
+	{
+		$this->db->select('edMerkaID, edMerkaSkr');
+		$this->db->from('edmerka');
+		$this->db->order_by('edMerkaID');
+		$query    = $this->db->get();
+		$dropdown = array();
+		if ($query->num_rows() > 0) {
+
+			foreach ($query->result_array() as $row) {
+				$dropdown[$row['edMerkaID']] = $row['edMerkaSkr'];
+			}
+		}
+
+		return $dropdown;
+	}
+
+    public function getAllEdMerki()
+    {
+        $this->db->select('id, ime_dolgo');
+        $this->db->from('bis_edmerki');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $result = $query->result();
+            return $result;
+        }
+    }
+
+	function get_katalog2($k)
+	{
+		$this->db->select('SID,S1Ime');
+		$this->db->from('s1');
+		$this->db->where('SID0', $k);
+		$query = $this->db->get();
+
+		return $query;
+	}
+    public function getAutocompleteVfArtikli($text, $limit)
+    {
+        $this->db->select("s1.*, bis_edmerki.ime_dolgo as edMerkaIme");
+        $query = $this->db->from('s1');
+        $this->db->join('bis_edmerki', 'bis_edmerki.id = s1.EdMerka', 'left');
+        $this->db->like("S1Ime", $text, 'both');
+        $this->db->limit($limit);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $result = $query->result();
+            foreach ($result as $artikal) {
+                $sliki              = $this->getSliki($artikal->SID);
+                $artikal->slika     = (isset($sliki[0]['link']) ? $sliki[0]['link'] : "");
+                $artikal->sliki     = $sliki;
+                $artikal->dokumenti = $this->getDokumenti($artikal->SID);
+                $novartikal[]       = $artikal;
+            }
+            return $novartikal;
+        }
+    }
+    public function getAutocompleteVfSifri($text, $limit)
+    {
+        $this->db->select("s1.*, bis_edmerki.ime_dolgo as edMerkaIme");
+        $query = $this->db->from('s1');
+        $this->db->join('bis_edmerki', 'bis_edmerki.id = s1.EdMerka', 'left');
+        $this->db->like("sifra", $text, 'both');
+        $this->db->limit($limit);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $result = $query->result();
+            foreach ($result as $artikal) {
+                $sliki              = $this->getSliki($artikal->SID);
+                $artikal->slika     = (isset($sliki[0]['link']) ? $sliki[0]['link'] : "");
+                $artikal->sliki     = $sliki;
+                $artikal->dokumenti = $this->getDokumenti($artikal->SID);
+                $novartikal[]       = $artikal;
+            }
+            return $novartikal;
+        }
+    }
+    public function filtriraj_po_artikl($artikl){
+        $this->db->select('s1.*');
+        $this->db->from('s1');
+        if($artikl!=0)$this->db->where('s1.SID',$artikl);
+        $q=$this->db->get();
+        if ($q->num_rows > 0) {
+            return $q->result();
+        }
+    }
+
+}

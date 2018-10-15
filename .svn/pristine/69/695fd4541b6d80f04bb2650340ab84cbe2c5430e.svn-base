@@ -1,0 +1,42 @@
+<?php
+
+class Kreditori_model extends CI_Model
+{
+
+    public function getKreditori()
+    {
+        $query = $this->db->get('bis_kreditori');
+        return $query->result();
+    }
+
+
+    public function getKreditor($id)
+    {
+        $this->db->where("id", $id);
+        $query = $this->db->get('bis_kreditori');
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_kreditori()
+    {
+        $insert_data = $this->input->post();
+        $insert      = $this->db->insert('bis_kreditori', $insert_data);
+        return $insert;
+    }
+
+
+    public function delete_kreditori($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_kreditori');
+    }
+
+    public function update_kreditori()
+    {
+        $field_update_data =	$this->input->post();
+        $this->db->where('id',$field_update_data['id']);
+        $this->db->update('bis_kreditori', $field_update_data);
+    }
+}

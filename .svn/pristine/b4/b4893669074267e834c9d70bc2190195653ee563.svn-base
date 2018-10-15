@@ -1,0 +1,218 @@
+<div class="faktura-form">
+<?php echo form_open('knizenje/nalog/create_nalog'); ?>
+<fieldset>
+    <legend>Налог за книжење</legend>
+    <div class="faktura-arhivskibroj">
+        <label>Број: </label>
+<!--        <span class="arhivskibroj"></span>-->
+        <input type="text" name="broj" class="fakturabroj" readonly="">
+        <input type="hidden" name="arhivskibrojint" class="arhivskibrojint">     <br>
+    </div>
+
+    <div class="faktura-od-dobavuvac nov-nalog-datum">
+    <input type="hidden" class="tip_na_faktura" name="tip">
+        <input type="hidden" name="id_dok" class="id_dok">
+        <input type="hidden" name="kom" class="kom">
+            <label>Датум:</label>
+            <input type="text" name="datum" class="nalogdatum">
+
+    </div>
+
+    <div class="f-od-dobavuvac nov-nalog-datum">
+        <label>Зa која ОЕ:</label>
+        <?php echo form_dropdown('oddel', $oddel, '', 'class="nalogoddel"'); ?>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>Врска со документи</legend>
+    <div class="vrska-so-dokumenti clearboth">
+        <div class="dogovor-proekt-kopcinja">
+
+            <button type="button" class="button vrskadokumenti"
+                    formaction="/index.php/knizenje/nalog/povrzi_dokument">
+                <span>Поврзи Документ</span></button>
+        <!--    <button type="button" class="novapriemnica button"
+                    formaction="/index.php/vlezni_fakturi/faktura/fakturaPriemnica">
+                <span>Нова Приемница</span></button>  -->
+        </div>
+        <div class="dodadeni-priemnici">
+            <span class="dodadenipriemnici"></span>
+            <input type="hidden" class="vrskadokumenti" name="vrskadokumenti">
+            <input type="hidden" class="priemnica_id" name="priemnica_id">
+        </div>
+    </div>
+</fieldset>
+
+<?php
+$delete = img(array(
+    'src' => 'images/delete.png',
+    'width' => '15',
+    'height' => '15',
+    'class' => 'delete'
+));
+$edit = img(array(
+    'src' => 'images/edit.png',
+    'width' => '15',
+    'height' => '15',
+));
+$add = img(array(
+    'src' => 'images/add.png',
+    'width' => '15',
+    'height' => '15',
+    'class' => 'add',
+    'formaction' => '/index.php/vlezni_fakturi/faktura/dodaj_stavka'
+));
+?>
+<fieldset>
+    <legend>Ставки во документот</legend>
+    <table class="stavki-nalog" border="1" cellpadding="2" id="faktura">
+        <thead>
+        <tr>
+
+            <th class="konto">Конто</th>
+            <th>Бр.док.</th>
+            <th class="naziv">Назив на конто</th>
+            <th class="opis">Опис</th>
+            <th>Коминтент</th>
+
+            <th class="dolzi">Должи</th>
+            <th class="pobaruva">Побарува</th>
+            <th class="hide"></th>
+            <th class="hide"></th>
+            <th class="hide"></th>
+            <th class="hide"></th>
+            <th class="hide"></th>
+            <th class="hide"></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <input type="hidden" class="proverka" value="0">
+<!--    <div class="addstavka floatleft">
+        <button type="button" class="add button"><span>Додади ставка</span>
+        </button>
+   </div>
+    <div class="addstavka floatleft">
+        <button type="button" class="dodadiusluga button"><span>Додади услуга</span></button>
+    </div>      -->
+
+</fieldset>
+
+
+
+<div class="otkazi-snimi-novafak">
+    <div class="snimi">
+
+        <div class="submitclosebutton">
+            <button type="button" class="submitnalog button"><span>Зачувај</span></button>
+        </div>
+    </div>
+    <div class="drugo">
+        <div class="otkazibutton">
+            <button type="button" class="otkazinalog button"><span>Откажи</span></button>
+        </div>
+    </div>
+</div>
+    <? echo form_close();?>
+
+</div>
+<script>
+ // jQuery('.stavki-nalog tbody .edit-tr').live('click',function () {
+     //  var id=jQuery(this).parent().parent().attr("id");
+   //   var kasaid=jQuery(this).parent().parent().attr("kasaid");
+   ///   var tip=  jQuery(this).parent().parent().attr("tip");
+   //   if(tip==40 || tip==50){
+
+
+    //  var formaction = "/index.php/izvodi/menu/editStavkaIzvod?id=" + id;
+      //
+      //jQuery.ajax({
+       //   url:formaction,
+        //  success:function (response) {
+         //     var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            //  jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            //  jQuery("." + tempdialog).html(response);
+            //  jQuery('div.' + tempdialog).dialog({
+                //  autoOpen:true,
+              //    width:"auto",
+                  //position:[20, 20],
+                //  position:"center",
+               //   modal:true,
+                  //dialogClass: 'dialogsotabovi',
+               //   title:"Промени ставка",
+                ///  close:function (event, ui) {
+                    //  jQuery(this).dialog("destroy");
+                   //   jQuery(this).remove();
+                  //}
+             // });
+        //  }
+     // });
+    //  }
+      //else if(tip==550 || tip==540 ){
+        //  odliv_priliv_izmeni(kasaid);
+     // }
+
+       // console.log(dbid);
+  // });
+ function proveri_tabela_stavki(){
+
+         var konto = jQuery('.proverka').val();
+     console.log(konto);
+         if(konto !=1) return 0;
+         else return 1;
+
+
+ }
+ jQuery('.nalogdatum').datepicker();
+ jQuery('.nalogdatum').datepicker('setDate', new Date());
+jQuery(document).ready(function () {
+    jQuery('.nalogoddel').combobox();
+    getNewNalogBroj();
+    jQuery('.vrskadokumenti').click(function (e) {
+        var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+        jQuery("body").append('<div class="' + tempdialog + '"></div>');
+        jQuery('div.' + tempdialog).dialog({
+            autoOpen: true,
+            width: 1100,
+            close: function (event, ui) {
+                jQuery(this).dialog("destroy");
+                jQuery(this).remove();
+            }}).load(jQuery(this).attr('formaction'));
+        e.preventDefault();
+    });
+    jQuery('.otkazinalog').click(function () {
+        destroyparentdialog(jQuery(this));
+    });
+    jQuery('.submitnalog').click(function () {
+        console.log(proveri_tabela_stavki());
+        if(proveri_tabela_stavki()){
+            var ovakopce = jQuery(this);
+            var formaction = jQuery(this).parent().parent().parent().parent().attr('action');
+            var index = 1;
+            //jQuery('.tstavki tbody tr:last').remove();
+            jQuery("tr.detali").each(function () {
+                jQuery(this).find('td').each(function () {
+                    var name = jQuery(this).find("input").attr('name');
+                    var newname = name + "[" + index + "]";
+                    jQuery(this).find("input").attr('name', newname);
+                })
+                index = parseInt(index) + 1;
+            });
+            jQuery.ajax({
+                type: "POST",
+                url: formaction,
+                data: jQuery(this).parent().parent().parent().parent().serialize(),
+                success: function (response) {
+                    nalozi_popolnilista();
+                    destroyparentdialog(ovakopce);
+                }
+            });
+            jQuery('.proverka').val(0);
+        }
+        else alert('Внесете ставки во налогот!');
+    });
+
+
+});
+</script>

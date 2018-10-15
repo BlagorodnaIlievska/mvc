@@ -1,0 +1,14 @@
+<div id="main_menu" class="main-menu-tabs">
+    <ul>
+        <?php if (bis_check_access('izlezni_fakturi_pregled_izlezni_fakturi_menu')): ?>
+            <li><a href="/index.php/izlezni_fakturi/pregled_izlezni/menu">Преглед на излезни фактури</a></li>
+                <?php endif ?>
+<!--        --><?php //if (bis_check_access('izlezni_fakturi_pregled_dospeanost_menu')): ?>
+<!--            <li><a href="/index.php/izlezni_fakturi/pregled_dospeanost/menu">Преглед по доспеаност</a></li>-->
+<!--                --><?php //endif ?>
+    <!--        <li><a href="/index.php/izlezni_fakturi/fin_grupiranje/menu">Fin. Grupiranje</a></li>-->
+        <?php if (bis_check_access('izlezni_fakturi_period_klient_menu')): ?>
+            <li><a href="/index.php/izlezni_fakturi/period_klient/menu">Период / Клиент</a></li>
+                <?php endif ?>
+    </ul>
+</div>

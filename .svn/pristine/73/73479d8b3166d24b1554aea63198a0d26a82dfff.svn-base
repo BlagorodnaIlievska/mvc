@@ -1,0 +1,63 @@
+<html>
+<head>
+
+</head>
+<body>
+<p align='center'>Pregled na site izlezni fakturi</p>
+<table  border='1'   width='150' height='60' align='center' >
+    <tr>
+        <td>No.</td>
+        <td>Broj.</td>
+        <td>Datum</td>
+        <td>Klient</td>
+        <td>Osnova</td>
+        <td>DDV</td>
+        <td>Vkupno</td>
+        <td>Zabeleska</td>
+    </tr>
+
+    <?php
+    $reden=1;
+    $o=0;
+    $d=0;
+    $v=0;
+    if(isset($q)){
+        foreach($q as $row){
+
+            echo "<tr>" ;
+            echo "<td width='20'>" . $reden . "</td>";
+            echo "<td width='100'>" . $row->broj . "</td>";
+            echo "<td width='60'>" .$row->datum."</td>";
+            echo "<td width='60'>" .$row->firma."</td>";
+            echo "<td width='60'>" .$row->osnova."</td>";
+            echo "<td width='60'>".$row->ddv. "</td>";
+            echo "<td width='60'>" .$row->vkupno."</td>";
+            echo "<td width='60'>" .$row->zabeleska."</td>";
+
+
+            $reden=$reden+1;
+
+            $o+=$row->osnova;
+            $d+=$row->ddv;
+            $v+=$row->vkupno;
+            //$b+=$bezddv;
+            echo " </tr>";
+
+        }
+    }
+
+    ?>
+
+</table>
+<br>
+<br>
+<br>
+<p class="doleLevo">
+    <?echo 'Osnova vkupno  :'.$o;?>
+    <br>
+    <?echo 'Ddv vkupno :'.$d;?>
+    <br>
+    <?echo 'Vkupno :'.$v;?>
+</p>
+</body>
+</html>

@@ -1,0 +1,123 @@
+
+.{
+    padding: 40px 30px;
+    width: 800px;
+}
+. > .levo{
+    float: left;
+    text-align: center;
+    width: 300px;
+}
+. > .desno{
+    float: right;
+    text-align: center;
+    width: 200px;
+}
+. .levo1{
+    float: left;
+    width: 200px;
+}
+. .levo_pomalo{
+    float: left; width: 200px; text-align: center;
+}
+
+
+. .desno1{
+    float: right; text-align: center; position: relative; right: 0;
+}
+. .do_koj{
+    float: right;
+    text-align: center;
+}
+. .polinja_gore{
+    width: 200px;
+}
+
+. .naslov{
+    text-align: center;
+    padding-bottom: 30px;
+    background-color: #ffffff;
+}
+
+. .text-inside{
+    clear: both;
+    text-align: justify;
+}
+. .text1_levo{
+    font-size: 12px; font-family: Tahoma, Geneva, sans-serif;
+}
+. .text1_levo div {
+    font-size: 12px; font-family: Tahoma, Geneva, sans-serif;
+}
+. .input_bottom_line{
+    border-right: none;
+    border-top: none;
+    border-left: none;
+}
+.sirina_250{
+    width: 250px;
+}
+.center{
+    text-align: center;
+}
+.sirina_300{
+    width: 300px;
+}
+.sirina_100{
+    width: 100px;
+}
+.sirina_50{
+    width: 50px;
+}
+.sirina_40{
+    width: 40px;
+}
+.MP{
+    width: 165; float: left; padding-left: 80px; padding-right: 80px;
+}
+.datum_m{
+    width: 100px; padding-left: 10px;
+}
+
+.left_float{
+    float: left;
+}
+
+.sirina_500{
+    width: 500px;
+}
+.div_dijag{
+    float: left; width: 500px;
+}
+
+.sirina_120{
+    width: 120px;
+}
+.fzo_podracna{
+    width: 325px;
+}
+.sirina_220{
+    width: 220px;
+}
+.sirina_140{
+    width: 140px;
+}
+.right_float{
+    float: right;
+}
+.adresa{
+    width: 792px;
+}
+
+.clear_align{
+    clear: both; text-align: center;
+}
+.clear{
+    clear: both;
+}
+.do{
+    text-align: left;
+}
+.br_lkr_dnevnik{
+    width: 50px;
+}

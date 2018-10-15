@@ -1,0 +1,2028 @@
+<div class="dokument-glavnalista">
+    <div class="dokumentilista">
+
+            <label>Влезни фактури: </label>
+            <input type="radio" name="s-nalog" class="s-fakturi-vlezni"  >
+            <input type="hidden" name="zadokument" class="zadokument">
+        <!--    <input type="text" name="s-brojfaktura" class="s-brojfaktura" disabled="true">   -->
+
+
+            <label>Излезни фактури: </label>
+            <input type="radio" name="s-nalog" class="s-fakturi-izlezni"  formaction="/index.php/kasi/kasi/povrzi_postoecka">
+            <input type="hidden" name="zadokument" class="zadokument">
+      <!--      <input type="text" name="s-brojfaktura" class="s-brojfaktura" disabled="true">    -->
+
+
+
+            <label>Касов извештај: </label>
+            <input type="radio" name="s-nalog" class="s-kasov-izvestaj"  formaction="/index.php/kasi/kasi/povrzi_postoecka">
+            <input type="hidden" name="zadokument" class="zadokument">
+     <!--      <input type="text" name="s-brojfaktura" class="s-brojfaktura" disabled="true"> -->
+
+            <label>Изводи: </label>
+            <input type="radio" name="s-nalog" class="s-izvodi"  formaction="/index.php/kasi/kasi/povrzi_postoecka">
+            <input type="hidden" name="zadokument" class="zadokument">
+            <label>Отпис на материјали: </label>
+            <input type="radio" name="s-nalog" class="s-otpis"  formaction="/index.php/kasi/kasi/povrzi_postoecka">
+            <input type="hidden" name="zadokument" class="zadokument">
+
+            <!--   <input type="text" name="s-brojfaktura" class="s-brojfaktura" disabled="true">   -->
+
+
+    </div>
+    <div class="tabela-fakturi" style="display: none;" >
+    <div class="predtabela">
+    <table class="tabela-fakturi" >
+        <thead>
+        <tr>
+            <th>Пренеси во налог</th>
+            <th>Број на док.</th>
+            <th>Датум</th>
+            <th>Коминтент</th>
+            <th>Oддел</th>
+            <th>Вкупно</th>
+            <th>Забелешка</th>
+
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    </div>
+    <input type="checkbox" id="selektor-vlezni" class="cekirano"><span>Одбери сите</span>
+    <button class="button prenesi_vo_nalog" value="" type="button">
+        <span>Пренеси во налог</span>
+    </button>
+    </div>
+    <div class="tabela-izlezni" style="display: none;" >
+        <div class="predtabela">
+            <table class="tabela-izlezni" >
+                <thead>
+                <tr>
+                    <th>Пренеси во налог</th>
+                    <th>Број на док.</th>
+                    <th>Датум</th>
+                    <th>Коминтент</th>
+                    <th>Oддел</th>
+                    <th>Вкупно</th>
+                    <th>Забелешка</th>
+
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+        <input type="checkbox" id="selektor-izlezni" class="cekirano"><span>Одбери сите</span>
+        <button class="button prenesi_vo_nalog_izlezni" value="" type="button">
+            <span>Пренеси во налог</span>
+        </button>
+    </div>
+    <div class="tabela-kasi" style="display: none;" >
+        <?echo form_label('Избери каса','kasa');
+        echo form_dropdown('kasa',$kasa,'','class="ddkasa pregledsostojba"');?>
+        <div class="predtabela">
+            <table class="tabela-kasi" >
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Пренеси во налог</th>
+
+                    <th>Број на док.</th>
+                    <th>Датум</th>
+                    <th>Коминтент</th>
+                    <th>Оддел</th>
+                    <th>Прилив</th>
+                    <th>Одлив</th>
+                    <th>Конто</th>
+
+
+
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+        <input type="checkbox" id="selektor-kasi" class="cekirano"><span>Одбери сите</span>
+        <button class="button prenesi_vo_nalog_kasa" value="" type="button">
+            <span>Пренеси во налог</span>
+        </button>
+       <input type="hidden" name="zaDokID" class="zaDokID">
+    </div>
+    <div class="tabela-izvodi" style="display: none;" >
+        <?echo form_label('Избери извод по жиросметка','izvodi');
+        echo form_dropdown('izvodi',$izvodi,'','class="ddizvodi pregledpozivod"');?>
+        <div class="predtabela">
+            <table class="tabela-izvodi" >
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Пренеси во налог</th>
+
+                    <th>Број на док.</th>
+                    <th>Датум</th>
+                    <th>Коминтент</th>
+                    <th>Прилив</th>
+                    <th>Одлив</th>
+                    <th>Конто</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+        <input type="checkbox" id="selektor-izvodi" class="cekirano"><span>Одбери сите</span>
+        <button class="button prenesi_vo_nalog_izvod" value="" type="button">
+            <span>Пренеси во налог</span>
+
+        </button>
+        <input type="hidden" name="zaDokID_izvod" class="zaDokID_izvod">
+    </div>
+    <div class="tabela-otpis" style="display: none;" >
+        <div class="predtabela">
+            <table class="tabela-otpis" >
+                <thead>
+                <tr>
+
+                    <th>Пренеси во налог</th>
+
+                    <th>Број на док.</th>
+                    <th>Датум</th>
+
+
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+        <input type="checkbox" id="selektor-otpis" class="cekirano"><span>Одбери сите</span>
+        <button class="button prenesi_vo_nalog_otpis" value="" type="button">
+            <span>Пренеси во налог</span>
+
+        </button>
+        <input type="hidden" name="zaDokID_izvod" class="zaDokID_izvod">
+    </div>
+
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+
+
+        jQuery("#selektor-vlezni").click(function () {
+            jQuery('.cekirano').attr('checked', this.checked);
+
+        });
+        jQuery(".cekirano").click(function(){
+
+            if(jQuery(".cekirano").length == $(".cekirano:checked").length) {
+                jQuery("#selektor-vlezni").attr("checked", "checked");
+            } else {
+                jQuery("#selektor-vlezni").removeAttr("checked");
+            }
+
+        });
+        jQuery("#selektor-izlezni").click(function () {
+            jQuery('.cekirano').attr('checked', this.checked);
+
+        });
+        jQuery(".cekirano").click(function(){
+
+            if(jQuery(".cekirano").length == $(".cekirano:checked").length) {
+                jQuery("#selektor-izlezni").attr("checked", "checked");
+            } else {
+                jQuery("#selektor-izlezni").removeAttr("checked");
+            }
+
+        });
+        jQuery("#selektor-kasi").click(function () {
+            jQuery('.cekirano').attr('checked', this.checked);
+
+        });
+        jQuery(".cekirano").click(function(){
+
+            if(jQuery(".cekirano").length == $(".cekirano:checked").length) {
+                jQuery("#selektor-kasi").attr("checked", "checked");
+            } else {
+                jQuery("#selektor-kasi").removeAttr("checked");
+            }
+
+        });
+        jQuery("#selektor-izvodi").click(function () {
+            jQuery('.cekirano').attr('checked', this.checked);
+
+        });
+        jQuery(".cekirano").click(function(){
+
+            if(jQuery(".cekirano").length == $(".cekirano:checked").length) {
+                jQuery("#selektor-izvodi").attr("checked", "checked");
+            } else {
+                jQuery("#selektor-izvodi").removeAttr("checked");
+            }
+
+        });
+        jQuery('.tabela-fakturi').tablesorter();
+        jQuery('.tabela-izlezni').tablesorter();
+        jQuery('.tabela-kasi').tablesorter();
+        jQuery('.tabela-izvodi').tablesorter();
+        jQuery('.tabela-otpis').tablesorter();
+
+
+        jQuery('.s-fakturi-vlezni').click(function(){
+
+    if (jQuery(".tabela-fakturi").hasClass("prikazano")) {
+        jQuery(".tabela-fakturi").hide(500);
+        jQuery(".tabela-fakturi").removeClass("prikazano");
+    }
+    if (jQuery(".tabela-kasi").hasClass("prikazano")) {
+        jQuery(".tabela-kasi").hide(500);
+        jQuery(".tabela-kasi").removeClass("prikazano");
+    } else {
+        jQuery(".tabela-fakturi").show(500);
+        jQuery(".tabela-fakturi").addClass("prikazano");
+    }
+    if (jQuery(".tabela-izvodi").hasClass("prikazano")) {
+        jQuery(".tabela-izvodi").hide(500);
+        jQuery(".tabela-izvodi").removeClass("prikazano");
+    }
+    if (jQuery(".tabela-izlezni").hasClass("prikazano")) {
+        jQuery(".tabela-izlezni").hide(500);
+        jQuery(".tabela-izlezni").removeClass("prikazano");
+    }
+    if (jQuery(".tabela-otpis").hasClass("prikazano")) {
+        jQuery(".tabela-otpis").hide(500);
+        jQuery(".tabela-otpis").removeClass("prikazano");
+    }
+if(jQuery('.s-fakturi-vlezni').is(":checked"))
+        {
+            jQuery(".tabela-fakturi").show(500);
+            jQuery(".tabela-fakturi").addClass("prikazano");
+            site_vlezni_fakturi();
+
+            }
+        });
+
+        jQuery('.s-fakturi-izlezni').click(function(){
+
+            if (jQuery(".tabela-izlezni").hasClass("prikazano")) {
+                jQuery(".tabela-izlezni").hide(500);
+                jQuery(".tabela-izlezni").removeClass("prikazano");
+            } else {
+                jQuery(".tabela-izlezni").show(500);
+                jQuery(".tabela-izlezni").addClass("prikazano");
+            }
+            if(jQuery('.s-fakturi-izlezni').is(":checked"))
+            {
+
+                site_izlezni_fakturi();
+                //site_fzom();
+
+            }
+            if (jQuery(".tabela-izvodi").hasClass("prikazano")) {
+                jQuery(".tabela-izvodi").hide(500);
+                jQuery(".tabela-izvodi").removeClass("prikazano");
+            }
+            if (jQuery(".tabela-fakturi").hasClass("prikazano")) {
+                jQuery(".tabela-fakturi").hide(500);
+                jQuery(".tabela-fakturi").removeClass("prikazano");
+            }
+            if (jQuery(".tabela-otpis").hasClass("prikazano")) {
+                jQuery(".tabela-otpis").hide(500);
+                jQuery(".tabela-otpis").removeClass("prikazano");
+            }
+            if (jQuery(".tabela-kasi").hasClass("prikazano")) {
+                jQuery(".tabela-kasi").hide(500);
+                jQuery(".tabela-kasi").removeClass("prikazano");
+            }
+        });
+        jQuery('.s-kasov-izvestaj').click(function(){
+
+            if (jQuery(".tabela-kasi").hasClass("prikazano")) {
+                jQuery(".tabela-kasi").hide(500);
+                jQuery(".tabela-kasi").removeClass("prikazano");
+            } else {
+                jQuery(".tabela-kasi").show(500);
+                jQuery(".tabela-kasi").addClass("prikazano");
+            }
+            if (jQuery(".tabela-izvodi").hasClass("prikazano")) {
+                jQuery(".tabela-izvodi").hide(500);
+                jQuery(".tabela-izvodi").removeClass("prikazano");
+            }
+            if (jQuery(".tabela-fakturi").hasClass("prikazano")) {
+                jQuery(".tabela-fakturi").hide(500);
+                jQuery(".tabela-fakturi").removeClass("prikazano");
+            }
+            if (jQuery(".tabela-otpis").hasClass("prikazano")) {
+                jQuery(".tabela-otpis").hide(500);
+                jQuery(".tabela-otpis").removeClass("prikazano");
+            }
+            if (jQuery(".tabela-izlezni").hasClass("prikazano")) {
+                jQuery(".tabela-izlezni").hide(500);
+                jQuery(".tabela-izlezni").removeClass("prikazano");
+            }
+
+
+        });
+        jQuery('.s-izvodi').click(function(){
+            if (jQuery(".tabela-kasi").hasClass("prikazano")) {
+                jQuery(".tabela-kasi").hide(500);
+                jQuery(".tabela-kasi").removeClass("prikazano");
+            }
+            if (jQuery(".tabela-fakturi").hasClass("prikazano")) {
+                jQuery(".tabela-fakturi").hide(500);
+                jQuery(".tabela-fakturi").removeClass("prikazano");
+            }
+            if (jQuery(".tabela-izlezni").hasClass("prikazano")) {
+                jQuery(".tabela-izlezni").hide(500);
+                jQuery(".tabela-izlezni").removeClass("prikazano");
+            }
+            if (jQuery(".tabela-otpis").hasClass("prikazano")) {
+                jQuery(".tabela-otpis").hide(500);
+                jQuery(".tabela-otpis").removeClass("prikazano");
+            }
+            if (jQuery(".tabela-izvodi").hasClass("prikazano")) {
+                    jQuery(".tabela-izvodi").hide(500);
+                jQuery(".tabela-izvodi").removeClass("prikazano");
+            }
+            else {
+                jQuery(".tabela-izvodi").show(500);
+                jQuery(".tabela-izvodi").addClass("prikazano");
+            }
+
+
+        });
+        jQuery('.s-otpis').click(function(){
+
+            if (jQuery(".tabela-otpis").hasClass("prikazano")) {
+                jQuery(".tabela-otpis").hide(500);
+                jQuery(".tabela-otpis").removeClass("prikazano");
+            } else {
+                jQuery(".tabela-otpis").show(500);
+                jQuery(".tabela-otpis").addClass("prikazano");
+            }
+
+           /// console.log('ne');
+            if (jQuery(".tabela-izvodi").hasClass("prikazano")) {
+                jQuery(".tabela-izvodi").hide(500);
+                jQuery(".tabela-izvodi").removeClass("prikazano");
+            }
+            if (jQuery(".tabela-fakturi").hasClass("prikazano")) {
+                jQuery(".tabela-fakturi").hide(500);
+                jQuery(".tabela-fakturi").removeClass("prikazano");
+            }
+            if (jQuery(".tabela-izlezni").hasClass("prikazano")) {
+                jQuery(".tabela-izlezni").hide(500);
+                jQuery(".tabela-izlezni").removeClass("prikazano");
+            }
+            if (jQuery(".tabela-kasi").hasClass("prikazano")) {
+                jQuery(".tabela-kasi").hide(500);
+                jQuery(".tabela-kasi").removeClass("prikazano");
+            }
+            if(jQuery('.s-otpis').is(":checked"))
+            {         //console.log('da');
+                site_otpis();
+                //site_izlezni_fakturi();
+                //site_fzom();
+
+            }
+        });
+        jQuery('.pregledsostojba').live('change', function () {
+            jQuery(".tabela-kasalista").find("tr:gt(1)").remove();
+
+            var kasaid = jQuery('.ddkasa option:selected').val();
+            console.log(kasaid);
+                 izlistaj_kasi(kasaid);
+            //prebaruvanje(kasaid,period1,period2);
+
+        });
+        jQuery('.pregledpozivod').live('change', function () {
+        //    jQuery(".tabela-izvodi").find("tr:gt(1)").remove();
+
+            var izvodid = jQuery('.ddizvodi option:selected').val();
+            var izvod =izvodid.split(".");
+            console.log(izvod[0]);
+            console.log(izvod[1]);
+           izlistaj_izvodi(izvod[0],izvod[1]);
+            //prebaruvanje(kasaid,period1,period2);
+
+        });
+
+
+        jQuery(".prenesi_vo_nalog").live("click", function(){
+            var ovakopce = jQuery(this);
+
+            var stavki = [];
+
+            jQuery(".tabela-fakturi tbody tr").each(function() {
+                var checked = jQuery(this).find("input.cekirano").is(':checked');
+                if(checked)
+                {
+
+                    var fakturaid = jQuery(this).find('.cekirano').val();
+
+                    var tip=10;
+                    stavki.push(fakturaid);
+
+
+
+                    var data = {
+                        dbid: fakturaid
+
+                    }
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/prenesi_vo_nalog",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                           console.log(response);
+//                            var tr = jQuery('.tstavki tr:last');
+//                            tr.removeClass('hiderow');
+                                 jQuery('.tip_na_faktura').val(response[0].tip);
+                                 jQuery('.id_dok').val(response[0].fakturaid);
+
+
+                            var kl=response[0].firma;
+                                jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[0].fakturaid + '">' +
+
+
+                                    '<td><input type="text" name="konto" value=" '+response[0].konto+' "></td>' +
+                                    '<td><input type="text" name="broj_dok" value="'+response[0].broj+'"></td>' +
+                                    '<td><input type="text" name="opis" value=" '+response[0].naziv+' "></td>' +
+
+                                   '<td><input type="text"  name="stavka" ></td>' +
+                                    '<td><input type="text" name="komintent" value=" '+response[0].firma+' " ></td>' +
+
+                                    '<td><input type="text" name="dolzi"></td>' +
+                                    '<td><input type="text" name="pobaruva" value=" '+response[0].vkupno+' "></td>' +
+                                   '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[0].fakturaid+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="za_promena" value="1"></td>' +
+                                        '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="konto1" value=" '+response[0].konto_id+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="firma" value=" '+response[0].firma_id+' "></td>' +
+                                   '</tr>'
+                                 ));
+
+                              jQuery('.proverka').val(1);
+//                            tr.addClass('hiderow');
+                        }
+
+
+                    });
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/getVleznaDetali_po_materijalni_konta",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+
+                            console.log(response);
+//                            var tr = jQuery('.tstavki tr:last');
+//                            tr.removeClass('hiderow');
+                            for(var i = 0; i < response.length;i++){
+
+                                if(response[0].konto.length >0){
+                                                      if(response[i].tip_stavka==1){
+
+
+                                    jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].dbid + '">' +
+
+                                            '<td><input type="text" name="konto" value=" '+response[i].konto+' " ></td>' +
+                                            '<td><input type="text" name="broj_dok" value="'+response[i].broj+'" ></td>' +
+                                            '<td><input type="text" name="opis" value="'+response[i].opis+'" ></td>' +
+
+                                            '<td><input type="text" name="stavka" ></td>' +
+                                            '<td><input type="text" name="komintent" value=" '+response[0].firma+' "></td>' +
+
+                                            '<td><input type="text" name="dolzi" value=" '+response[i].cenaDdv+' "></td>' +
+                                            '<td><input type="text" name="pobaruva"></td>' +
+                                            '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].dbid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                            '<td class="hide" > <input type="hidden" name="kk" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="konto1" value=" '+response[i].konto_id+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="firma" value=" '+response[i].firma_id+' "></td>' +
+                                            '</tr>'
+                                            ));
+                                                    }
+
+//                            tr.addClass('hiderow');
+                                }
+                                jQuery('.proverka').val(1);
+                            }
+                        }
+
+                    });
+
+
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/getVleznaDetali_po_konta",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            console.log(response);
+//                            var tr = jQuery('.tstavki tr:last');
+//                            tr.removeClass('hiderow');
+                            for(var i = 0; i < response.length;i++){
+
+
+                            jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].dbid + '">' +
+
+                                    '<td><input type="text" name="konto" value=" '+response[i].konto+' " ></td>' +
+                                    '<td><input type="text" name="broj_dok" value="'+response[i].broj+'" ></td>' +
+                                    '<td><input type="text" name="opis" value=" '+response[i].naziv+' "></td>' +
+
+                                    '<td><input type="text" name="stavka" ></td>' +
+                                    '<td><input type="text" name="komintent" value=" '+response[0].firma+' "></td>' +
+
+                                    '<td><input type="text" name="dolzi" value=" '+response[i].cenaDdv+' "></td>' +
+                                    '<td><input type="text" name="pobaruva"></td>' +
+                                    '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].dbid+' "></td>' +
+                                    '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                    '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                    '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+                                    '<td class="hide"><input type="hidden" name="konto1" value=" '+response[i].konto_id+' "></td>' +
+                                    '<td class="hide"><input type="hidden" name="firma" value=" '+response[i].firma_id+' "></td>' +
+                                    '</tr>'
+                                    ));
+
+//                            tr.addClass('hiderow');
+                                jQuery('.proverka').val(1);
+                        }
+                        }
+
+                    });
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/getVleznaDetali_po_materijalno_zatvoranje",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+
+                            console.log(response);
+//                            var tr = jQuery('.tstavki tr:last');
+//                            tr.removeClass('hiderow');
+                            for(var i = 0; i < response.length;i++){
+
+                                if(response[0].konto.length >0){
+                                jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].dbid + '">' +
+
+                                        '<td><input type="text" name="konto" value=" '+response[i].konto+' " ></td>' +
+                                        '<td><input type="text" name="broj_dok" value="'+response[i].broj+'" ></td>' +
+                                        '<td><input type="text" name="opis" value="'+response[i].opis+'" ></td>' +
+
+                                        '<td><input type="text" name="stavka" ></td>' +
+                                        '<td><input type="text" name="komintent" value=" '+response[0].firma+' "></td>' +
+
+                                        '<td><input type="text" name="dolzi" ></td>' +
+                                        '<td><input type="text" name="pobaruva" value=" '+response[i].cenaDdv+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].dbid+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="konto1" value=" '+response[i].konto_id+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="firma" value=" '+response[i].firma_id+' "></td>' +
+                                        '</tr>'
+                                        ));
+
+                                    jQuery('.proverka').val(1);
+//                            tr.addClass('hiderow');
+                            }
+                        } }
+
+                    });
+
+
+                    jQuery(this).remove();
+
+                }
+                jQuery('.koj_dokument').val(stavki);
+            });
+
+            destroyparentdialog(ovakopce);
+        });
+
+        jQuery(".prenesi_vo_nalog_izlezni").live("click", function(){
+            var ovakopce = jQuery(this);
+
+            var stavki = [];
+
+            jQuery(".tabela-izlezni tbody tr").each(function() {
+                var checked = jQuery(this).find("input.cekirano").is(':checked');
+                if(checked)
+                {
+
+                    var fakturaid = jQuery(this).find('.cekirano').val();
+                    stavki.push(fakturaid);
+
+
+                    var data = {
+                        dbid: fakturaid
+
+
+
+                    }
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/prenesi_vo_nalog_izlezni",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            console.log(response);
+//                            var tr = jQuery('.tstavki tr:last');
+//                            tr.removeClass('hiderow');
+                            jQuery('.tip_na_faktura').val(response[0].tip);
+                            jQuery('.id_dok').val(response[0].fakturaid);
+                            for(var i = 0; i < response.length;i++){
+                                              if(response[i].fzom_status==0 && response[i].ministerstvo_status==0){
+
+
+                                                   if(response[i].firma==null){
+
+
+                            jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                    '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                    '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                    '<td><input type="text" name="opis" value=" '+response[i].naziv+' "></td>' +
+
+                                    '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                    '<td><input type="text" name="komintent" value=" '+response[i].pacient_ime + ' '+response[i].pacient_prezime+' "></td>' +
+
+                                    '<td><input type="text" name="dolzi" value=" '+response[i].participacija+' "></td>' +
+                                    '<td><input type="text" name="pobaruva" "></td>' +
+                                    '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                    '<td class="hide"><input type="hidden" name="za_promena" value="1"></td>' +
+                                    '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                    '<td class="hide"><input type="hidden" name="kk" value="pacient"></td>' +
+                                    '<td class="hide"><input type="hidden" name="konto1" value=" '+response[i].konto_id+' "></td>' +
+                                    '<td class="hide"><input type="hidden" name="firma" value=" '+response[i].firma_id+' "></td>' +
+                                    '</tr>'
+                                    ));
+                                                       jQuery('.proverka').val(1);
+                                                   }
+                            else if(response[i].firma!=null){
+                                                       jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                                               '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                                               '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                                               '<td><input type="text" name="opis" value=" '+response[i].naziv+' "></td>' +
+
+                                                               '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                                               '<td><input type="text" name="komintent" value=" '+response[i].firma + ' "></td>' +
+
+                                                               '<td><input type="text" name="dolzi" value=" '+response[i].vkupno+' "></td>' +
+                                                               '<td><input type="text" name="pobaruva" "></td>' +
+                                                               '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                                               '<td class="hide"><input type="hidden" name="za_promena" value="1"></td>' +
+                                                               '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                                               '<td class="hide"><input type="hidden" name="kk" value="firma"></td>' +
+                                                               '<td class="hide"><input type="hidden" name="konto1" value=" '+response[i].konto_id+' "></td>' +
+                                                               '<td class="hide"><input type="hidden" name="firma" value=" '+response[i].firma_id+' "></td>' +
+                                                               '</tr>'
+                                                               ));
+                                                       jQuery('.proverka').val(1);
+                                                   }
+                                              }
+                            else if(response[i].fzom_status == 1 && response[i].ministerstvo_status==0) {
+                                                  jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                                          '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                                          '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                                          '<td><input type="text" name="opis" value=" '+response[i].naziv+' "></td>' +
+
+                                                          '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                                          '<td><input type="text" name="komintent" value=" ФЗО СКОПЈЕ "></td>' +
+
+                                                          '<td><input type="text" name="dolzi" value=" '+response[i].vkupno_fzom+' "></td>' +
+                                                          '<td><input type="text" name="pobaruva" "></td>' +
+                                                          '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                                          '<td class="hide"><input type="hidden" name="za_promena" value="1"></td>' +
+                                                          '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                                          '<td class="hide"><input type="hidden" name="kk" value="fzom"></td>' +
+                                                          '<td class="hide"><input type="hidden" name="konto1" value=" '+response[i].konto_id+' "></td>' +
+                                                          '<td class="hide"><input type="hidden" name="firma" value=" '+response[i].firma_id+' "></td>' +
+                                                          '</tr>'
+                                                          ));
+                                                  jQuery('.proverka').val(1);
+                                              }
+                                              else if(response[i].ministerstvo_status == 1 && response[i].fzom_status==0) {
+                                                  jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                                          '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                                          '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                                          '<td><input type="text" name="opis" value=" '+response[i].naziv+' "></td>' +
+
+                                                          '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                                          '<td><input type="text" name="komintent" value="МЗ"></td>' +
+
+                                                          '<td><input type="text" name="dolzi" value=" '+response[i].vkupno_fzom+' "></td>' +
+                                                          '<td><input type="text" name="pobaruva" "></td>' +
+                                                          '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                                          '<td class="hide"><input type="hidden" name="za_promena" value="1"></td>' +
+                                                          '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                                          '<td class="hide"><input type="hidden" name="kk" value="min"></td>' +
+                                                          '<td class="hide"><input type="hidden" name="konto1" value=" '+response[i].konto_id+' "></td>' +
+                                                          '<td class="hide"><input type="hidden" name="firma" value=" '+response[i].firma_id+' "></td>' +
+                                                          '</tr>'
+                                                          ));
+                                                  jQuery('.proverka').val(1);
+                                              }                    }
+
+//                            tr.addClass('hiderow');
+                        }
+                    });
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/prenesi_vo_nalog_izlezni_pobaruva",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            console.log(response);
+//                            var tr = jQuery('.tstavki tr:last');
+//                            tr.removeClass('hiderow');
+                            jQuery('.tip_na_faktura').val(response[0].tip);
+                            jQuery('.id_dok').val(response[0].fakturaid);
+                            for(var i = 0; i < response.length;i++){
+                                                                   if(response[i].fzom_status==0 && response[i].ministerstvo_status==0){
+
+
+                                                 if(response[i].firma==null){
+
+                            jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                    '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                    '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                    '<td><input type="text" name="opis" value=" '+response[i].naziv+' "></td>' +
+
+                                    '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                    '<td><input type="text" name="komintent" value=" '+response[i].pacient_ime + ' '+response[i].pacient_prezime+' "></td>' +
+
+                                    '<td><input type="text" name="dolzi" ></td>' +
+                                    '<td><input type="text" name="pobaruva" value=" '+response[i].participacija+' "></td>' +
+                                    '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                    '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                    '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                    '<td class="hide"><input type="hidden" name="kk" value="pacient"></td>' +
+                                    '<td class="hide"><input type="hidden" name="konto1" value=" '+response[i].konto_id+' "></td>' +
+                                    '<td class="hide"><input type="hidden" name="firma" value=" '+response[i].firma_id+' "></td>' +
+                                    '</tr>'
+                                    ));
+                                                     jQuery('.proverka').val(1);
+                                                 }
+                            else if(response[i].firma!=null){
+
+                                                     jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                                             '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                                             '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                                             '<td><input type="text" name="opis" value=" '+response[i].naziv+' "></td>' +
+
+                                                             '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                                             '<td><input type="text" name="komintent" value=" '+response[i].firma + '"></td>' +
+
+                                                             '<td><input type="text" name="dolzi" ></td>' +
+                                                             '<td><input type="text" name="pobaruva" value=" '+response[i].vkupno+' "></td>' +
+                                                             '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                                             '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                                             '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                                             '<td class="hide"><input type="hidden" name="kk" value="firma"></td>' +
+                                                             '<td class="hide"><input type="hidden" name="konto1" value=" '+response[i].konto_id+' "></td>' +
+                                                             '<td class="hide"><input type="hidden" name="firma" value=" '+response[i].firma_id+' "></td>' +
+                                                             '</tr>'
+                                                             ));
+                                                     jQuery('.proverka').val(1);
+                                                 }
+                                                                   }
+                                                                   else if(response[i].fzom_status ==1 && response[i].ministerstvo_status==0){
+                                                                       jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                                                               '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                                                               '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                                                               '<td><input type="text" name="opis" value=" '+response[i].naziv+' "></td>' +
+
+                                                                               '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                                                               '<td><input type="text" name="komintent" value=" ФЗО СКОПЈЕ "></td>' +
+
+                                                                               '<td><input type="text" name="dolzi" ></td>' +
+                                                                               '<td><input type="text" name="pobaruva" value=" '+response[i].vkupno_fzom+' "></td>' +
+                                                                               '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                                                               '<td class="hide"><input type="hidden" name="za_promena" value="1"></td>' +
+                                                                               '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                                                               '<td class="hide"><input type="hidden" name="kk" value="fzom"></td>' +
+                                                                               '<td class="hide"><input type="hidden" name="konto1" value=" '+response[i].konto_id+' "></td>' +
+                                                                               '<td class="hide"><input type="hidden" name="firma" value=" '+response[i].firma_id+' "></td>' +
+                                                                               '</tr>'
+                                                                               ));
+                                                                       jQuery('.proverka').val(1);
+                                                                   }
+                                                                   else if(response[i].ministerstvo_status ==1 && response[i].fzom_status==0){
+                                                                       jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                                                               '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                                                               '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                                                               '<td><input type="text" name="opis" value=" '+response[i].naziv+' "></td>' +
+
+                                                                               '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                                                               '<td><input type="text" name="komintent" value="МЗ "></td>' +
+
+                                                                               '<td><input type="text" name="dolzi" ></td>' +
+                                                                               '<td><input type="text" name="pobaruva" value=" '+response[i].vkupno_fzom+' "></td>' +
+                                                                               '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                                                               '<td class="hide"><input type="hidden" name="za_promena" value="1"></td>' +
+                                                                               '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                                                               '<td class="hide"><input type="hidden" name="kk" value="min"></td>' +
+                                                                               '<td class="hide"><input type="hidden" name="konto1" value=" '+response[i].konto_id+' "></td>' +
+                                                                               '<td class="hide"><input type="hidden" name="firma" value=" '+response[i].firma_id+' "></td>' +
+                                                                               '</tr>'
+                                                                               ));
+                                                                       jQuery('.proverka').val(1);
+                                                                   }                                         }
+
+//                            tr.addClass('hiderow');
+                        }
+                    });
+                    jQuery.ajax({
+                    url: "/index.php/knizenje/nalog/rasknizuvanje_materijali",
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log(response);
+//                            var tr = jQuery('.tstavki tr:last');
+//                            tr.removeClass('hiderow');
+                    ///    jQuery('.tip_na_faktura').val(response[0].tip);
+                        jQuery('.id_dok').val(response[0].fakturaid);
+                        for(var i = 0; i < response.length;i++){
+                            if(response[i].fzom_status==0){
+
+
+                                if(response[i].firma==null){
+
+                                    jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                            '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                            '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                            '<td><input type="text" name="opis" value=" '+response[i].opis+' "></td>' +
+
+                                            '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                            '<td><input type="text" name="komintent" value=" '+response[i].pacient_ime + ' '+response[i].pacient_prezime+' "></td>' +
+
+                                            '<td><input type="text" name="dolzi" ></td>' +
+                                            '<td><input type="text" name="pobaruva" value=" '+response[i].kolicina+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="kk" value="pacient"></td>' +
+                                            '<td class="hide"><input type="hidden" name="konto1" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="firma" value="0"></td>' +
+                                            '</tr>'
+                                            ));
+                                    jQuery('.proverka').val(1);
+                                }
+                                else if(response[i].firma!=null){
+
+                                    jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                            '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                            '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                            '<td><input type="text" name="opis" value=" '+response[i].naziv+' "></td>' +
+
+                                            '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                            '<td><input type="text" name="komintent" value=" '+response[i].firma + '"></td>' +
+
+                                            '<td><input type="text" name="dolzi" ></td>' +
+                                            '<td><input type="text" name="pobaruva" value=" '+response[i].kolicina+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="kk" value="firma"></td>' +
+                                            '<td class="hide"><input type="hidden" name="konto1" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="firma" value="0"></td>' +
+                                            '</tr>'
+                                            ));
+                                    jQuery('.proverka').val(1);
+                                }
+                            }
+                            else if(response[i].fzom_status ==1){
+                                jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                        '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                        '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                        '<td><input type="text" name="opis" value=" '+response[i].naziv+' "></td>' +
+
+                                        '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                        '<td><input type="text" name="komintent" value=" ФЗО СКОПЈЕ "></td>' +
+
+                                        '<td><input type="text" name="dolzi" ></td>' +
+                                        '<td><input type="text" name="pobaruva" value=" '+response[i].kolicina+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="za_promena" value="1"></td>' +
+                                        '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="kk" value="fzom"></td>' +
+                                        '<td class="hide"><input type="hidden" name="konto1" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="firma" value="0"></td>' +
+                                        '</tr>'
+                                        ));
+                                jQuery('.proverka').val(1);
+                            }
+
+
+//                            tr.addClass('hiderow');
+                        }
+                    }
+                });
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/rasknizuvanje_materijali_zatvoranje",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            console.log(response);
+//                            var tr = jQuery('.tstavki tr:last');
+//                            tr.removeClass('hiderow');
+                       // jQuery('.tip_na_faktura').val(response[0].tip);
+                            jQuery('.id_dok').val(response[0].fakturaid);
+                            for(var i = 0; i < response.length;i++){
+                                if(response[i].fzom_status==0){
+
+
+                                    if(response[i].firma==null){
+
+                                        jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                                '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                                '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                                '<td><input type="text" name="opis" value=" '+response[i].opis+' "></td>' +
+
+                                                '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                                '<td><input type="text" name="komintent" value=" '+response[i].pacient_ime + ' '+response[i].pacient_prezime+' "></td>' +
+
+                                                '<td><input type="text" name="dolzi"  value=" '+response[i].kolicina+' "></td>' +
+                                                '<td><input type="text" name="pobaruva" ></td>' +
+                                                '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                                '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                                '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                                '<td class="hide"><input type="hidden" name="kk" value="pacient"></td>' +
+                                                '<td class="hide"><input type="hidden" name="konto1" value="0"></td>' +
+                                                '<td class="hide"><input type="hidden" name="firma" value="0"></td>' +
+                                                '</tr>'
+                                                ));
+                                        jQuery('.proverka').val(1);
+
+                                    }
+                                    else if(response[i].firma!=null){
+
+                                        jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                                '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                                '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                                '<td><input type="text" name="opis" value=" '+response[i].naziv+' "></td>' +
+
+                                                '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                                '<td><input type="text" name="komintent" value=" '+response[i].firma + '"></td>' +
+
+                                                '<td><input type="text" name="dolzi" value=" '+response[i].kolicina+' "></td>' +
+                                                '<td><input type="text" name="pobaruva" ></td>' +
+                                                '<td class="hide"> <input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                                '<td class="hide" ><input type="hidden" name="za_promena" value="0"></td>' +
+                                                '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                                '<td class="hide"><input type="hidden" name="kk" value="firma"></td>' +
+                                                '<td class="hide"><input type="hidden" name="konto1" value="0"></td>' +
+                                                '<td class="hide"><input type="hidden" name="firma" value="0"></td>' +
+                                                '</tr>'
+                                                ));
+                                        jQuery('.proverka').val(1);
+                                    }
+                                }
+                                else if(response[i].fzom_status ==1){
+                                    jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                            '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                            '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                            '<td><input type="text" name="opis" value=" '+response[i].naziv+' "></td>' +
+
+                                            '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                            '<td><input type="text" name="komintent" value=" ФЗО СКОПЈЕ "></td>' +
+
+                                            '<td><input type="text" name="dolzi" value=" '+response[i].kolicina+' " ></td>' +
+                                            '<td><input type="text" name="pobaruva" ></td>' +
+                                            '<td class="hide" ><input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="za_promena" value="1"></td>' +
+                                            '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="kk" value="fzom"></td>' +
+                                            '<td class="hide"><input type="hidden" name="konto1" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="firma" value="0"></td>' +
+                                            '</tr>'
+                                            ));
+                                    jQuery('.proverka').val(1);
+                                }
+
+
+//                            tr.addClass('hiderow');
+                            }
+                        }
+                    });
+
+
+
+                    jQuery(this).remove();
+
+                }
+            });
+
+            destroyparentdialog(ovakopce);
+        });
+        jQuery(".prenesi_vo_nalog_otpis").live("click", function(){
+            var ovakopce = jQuery(this);
+
+            var stavki = [];
+
+            jQuery(".tabela-otpis tbody tr").each(function() {
+                var checked = jQuery(this).find("input.cekirano").is(':checked');
+                if(checked)
+                {
+
+                    var fakturaid = jQuery(this).find('.cekirano').val();
+                    stavki.push(fakturaid);
+
+
+                    var data = {
+                        dbid: fakturaid
+
+
+
+                    }
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/rasknizuvanje_materijali_so_otpis",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            ///console.log(response);
+//                            var tr = jQuery('.tstavki tr:last');
+//                            tr.removeClass('hiderow');
+                             console.log(response[0].tip);
+                            jQuery('.tip_na_faktura').val(response[0].tip);
+                            jQuery('.id_dok').val(response[0].fakturaid);
+                            for(var i = 0; i < response.length;i++){
+
+
+                                        jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                                '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                                '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                                '<td><input type="text" name="opis" value=" '+response[i].opis+' "></td>' +
+
+                                                '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                                '<td><input type="text" name="komintent" value=""></td>' +
+
+                                                '<td><input type="text" name="dolzi" ></td>' +
+                                                '<td><input type="text" name="pobaruva" value=" '+response[i].kolicina+' "></td>' +
+                                                '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                                '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                                '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                                '<td class="hide"><input type="hidden" name="kk" value="pacient"></td>' +
+                                                '<td class="hide"><input type="hidden" name="konto1" value="0"></td>' +
+                                                '<td class="hide"><input type="hidden" name="firma" value="0"></td>' +
+                                                '</tr>'
+                                                ));
+                                jQuery('.proverka').val(1);
+                                    }
+
+
+                        }
+
+//                            tr.addClass('hiderow');
+
+
+                    });
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/rasknizuvanje_materijali_zatvoranje_so_otpis",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            console.log(response);
+//                            var tr = jQuery('.tstavki tr:last');
+//                            tr.removeClass('hiderow');
+                            jQuery('.tip_na_faktura').val(response[0].tip);
+                            console.log(response[0].tip);
+                            jQuery('.id_dok').val(response[0].fakturaid);
+                            for(var i = 0; i < response.length;i++){
+
+
+
+
+
+                                        jQuery(".stavki-nalog tbody").append(('<tr class="detali" fakturaid="' + response[i].fakturaid + '" >' +
+
+
+                                                '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                                '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                                '<td><input type="text" name="opis" value=" '+response[i].opis+' "></td>' +
+
+                                                '<td><input type="text"  name="stavka" value=" '+response[i].broj+' "></td>' +
+                                                '<td><input type="text" name="komintent" value=""></td>' +
+
+                                                '<td><input type="text" name="dolzi"  value=" '+response[i].kolicina+' "></td>' +
+                                                '<td><input type="text" name="pobaruva" ></td>' +
+                                                '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].fakturaid+' "></td>' +
+                                                '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                                '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                                '<td class="hide"><input type="hidden" name="kk" value="pacient"></td>' +
+                                                '<td class="hide"><input type="hidden" name="konto1" value="0"></td>' +
+                                                '<td class="hide"><input type="hidden" name="firma" value="0"></td>' +
+                                                '</tr>'
+                                                ));
+
+                                jQuery('.proverka').val(1);
+                                }
+
+
+
+//                            tr.addClass('hiderow');
+                            }
+                    });
+                    jQuery(this).remove();
+
+                }
+            });
+
+            destroyparentdialog(ovakopce);
+        });
+
+
+        jQuery(".prenesi_vo_nalog_kasa").live("click", function(){
+            var ovakopce = jQuery(this);
+
+            var stavki = [];
+
+           // console.log(zaDokID);
+            jQuery(".tabela-kasi tbody tr").each(function() {
+                var checked = jQuery(this).find("input.cekirano").is(':checked');
+
+                if(checked)
+                {
+
+                    var idnakasa = jQuery(this).find('.cekirano').val();
+                    stavki.push(idnakasa);
+                    jQuery('.koj_dokument').val(stavki);
+                    var zaDokID=jQuery(this).attr('zaDokID');
+
+                    var data = {
+                        kasaid: idnakasa,
+                        zaDokID:zaDokID
+
+
+
+                    }
+                    console.log(data);
+
+
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/kasa_faktura1",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            // console.log(response);
+                            var tr = jQuery('.tstavki tr:last');
+//                            tr.removeClass('hiderow');
+
+                            jQuery('.id_dok').val(response[0].dbid);
+
+
+
+
+
+                                jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response[0].dbid + '"  tip="'+ response[0].tip + '" kasaid="'+ response[0].kasa + '"  >' +
+
+
+                                        '<td><input type="text" name="konto" value=" '+response[0].konto+' "></td>' +
+                                        '<td><input type="text" name="broj_dok" value="'+response[0].broj+'"></td>' +
+                                        '<td><input type="text" name="opis" value=" '+response[0].naziv+' "></td>' +
+
+                                        '<td><input type="text"  name="stavka" ></td>' +
+                                        '<td><input type="text" name="komintent" value="'+response[0].pacient_ime+ ' '+response[0].pacient_prezime+'"></td>' +
+
+                                        '<td><input type="text" name="dolzi" ></td>' +
+                                        '<td><input type="text" name="pobaruva" value=" '+response[0].suma+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[0].dbid+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="kk" value="pacient"></td>' +
+                                        '<td class="hide"><input type="hidden" name="konto1" value="'+response[0].konto_id+'"></td>' +
+                                        '<td class="hide"><input type="hidden" name="firma" value="0"></td>' +
+                                        '</tr>'
+                                        ));
+                            jQuery('.proverka').val(1);
+                                                   }
+
+
+//                               tr.addClass('hiderow');
+
+                    });
+
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/kasa_faktura2",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            // console.log(response);
+                            var tr = jQuery('.tstavki tr:last');
+//                            tr.removeClass('hiderow');
+
+                            jQuery('.id_dok').val(response[0].dbid);
+
+                                            jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response[0].dbid + '"  tip="'+ response[0].tip + '" kasaid="'+ response[0].kasa + '"  >' +
+
+
+                                            '<td><input type="text" name="konto" value=" '+response[0].konto+' "></td>' +
+                                            '<td><input type="text" name="broj_dok" value="'+response[0].broj+'"></td>' +
+                                            '<td><input type="text" name="opis" value=" '+response[0].naziv+' "></td>' +
+
+                                            '<td><input type="text"  name="stavka" ></td>' +
+                                            '<td><input type="text" name="komintent"  value="'+response[0].pacient_ime+ ' '+response[0].pacient_prezime+'" ></td>' +
+
+                                            '<td><input type="text" name="dolzi" value=" '+response[0].suma+' "></td>' +
+                                            '<td><input type="text" name="pobaruva" "></td>' +
+                                             '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[0].dbid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                                    '<td class="hide"><input type="hidden" name="kk" value="pacient"></td>' +
+                                                    '<td class="hide"><input type="hidden" name="konto1" value="'+response[0].konto_id+'"></td>' +
+                                                    '<td class="hide"><input type="hidden" name="firma" value="0"></td>' +
+                                            '</tr>'
+                                            ));
+
+                            jQuery('.proverka').val(1);
+
+
+//                               tr.addClass('hiderow');
+                        }
+                    });
+
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/prenesi_vo_nalog_kasa_prihod",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                         console.log(response);
+//                            var tr = jQuery('.tstavki tr:last');
+//                            tr.removeClass('hiderow');
+                            jQuery('.tip_na_faktura').val(response[0].tip);
+
+
+                            jQuery('.id_dok').val(response[0].dbid);
+                            if(response[0].tip==550){
+                                if(response[0].pacient_ime!=null){
+
+
+                                jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response[0].dbid + '"  tip="'+ response[0].tip + '" kasaid="'+ response[0].kasa + '">' +
+
+
+                                        '<td><input type="text" name="konto" value=" '+response[0].konto_stavka+' "></td>' +
+                                        '<td><input type="text" name="broj_dok" value="'+response[0].broj+'" ></td>' +
+                                        '<td><input type="text" name="opis" value=" '+response[0].opis+' " ></td>' +
+
+                                        '<td><input type="text"  name="stavka" ></td>' +
+                                        '<td><input type="text" name="komintent"   value=" '+response[0].pacient_ime+' '+ response[0].pacient_prezime +' "></td>' +
+
+                                        '<td><input type="text" name="dolzi" ></td>' +
+                                        '<td><input type="text" name="pobaruva" value=" '+response[0].suma+' ""></td>' +
+                                        '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[0].dbid+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="za_promena" value="1"></td>' +
+                                        '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="kk" value="pacient"></td>' +
+                                        '<td class="hide"><input type="hidden" name="konto1" value=" '+response[0].konto_id+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="firma" value=" '+response[0].firma_id+' "></td>' +
+                                        '</tr>'
+                                        ));
+                                    jQuery('.proverka').val(1);
+                                }
+                                else {
+                                    jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response[0].dbid + '"  tip="'+ response[0].tip + '" kasaid="'+ response[0].kasa + '">' +
+
+
+                                            '<td><input type="text" name="konto" value=" '+response[0].konto_stavka+' "></td>' +
+                                            '<td><input type="text" name="broj_dok" value="'+response[0].broj+'" ></td>' +
+                                            '<td><input type="text" name="opis" value=" '+response[0].opis+' " ></td>' +
+
+                                            '<td><input type="text"  name="stavka" ></td>' +
+                                            '<td><input type="text" name="komintent"   value=" '+response[0].firma+' "></td>' +
+
+                                            '<td><input type="text" name="dolzi" ></td>' +
+                                            '<td><input type="text" name="pobaruva" value=" '+response[0].suma+' ""></td>' +
+                                            '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[0].dbid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="za_promena" value="1"></td>' +
+                                            '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="kk" value="firma"></td>' +
+                                            '<td class="hide"><input type="hidden" name="konto1" value=" '+response[0].konto_id+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="firma" value=" '+response[0].firma_id+' "></td>' +
+                                            '</tr>'
+                                            ));
+                                    jQuery('.proverka').val(1);
+                                }
+                            }
+                            else if(response[0].tip==540)
+                            {
+                                jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response[0].dbid + '"   tip="'+ response[0].tip + '"  kasaid="'+ response[0].kasa + '">' +
+
+
+                                        '<td><input type="text" name="konto" value=" '+response[0].konto_stavka+' "></td>' +
+                                        '<td><input type="text" name="broj_dok" value="'+response[0].broj+'"></td>' +
+                                        '<td><input type="text" name="opis" value=" '+response[0].opis+' "></td>' +
+
+                                        '<td><input type="text"  name="stavka" ></td>' +
+                                        '<td><input type="text" name="komintent"  value=" '+response[0].firma+' "></td>' +
+
+                                        '<td><input type="text" name="dolzi"  value=" '+response[0].suma+' " ></td>' +
+                                        '<td><input type="text" name="pobaruva" ></td>' +
+                                        '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[0].dbid+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="za_promena" value="1"></td>' +
+                                        '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="kk" value="firma"></td>' +
+                                        '<td class="hide"><input type="hidden" name="konto1" value=" '+response[0].konto_id+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="firma" value=" '+response[0].firma_id+' "></td>' +
+                                        '</tr>'
+                                        ));
+                                jQuery('.proverka').val(1);
+
+                            }
+
+//                            tr.addClass('hiderow');
+                        }
+                    });
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/prenesi_vo_nalog_kasa",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            console.log(response);
+//                            var tr = jQuery('.tstavki tr:last');
+//                            tr.removeClass('hiderow');
+                            jQuery('.tip_na_faktura').val(response[0].tip);
+
+
+                            jQuery('.id_dok').val(response[0].dbid);
+                            if(response[0].tip==550){
+
+                                    jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response[0].dbid + '"  tip="'+ response[0].tip + '" kasaid="'+ response[0].kasa + '">' +
+
+
+                                            '<td><input type="text" name="konto" value=" '+response[0].konto_kasa+' "></td>' +
+                                            '<td><input type="text" name="broj_dok" value="'+response[0].broj+'" ></td>' +
+                                            '<td><input type="text" name="opis" value=" '+response[0].opis+' " ></td>' +
+
+                                            '<td><input type="text"  name="stavka" ></td>' +
+                                            '<td><input type="text" name="komintent"   ></td>' +
+
+                                            '<td><input type="text" name="dolzi" value=" '+response[0].suma+' "></td>' +
+                                            '<td><input type="text" name="pobaruva" ></td>' +
+                                            '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[0].dbid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="konto1" value=" '+response[0].konto_id+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="firma" value=" '+response[0].firma_id+' "></td>' +
+                                            '</tr>'
+                                            ));
+                                jQuery('.proverka').val(1);
+
+                            }
+                            else if(response[0].tip==540)
+                            {
+                                jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response[0].dbid + '"   tip="'+ response[0].tip + '"  kasaid="'+ response[0].kasa + '">' +
+
+
+                                        '<td><input type="text" name="konto" value=" '+response[0].konto_kasa+' "></td>' +
+                                        '<td><input type="text" name="broj_dok" value="'+response[0].broj+'"></td>' +
+                                        '<td><input type="text" name="opis" value=" '+response[0].opis+' "></td>' +
+
+                                        '<td><input type="text"  name="stavka" ></td>' +
+                                        '<td><input type="text" name="komintent"  ></td>' +
+
+                                        '<td><input type="text" name="dolzi"  ></td>' +
+                                        '<td><input type="text" name="pobaruva" value=" '+response[0].suma+' "  ></td>' +
+                                        '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[0].dbid+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="zsid" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="konto1" value=" '+response[0].konto_id+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="firma" value=" '+response[0].firma_id+' "></td>' +
+                                        '</tr>'
+                                        ));
+                                jQuery('.proverka').val(1);
+
+                            }
+
+//                            tr.addClass('hiderow');
+                        }
+                    });
+
+
+
+
+
+                    jQuery(this).remove();
+
+                }
+            });
+
+            destroyparentdialog(ovakopce);
+        });
+        jQuery(".prenesi_vo_nalog_izvod").live("click", function(){
+            var ovakopce = jQuery(this);
+            var zaDokID_izvod=jQuery('.zaDokID_izvod').val();
+            var stavki = [];
+
+            jQuery(".tabela-izvodi tbody tr").each(function() {
+                var checked = jQuery(this).find("input.cekirano").is(':checked');
+
+                if(checked)
+                {
+
+                    var idnaizvod = jQuery(this).find('.cekirano').val();
+                    stavki.push(idnaizvod);
+                    var zaDokID=jQuery(this).parent().parent().attr("nalogid");
+
+
+                    var data = {
+                        izvodid: idnaizvod,
+                        zaDokID:zaDokID
+
+
+
+                    }
+                    console.log(data);
+//                   jQuery.ajax({
+//                      url: "/index.php/knizenje/nalog/izvod_detali1",
+//                       type: 'POST',
+//                       data: data,
+//                        dataType: 'json',
+//                        success: function(response) {
+//                             console.log(response);
+//                            var tr = jQuery('.tstavki tr:last');
+////                            tr.removeClass('hiderow');
+//                            jQuery('.tip_na_faktura').val(response[0].tip);
+//                            jQuery('.id_dok').val(response[0].dbid);
+//
+//
+//                            //if(response[0].zaDokID==0){
+//
+//
+//                            if(response[0].tip==40){
+//                                jQuery(".stavki-nalog tbody").append(('<tr  class="detali" id="'+ response[0].dbid +'"  tip="'+ response[0].tip + '"  >' +
+//
+//                                        '<td><input type="text" name="konto" value=" '+response[0].konto_izvod+' "></td>' +
+//                                        '<td><input type="text" name="broj_dok" value=" '+response[0].broj+' "  ></td>' +
+//                                        '<td><input type="text" name="opis" value=" '+response[0].opis+' "></td>' +
+//
+//                                       '<td><input type="text"  name="stavka" ></td>' +
+//                                        '<td><input type="text" name="komintent" value=" '+response[0].firma+' "></td>' +
+//
+//                                       '<td><input type="text" name="dolzi" value=" '+response[0].suma+' "></td>' +
+//                                        '<td><input type="text" name="pobaruva" ></td>' +
+//                                        '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[0].dbid+' "></td>' +
+//                                        '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+//                                        '<td class="hide"><input type="hidden" name="zsid" value=" '+response[0].zsid+' "></td>' +
+//                                        '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+//                                        '<td class="hide"><input type="hidden" name="konto1" value=" '+response[0].konto_id+' "></td>' +
+//                                        '<td class="hide"><input type="hidden" name="firma" value=" '+response[0].firma_id+' "></td>' +
+//
+//                                       '</tr>'
+//                                       ));
+//                                jQuery('.proverka').val(1);
+//
+//                         }
+//                            else            if(response[0].tip==50){
+//                                jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response[0].dbid + '" tip="'+ response[0].tip + '" >' +
+//
+//
+//                                        '<td><input type="text" name="konto" value=" '+response[0].konto_izvod+' "></td>' +
+//                                        '<td><input type="text" name="broj_dok" value=" '+response[0].broj+' " ></td>' +
+//                                        '<td><input type="text" name="opis" value=" '+response[0].opis+' "></td>' +
+//
+//                                        '<td><input type="text"  name="stavka" ></td>' +
+//                                        '<td><input type="text" name="komintent" value=" '+response[0].firma+' " ></td>' +
+//
+//                                        '<td><input type="text" name="dolzi" ></td>' +
+//                                        '<td><input type="text" name="pobaruva" value=" '+response[0].suma+' "></td>' +
+//                                        '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[0].dbid+' "></td>' +
+//                                        '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+//                                        '<td class="hide"><input type="hidden" name="zsid" value=" '+response[0].zsid+' "></td>' +
+//                                        '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+//                                        '<td class="hide"><input type="hidden" name="konto1" value=" '+response[0].konto_id+' "></td>' +
+//                                        '<td class="hide"><input type="hidden" name="firma" value=" '+response[0].firma_id+' "></td>' +
+//                                        '</tr>'
+//                                        ));
+//                                jQuery('.proverka').val(1);
+//
+//                          //  }
+//                                }
+//
+////                             tr.addClass('hiderow');
+//                       }
+//                   });
+//
+//
+//                 jQuery.ajax({
+//                      url: "/index.php/knizenje/nalog/izvod_detali2",
+//                      type: 'POST',
+//                      data: data,
+//                      dataType: 'json',
+//                      success: function(response) {
+//                           console.log(response);
+////                         var tr = jQuery('.tstavki tr:last');
+////                           tr.removeClass('hiderow');
+//                          jQuery('.tip_na_faktura').val(response[0].tip);
+//                           jQuery('.id_dok').val(response[0].dbid);
+//
+//
+//
+//
+//                          if(response[0].zaDokID==0){
+//
+//
+//                           if(response[0].tip==40){
+//                               if(response[0].konto_izvod_trosok.length > 0){
+//
+//
+//                              jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response[0].dbid + '" tip="'+ response[0].tip + '" >' +
+//
+//
+//                                       '<td><input type="text" name="konto" value=" '+response[0].konto_izvod_trosok+' "></td>' +
+//                                      '<td><input type="text" name="broj_dok" value=" '+response[0].broj+' " ></td>' +
+//                                       '<td><input type="text" name="opis" value=" '+response[0].opis+' "></td>' +
+//
+//                                      '<td><input type="text"  name="stavka" ></td>' +
+//                                      '<td><input type="text" name="komintent" ></td>' +
+//
+//                                     '<td><input type="text" name="dolzi" value=" '+response[0].suma+' "></td>' +
+//                                       '<td><input type="text" name="pobaruva" "></td>' +
+//                                      '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[0].dbid+' "></td>' +
+//                                      '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+//                                      '<td class="hide"><input type="hidden" name="zsid" value=" '+response[0].zsid+' "></td>' +
+//                                      '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+//                                      '<td class="hide"><input type="hidden" name="konto1" value=" '+response[0].konto_id+' "></td>' +
+//                                      '<td class="hide"><input type="hidden" name="firma" value=" '+response[0].firma_id+' "></td>' +
+//                                       '</tr>'
+//                                     ));
+//                                   jQuery('.proverka').val(1);
+//
+//                          }
+//                           }
+//
+//
+//                                                }
+//
+////                           tr.addClass('hiderow');
+//                       }
+//                   });
+                    jQuery.ajax({
+                url: "/index.php/knizenje/nalog/izvod_po_faktura",
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    // console.log(response);
+//                         var tr = jQuery('.tstavki tr:last');
+//                           tr.removeClass('hiderow');
+                    jQuery('.tip_na_faktura').val(response[0].tip);
+                    jQuery('.id_dok').val(response[0].dbid);
+
+                    for(var i = 0; i < response.length;i++){
+                    if(response[i].zaDokID.length > 0){
+
+
+                    if(response[i].tip==40){
+                        jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response[i].dbid + '" tip="'+ response[i].tip + '" >' +
+
+
+                                '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                '<td><input type="text" name="opis" value=" '+response[i].opis+' "></td>' +
+
+                                '<td><input type="text"  name="stavka" ></td>' +
+                                '<td><input type="text" name="komintent" value=" '+response[i].firma+' "  ></td>' +
+
+                                '<td><input type="text" name="dolzi"></td>' +
+                                '<td><input type="text" name="pobaruva"  value=" '+response[i].suma+' "></td>' +
+                                '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].dbid+' "></td>' +
+                                '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                '<td class="hide"><input type="hidden" name="zsid" value=" '+response[i].zsid+' "></td>' +
+                                '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+                                '<td class="hide"><input type="hidden" name="konto1" value=" '+response[i].konto_id+' "></td>' +
+                                '<td class="hide"><input type="hidden" name="firma" value=" '+response[i].firma_id+' "></td>' +
+                                '</tr>'
+                                ));
+                        jQuery('.proverka').val(1);
+
+                    }
+                    }
+                                       }
+
+
+//                           tr.addClass('hiderow');
+                }
+            });
+
+                    jQuery.ajax({
+                url: "/index.php/knizenje/nalog/izvod_po_faktura_trosok_konto",
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    // console.log(response);
+//                         var tr = jQuery('.tstavki tr:last');
+//                           tr.removeClass('hiderow');
+                    jQuery('.tip_na_faktura').val(response[0].tip);
+                    jQuery('.id_dok').val(response[0].dbid);
+
+                    for(var i = 0; i < response.length;i++){
+                    if(response[i].zaDokID.length >0){
+
+
+                    if(response[i].tip==40){
+                        jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response[i].dbid + '" tip="'+ response[i].tip + '" >' +
+
+
+                                '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                '<td><input type="text" name="broj_dok" value="'+response[i].broj+'"></td>' +
+                                '<td><input type="text" name="opis" value=" '+response[i].opis+' "></td>' +
+
+                                '<td><input type="text"  name="stavka" ></td>' +
+                                '<td><input type="text" name="komintent" value=" '+response[i].firma+' " ></td>' +
+
+                                '<td><input type="text" name="dolzi" value=" '+response[i].suma+' "></td>' +
+                                '<td><input type="text" name="pobaruva" "></td>' +
+                                '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].dbid+' "></td>' +
+                                '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                '<td class="hide"><input type="hidden" name="zsid" value=" '+response[i].zsid+' "></td>' +
+                                '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+                                '<td class="hide"><input type="hidden" name="konto1" value=" '+response[i].konto_id+' "></td>' +
+                                '<td class="hide"><input type="hidden" name="firma" value=" '+response[i].firma_id+' "></td>' +
+                                '</tr>'
+                                ));
+                        jQuery('.proverka').val(1);
+
+                    }
+
+                                     }
+                    }
+                          tr.addClass('hiderow');
+                }
+            });
+
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/izvod_po_faktura_konto_faktura",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            // console.log(response);
+//                         var tr = jQuery('.tstavki tr:last');
+//                           tr.removeClass('hiderow');
+                            jQuery('.tip_na_faktura').val(response.tip);
+
+
+                            jQuery('.id_dok').val(response.dbid);
+                            //console.log(response[0].tip);
+                         //   for(var i = 0; i < response.length;i++){
+                                                       if(response.zaDokID!=0){
+
+
+                             if(response.tip==40)
+                            {
+                                jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response.dbid + '" tip="'+ response.tip + '" >' +
+
+
+                                        '<td><input type="text" name="konto" value=" '+response.konto+' "></td>' +
+                                        '<td><input type="text" name="broj_dok" value="'+response.broj+'" ></td>' +
+                                        '<td><input type="text" name="opis" value=" '+response.opis+' "></td>' +
+
+                                        '<td><input type="text"  name="stavka" ></td>' +
+                                        '<td><input type="text" name="komintent" value=" '+response.firma+' " ></td>' +
+
+                                        '<td><input type="text" name="dolzi" value=" '+response.suma+' " ></td>' +
+                                        '<td><input type="text" name="pobaruva"  ></td>' +
+                                        '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response.dbid+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="zsid" value=" '+response.zsid+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+                                        '<td class="hide"><input type="hidden" name="konto1" value=" '+response.konto_id+' "></td>' +
+                                        '<td class="hide"><input type="hidden" name="firma" value=" '+response.firma_id+' "></td>' +
+                                        '</tr>'
+                                        ));
+                                jQuery('.proverka').val(1);
+
+                            }
+                                                       }
+                           //}
+
+//                           tr.addClass('hiderow');
+                        }
+                    });
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/izvod_po_faktura_konto_faktura2",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+
+
+
+                          console.log(response.firma);
+
+                         var tr = jQuery('.tstavki tr:last');
+                           tr.removeClass('hiderow');
+                            jQuery('.tip_na_faktura').val(response.tip);
+                            jQuery('.id_dok').val(response.dbid);
+
+
+                            //console.log(response[0].tip);
+
+
+                            if(response.zaDokID!=0){
+
+
+                                if(response.tip==50)
+                                {
+                                    jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response.dbid + '" tip="'+ response.tip + '" >' +
+
+
+                                            '<td><input type="text" name="konto" value=" '+response.konto+' "></td>' +
+                                            '<td><input type="text" name="broj_dok" value="'+response.broj+'" ></td>' +
+                                            '<td><input type="text" name="opis" value=" '+response.opis+' "></td>' +
+
+                                            '<td><input type="text"  name="stavka" ></td>' +
+                                            '<td><input type="text" name="komintent" value=" '+response.firma+' " ></td>' +
+
+                                            '<td><input type="text" name="dolzi" ></td>' +
+                                            '<td><input type="text" name="pobaruva"  value=" '+response.suma+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response.dbid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="zsid" value=" '+response.zsid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="konto1" value=" '+response.konto_id+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="firma" value=" '+response.firma_id+' "></td>' +
+                                            '</tr>'
+                                            ));
+                                    jQuery('.proverka').val(1);
+                                }
+                            }
+//
+
+                           tr.addClass('hiderow');
+                        }
+                    });
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/izvod_po_faktura_konto_faktura22",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            // console.log(response);
+//                         var tr = jQuery('.tstavki tr:last');
+//                           tr.removeClass('hiderow');
+                            jQuery('.tip_na_faktura').val(response.tip);
+                            jQuery('.id_dok').val(response.dbid);
+
+
+                            //console.log(response[0].tip);
+
+
+                                       if(response.zaDokID!=0){
+
+
+                                if(response.tip==50)
+                                {
+                                    jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response.dbid + '" tip="'+ response.tip + '" >' +
+
+
+                                            '<td><input type="text" name="konto" value=" '+response.konto+' "></td>' +
+                                            '<td><input type="text" name="broj_dok" value="'+response.broj+'" ></td>' +
+                                            '<td><input type="text" name="opis" value=" '+response.opis+' "></td>' +
+
+                                            '<td><input type="text"  name="stavka" ></td>' +
+                                            '<td><input type="text" name="komintent" value=" '+response.firma+' " ></td>' +
+
+                                            '<td><input type="text" name="dolzi" value=" '+response.suma+' " ></td>' +
+                                            '<td><input type="text" name="pobaruva"  ></td>' +
+                                            '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response.dbid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="zsid" value=" '+response.zsid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="konto1" value=" '+response.konto_id+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="firma" value=" '+response.firma_id+' "></td>' +
+                                            '</tr>'
+                                            ));
+                                    jQuery('.proverka').val(1);
+                                }
+                                       }
+
+
+//                           tr.addClass('hiderow');
+                        }
+                    });
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/izvod_po_faktura_konto_faktura222",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            // console.log(response);
+//                         var tr = jQuery('.tstavki tr:last');
+//                           tr.removeClass('hiderow');
+                            jQuery('.tip_na_faktura').val(response.tip);
+                            jQuery('.id_dok').val(response.dbid);
+
+                            //console.log(response[0].tip);
+
+
+                                                if(response.zaDokID!=0){
+
+
+                                if(response.tip==50)
+                                {
+                                    jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response.dbid + '" tip="'+ response.tip + '" >' +
+
+
+                                            '<td><input type="text" name="konto" value=" '+response.konto+' "></td>' +
+                                            '<td><input type="text" name="broj_dok" value="'+response.broj+'" ></td>' +
+                                            '<td><input type="text" name="opis" value=" '+response.opis+' "></td>' +
+
+                                            '<td><input type="text"  name="stavka" ></td>' +
+                                            '<td><input type="text" name="komintent" value=" '+response.firma+' " ></td>' +
+
+                                            '<td><input type="text" name="dolzi"  ></td>' +
+                                            '<td><input type="text" name="pobaruva" value=" '+response.suma+' "  ></td>' +
+                                            '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response.dbid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="zsid" value=" '+response.zsid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="konto1" value=" '+response.konto_id+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="firma" value=" '+response.firma_id+' "></td>' +
+                                            '</tr>'
+                                            ));
+                                    jQuery('.proverka').val(1);
+                                }
+                                                }
+
+
+//                           tr.addClass('hiderow');
+                        }
+                    });
+                    jQuery.ajax({
+                        url: "/index.php/knizenje/nalog/izvod_ziro_smetka",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            // console.log(response);
+//                         var tr = jQuery('.tstavki tr:last');
+//                           tr.removeClass('hiderow');
+                           // jQuery('.tip_na_faktura').val(response[0].tip);
+                         //   jQuery('.id_dok').val(response[0].dbid);
+
+                            //console.log(response[0].tip);
+
+
+                            for(var i = 0; i < response.length;i++){
+
+
+                                if(response[i].tip==50)
+                                {
+                                    jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response[i].dbid + '" tip="'+ response[i].tip + '" >' +
+
+
+                                            '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                            '<td><input type="text" name="broj_dok" value="'+response[i].broj+'" ></td>' +
+                                            '<td><input type="text" name="opis" value=" '+response[i].opis+' "></td>' +
+
+                                            '<td><input type="text"  name="stavka" ></td>' +
+                                            '<td><input type="text" name="komintent" value=" '+response[i].firma+' " ></td>' +
+
+                                            '<td><input type="text" name="dolzi" value=" '+response[i].suma+' " ></td>' +
+                                            '<td><input type="text" name="pobaruva"   ></td>' +
+                                            '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].dbid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="zsid" value=" '+response[i].zsid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="konto1" value=" '+response[i].konto_id+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="firma" value=" '+response[i].firma_id+' "></td>' +
+                                            '</tr>'
+                                            ));
+                                    jQuery('.proverka').val(1);
+                                }
+                                if(response[i].tip==40)
+                                {
+                                    jQuery(".stavki-nalog tbody").append(('<tr class="detali" id="' + response[i].dbid + '" tip="'+ response[i].tip + '" >' +
+
+
+                                            '<td><input type="text" name="konto" value=" '+response[i].konto+' "></td>' +
+                                            '<td><input type="text" name="broj_dok" value="'+response[i].broj+'" ></td>' +
+                                            '<td><input type="text" name="opis" value=" '+response[i].opis+' "></td>' +
+
+                                            '<td><input type="text"  name="stavka" ></td>' +
+                                            '<td><input type="text" name="komintent" value=" '+response[i].firma+' " ></td>' +
+
+                                            '<td><input type="text" name="dolzi"  ></td>' +
+                                            '<td><input type="text" name="pobaruva" value=" '+response[i].suma+' "  ></td>' +
+                                            '<td class="hide"><input type="hidden" name="koj_dokument" value=" '+response[i].dbid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="za_promena" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="zsid" value=" '+response[i].zsid+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="kk" value="0"></td>' +
+                                            '<td class="hide"><input type="hidden" name="konto1" value=" '+response[i].konto_id+' "></td>' +
+                                            '<td class="hide"><input type="hidden" name="firma" value=" '+response[i].firma_id+' "></td>' +
+                                            '</tr>'
+                                            ));
+                                    jQuery('.proverka').val(1);
+
+                                }
+
+                            }
+                        }
+//                           tr.addClass('hiderow');
+
+                    });
+
+                    jQuery(this).remove();
+
+        }
+
+    });
+
+            destroyparentdialog(ovakopce);
+        });
+
+
+
+    });
+    jQuery('.tabela-izvodi tbody .edit-tr').live('click',function () {
+        var id=jQuery(this).parent().parent().attr("izvodid");
+        var zsid=jQuery(this).parent().parent().attr("zsid");
+        console.log(zsid);
+        var formaction = "/index.php/izvodi/menu/editStavkaIzvod?id=" + id;
+
+       jQuery.ajax({
+           url:formaction,
+           data:{
+               izvodid:id,
+               ziroid:zsid
+
+           },
+          success:function (response) {
+             var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+          jQuery("body").append('<div class="' + tempdialog + '"></div>');
+         jQuery("." + tempdialog).html(response);
+          jQuery('div.' + tempdialog).dialog({
+            autoOpen:true,
+            width:"auto",
+             position:[20, 20],
+             position:"center",
+             modal:true,
+           dialogClass: 'dialogsotabovi',
+         title:"Промени ставка",
+          close:function (event, ui) {
+         jQuery(this).dialog("destroy");
+          jQuery(this).remove();
+        }
+          });
+          }
+    });
+    });
+    jQuery('.tabela-kasi tbody .edit-tr').live('click',function () {
+        var kasaid=jQuery(this).parent().parent().attr("kasaid");
+        console.log(kasaid);
+        odliv_priliv_izmeni(kasaid);
+    });
+</script>

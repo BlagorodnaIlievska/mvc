@@ -1,0 +1,106 @@
+<div id="promet_form">
+    <?php
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $options = array(
+        '0' => 'Влез Излез',
+        '1' => 'Влез',
+        '2' => 'Излез'
+    );
+    ?>
+    <div class="filter-karticki">
+        <?php
+        echo form_open('izvodi/menu/baraj_izvod');
+        echo form_label('Влез/Излез: ', 'vlezizlez');
+        echo form_dropdown('vlezizlez', $options, 0, 'id="vlezizlez" formaction="/index.php/#"');
+        echo form_label('Комерцијалист: ', 'komercijalist');
+        echo form_dropdown('komercijalist', $komercijalist, '', 'id="komercijalist" formaction="/index.php/#"');
+        echo form_close();
+        ?>
+    </div>
+    <div class="stavka">
+    <div class="predtabela">
+        <table class="tabelapromet" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th>Клиент</th>
+                <th>Пр. состојба</th>
+                <th>Одлив</th>
+                <th>Влезна Фактура</th>
+                <th>Сума</th>
+                <th>Пр. состојба</th>
+                <th>Излезна Фактура</th>
+                <th>Прилив</th>
+                <th>Сума</th>
+                <th>Состојба</th>
+                <th>Забелешка</th>
+            </tr>
+
+            <?php
+
+            echo "<tr  class='telo'>";
+            echo "<td> <input type='text' class='klient big' name='klient' readonly> </td>";
+            echo "<td> <input type='text' class='prsostojba big' name='prsostojba' readonly> </td>";
+            echo "<td> <input type='text' class='odliv medium' name='odliv' readonly> </td>";
+            echo "<td> <input type='text' class='vleznafaktura medium' name='vleznafaktura' readonly> </td>";
+            echo "<td> <input type='text' class='suma medium' name='suma' readonly> </td>";
+            echo "<td> <input type='text' class='prsostojba big' name='prsostojba' readonly> </td>";
+            echo "<td> <input type='text' class='izleznafaktura medium' name='izleznafaktura' readonly> </td>";
+            echo "<td> <input type='text' class='priliv medium' name='priliv' readonly> </td>";
+            echo "<td> <input type='text' class='suma medium' name='suma' readonly> </td>";
+            echo "<td> <input type='text' class='sostojba medium' name='sostojba' readonly> </td>";
+            echo "<td> <input type='text' class='zabeleska big' name='zabeleska' readonly> </td>";
+
+            echo "</tr>";
+
+            ?>
+        </table>
+    </div>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        var data = {
+            data : 1
+        }
+        jQuery.ajax({
+            url: "/index.php/kartici/menu/getPrometKlienti",
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                jQuery(".tabelapromet").find("tr:gt(1)").remove();
+                var tr = jQuery('.tabelapromet tr:last');
+                tr.removeClass('hiderow');
+                for ( var i = 0; i < response.length; i++ ) {
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                   //newrow.find('input[name=klientid]').val(response[i].firmaID);
+                    newrow.find('input[name=klient]').val(response[i].firmaIme);
+                    newrow.find('input[name=zabeleska]').val(response[i].zabeleska);
+                    if(response[i].tip == 10)
+                    {
+                        newrow.find('input[name=vleznafaktura]').val(response[i].suma);
+                    }
+                    if(response[i].tip == 20)
+                    {
+                        newrow.find('input[name=izleznafaktura]').val(response[i].suma);
+                    }
+                    if(response[i].tip == 40)
+                    {
+                        newrow.find('input[name=odliv]').val(response[i].suma);
+                    }
+                    if(response[i].tip == 50)
+                    {
+                        newrow.find('input[name=priliv]').val(response[i].suma);
+                    }
+                }
+                //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                tr.addClass('hiderow');
+            }
+        });
+    });
+</script>

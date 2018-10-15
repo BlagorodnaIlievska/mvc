@@ -1,0 +1,139 @@
+<div id="baraj_form">
+    <?php
+    $delete = img(array(
+        'src' => 'images/delete.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $smeni=array(
+        '1'=>'една смена',
+        '2'=>'во смени'
+    );
+    echo form_open('');
+    echo form_label('Име :', 'ime');
+    echo form_input('ime','','class="ddime listacovecki"');
+    echo form_label('Презиме :','prezime');
+    echo form_input('prezime','','class="ddprezime listacovecki"');
+    echo form_label('Бр.Пл :','brPlatenSpisok');
+    echo form_input('brPlatenSpisok','','class="ddbrpl listacovecki"');
+    echo form_label('Бр.ЛК :','brLicnaKarta');
+    echo form_input('brLicnaKarta','','class="ddbrlicna listacovecki"');
+    ?>
+<div>
+<table class="klienttbl" border="1" cellspacing="2" cellpadding="2">
+    <tr>
+        <td></td>
+        <td>Бр.</td>
+        <td>Име</td>
+        <td>Презиме</td>
+        <td>Платен список</td>
+        <td>Бр.ЛК</td>
+   <!--    <td>Компанија</td>-->
+        <td>Оддел</td>
+        <td>Пододдел</td>
+        <td>Сменска група</td>
+        <td>Дат. раѓ.</td>
+        <td>Пол</td>
+        <td>Брачен статус</td>
+        <td>Дат. вработување</td>
+        <td>Претходен стаж</td>
+        <td>Стручна подготвеност</td>
+
+
+
+    </tr>
+
+    <?php $reden=1;
+    if(isset($resurs)): foreach($resurs as $row){
+
+        echo "<tr>";
+        echo "<td>". anchor("podatoci/klient/delete_klient/$row->covekID", $delete, array('class' => 'delete-tr')) . " "
+            . anchor("podatoci/klient/edit_klient/$row->covekID?ajax=1", $edit, array('class' => 'edit-tr')) . "</td>";
+        echo "<td> <input type='text' class='kl' name='reden' value='$reden' readonly></td>";
+        echo "<td> <input type='text' class='kl' name='ime' value='$row->ime' readonly></td>";
+        echo "<td> <input type='text' class='kl' name='prezime' value='$row->prezime' readonly></td>";
+
+        echo "<td> <input type='text' class='kl' name='brplatenspisok' value='$row->brPlatenSpisok' readonly></td>";
+
+        echo "<td> <input type='text' class='kl' name='brLicnaKarta' value='$row->brLicnaKarta' readonly></td>";
+      //  echo "<td> <input type='text' class='kl'  name='firma' value='$row->firma_ime' readonly></td>";
+        echo "<td> <input type='text' class='kl'name='oddel' value='$row->oddel' readonly></td>";
+        echo "<td> <input type='text' class='kl'name='pododdel' value='$row->pododdel' readonly></td>";
+        echo "<td> <input type='text' class='kl'name='grupa' value='$row->grupaID' readonly></td>";
+        echo "<td> <input type='text' class='kl'name='datRag' value='$row->datRag' readonly></td>";
+        echo "<td> <input type='text' class='kl'name='pol' value='$row->pol' readonly></td>";
+        echo "<td> <input type='text' class='kl'name='brstatus' value='$row->brstatus' readonly></td>";
+        echo "<td> <input type='text' class='kl'name='pocRabOdnos' value='$row->pocRabOdnos' readonly></td>";
+        echo "<td> <input type='text' class='kl'name='prstaz' value='$row->prstaz' readonly></td>";
+        echo "<td> <input type='text' class='kl'name='diplomi' value='$row->diplomi' readonly></td>";
+
+
+        $reden=$reden+1;
+    }
+
+        ?>
+    </table>
+ </div>
+ <a href='<?php echo base_url(); ?>index.php/podatoci/klient/pecati_klienti'><span
+
+         style='color:green;'>Pecati</span></a>
+    <?php endif; ?>
+
+
+
+</div>
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.listaklienti').live('change',function(){
+            jQuery('.klienttbl').find("tr:gt(1)").remove();
+
+            var grad = jQuery('.ddgrad option:selected').val();
+            var tip = jQuery('.ddtip option:selected').val();
+
+            var formaction = "/index.php/podatoci/klient/pregled";
+            //   console.log(klient, status, nacin, formaction);
+            var data = {
+                gradid: grad,
+                tipid: tip
+            }
+            jQuery.ajax({
+                url: formaction,
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery(".klienttbl").find("tr:gt(1)").remove();
+                    var tr = jQuery('.klienttbl tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('input[name=time]').val(response[i].ime);
+                        newrow.find('input[name=tsifra]').val(response[i].sifrall);
+                        //  newrow.find('input[name=ttip]').val(response[i].klTipID);
+                        // newrow.find('input[name=tgrad]').val(response[i].grad_ime);
+                        newrow.find('input[name=tphone1]').val(response[i].phone1);
+
+                        newrow.find('input[name=tfax]').val(response[i].fax);
+                        newrow.find('input[name=temail]').val(response[i].email);
+                        newrow.find('input[name=tkontakt]').val(response[i].kontakt);
+                        //newrow.find('input[name=tziro]').val(response[i].ziroSka);
+                        //newrow.find('input[name=tedb]').val(response[i].edb);
+                        //newrow.find('input[name=tbanka]').val(response[i].banka_ime);
+                        //newrow.find('input[name=tflag]').val(response[i].kontFlag);
+                        //newrow.find('input[name=tkojgovodi]').val(response[i].kojGoVodiID);
+                        // newrow.find('input[name=tkomentar]').val(response[i].komentar);
+                        //newrow.find('input[name=tkomerc]').val(response[i].komerc_ime);
+                    }
+                    //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                    tr.addClass('hiderow');
+                }
+            });
+        });
+    });
+</script>

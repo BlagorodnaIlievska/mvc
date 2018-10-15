@@ -1,0 +1,11 @@
+<div id="index" class="main-menu-tabs">
+    <ul>
+    <?php if (bis_check_access('kasa_vlez_izlez_tab')): ?>
+        <li><a href="/index.php/kasi/kasi/lista">Каса влез-излез</a></li>
+    <?php endif; ?>
+    <?php if (bis_check_access('kasa_pregled_na_kasa_tab')): ?>
+        <li><a href="/index.php/kasi/kasi/pregled_na_kasa">Преглед на каса</a></li>
+        <?php endif; ?>
+      <!--  <li><a href="/index.php/kasa/menu/fin_grupiranje">Фин. групирање</a></li>        -->
+    </ul>
+</div>

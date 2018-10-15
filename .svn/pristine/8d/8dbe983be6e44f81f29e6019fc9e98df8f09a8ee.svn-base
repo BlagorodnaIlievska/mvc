@@ -1,0 +1,144 @@
+<?php
+$delete = img(array(
+    'src' => 'images/delete.png',
+    'width' => '15',
+    'height' => '15',
+));
+$edit = img(array(
+    'src' => 'images/edit.png',
+    'width' => '15',
+    'height' => '15',
+));
+$smeni=array(
+    '1'=>'една смена',
+    '2'=>'во смени'
+);
+$pol=array(
+    '1'=>'машки',
+    '2'=>'женски'
+);
+$bracen_status=array(
+    '1'=>'во брак',
+    '2'=>'сам/а',
+    '3'=>'разведен/а'
+);
+$rabMesto=array('1'=>'Hirurg');
+$grupa=array('1'=>'Hirurg');
+$obrazovanie=array(
+    '1'=>'ОО',
+    '2'=>'СС',
+    '3'=>'ВСС',
+    '4'=>'Мр.',
+    '5'=>'Доц.Др.',
+    '6'=>'Др'
+);
+$p=$vraboten[0]->pol;
+$b=$vraboten[0]->bracen_status;
+$f=$vraboten[0]->firma;
+$o=$vraboten[0]->oddel;
+$pod=$vraboten[0]->pododdel;
+$ob=$vraboten[0]->obrazovanie;
+$s=$vraboten[0]->smenska_grupa;
+?>
+
+<div class="editklasa iskluci-izmeni">
+    <form method="post" enctype="multipart/form-data" target="_blank">
+        <input type="hidden" name="id" value="<?php echo $id ?>" />
+
+        <div class="novvraboten-levomeni">
+            <fieldset>
+                <legend>Лични податоци</legend>
+                <ul>
+                <li><label>Име</label> <input type="text" name="ime" value="<?echo $vraboten[0]->ime;?>" class="imevrab" /></li><br>
+                    <li><label>Презиме</label> <input type="text" name="prezime" value="<?echo $vraboten[0]->prezime;?>" /><br>
+                    <li><label>Датум на раѓање</label> <input type="text" name="datum_ragjanje" value="<?echo $vraboten[0]->datum_ragjanje;?>" class="datumvrab"/></li><br>
+                    <li><? echo form_label('Пол','pol');
+                echo form_dropdown('pol',$pol,$p,'class="polvrab"');
+                ?></li> <br>
+                    <li><label>Бр. платен список</label><input type="text" name="broj_platen_spisok"  value="<?echo $vraboten[0]->broj_platen_spisok;?>" class="brojspisok"/></li><br>
+                    <li><label>Бр. ЛК</label><input type="text" name="broj_licna_karta" value="<?echo $vraboten[0]->broj_licna_karta;?>" class="brojlicna" /></li><br>
+                    <li><label>Роден во</label> <input type="text" name="mesto_ragjanje" value="<?echo $vraboten[0]->mesto_ragjanje;?>"  class="mestoragj"/></li><br>
+                    <li><label>Нац. припадност</label> <input type="text" name="nacionalna_pripadnost" value="<?echo $vraboten[0]->nacionalna_pripadnost;?>"  class="nacionalnapripadnost" /></li><br>
+                    <li><label>ЕМБГ</label> <input type="text" name="embg" value="<?echo $vraboten[0]->embg;?>" class="embgvrab" /></li><br>
+                    <li><? echo form_label('Брачен статус','bracen_status');
+                echo form_dropdown('bracen_status',$bracen_status,$b,'class="bracenstatus"');
+                ?></li>
+                    <li><label>Шифра на општина</label> <input type="text" name="sifra_opstina" value="<?echo $vraboten[0]->sifra_opstina;?>"class="nacionalnapripadnost" /></li>
+                </ul>
+            </fieldset>
+
+        </div>
+        <div class="novvraboten-desnomeni">
+            <fieldset>
+                <legend>Работен однос</legend>
+                <div class="raboten-odnos-cr">
+                    <label>Поч. на раб. однос/волонтерство</label> <input type="text" name="pocetok_raboten_odnos"  value="<?echo $vraboten[0]->pocetok_raboten_odnos;?>" class="datumvrab"/>
+                </div>
+                <div class="raboten-odnos-cr">
+                    <label>Крај на работен однос/волонтерство</label> <input type="text" name="kraj_raboten_odnos" value="<?echo $vraboten[0]->kraj_raboten_odnos;?>" class="datumvrab"/>
+                </div>
+                <div class="pravenosnov-raboten-odnos-cr">
+                    <label>Правен основ( за завршување на раб. однос)</label> <input type="text" name="praven_osnov"  value="<?echo $vraboten[0]->praven_osnov;?>"  class="pravenosnov"/>
+                </div>
+                <div class="rabotenodnos-info-cr">
+                    <label>Стаж </label><input type="text" name="staz" value="<?echo $vraboten[0]->staz;?>" class="stazvrab"  /> год.<br>
+                    <label>Претходен стаж</label> <input type="text" name="prethoden_staz" value="<?echo $vraboten[0]->prethoden_staz;?>" class="prethodenstaz" /> год.<br>
+                    <label>Вкупен стаж</label> <input type="text" name="vkupno_staz" value="<?echo $vraboten[0]->vkupno_staz;?>" class="vkupnostaz"  /> год.<br>
+                    <label>ЛД основица</label><input type="text" name="ld_osnovica" value="<?echo $vraboten[0]->ld_osnovica;?>" class="ldosnovica" /> год.<br>
+                        <? echo form_label('Фирма','firma');
+                        echo form_dropdown('firma',$firma,$f,'class="firmavrab"');
+                        ?> <br>
+                        <? echo form_label('Оддел','oddel');
+                        echo form_dropdown('oddel',$oddel,$o,'class="oddelvrab"');
+                        ?> <br>
+                        <? echo form_label('Пододдел','pododdel');
+                        echo form_dropdown('pododdel',$pododdel,$pod,'class="pododdelvrab"');
+                        ?> <br>
+                        <? echo form_label('Сменска група','smenska_grupa');
+                        echo form_dropdown('smenska_grupa',$smena,$s,'class="smenagrupa"');
+                        ?> <br>
+                        Број на факсимил (важи само за доктори) <input type="text" name="broj_faksimil" value="<?echo $vraboten[0]->broj_faksimil;?>" class="brojfaksimil" />
+            </fieldset>
+        </div>
+
+        <div class="novvraboten-podmeni">
+            <fieldset>
+                <legend>Податоци за образование</legend>
+                <? echo form_label('Образование','obrazovanie');
+                echo form_dropdown('obrazovanie',$obrazovanie,$ob,'class="obrazovanie"');
+                ?> <br>
+                <label>Број на лиценца/Уверение <input type="text" name="broj_licenca" value="<?echo $vraboten[0]->broj_licenca;?>"  class="brojlicenca" />  <br>
+                    <label>Важи од <input type="text" name="vazi_od" class="datumvrab" value="<?echo $vraboten[0]->vazi_od;?>" />  До <input type="text" name="vazi_do"  class="datumvrab" value="<?echo $vraboten[0]->vazi_do;?>" />
+            </fieldset>
+        </div>
+        <div class="novvraboten-podatoci-plata">
+            <fieldset>
+                <label>Член на синдикат: </label>
+                <?php if($vraboten[0]->clen_na_sindikat == 1) { ?><input type="checkbox" checked class="clen_na_sindikat" name="clen_na_sindikat" /><br />
+                <?php } else{ ?><input type="checkbox" class="clen_na_sindikat" name="clen_na_sindikat" /><br /><?php } ?>
+                <label class="label-podatoci-plata">Коеф. здравство </label><input type="text" class="koef_zdravstvo" name="koef_zdravstvo" value="<?echo $vraboten[0]->koef_zdravstvo;?>" /><br />
+                <label class="label-podatoci-plata osiguruvanje">Осигурување </label>
+                <select name="osiguruvanje" class="osiguruvanje">
+                    <option <?php if($vraboten[0]->osiguruvanje == 0) echo 'selected="selected"'; ?> value="0">Нема осигурување</option>
+                    <option <?php if($vraboten[0]->osiguruvanje == 1) echo 'selected="selected"'; ?> value="1">Има осигурување</option>
+                </select><br />
+                <label class="label-podatoci-plata osiguruvanje">Член на лекарска комора </label>
+                <select name="clen_lekarska_komora" class="clen_lekarska_komora">
+                    <option <?php if($vraboten[0]->clen_lekarska_komora == 0) echo 'selected="selected"'; ?> value="0">Не е член</option>
+                    <option <?php if($vraboten[0]->clen_lekarska_komora == 1) echo 'selected="selected"'; ?> value="1">Лекарска</option>
+                </select><br />
+                <label>Професор на Медицински Факултет: </label>
+                <?php if($vraboten[0]->profesor_medicinski_fakultet == 1) { ?><input type="checkbox" checked class="profesor" name="profesor_medicinski_fakultet" /><br />
+                <?php } else { ?><input type="checkbox" class="profesor" name="profesor_medicinski_fakultet" /><br /><?php } ?>
+                <label class="label-podatoci-plata">Сложеност </label><input type="text" class="koef_slozenost" name="koef_slozenost" value="<?echo $vraboten[0]->koef_slozenost;?>" /><br />
+                <label class="label-podatoci-plata">Услови на работа </label><input type="text" class="koef_uslovi_na_rabota" name="koef_uslovi_na_rabota" value="<?echo $vraboten[0]->koef_uslovi_na_rabota;?>" /><br />
+                <label class="label-podatoci-plata">Раководно место </label><input type="text" class="koef_rakovodno_mesto" name="koef_rakovodno_mesto" value="<?echo $vraboten[0]->koef_rakovodno_mesto;?>" /><br />
+                <label class="label-podatoci-plata">Стаж </label><input type="text" class="koef_staz" name="koef_staz" value="<?echo $vraboten[0]->koef_staz;?>" />
+            </fieldset>
+        </div>
+    </form>
+</div>
+<script>
+
+    jQuery('.datumvrab').datepicker({dateFormat:'yy-mm-dd'});
+</script>

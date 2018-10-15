@@ -1,0 +1,26 @@
+<div class="faktura-form matfform" xmlns="http://www.w3.org/1999/html">
+    <div class="forma">
+    <fieldset>
+    <legend>Фактура</legend>
+    <div class="kopcinjafak-mat">
+        <button type="button" class="newwindow button" formaction="/index.php/materijalno/faktura/povrzi_postoecka">
+            <span>Поврзи постоечка</span>
+        </button>
+<!--        <button type="button" class="novafaktura button" formaction="/index.php/vlezni_fakturi/pregled_vlezni/nova_faktura"-->
+<!--                onclick="nova_vlezna_faktura_po_priemnica()"><span>Направи нова</span></button>-->
+        </div>
+    </div>
+    </fieldset>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.newwindow').live('click',function(){
+            var formaction=jQuery(this).parent().attr('action');
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({
+                autoOpen: true, width: 700}).load(formaction);
+        });
+    });
+</script>

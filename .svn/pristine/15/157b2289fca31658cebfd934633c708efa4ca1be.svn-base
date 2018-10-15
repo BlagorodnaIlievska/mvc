@@ -1,0 +1,105 @@
+<div class="grupen_prikaz_form">
+    <?php if (bis_check_access('vlezni_fakturi_pregled_na_vlezni_grupen_pregled_pecati_faktura_button')): ?>
+    <span class="print"> <?php echo anchor('vlezni_fakturi/pregled_vlezni/pecati_site_vlezni', 'Печати'); ?></span>
+        <?php endif ?>
+
+    <div class="prikaz">
+        <?php
+        $platena = array(8, 9, 10);
+        if (isset($fak)): foreach ($fak as $row) {
+            ?>
+    <table class="<?php if($row->status == 1) {
+        echo "platena grafic";
+    } else {
+        echo "neplatena grafic";
+    } ?>" border='1' cellpadding='2'>
+    <?php    echo "<tr>";
+            echo "<th width='80'>" . $row->broj . "</th>";
+            echo "<th width='120'>" . $row->datum . "</th>";
+            echo "</tr>";
+            echo "<tr>";
+            echo "<td width='200'>" . $row->firma . "</td>";
+            echo '<input type="hidden" class="fakturaid" name="fakturaid" value="' . $row->fakturaid . '">';
+            echo "<td width='200'>Вкупно</td>";
+            echo "</tr>";
+            echo "<tr>";
+            if($row->status == 1) {
+                echo "<td width='80' >Платена</td>";
+            } else {
+                echo "<td width='80'>Неплатена</td>";
+            }
+            echo "<td class='iznos-grafic' width='120'>" . $row->vkupno . "</td>";
+            echo "</tr>";
+        }
+            echo " </table>";
+        endif; ?>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function () {
+        var iznos = jQuery('.grafic .iznos-grafic').val();
+        jQuery('.grafic .iznos-grafic').val(formatnumbermkd(iznos));
+
+        jQuery('.grafic tr').live("dblclick", function () {
+            var trow = jQuery(this).closest('tbody');
+            var id = trow.find('.fakturaid').val();
+            //console.log(id);
+            var formaction = "/index.php/vlezni_fakturi/pregled_vlezni/editVleznaFaktura?id=" + id;
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery.ajax({
+                url:formaction,
+                success:function (response) {
+                    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                    jQuery("." + tempdialog).html(response);
+                    jQuery('div.' + tempdialog).dialog({
+                        autoOpen:true,
+                        width:"auto",
+                        position:[20, 20],
+                        modal:true,
+                        title:"Измени Фактура",
+                        dialogClass: 'dialogsotabovi',
+                        close:function (event, ui) {
+                            // Remove the dialog elements
+                            // Note: this will put the original div element in the dom
+                            jQuery(this).dialog("destroy");
+                            // Remove the left over element (the original div element)
+                            jQuery(this).remove();
+                        }
+                        //buttons:{ "Close": function() { jQuery(this).dialog('destroy'); } }
+                    });
+                    jQuery.ajax({
+                        url:'/index.php/vlezni_fakturi/faktura/editFaktura?id='+id,
+                        type:'GET',
+                        success:function (response) {
+
+                            jQuery("." + tempdialog +" #editfaktura").html(response);
+                        }
+                    });
+                    jQuery.ajax({
+                        url:'/index.php/vlezni_fakturi/faktura/editUplata?id='+id,
+                        type:'GET',
+                        success:function (response) {
+
+                            jQuery("." + tempdialog +" #edituplata").html(response);
+                        }
+                    });
+                    jQuery.ajax({
+                        url:'/index.php/vlezni_fakturi/faktura/editPriemnica?id='+id,
+                        type:'GET',
+                        success:function (response) {
+
+                            jQuery("." + tempdialog +" #editpriemnici").html(response);
+                        }
+                    });
+                    jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                        cache:false,
+                        ajaxOptions:{
+                            type:"POST"
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>

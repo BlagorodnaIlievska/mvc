@@ -1,0 +1,97 @@
+<div id="presmetka_ddv_form">
+    <h4>Presmetka na DDV</h4>
+    <?php
+    $pogled1 = array(
+        '0' => 'Suma',
+        '1' => 'Prihod',
+        '2' => 'Rashod'
+    );
+    echo form_open('izvodi/menu/grupiraj_izvodi');
+
+    echo form_label('Period: ', 'period');
+    //echo form_dropdown('period', $period, 0, 'class="period"');
+    echo form_close();
+    ?>
+    <br>
+    <div class="tab-vleznifakturi">
+        <h4>Lista na vlezni fakturi</h4>
+        <table class="t-vleznifakturi" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th>Broj</th>
+                <th>Datum</th>
+                <th>Klient</th>
+                <th>DDV</th>
+            </tr>
+            <?php
+            echo "<tr class='hiderow'>";
+            echo "<td> <input type='text' class='broj medium' name='vbroj' readonly> </td>";
+            echo "<td> <input type='text' class='datum medium' name='vdatum' readonly> </td>";
+            echo "<td> <input type='text' class='klient big' name='vklient' readonly> </td>";
+            echo "<td> <input type='text' class='ddv medium' name='vddv' readonly> </td>";
+            echo "</tr>";
+            ?>
+        </table>
+    </div><br><br>
+    <div class="tab-izleznifakturi">
+        <h4>Lista na izlezni fakturi</h4>
+        <table class="t-izleznifakturi" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th>Broj</th>
+                <th>Datum</th>
+                <th>Klient</th>
+                <th>DDV</th>
+            </tr>
+            <?php
+            echo "<tr class='hiderow'>";
+            echo "<td> <input type='text' class='broj medium' name='ibroj' readonly> </td>";
+            echo "<td> <input type='text' class='datum medium' name='idatum' readonly> </td>";
+            echo "<td> <input type='text' class='klient big' name='iklient' readonly> </td>";
+            echo "<td> <input type='text' class='ddv medium' name='iddv' readonly> </td>";
+            echo "</tr>";
+            ?>
+        </table>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        var data = { data: 1 }
+        jQuery.ajax({
+            url: '/index.php/raporti/menu/getPresmetkaDDV',
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+                //console.log(response);
+                jQuery(".t-vleznifakturi").find("tr:gt(1)").remove();
+                var tr = jQuery('.t-vleznifakturi tr:last');
+                jQuery(".t-izleznifakturi").find("tr:gt(1)").remove();
+                var tr1 = jQuery('.t-izleznifakturi tr:last');
+                for ( var i = 0; i < response.length; i++ ) {
+                    if(response[i].tip == 10)
+                    {
+
+                        tr.removeClass('hiderow');
+                            var newrow = jQuery(tr).clone().insertAfter(tr);
+                            newrow.find('input[name=vbroj]').val(response[i].textBroj);
+                            newrow.find('input[name=vdatum]').val(response[i].datum);
+                            newrow.find('input[name=vklient]').val(response[i].firma);
+                            newrow.find('input[name=vddv]').val(response[i].ddv);
+                        tr.addClass('hiderow');
+                    }
+                    if(response[i].tip == 20)
+                    {
+                        tr1.removeClass('hiderow');
+                            //console.log(response[i].ZSID);
+                            var newrow = jQuery(tr1).clone().insertAfter(tr1);
+                            newrow.find('input[name=ibroj]').val(response[i].textBroj);
+                            newrow.find('input[name=idatum]').val(response[i].datum);
+                            newrow.find('input[name=iklient]').val(response[i].firma);
+                            newrow.find('input[name=iddv]').val(response[i].ddv);
+                        tr1.addClass('hiderow');
+                    }
+                }
+            }
+        });
+    });
+</script>

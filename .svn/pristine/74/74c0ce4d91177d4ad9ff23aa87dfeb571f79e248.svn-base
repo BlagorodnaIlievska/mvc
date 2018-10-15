@@ -1,0 +1,86 @@
+<?php
+
+class Krediti_model extends CI_Model
+{
+
+    public function getKrediti()
+    {
+        $this->db->select('
+                bis_krediti.*,
+                covecki_resursi.id as vrabotenID,
+                covecki_resursi.ime as vrabotenIme,
+                covecki_resursi.prezime as vrabotenPrezime,
+                bis_kreditori.naziv as kreditorIme,
+                bis_kreditori.zirosmetka as kreditorZirosmetka
+        ');
+        $this->db->from('bis_krediti');
+        $this->db->join('covecki_resursi', 'bis_krediti.vraboten_id = covecki_resursi.id', 'left');
+        $this->db->join('bis_kreditori', 'bis_krediti.kreditor_id = bis_kreditori.id', 'left');
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+
+    public function getKredit($id)
+    {
+        $this->db->select('
+                bis_krediti.*,
+                bis_kreditori.zirosmetka as kreditorZirosmetka
+        ');
+        $this->db->from('bis_krediti');
+        $this->db->join('bis_kreditori', 'bis_krediti.kreditor_id = bis_kreditori.id', 'left');
+        $this->db->where("bis_krediti.id", $id);
+        $query = $this->db->get();
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_kredit()
+    {
+        $insert_data = $this->input->post();
+        $insert      = $this->db->insert('bis_krediti', $insert_data);
+        return $insert;
+    }
+
+
+    public function delete_kredit($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_krediti');
+    }
+
+    public function update_kredit()
+    {
+        $field_update_data =	$this->input->post();
+        $this->db->where('id',$field_update_data['id']);
+        $this->db->update('bis_krediti', $field_update_data);
+    }
+    public function vraboteni_dropdown()
+    {
+//        $this->db->select('id, ime, vrednost');
+//        $this->db->from('bis_vraboteni');
+//        $this->db->order_by('id');
+        $query = $this->db->get('covecki_resursi');
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = '';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime'] . " " . $row['prezime'];
+            }
+        }
+        return $dropdown;
+    }
+    public function kreditori_dropdown()
+    {
+        $query = $this->db->get('bis_kreditori');
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = '';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['naziv'];
+            }
+        }
+        return $dropdown;
+    }
+}

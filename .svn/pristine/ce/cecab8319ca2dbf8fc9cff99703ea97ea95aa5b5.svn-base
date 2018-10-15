@@ -1,0 +1,12 @@
+<div id="login_form">
+    <h1>Пристап</h1>
+
+    <form accept-charset="utf-8" method="post" action="/index.php/korisnici/korisnici/validacija">
+        <label for="username">Корисник:</label>
+        <input type="text" id="username" value="" name="username"/><br/>
+        <label for="password">Лозинка:</label>
+        <input type="password" password="" value="" id="password" name="password"/>
+        <br/><br/>
+        <input type="submit" value="Влез" name="submit"/>
+    </form>
+</div>

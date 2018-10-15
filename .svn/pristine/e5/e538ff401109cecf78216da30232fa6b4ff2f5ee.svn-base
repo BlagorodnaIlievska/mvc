@@ -1,0 +1,224 @@
+<div class="povratnici-form">
+
+    <?php
+    $pogled_options = array(
+        '0' => 'Site',
+        '1' => 'so faktura',
+        '2' => 'bez faktura'
+    );
+    echo form_open('materijalno/izlez/povratnica_menu');
+    echo form_label('Magacin: ', 'magacin');
+    echo form_dropdown('magacin', $magacin);
+    ?>
+    <input type="button" class="button magacinbutton1" formaction="/index.php/materijalno/lager_lista/new_magacin" value="Дефинирај нов магацин">
+    <input type="button" value="Nova" class="magacinbutton button"><br>
+    <?php
+    echo form_label('Klient: ', 'klient');
+    echo form_dropdown('klient', $klient, 0, 'class="klient3 searchpovratnica"');
+    echo br();
+    echo form_label('Pogled: ', 'pogled');
+    echo form_dropdown('pogled', $pogled_options, 0, 'class="pogled3 searchpovratnica"');
+    echo form_close();
+    ?>
+    <br>
+    <div class="tabela">
+        <table class="povratnica" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th>Tip.</th>
+                <th>Broj</th>
+                <th>Datum</th>
+                <th>Faktura</th>
+                <th>Klient</th>
+                <th>Zabeleska</th>
+            </tr>
+            <?php
+            echo "<tr class='hiderow trow'>";
+            echo "<td> <input type='hidden' class='dbid' name='dbid'><input type='text' class='tip small' readonly> </td>";
+            echo "<td> <input type='text' class='number medium' readonly> </td>";
+            echo "<td> <input type='text' class='datum medium' readonly> </td>";
+            echo "<td> <input type='text' class='faktura medium' readonly> </td>";
+            echo "<td> <input type='text' class='klient big' readonly> </td>";
+            echo "<td> <input type='text' class='zabeleska big' readonly> </td>";
+            echo "</tr>";
+            ?>
+        </table>
+        <?php echo form_open('materijalno/vlez_izlez/pecati_site_povratnici'); ?>
+        <input type="hidden" class="pdfklientid" name="pdfklientid"><br>
+        <input type="hidden" class="pdfpogledid" name="pdfpogledid"><br>
+        <input type="submit" value="Pecati" class="pecatikartica button" ><br>
+        <?php echo form_close(); ?>
+    </div>
+    <div class="stavkadetail">
+        <table class="tstavkadetail3" border="1" cellspacing="2" cellpadding="2">
+            <caption>Stavki vo dokumentot - detalno</caption>
+            <th>No.</th>
+            <th>Sifra</th>
+            <th>Sifra 2</th>
+            <th>Kat. Br.</th>
+            <th>Stavka</th>
+            <th>kol.</th>
+            <th>EM</th>
+            <th>Cena</th>
+            <th>Vkupno</th>
+            <th>Ser. No</th>
+            <?php
+            echo "<tr class='hiderow'>";
+            echo "<td> <input type='text' class='number small' name='number' readonly></td>";
+            echo "<td> <input type='text' class='sifra medium' name='sifra' readonly></td>";
+            echo "<td> <input type='text' class='sifra2 medium' name='sifra2' readonly></td>";
+            echo "<td> <input type='text' class='katbroj medium' name='katbroj' readonly></td>";
+            echo "<td> <input type='text' class='stavka big' name='stavka' readonly></td>";
+            echo "<td> <input type='text' class='kolicina small' name='kolicina' readonly></td>";
+            echo "<td> <input type='text' class='em medium' name='em' readonly></td>";
+            echo "<td> <input type='text' class='cena medium'name='cena' readonly></td>";
+            echo "<td> <input type='text' class='vkupno medium'name='vkupno' readonly></td>";
+            echo "<td> <input type='text' class='seriskibroj medium'name='seriskibroj' readonly></td>";
+            echo "</tr>";
+            ?>
+        </table>
+        <?php echo form_open('materijalno/vlez_izlez/pecati_povratnica_detali'); ?>
+        <input type="hidden" class="pdfid" name="pdfid"><br>
+
+        <input type="submit" value="Pecati" class="pecatikartica button" ><br>
+        <?php echo form_close(); ?>
+    </div>
+</div>
+
+
+<script>
+    jQuery(document).ready(function() {
+        var data = {
+            klientid: 0,
+            pogledid: 0
+        }
+        jQuery.ajax({
+            url: "/index.php/materijalno/vlez_izlez/getAllPovratnici",
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+                //console.log(response);
+                jQuery(".povratnica").find("tr:gt(1)").remove();
+                var tr = jQuery('.povratnica tr:last');
+                tr.removeClass('hiderow');
+                for ( var i = 0; i < response.length; i++ ) {
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.find('.dbid').val(response[i].dbid);
+                    newrow.find('.tip').val('PovD');
+                    newrow.find('.number').val(response[i].textBroj);
+                    newrow.find('.datum').val(response[i].datum);
+                    newrow.find('.faktura').val(response[i].faktura);
+                    newrow.find('.klient').val(response[i].firmaIme);
+                    newrow.find('.zabeleska').val(response[i].zabeleska);
+                }
+                //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                tr.addClass('hiderow');
+            }
+        });
+        jQuery('.searchpovratnica').live('change',function(){
+            var klientid = jQuery('.klient3 option:selected').val();
+            var pogledid = jQuery('.pogled3 option:selected').val();
+            jQuery('.pdfklientid').val(klientid);
+            jQuery('.pdfpogledid').val(pogledid);
+            var data = {
+                klientid: klientid,
+                pogledid: pogledid
+            }
+            jQuery.ajax({
+                url: "/index.php/materijalno/vlez_izlez/getAllPovratnici",
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery(".povratnica").find("tr:gt(1)").remove();
+                    jQuery(".tstavkadetail3").find("tr:gt(1)").remove();
+                    var tr = jQuery('.povratnica tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('.dbid').val(response[i].dbid);
+                        newrow.find('.tip').val('PovD');
+                        newrow.find('.number').val(response[i].textBroj);
+                        newrow.find('.datum').val(response[i].datum);
+                        newrow.find('.faktura').val(response[i].faktura);
+                        newrow.find('.klient').val(response[i].firmaIme);
+                        newrow.find('.zabeleska').val(response[i].zabeleska);
+                    }
+                    //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                    tr.addClass('hiderow');
+                }
+            });
+        });
+        jQuery(".povratnica").delegate("tr.trow", "click", function(){
+            var dbid = jQuery(this).find('.dbid').val();
+            jQuery('.pdfid').val(dbid);
+            var data = {
+                dbid: dbid
+            }
+            jQuery.ajax({
+                url: "/index.php/materijalno/vlez_izlez/getPovratnicaDetali",
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery(".tstavkadetail3").find("tr:gt(1)").remove();
+                    var tr = jQuery('.tstavkadetail3 tr:last');
+                    tr.removeClass('hiderow');
+                    var num = response.length;
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        var kolicina = response[i].kolicina;
+                        var cena = response[i].cena;
+                        var vkupno = parseInt(cena) * parseInt(kolicina);
+                        newrow.find('.number').val("." + num);
+                        newrow.find('.sifra').val(response[i].sifra);
+                        newrow.find('.sifra2').val(response[i].sifra2);
+                        newrow.find('.katbroj').val(response[i].katBroj);
+                        newrow.find('.stavka').val(response[i].stavka);
+                        newrow.find('.kolicina').val(kolicina);
+                        newrow.find('.cena').val(cena);
+                        newrow.find('.vkupno').val(vkupno);
+                        //newrow.find('.seriskibroj').val();
+                        num--;
+                    }
+                    tr.addClass('hiderow');
+                }
+            });
+        });
+        jQuery('.magacinbutton').click(function()
+        {
+            var formaction=jQuery(this).parent().attr('action');
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({ autoOpen: true, width: 1300 }).load(formaction);
+        });
+        jQuery('.magacinbutton1').click(function()
+        {
+            var formaction=jQuery(this).attr('formaction');
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({ autoOpen: true }).load(formaction);
+        });
+        jQuery('.povratnica tr').live("dblclick", function(){
+            var id = jQuery(this).find('.dbid').val();
+            //console.log(id);
+            var formaction= "/index.php/materijalno/vlez_izlez/editPovratnicaMenu?id=" + id;
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({
+                autoOpen: true,
+                width: 1100,
+                close: function(event, ui){
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+                //buttons:{ "Close": function() { jQuery(this).dialog('destroy'); } }
+            }).load(formaction);
+        });
+    });
+</script>

@@ -1,0 +1,39 @@
+<div id="admin_area" class="main-menu-tabs">
+    <ul>
+        <li><a href="#users">Users</a></li>
+        <li><a href="#roles">Roles</a></li>
+        <li><a href="#fields">Fields</a></li>
+        <li><a href="#field-data">Field Data</a></li>
+        <li><a href="#logout">Logout</a></li>
+    </ul>
+    <div id="users" class="sub-menu-tabs">
+        <ul>
+            <li><?php echo anchor('users/login/signup', 'Create a new account'); ?></li>
+            <li><?php echo anchor('users/account/view_accounts', 'Edit accounts'); ?></li>
+        </ul>
+    </div>
+    <div id="roles" class="sub-menu-tabs">
+        <ul>
+            <li><?php echo anchor('users/roles/new_role', 'Create a new role'); ?></li>
+            <li><?php echo anchor('users/roles/view_roles', 'Edit roles'); ?></li>
+        </ul>
+    </div>
+    <div id="fields" class="sub-menu-tabs">
+        <ul>
+            <li><?php echo anchor('users/fields/new_field', 'Create a new field'); ?></li>
+            <li><?php echo anchor('users/fields/view_fields', 'Edit fields'); ?></li>
+        </ul>
+    </div>
+    <div id="field-data" class="sub-menu-tabs">
+        <ul>
+            <li><?php echo anchor('users/fields_data/new_field_data', 'Create a new field data'); ?></li>
+            <li><?php echo anchor('users/fields_data/view_fields_data', 'Edit fields data'); ?></li>
+        </ul>
+    </div>
+    <div id="logout">
+        <ul>
+            <li><?php echo anchor('users/login/index', 'Logout'); ?></li>
+        </ul>
+    </div>
+
+</div>

@@ -1,0 +1,20 @@
+<div class="editgrupa1">
+    <form method="post" action="/index.php/paketi/sppr_uslugi/update_sodrzina">
+        <input type="hidden" name="id" value="<?php echo $id ?>" />
+
+
+
+
+
+            Содржина : <br />
+            <textarea name="sodrzina"><?php echo $sodrzina ?></textarea><br />
+
+
+
+
+
+
+
+        <input type="button" class="ajaxpaketiupdatesodrzina button" value="Измени"><br/>
+    </form>
+</div>

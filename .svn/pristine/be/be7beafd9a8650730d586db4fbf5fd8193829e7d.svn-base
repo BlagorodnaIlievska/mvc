@@ -1,0 +1,42 @@
+<div id="edit_accounts_form">
+
+<h2>Accounts</h2>
+
+<?php
+    $delete = img(array(
+        'src' => 'images/delete.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+?>
+
+<table class="tabela" border="1" cellspacing="2" cellpadding="2">
+    <tr>
+        <th></th>
+        <th>Username</th>
+        <th>Email Address</th>
+        <th>Role</th>
+    </tr>
+
+    <?php if(isset($accounts)): foreach($accounts->result() as $row){
+
+    echo "<tr>";
+    echo "<td>". anchor("users/account/delete_account/$row->id", $delete, array('class' => 'delete-tr')) . " "
+               . anchor("users/account/edit_account/$row->id?ajax=1", $edit, array('class' => 'edit-tr')) . "</td>";
+    echo "<td>" . $row->username . "</td>";
+    echo "<td>" . $row->email . "</td>";
+    echo "<td>" . $row->name . "</td>";
+
+   // echo "<td>" . $row->value . "</td>";
+}
+    ?>
+    </table>
+
+    <?php endif; ?>
+
+</div>

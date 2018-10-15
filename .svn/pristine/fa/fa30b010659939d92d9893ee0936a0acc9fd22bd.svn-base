@@ -1,0 +1,259 @@
+<?php  if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class Kasi extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+    }
+
+    public function nov()
+    {
+        $this->load->model('kasi/kasi_model');
+        $this->load->model('podatoci/klienti_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $data['kasimodel'] = $this->kasi_model;
+        $data['klientimodel'] = $this->klienti_model;
+        $data['prenesena_sostojba']=$this->input->get('prenesena_sostojba');
+        $data['kasaid']=$this->input->get('kasaID');
+        $data['kasaIme']=$this->input->get('kasaIme');
+        $data['konto'] = $this->plan_model->konto_dropdown();
+        $this->load->view('kasi/nov', $data);
+    }
+
+
+    public function izmeni()
+    {
+        $this->load->model('kasi/kasi_model');
+        $this->load->model('podatoci/klienti_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $kasa = $this->kasi_model->getKasa($this->input->get("id"));
+        $data['planmodel'] = $this->plan_model;
+        $data['kasimodel'] = $this->kasi_model;
+        $data['klientimodel'] = $this->klienti_model;
+
+        $data['kasa']     = $kasa;
+     //   print_r($kasa); die();
+        $this->load->view('kasi/izmeni', $data);
+    }
+
+
+    public function getLastKasaBroj()
+    {
+        $this->load->model('kasi/kasi_model');
+         $id=$this->input->get('id');
+        $query = $this->kasi_model->getLastKasaBroj($id);
+         echo json_encode($query);
+    }
+
+    public function testKasaBroj()
+    {
+        $this->load->model('pacienti/pacienti_model');
+        $query = $this->pacienti_model->createKasaBroj();
+        echo json_encode($query);
+    }
+    public function getLastKasaBroj2()
+    {
+        $this->load->model('kasi/kasi_model');
+
+        $query = $this->kasi_model->getLastKasaBroj2();
+        //print_r($query); die();
+        echo json_encode($query);
+    }
+  public function pregled_na_kasa_prebaruvanje(){
+      $klientid = $this->input->post('klientid');
+      $kasaid = $this->input->post('kasaid');
+      $this->load->model('kasi/kasi_model');
+      $query = $this->kasi_model->pregled_na_kasa_prebaruvanje($klientid,$kasaid);
+      echo json_encode($query);
+  }
+
+    public function lista()
+    {
+        $this->load->model('kasi/kasi_model');
+        $data['kasa']=$this->kasi_model->kasa_dropdown();
+        $this->load->view('kasi/lista', $data);
+    }
+    public function pregled_na_kasa()
+    {
+        $this->load->model('kasi/kasi_model');
+        $this->load->model('materijalno/materijalno_model');
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $data['kasa']=$this->kasi_model->kasa_dropdown();
+        $this->load->view('kasi/pregled_na_kasa', $data);
+    }
+   public function pregled(){
+       $this->load->model('kasi/kasi_model');
+       $query = $this->kasi_model->getSiteKasi();;
+       echo json_encode($query);
+   }
+
+    public function popolnilista()
+    {
+        $this->load->model('kasi/kasi_model');
+        $kasaid=$this->input->get('kasaid');
+        $return = $this->kasi_model->getKasi($kasaid);
+        echo json_encode($return);
+    }
+    public function popolnisostojba()
+    {
+
+        //$data['main_content'] = 'podatoci/katalog/popolnilista';
+        $this->load->model('kasi/kasi_model');
+        $return = $this->kasi_model->getSostojba();
+        echo json_encode($return);
+    }
+   public function getKasa_pri_prebaruvanje(){
+       $id = $this->input->post('kasaid');
+       $period1=$this->input->post('period1');
+       $period2=$this->input->post('period2');
+       $this->load->model('kasi/kasi_model');
+       $query = $this->kasi_model->getKasa_pri_prebaruvanje($id,$period1,$period2);
+
+       //print_r($query[0]->ID);
+       echo json_encode($query);
+   }
+
+    public function getSostojba_pri_prebaruvanje(){
+        $id = $this->input->post('kasaid');
+        $period2=  $this->input->post('period2');
+        $this->load->model('kasi/kasi_model');
+        $query = $this->kasi_model->getSostojba_pri_prebaruvanje($id,$period2);
+        echo json_encode($query);
+    }
+
+
+
+    public function create_nov_odliv_priliv()
+    {
+        $this->load->model('kasi/kasi_model');
+        $this->kasi_model->create_nov_odliv_priliv();
+        echo "ok";
+    }
+
+
+
+    public function update_odliv_priliv()
+    {
+        $this->load->model('kasi/kasi_model');
+        $this->kasi_model->update_odliv_priliv();
+        echo "ok";
+    }
+
+    public function delete_odliv_priliv()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('kasi/kasi_model');
+        $this->kasi_model->delete_odliv_priliv($id);
+        echo "ok";
+    }
+    public function getNewBrojKasa()
+    {
+        $year = $this->input->post('year');
+
+        $this->load->model('kasi/kasi_model');
+        $query = $this->kasi_model->getNewBrojKasa($year);
+      //  print_r($query); die();
+        echo json_encode($query);
+    }
+    public function povrzi_postoecka()
+    {
+        $this->load->view('kasi/postoecka_faktura');
+    }
+    public function print_edna_kasa(){
+        //od izmeni kasa
+        $kasa_id = $this->input->get('kasa_id');
+        // od popolnilista kasi
+        $kasaid = $this->input->get('kasaid');
+
+
+        $this->load->model('kasi/kasi_model');
+        $kasa =(array) $this->kasi_model->getKasa_print($kasaid, $kasa_id);
+//        if($kasaid > 0){
+//
+//    $data['kasa_ID'] = $kasaid;
+//
+//    }else $data['kasa_ID'] = 0;
+      // print_r($kasa); die();
+       $data['kasa']  = $kasa;
+
+
+
+
+      // print_r(" ");
+      // print_r($kasa[0]->dbid . "  " . $kasa[0]->textBroj . "\n");
+
+
+     // print_r($data['kasa_ID']);
+      // die();
+        $data['main_content'] = 'kasi/kasa_edna_print';
+        $html=$this->load->view('includes/print_template',$data,true);
+        echo bis_fill_input_values($html,$data);
+
+    }
+    public function print_kasa_od_bolnicko(){
+
+
+
+
+            $fakturaid=$this->input->get('fakturaid');
+
+
+
+            $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+            $this->load->model('kasi/kasi_model');
+            $podatoci_za_kasa=$this->kasi_model->getInfoKasa($fakturaid);
+            $kasa=$this->izlezni_fakturi_model->editIzleznaFakturaPriem($fakturaid);
+            $data['kasa']=$kasa;
+            $data['podatoci_kasa']=$podatoci_za_kasa;
+           // print_r($podatoci_za_kasa); die();
+            $data['main_content'] = 'kasi/kasa_print_od_bolnicko';
+            $html=$this->load->view('includes/print_template',$data,true);
+            echo bis_fill_input_values($html,$data);
+
+
+    }
+
+    public function print_kasi_tabela(){
+
+        $kasaid = $this->input->get('kasaid');
+        $period1 = $this->input->get('period1');
+        $period2 = $this->input->get('period2');
+
+
+        $this->load->model('kasi/kasi_model');
+        $kasi = (array)$this->kasi_model->getKasa_pri_prebaruvanje_za_print($kasaid, $period1, $period2);
+             //print_r($kasi); die();
+        $kasa_ime = $this->kasi_model->get_celo_imeKasa($kasaid);
+        if($kasa_ime){
+            $data['kasa_ime_celo'] = $kasa_ime[0]->ime;
+        }
+        else{
+            $data['kasa_ime_celo'] = 'Сите каси';
+        }
+        if(!$kasi[0])
+        {
+        $data['kasi_all'] = false;
+        }else{
+            $data['kasi_all'] = $kasi;
+
+        }
+        $data['period_od'] = $period1;
+        $data['period_do'] = $period2;
+        if($kasaid > 0){
+            $data['kasaid'] = $kasaid;
+
+        }else{
+
+            $data['kasaid'] = 0;
+
+        }
+        $data['main_content'] = 'kasi/kasa_tabela_print';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+}

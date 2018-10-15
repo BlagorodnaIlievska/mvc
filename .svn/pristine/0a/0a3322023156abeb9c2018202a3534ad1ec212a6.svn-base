@@ -1,0 +1,94 @@
+<div class="novklient">
+    <form action="/index.php/podatoci/klienti/update_klient" method="post">
+
+            <input type="hidden" name="firmaID" value="<?php echo $klient->firmaID  ?>"/>
+
+        <div class="novklient-levomeni">
+
+
+            Име : <br/> <input type="text" name="ime" class="nklient"  value="<?php echo $klient->ime ; ?>"<br/>
+
+            Адреса:<br/> <input type="text" name="adresa"  class="nklient" value="<?php echo $klient->adresa;  ?>"><br/>
+
+            <?   echo form_label('Град: ', 'gradID');
+            echo form_dropdown('gradID',$grad,$klient->gradID,'class="grad"');?><br/>
+
+            Телефон1 :<br/> <input type="text" name="phone1" class="nklienttelefon" value="<?php echo $klient->phone1;  ?>" >
+
+            Телефон2 :  <input type="text" name="phone2" class="nklienttelefon"  value="<?php echo $klient->phone2;  ?>" >   <br/>
+
+
+
+
+            Факс : <br/>  <input type="text" name="fax" class="nklient"  value="<?php echo $klient->fax;  ?>" ><br/>
+
+            Е-пошта :<br/>  <input type="text" name="email" class="nklient"  value="<?php echo $klient->email;  ?>" ><br/>
+
+        </div>
+        <br/>
+        <br/>
+
+        <div class="novklient-desnomeni">
+            Лого:
+            <input type="file" name="sliki[]"/><br/>
+            Тип на клиент:<br/>
+            <select name="klTipID">
+                <option value="0">A</option>
+                <option value="1">B</option>
+            </select><br/>
+            Жиро сметка : <br/>
+            <input type="text" name="ziroSka"  value="<?php echo $klient->ziroSka;  ?>" ><br/>
+
+            <?   echo form_label('Банка: ', 'bankaDBroj');
+            echo form_dropdown('bankaDBroj',$banka,$klient->bankaDBroj,'class="banka"');?><br/>
+            Даночен број: <br/>
+            <input type="text" name="edb" class="edb"  value="<?php echo $klient->edb;  ?>"><br/>
+            Тип на клиент:<br/>
+            <select name="kontFlag">
+                <option value="1">Фирма</option>
+                <option value="2">интерно конто</option>
+                <option value="3">физичко лице</option>
+            </select><br/>
+        </div>
+        <br/>
+        <br/>
+        <div class="clear"></div>
+        <div class="novartikl-podmeni">
+            <fieldset class="podatocizakontakt">
+                <legend>Податоци за контакт лице</legend>
+                <div class="novklient-levomeni">
+                    Контакт :  <br/>
+                    <input type="text" name="kontakt"  value="<?php echo $klient->kontakt;  ?>" ><br/>
+                    Позиција :  <br/>
+                    <input type="text" name="pozicija"  value="<?php echo $klient->pozicija;  ?>" ><br/>
+
+
+                    Мобилен1 : <br/>
+                    <input type="text" name="phone3"  value="<?php echo $klient->phone3;  ?>"><br/>
+
+                    Мобилен2 : <br/>
+                    <input type="text" name="phone4"   value="<?php echo $klient->phone4;  ?>"><br/>
+                </div>
+
+            </fieldset>
+
+        </div>
+
+
+
+
+        <label>Коментар :</label>
+        <textarea style="overflow-y:scroll;width:99%;resize: none;" class="komentar" name="komentar"  value="<?php echo $klient->komentar;  ?>"></textarea>
+
+
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="klient_popolnilista()" poraka_uspesno="Клиентот е успешно снимен"
+                poraka_neuspesno="Грешка при снимање на клиент"
+                ><span>Измени</span></button>
+
+
+        <br/>
+    </form>
+
+</div>

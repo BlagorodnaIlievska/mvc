@@ -1,0 +1,427 @@
+<div id="vlezizlez" class="sub-menu-tabs">
+    <ul>
+        <li><a href="#listafirmiglavno">Листа на фирми</a></li>
+    </ul>
+
+
+    <div class="listafirmiglavno" id="listafirmiglavno">
+        <div class="buttoncontainer">
+
+
+
+        </div>
+        <div class="listafirmi">
+            <?php if (bis_check_access('sistemsko_podesuvanje_pocetno_firmi_lista_firmi_nova_firma_button')): ?>
+               <button type="button" value="" class="magacinbutton button cmdnovafirma"><span>Нова фирма</span></button>
+                <?php endif ?>
+            <table class="firmi">
+                <thead>
+                <tr>
+                    <th class="delete"></th>
+                    <th class="edit"></th>
+                    <th>Име</th>
+                    <th>Шифра</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+        <div class="listaodeli">
+            <?php if (bis_check_access('sistemsko_podesuvanje_pocetno_firmi_lista_firmi_nov_odel_button')): ?>
+                <button type="button" value="" class="magacinbutton button cmdnovodel"><span>Нов Одел</span></button>
+                    <?php endif ?>
+            <table class="odeli">
+                <thead>
+                <tr>
+                    <th class="delete"></th>
+                    <th class="edit"></th>
+                    <th>Име</th>
+                    <th>Шифра</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="listapododeli">
+            <?php if (bis_check_access('sistemsko_podesuvanje_pocetno_firmi_lista_firmi_nov_pododel_button')): ?>
+                <button type="button" value="" class="magacinbutton button cmdnovpododel"><span>Нов Пододел</span></button>
+                <?php endif ?>
+            <table class="pododeli">
+                <thead>
+                <tr>
+                    <th class="delete"></th>
+                    <th class="edit"></th>
+                    <th>Име</th>
+                    <th>Шифра</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        jQuery(document).ready(function(){
+            jQuery('.firmi').tablesorter();
+            jQuery('.odeli').tablesorter();
+            jQuery('.pododeli').tablesorter();
+            reloadfirmi();
+
+        });
+
+
+
+	    function editfirma(firmaid)
+        {
+            var firmared=jQuery(this).parent().parent();
+            var formaction = "/index.php/start/firma/edit_firma?id="+firmaid;
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+
+            jQuery.ajax({
+                url:formaction,
+                type:'GET',
+                success:function (response) {
+                    jQuery('div.' + tempdialog).html(response);
+                    jQuery('div.' + tempdialog).dialog({
+                        autoOpen:true,
+                        width:"auto",
+                        position: "center",
+                        title: "Измени",
+                        close:function (event, ui) {
+                            // Remove the dialog elements
+                            // Note: this will put the original div element in the dom
+                            jQuery(this).dialog("destroy");
+                            // Remove the left over element (the original div element)
+                            jQuery(this).remove();
+                        }
+                    });
+
+
+                }
+            });
+
+        }
+	    function reloadfirmi(){
+
+
+            jQuery.ajax({
+                url:"/index.php/start/firma/getFirmi",
+                type:'POST',
+                data:{},
+                dataType:'json',
+                success:function (response) {
+                    jQuery(".firmi tbody").html('');
+                   jQuery(".odeli tbody").html('');
+                   jQuery(".pododeli tbody").html('');
+                    jQuery.each(response, function (index, item) {
+                        //   console.log(item.id);
+                        jQuery(".firmi tbody").append(('<tr firmaid="' + item.id + '">' +
+                                '<td>' +
+                                '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>'+
+                                '</td>' +
+                                '<td>' +
+                                '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>'+
+                                '</td>' +
+                                '<td>' + item.ime + '</td>' +
+                                '<td>' + item.sifra + '</td>' +
+
+                                '</tr>'));
+                    });
+                    jQuery(".firmi").trigger("update");
+                }
+            });
+	    }
+        jQuery('.listafirmiglavno table tbody .edit-tr').live('click',function () {
+            var firmaid=jQuery(this).parent().parent().attr("firmaid");
+	        editfirma(firmaid);
+        });
+
+        jQuery('.listafirmiglavno table tbody .delete-tr').live('click',function () {
+            var r=confirm("Дали сте сигурни?");
+	        var firmaid=jQuery(this).parent().parent().attr("firmaid");
+	        var firmared=jQuery(this).parent().parent();
+            if (r==true){
+                jQuery.ajax({
+                    url:'/index.php/start/firma/delete_firma?firmaid='+firmaid,
+                    type:'GET',
+                    success:function (response) {
+	                    if (jQuery.trim(response)=="ok"){
+                            firmared.remove();
+	                    }
+
+                    }
+                });
+
+            }
+
+
+        });
+
+        jQuery('.cmdnovafirma').click(function () {
+            var formaction = "/index.php/start/firma/new_firma";
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+
+            jQuery.ajax({
+                url:formaction,
+                type:'GET',
+                success:function (response) {
+                    jQuery('div.' + tempdialog).html(response);
+                    jQuery('div.' + tempdialog).dialog({
+                        autoOpen:true,
+                        width:"auto",
+                        position: "center",
+                        title: "Нова фирма",
+                        close:function (event, ui) {
+                            // Remove the dialog elements
+                            // Note: this will put the original div element in the dom
+                            jQuery(this).dialog("destroy");
+                            // Remove the left over element (the original div element)
+                            jQuery(this).remove();
+                        }
+                    });
+                }
+            });
+        });
+        jQuery('.cmdnovodel').click(function () {
+
+	        if (jQuery('.firmi tbody tr.active').length !=0) {
+                var firmaid=jQuery('.firmi tbody tr.active').attr("firmaid");
+	        } else {
+                alert('Ве молиме одберете фирма');
+                return;
+	        }
+
+            var formaction = "/index.php/start/firma/nov_odel?firmaid="+firmaid;
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+
+            jQuery.ajax({
+                url:formaction,
+                type:'GET',
+                success:function (response) {
+                    jQuery('div.' + tempdialog).html(response);
+                    jQuery('div.' + tempdialog).dialog({
+                        autoOpen:true,
+                        width:"auto",
+	                    title: "Нов одел",
+                        position: "center",
+                        close:function (event, ui) {
+                            // Remove the dialog elements
+                            // Note: this will put the original div element in the dom
+                            jQuery(this).dialog("destroy");
+                            // Remove the left over element (the original div element)
+                            jQuery(this).remove();
+                        }
+                    });
+                }
+            });
+        });
+        jQuery('.cmdnovpododel').click(function () {
+
+            if (jQuery('.odeli tbody tr.active').length !=0) {
+                var firmaid=jQuery('.odeli tbody tr.active').attr("firmaid");
+            } else {
+                alert('Ве молиме одберете Одел');
+                return;
+            }
+
+            var formaction = "/index.php/start/firma/nov_pododel?firmaid="+firmaid;
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+
+            jQuery.ajax({
+                url:formaction,
+                type:'GET',
+                success:function (response) {
+                    jQuery('div.' + tempdialog).html(response);
+                    jQuery('div.' + tempdialog).dialog({
+                        autoOpen:true,
+                        width:"auto",
+                        title: "Нов Пододел",
+                        position: "center",
+                        close:function (event, ui) {
+                            // Remove the dialog elements
+                            // Note: this will put the original div element in the dom
+                            jQuery(this).dialog("destroy");
+                            // Remove the left over element (the original div element)
+                            jQuery(this).remove();
+                        }
+                    });
+                }
+            });
+        });
+        jQuery(".firmi tbody tr").live('click',function () {
+            jQuery(".firmi tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+            jQuery.ajax({
+                url:"/index.php/start/firma/getOdeli",
+                type:'POST',
+                data:{id:jQuery(this).attr("firmaid") },
+                dataType:'json',
+                success:function (response) {
+                    jQuery(".odeli tbody").html('');
+                    jQuery(".pododeli tbody").html('');
+                    jQuery.each(response, function (index, item) {
+                    //   console.log(item.id);
+                        jQuery(".odeli tbody").append(('<tr firmaid="' + item.id + '">' +
+                            '<td>' +
+                            '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>'+
+                            '</td>' +
+                            '<td>' +
+                            '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>'+
+                            '</td>' +
+                                '<td>' + item.ime + '</td>' +
+                                '<td>' + item.sifra + '</td>' +
+
+                                '</tr>'));
+                    });
+                    jQuery(".odeli").trigger("update");
+                }
+            });
+        });
+
+        jQuery(".odeli tbody tr").live('click',function () {
+            jQuery(".odeli tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+            var firmaid=jQuery(this).attr("firmaid");
+
+
+            jQuery.ajax({
+                url:"/index.php/start/firma/getPodOdeli",
+                type:'POST',
+                data: {id:firmaid },
+                dataType:'json',
+                success:function (response) {
+                    //console.log(response);
+                    jQuery(".pododeli tbody").html('');
+                    jQuery.each(response, function (index, item) {
+                        jQuery(".pododeli tbody").append(('<tr firmaid="' + item.id + '"  parent_id="' + item.parent_id + '" parent_odel_id="' + item.parent_odel_id + '">'  +
+                                '<td>' +
+                                '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>'+
+                                '</td>' +
+                                '<td>' +
+                                '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>'+
+                                '</td>' +
+                                '<td>' + item.ime + '</td>' +
+                                '<td>' + item.sifra + '</td>' +
+
+                                '</tr>'));
+                    });
+                    jQuery(".pododeli").trigger("update");
+                }
+            });
+        });
+        jQuery(".pododeli tbody tr").live('click',function () {
+            jQuery(".pododeli tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+        jQuery('.ajaxfirmicreateform').live('click', function () {
+            var formaction = jQuery(this).parent().attr('action');
+            var formmethod = jQuery(this).parent().attr('method');
+            //var dialogid=jQuery(this).parent().parent().parent();
+            //console.log(formaction);
+            // console.log(jQuery(this).parent().serialize());
+            jQuery.ajax({
+                type:"post",
+                url:formaction,
+                data:jQuery(this).parent().serialize(),
+                success:function (data) {
+                    var tabs = jQuery('.sub-menu-tabs');
+                    var selected = tabs.tabs('option', 'selected');
+                    jQuery(".sub-menu-tabs").tabs('load', selected);
+                    alert('The data has been submitted sucessfully!!!');
+                    //dialogid.dialog("destroy");
+                }
+            });
+        });
+        jQuery('.ajaxodelcreateform').live('click', function () {
+            var formaction = jQuery(this).parent().attr('action');
+            var formmethod = jQuery(this).parent().attr('method');
+            jQuery.ajax({
+                type:"post",
+                url:formaction,
+                data:decodeURIComponent(jQuery(this).parent().serialize()),
+                success:function (data) {
+                    if (jQuery.trim(data)=="ok"){
+	                    jQuery(".firmi tr.active").trigger("click");
+                        alert('Оделот е успешно направен');
+                    } else {
+                        alert('Грешка при внесување на одел');
+                    }
+                }
+
+            });
+            destroyparentdialog(jQuery(this));
+
+        });
+        jQuery('.ajaxpododelcreateform').live('click', function () {
+            var formaction = jQuery(this).parent().attr('action');
+            var formmethod = jQuery(this).parent().attr('method');
+            jQuery.ajax({
+                type:"post",
+                url:formaction,
+                data:decodeURIComponent(jQuery(this).parent().serialize()),
+                success:function (data) {
+                    if (jQuery.trim(data)=="ok"){
+                        jQuery(".odeli tr.active").trigger("click");
+                        alert('Пододелот е успешно направен');
+                    } else {
+                        alert('Грешка при внесување на Пододел');
+                    }
+                }
+
+            });
+            destroyparentdialog(jQuery(this));
+
+        });
+        jQuery('.ajaxfirmiupdate').live('click', function () {
+            var formaction = jQuery(this).parent().attr('action');
+            var formmethod = jQuery(this).parent().attr('method');
+            jQuery.ajax({
+                type:"post",
+                url:formaction,
+                data:decodeURIComponent(jQuery(this).parent().serialize()),
+                success:function (data) {
+                    if (jQuery.trim(data)=="ok"){
+                        reloadfirmi();
+                        alert('Успешно');
+                    } else {
+                        alert('Грешка');
+                    }
+                }
+
+            });
+            destroyparentdialog(jQuery(this));
+
+        });
+
+        jQuery('.ajaxcreatefirma').live('click', function () {
+            var formaction = jQuery(this).parent().attr('action');
+            var formmethod = jQuery(this).parent().attr('method');
+            jQuery.ajax({
+                type:"post",
+                url:formaction,
+                data:decodeURIComponent(jQuery(this).parent().serialize()),
+                success:function (data) {
+                    if (jQuery.trim(data)=="ok"){
+                        reloadfirmi();
+                        alert('Успешно');
+                    } else {
+                        alert('Грешка');
+                    }
+                }
+
+            });
+            destroyparentdialog(jQuery(this));
+
+        });
+
+
+    </script>
+</div>

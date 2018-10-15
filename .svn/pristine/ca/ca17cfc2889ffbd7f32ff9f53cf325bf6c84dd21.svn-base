@@ -1,0 +1,100 @@
+<br/><br/><div style="text-align: center"><h2>Преглед по доспеаност за излезни фактури</h2></div><br/><br/>
+
+<div class="idnina">
+    <?php $vkupnostavki = count($dosp_idnina, COUNT_NORMAL); ?>
+    <p class="naslovidnina" > ( <span class="vkupnostavki"><?php echo $vkupnostavki; ?></span> ) За плаќање во иднина</p>
+    <div class="predtabela">
+        <table class="tabelaidnina" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="rok">Рок до</th>
+                <th class="broj">Број</th>
+                <th class="datum">Датум</th>
+                <th class="klient">Клиент</th>
+                <th class="iznos">Износ</th>
+                <th class="uplati">Уплати</th>
+                <th class="dolg">Долг</th>
+                <th class="zabeleska">Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+
+            $idnina = 0; $idninasuma = 0; $idninauplata = 0; $idninadolg = 0;
+
+            foreach($dosp_idnina as $row){
+
+                ?>
+            <tr>
+                <td class='rok'><?php echo $row->rok; ?></td>
+                <td class="number broj"><?php echo $row->textBroj; ?></td>
+                <td class="datum"><?php echo $row->datum; ?></td>
+                <?php if($row->firmaID > 0){
+                $fak_vkupno = $row->p_vkupno;
+                $fak_uplati = $row->uplati;
+                $fak_dolg = $fak_vkupno - $fak_uplati;
+                ?>
+                <td class="klient"><?php echo $row->firmaIme; ?></td>
+                <td class="suma"><?php echo $fak_vkupno; ?></td>
+                <td class="uplati"><?php echo $fak_uplati; ?></td>
+                <td class="vkupno"><?php echo $fak_dolg; ?></td>
+                <?php
+                $idnina += 1;
+                $idninasuma += $fak_vkupno; $idninauplata += $fak_uplati; $idninadolg += $fak_dolg;
+            }
+                if($row->pacientID > 0){
+                    $pacient = $row->pacientIme . ' ' . $row->pacientTatkovoIme . ' ' . $row->pacientPrezime;
+                    $dolg = $row->pacientIznos - $row->uplati;
+                    ?>
+                    <td class="klient"><?php echo $pacient; ?></td>
+                    <td class="suma"><?php echo $row->pacientIznos; ?></td>
+                    <td class="uplati"><?php echo $row->uplati; ?></td>
+                    <td class="vkupno"><?php echo $dolg;  ?></td>
+                    <?php
+                    $idnina += 1;
+                    $idninasuma += $row->pacientIznos;
+                    $idninauplata += $row->uplati;
+                    $idninadolg += $dolg;
+                }
+                ?>
+                <td class="zabeleska"><?php echo $row->komentar; ?></td>
+            </tr>
+                <?php
+
+            }
+            ?>
+            <!--        <tfoot>
+            <tr>
+                <td class='rok'></td>
+                <td class="number broj"></td>
+                <td class="datum"></td>
+                <td class="vkupnolabel klient">Вкупно:</td>
+                <td class="osnovasum iznos"><?php// echo $idninasuma; ?></td>
+                <td class="vkupnoddv iznos"><?php //echo $idninauplata ?></td>
+                <td class="vkupnovkupno iznos"><?php// echo $idninadolg ?></td>
+                <td class="zabeleska"></td>
+
+            </tr>
+            </tfoot> -->
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    <br/>
+    <table class="sumiranje sumidnina" style="width: 250px">
+        <tr>
+            <td><span style="padding-top: 3px; width: 120px;">Вкупно уплата: <span></td><td><input type="text" style="border-left: none; border-right: none; border-top: none" value="<?= $idninauplata ?>"></td>
+        </tr>
+        <tr>
+            <td><span style="padding-top: 3px; width: 120px;">Вкупно долг: <span></td><td><input type="text" style="border-left: none; border-right: none; border-top: none" value="<?= $idninadolg ?>"></td>
+        </tr>
+        <tr>
+            <td><span style="padding-top: 3px; width: 120px;">Вкупно износ: <span></td><td><input type="text" style="border-left: none; border-right: none; border-top: none" value="<?= $idninasuma ?>"></td>
+        </tr>
+    </table>
+
+
+</div>
+<style type="text/css">
+    th {background-color: transparent !important;}
+</style>

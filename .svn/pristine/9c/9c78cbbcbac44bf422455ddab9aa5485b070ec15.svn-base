@@ -1,0 +1,36 @@
+
+* {
+    font-family: "DejaVu Sans Mono";
+
+font-size: 12px;
+}
+
+.print_body input,
+.print_body textarea {
+    border: 0 !important;
+
+}
+.hidden {display: none;}
+.print_body input[type="text"] {border-bottom: 1px solid #000 !important;  }
+.print_body textarea {border-bottom: 1px solid #000 !important;}
+/*
+.print_body input[type="text"] {border-bottom: 1px solid #000 !important; height: 15px; padding: 4px 0 !important; line-height: 15px; }
+.print_body textarea {border-bottom: 1px solid #000 !important;}
+table {border-collapse: collapse !important;width: 100%;margin-top: 30px;}
+.desno-print {text-align: right;white-space: nowrap;}
+.centar-print {text-align: center;}
+h1 {font-size: 26px;text-align: center;width: 100%;}
+.logo-print {width: 190mm;}
+.logo-holder {text-align: center;width: 100%;}
+.logo-holder img {text-align: center;}
+.do-klient {float: right;width: 300px;text-align: right;margin-right: 20px;}
+.do-klient label {margin-right: 10px;}
+.izlezna-header {width: 100%;height:60px;margin-top: 30px;}
+.izlezna-datum {float: left;width: 400px;}
+.vkupno-izlez {width:100%;text-align:right;height: 30px;}
+.informacii_plakjanje input {white-space: nowrap;width:60%;}
+.mestozapotpis {margin-bottom: 30px;}
+.izleznafaktura-od {width: 500px;}
+.potpis-izleznafaktura {width: 33%;height: 50px;float: left;}
+.mp-mp-izleznafaktura {float: left;width: 8%;height: 50px;}
+*/

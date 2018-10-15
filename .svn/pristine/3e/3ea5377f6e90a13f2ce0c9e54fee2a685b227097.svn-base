@@ -1,0 +1,289 @@
+<div class="povrzi_ispratnica">
+    <fieldset>
+        <legend>Испратници</legend>
+    <div class="tabela">
+        <table class="izleznaroba" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th>Избери</th>
+                <th>Тип</th>
+                <th>Број</th>
+                <th>Датум</th>
+                <th>Фактура</th>
+                <th>Коминтент</th>
+                <th>Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='hiderow trow'>
+                <td> <input type='checkbox' class='povrzi' name='povrzi' /></td>
+                <td class="tip"></td>
+                <td class="dbid hide"></td>
+                <td class="number"></td>
+                <td class="datum"></td>
+                <td class="faktura"></td>
+                <td class="klient"></td>
+                <td class="zabeleska"></td>
+            </tr>
+            </tbody>
+        </table>
+        <button class="dodadiispratnici button" ><span>Копирај и поврзи</span></button>
+        <button class="povrziispratnici button" ><span>Поврзи</span></button>
+
+    </div>
+    </fieldset>
+    <fieldset>
+        <legend>Ставки во документот - детално</legend>
+    <div class="stavkadetail">
+        <table class="tstavkadetail" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th>РБ</th>
+                <th>Шифра</th>
+                <th>Шифра 2</th>
+                <th>Кат. бр.</th>
+                <th>Ставка</th>
+                <th>Кол.</th>
+                <th>ЕМ</th>
+                <th>Сер. број</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='hiderow'>
+                <td class='number'></td>
+                <td class='sifra'></td>
+                <td class='sifra2'></td>
+                <td class='katbroj'></td>
+                <td class='stavka'></td>
+                <td class='kolicina'></td>
+                <td class='em'></td>
+                <td class='seriskibroj'></td>
+                <td class='emid hide'></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    </fieldset>
+</div>
+
+
+<script>
+function isp_edmerka_option_values(){
+    return '' + '<option value=""></option>'+
+        '<?php foreach($edinicamerka as $edmerka) { echo '<option value="'.$edmerka->id.'">'.$edmerka->ime_skrateno.'</option>'; } ?>';
+}
+function isp_konto_option_values(){
+    return '' + '<option value=""></option>'+
+        '<?php foreach($konto as $k) { echo '<option value="'.$k->id.'">'.$k->sifra.'</option>'; } ?>';
+}
+function povrziIspratnicaIzleznaFaktura(response)
+{
+    var kolicina = response.kolicina;
+    var sredna_cena = response.srednaCena;
+    var vkupno = kolicina * sredna_cena;
+
+    if(jQuery('.checkkonto').is(':checked')) var status='';
+    else var status='hide';
+    var checkartikl = jQuery('.tstavki tbody tr:last').find("td.artikli .ui-combobox-input").val();
+    if(typeof checkartikl == "undefined") checkartikl = "temp";
+    if(checkartikl.length == 0) jQuery('.tstavki tbody tr:last').remove();
+    var lastnum = jQuery('.tstavki tr:last').find('.number').text();
+    if(lastnum.length > 0) var newnum = parseInt(lastnum) + parseInt(1);
+    else var newnum = 1;
+    jQuery(".tstavki tbody").append(('<tr class="detali trow" ispratnica_id="' + response.dbid + '" >' +
+        '<td>' + '<img class="delete" width="15" height="15" alt="" src="/images/delete.png">' +'</td>' +
+        '<td class="number">' + newnum +  '</td>' +
+        '<td>' + '<input type="text" class="katbroj" name="katbroj" readonly value="' + response.sifra2 +'" />' + '</td>' +
+        '<td>' + '<input type="text" class="artikli" name="artikli" readonly value="' + response.stavka +'" />' + '</td>' +
+        '<td class="kontodetali ' + status + '"><select class="kontostavka" name="kontostavka">'+isp_konto_option_values()+'</select></td>' +
+        '<td>' + '<input type="text" class="kolicina" name="kolicina"  value="' + kolicina +'" />' + '</td>' +
+        '<td class="edmerka"><select class="edmerka-dropdown" name="edmerka">'+isp_edmerka_option_values()+'</select></td>' +
+        '<td>' + '<input type="text" class="bezddv" name="bezddv" value="' + sredna_cena +'" />' + '</td>' +
+        '<td>' + '<input type="text" class="vkupno1" name="vkupno1" value="' + formatnumbermkd(vkupno) +'" readonly />' + '</td>' +
+        '<td class="hide">' + '<input type="hidden" class="sifra" name="sifra"  value="' + response.sifra +'" />' + '</td>' +
+        '<td class="hide">' + '<input type="hidden" class="stavka" name="stavka" value="' + response.stavka +'" />' + '</td>' +
+        '<td class="hide">' + '<input type="hidden" class="idpriemnica" name="idpriemnica"  value="' + response.dbid +'" />' + '</td>' +
+        '<td class="hide">' + '<input type="hidden" class="edmerkaid" name="edmerkaid"  value="' + response.edMerkaID +'" />' + '</td>' +
+        '<td class="hide">' + '<input type="hidden" class="tipstavka" name="tipstavka" value="1" />' + '</td>' +
+        '</tr>'
+        ));
+    var lastrow = jQuery('.tstavki tbody tr:last');
+    jQuery('.edmerka-dropdown').combobox();
+    jQuery('.kontostavka').combobox();
+    if(response.edMerkaID == 0){
+        lastrow.find("td.edmerka .ui-combobox-input").val('парче');
+        lastrow.find(".edmerkaid").val(4);
+    }
+    presmetajSumaStavkiIzleznaFaktura();
+//    addNewStavkaIzleznaFaktura(lastrow);
+}
+    jQuery(document).ready(function() {
+        jQuery(".izleznaroba").tablesorter();
+        jQuery(".tstavkadetail").tablesorter();
+        jQuery.ajax({
+            url: "/index.php/materijalno/vlez_izlez/getFreeIzleznaRoba",
+            type: 'POST',
+            data:{ firmaID: jQuery(".fakturaklient").val() },
+            dataType: 'json',
+            success: function(response) {
+                //console.log(response);
+                jQuery(".izleznaroba").find("tr:gt(1)").remove();
+                if(response)
+                {
+                    var tr = jQuery('.izleznaroba tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('.dbid').text(response[i].dbid);
+                        newrow.find('.tip').text('ISP');
+                        newrow.find('.number').text(response[i].textBroj);
+                        newrow.find('.datum').text(response[i].datum);
+                        newrow.find('.faktura').text(response[i].faktura);
+                        newrow.find('.klient').text(response[i].firmaIme);
+                        newrow.find('.vkupno').text(response[i].vkupno);
+                        newrow.find('.magacinska').text(response[i].magacinska);
+                        newrow.find('.zabeleska').text(response[i].zabeleska);
+                    }
+                    //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                    tr.addClass('hiderow');
+                    jQuery(".izleznaroba").trigger("update");
+                }
+            }
+        });
+        jQuery(".povrziispratnici").live("click", function(){
+            var ovakopce = jQuery(this);
+            var vrskadokumenti = jQuery('input.vrskadokumenti').val();
+            var priemnici = [];
+            if(vrskadokumenti.length > 0) var dodadenipriemnici = vrskadokumenti;
+            else var dodadenipriemnici ="Додадени испратници: ";
+            var listapriemnici ="", novapriemnica="";
+            jQuery(".izleznaroba tr").each(function() {
+                var brisired = jQuery(this);
+                var checked = jQuery(this).find("input.povrzi").is(':checked');
+                if(checked)
+                {
+                    var priemnicabroj = jQuery(this).find('.number').text();
+                    var priemnicaid = jQuery(this).find('.dbid').text();
+                    priemnici.push(priemnicaid);
+                    novapriemnica = priemnicabroj + ", ";
+                    listapriemnici = listapriemnici + novapriemnica;
+                    var dbid = jQuery(this).find('.dbid').text();
+                    brisired.remove();
+                    jQuery(".tstavkadetail").find("tr:gt(1)").remove();
+                }
+            });
+            jQuery('.ispratnica_id').val(priemnici);
+            jQuery('.dodadeniispratnica').text(dodadenipriemnici + listapriemnici);
+            jQuery('.vrskadokumenti').val(dodadenipriemnici + listapriemnici);
+            destroyparentdialog(ovakopce);
+        });
+        jQuery(".dodadiispratnici").live("click", function(){
+            var ovakopce = jQuery(this);
+            var vrskadokumenti = jQuery('input.vrskadokumenti').val();
+            var priemnici = [];
+            if(vrskadokumenti.length > 0) var dodadenipriemnici = vrskadokumenti;
+            else var dodadenipriemnici ="Додадени испратници: ";
+            var listapriemnici ="", novapriemnica="";
+            jQuery(".izleznaroba tr").each(function() {
+               var checked = jQuery(this).find("input.povrzi").is(':checked');
+               if(checked)
+               {
+                    var priemnicabroj = jQuery(this).find('.number').text();
+                    var priemnicaid = jQuery(this).find('.dbid').text();
+                    priemnici.push(priemnicaid);
+                    novapriemnica = priemnicabroj + ", ";
+                    listapriemnici = listapriemnici + novapriemnica;
+                    var dbid = jQuery(this).find('.dbid').text();
+                    var data = {
+                        dbid: dbid
+                    }
+                    jQuery.ajax({
+                        url: "/index.php/materijalno/vlez_izlez/getIzleznaRobaDetali",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            for ( var i = 0; i < response.length; i++ ) {
+                                var flag = 0;
+                                jQuery(".tstavki tr").each(function () {
+                                    var row = jQuery(this);
+                                    var sifra = jQuery(this).find('.sifra').val();
+                                    if(parseInt(sifra)==response[i].sifra)
+                                    {
+                                        flag = 1;
+                                        var kolicina = jQuery(this).find('.kolicina').val();
+                                        if (kolicina.length == 0) {
+                                            kolicina = 0;
+                                        }
+                                        jQuery(this).find('.kolicina').val(parseInt(kolicina) + parseInt(response[i].kolicina));
+                                        presmetajSumaPoRed(row);
+                                    }
+                                });
+                                if(flag==0)
+                                {
+                                    povrziIspratnicaIzleznaFaktura(response[i]);
+                                }
+                            }
+//                            tr.addClass('hiderow');
+                        }
+                    });
+//                   jQuery(this).remove();
+//                   jQuery(".tstavkadetail tbody").find("tr:gt(1)").remove();
+               }
+            });
+            jQuery('.ispratnici_id').val(priemnici);
+            jQuery('.dodadeniispratnici').text(dodadenipriemnici + listapriemnici);
+            jQuery('.vrskadokumenti').val(dodadenipriemnici + listapriemnici);
+            presmetajSumaStavkiIzleznaFaktura();
+            destroyparentdialog(ovakopce);
+        });
+        jQuery(".izleznaroba").delegate("tr.trow", "click", function(){
+            jQuery(".izleznaroba .trow").removeClass("active");
+            jQuery(this).addClass('active');
+            var dbid = jQuery(this).find('.dbid').text();
+            jQuery('.pdfid').val(dbid);
+            var data = {
+                dbid: dbid
+            }
+            jQuery.ajax({
+                url: "/index.php/materijalno/vlez_izlez/getIzleznaRobaDetali",
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+//                    console.log(response);
+                    jQuery(".tstavkadetail").find("tr:gt(1)").remove();
+                    var tr = jQuery('.tstavkadetail tr:last');
+                    tr.removeClass('hiderow');
+                    var num = response.length;
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        var kolicina = response[i].kolicina;
+//                        var cenabezddv = response[i].cenabezddv;
+//                        var ddv = response[i].ddv;
+//                        var vleznacena = response[i].vleznacena;
+//                        var vkupno = parseInt(cenabezddv) * parseInt(kolicina);
+//                        var sevkupno = parseInt(vleznacena) * parseInt(kolicina);
+                        newrow.find('.number').text("." + num);
+                        newrow.find('.sifra').text(response[i].sifra);
+                        newrow.find('.sifra2').text(response[i].sifra2);
+                        newrow.find('.katbroj').text(response[i].katBroj);
+                        newrow.find('.stavka').text(response[i].stavka);
+                        newrow.find('.kolicina').text(kolicina);
+                        newrow.find('.em').text(response[i].edMerkaIme);
+//                        newrow.find('.bezddv').text(cenabezddv);
+//                        newrow.find('.soddv').text(response[i].cenasoddv);
+//                        newrow.find('.procent').text(ddv);
+//                        newrow.find('.vkupno').text(vkupno);
+//                        newrow.find('.vleznacena').text(vleznacena);
+//                        newrow.find('.sevkupno').text(sevkupno);
+                        //newrow.find('.seriskibroj').val();
+                        num--;
+                    }
+                    tr.addClass('hiderow');
+                    jQuery(".tstavkadetail").trigger("update");
+                }
+            });
+        });
+    });
+</script>

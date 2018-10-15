@@ -1,0 +1,41 @@
+<div class="grad-glavnalista">
+    <div class="gradlista">
+        <div class="buttoncontainer">
+            <button class="button" onclick="grad_nov()">Нов град</button>
+        </div>
+        <table class="tabela-gradlista">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Име</th>
+                    <th>Поштенски број</th>
+                    <th>Држава</th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+
+        </table>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+       grad_popolnilista();
+        jQuery(".tabela-gradlista").tablesorter();
+
+        jQuery(".tabela-gradlista tbody tr").live('click', function () {
+            jQuery(".tabela-gradlista tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+
+        });
+        jQuery(".tabela-gradlista .edit-tr").live('click', function () {
+            grad_izmeni(jQuery(this).parent().parent().attr('grad_id'));
+        });
+        jQuery(".tabela-gradlista .delete-tr").live('click', function () {
+            grad_delete(jQuery(this).parent().parent().attr('grad_id'));
+        });
+
+    });
+</script>

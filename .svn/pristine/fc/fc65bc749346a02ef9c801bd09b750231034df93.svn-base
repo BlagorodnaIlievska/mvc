@@ -1,0 +1,59 @@
+<div id="update_tip_form">
+
+
+
+
+
+
+
+    <?php
+    if(isset($tip)){
+
+        foreach($tip as $row) {
+
+            $t0=$row->tipID;
+            $t1=$row->tipIme;
+            $t2=$row->prihod;
+            $t3=$row->rashod;
+            $t4=$row->ziro;
+            $t5=$row->kasa;
+            $t6=$row->grupaID;
+        }
+    }
+    ?>
+
+
+
+    <h1>Група</h1>
+
+    <?php echo form_open('podatoci/fin_grupi/update_tip');?>
+
+    <?php echo form_hidden('tipID', $t0);?>
+    <?echo form_label('Родител на тип','grupaID');?>
+    <?echo form_dropdown('grupaID',$grupa);?><br>
+
+    <?php echo form_label('Име:', 'tipIme');?><br>
+
+    <?php echo form_input('tipIme', $t1, 'tipIme');?><br>
+    <?php echo form_label('Приход:', 'prihod');?><br>
+
+    <?php echo form_checkbox('prihod', '1', TRUE);?>
+
+    <?php echo form_label('Расход:', 'rashod');?><br>
+
+    <?php echo form_checkbox('rashod', '1', TRUE);?>
+    <?php echo form_label('Жиро:', 'ziro');?><br>
+
+    <?php echo form_checkbox('ziro', '1', TRUE);?>
+    <?php echo form_label('Каса:', 'kasa');?><br>
+
+    <?php echo form_checkbox('kasa', '1', TRUE);?>
+    <input type="button" value="Промени" class="ajaxsubmitform"><br>
+
+
+
+    <?php echo form_close(); ?>
+
+
+
+</div>

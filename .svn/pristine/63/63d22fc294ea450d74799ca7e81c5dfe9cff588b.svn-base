@@ -1,0 +1,57 @@
+<?php  if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class Tip_osiguruvanje extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+        $this->load->model('bolnicko_rabotenje_podatoci/tip_osiguruvanje_model');
+        $this->load->model('finansiski_plan/plan_model');
+    }
+
+    public function nov_tip_osiguruvanje()
+    {
+        $data['konto'] = $this->plan_model->konto_dropdown();
+        $this->load->view('bolnicko_rabotenje_podatoci/tip_osiguruvanje/nov_tip_osiguruvanje', $data);
+    }
+
+    public function izmeni()
+    {
+        $data['konto'] =$this->plan_model->konto_dropdown();
+        $data['tiposiguruvanje']     = $this->tip_osiguruvanje_model->getTipOsiguruvanjeByID($this->input->get("id"));
+        $this->load->view('bolnicko_rabotenje_podatoci/tip_osiguruvanje/izmeni', $data);
+    }
+
+    public function lista()
+    {
+        $this->load->view('bolnicko_rabotenje_podatoci/tip_osiguruvanje/lista');
+    }
+
+    public function polnilista()
+    {
+        echo json_encode($this->tip_osiguruvanje_model->getTipOsiguruvanje());
+    }
+
+    public function create_tiposiguruvanje()
+    {
+        $this->tip_osiguruvanje_model->create_tiposiguruvanje();
+        echo "ok";
+    }
+
+    public function update_tiposiguruvanje()
+    {
+        $this->tip_osiguruvanje_model->update_tiposiguruvanje() ;
+        echo 'ok';
+
+    }
+
+    public function delete_tiposiguruvanje()
+    {
+        $this->tip_osiguruvanje_model->delete_tiposiguruvanje($this->input->get("id"));
+        echo "ok";
+    }
+}

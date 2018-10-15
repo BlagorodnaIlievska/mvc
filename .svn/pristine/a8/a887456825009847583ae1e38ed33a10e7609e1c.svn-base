@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-type" content="charset=utf-8"/>
+    <style type="text/css" media="print">
+        * {
+            font-family: "DejaVu Sans Mono";
+            padding: 0;
+            margin: 0;
+            font-size: 12px;
+        }
+
+        .print_body {
+            margin: 5mm;
+        }
+
+        .print_body input,
+        .print_body textarea {
+            border: 1px solid #ffffff !important;
+        }
+
+    </style>
+    <title>БИС - Болнички Информациони Системи</title>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/style.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/none.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/default.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/header.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/leftmenu.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/kopcinja.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/vlezni_fakturi.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/izlezni_fakturi.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/login.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/pocetna.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/tabs.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/stole.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/banki.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/klienti.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/multizoom.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/firmi.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/redmond/jquery-ui-1.9.2.custom.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/recepti.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/tablesorter.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/korisnici.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/dokumenti_bolnicko.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/artikli.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/lightbox.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/katalog.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/cenovnik.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/izvodi.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/proizvoditeli.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/zirosmetki.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/edmerki.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/magacin.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/kasi.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/karticki.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/raporti.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/materijalno.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/kasa.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/kasi.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/pacienti.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/paketi.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/finansiski_plan.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/lekuvanja.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/upati.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/recepti.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/covecki_resursi.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/smenska_grupa.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/mkb.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/site_lekari.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/planiranje.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/ulogi.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/plata_podatoci.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/plati.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/flexigrid.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="<?php echo base_url(); ?>css/trezor.css" type="text/css" media="screen"/>
+
+
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/jquery-1.8.3.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/multizoom.js"></script>
+<!--    <script type="text/javascript" src="--><?php //echo base_url(); ?><!--js/easyui/jquery.easyui.min.js"></script>-->
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/jquery-ui-1.9.2.custom.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/code.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.tablesorter.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.tablesorter.widgets.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.combobox.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/windowresize.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/jshashtable-2.1_src.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/jshashset.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.numberformatter-1.2.3.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/korisnici.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/ulogi.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/artikli.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/banki.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/formi.helper.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/lightbox.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/katalog.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/cenovnik.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/izvodi.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/proizvoditeli.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/edmerki.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/magacin.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/banki.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/gradovi.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/kasi.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/vlezni_fakturi.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/izlezni_fakturi.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/klienti.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/materijalno.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/odliv_priliv.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/zirosmetki.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/general.js"></script>
+
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/pacienti.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/lekuvanja.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/zemji.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/upati.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/vraboteni.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/smenska_grupa.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/mkb.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/planiranje.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/site_lekari.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/nalog.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/numberformat.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/lekuvanja_2.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/plati.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/plata_podatoci.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/mesecni_parametri.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/krediti.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/vraboteni_mesecni_promeni.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/popis.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/flexigrid.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/mask.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/planiranje_stole.js"></script>
+    <script type="text/javascript" src="<?php echo base_url(); ?>js/trezor.js"></script>
+</head>
+
+<body>

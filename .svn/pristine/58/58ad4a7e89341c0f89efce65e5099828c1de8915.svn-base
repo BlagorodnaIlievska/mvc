@@ -1,0 +1,42 @@
+<div class="banki-list-glavno">
+
+
+    <div class="buttoncontainer">
+        <button type="button" value="" class="button" onclick="banki_nova()"><span>Нова банка</span></button>
+        <span class="print"> <?php echo anchor('', 'Печати'); ?></span>
+        <button type="button" value="" class="barajklient button"><span>Барај</span></button>
+    </div>
+
+
+
+    <div class="banki-list">
+        <table class="banki-list-tabela" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Име</th>
+            </tr>
+            </thead>
+            <tfoot>
+            <tr>
+                <td colspan="4" class="vkupnobanki"></td>
+            </tr>
+            </tfoot>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+jQuery(document).ready(function () {
+
+
+
+    jQuery(".banki-list-tabela").tablesorter();
+    banki_napolnilista();
+
+});
+
+</script>

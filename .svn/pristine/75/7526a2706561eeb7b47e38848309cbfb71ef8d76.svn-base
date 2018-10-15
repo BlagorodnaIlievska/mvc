@@ -1,0 +1,47 @@
+
+
+
+
+<fieldset>
+
+
+
+
+
+    <?php
+
+    echo form_open('podatoci/proizvoditel/create_proizvoditel');
+
+
+
+    ?><br>
+
+    <?php
+    echo form_label('Име на производител','markerIme');
+    echo form_input('markerIme',''); echo br();
+
+    // echo form_input('field_type', set_value('field_type', 'Field Type'));
+
+    //echo form_input('field_label', set_value('field_label', 'Field Label'));
+
+    // echo form_submit('submit', 'Submit');
+
+    ?>
+
+    <input type="button" class="ajaxcreateform button" value="Додади"><br />
+
+
+
+    <?php
+
+    echo validation_errors('<p class="error">');
+
+    echo form_close();
+
+    ?>
+
+
+
+
+
+</fieldset>

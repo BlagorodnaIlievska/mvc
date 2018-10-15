@@ -1,0 +1,48 @@
+<div class="podatoci-za-pridruznik">
+    <form class="podatoci-za-pridruznik-form" method="post">
+        <div class="dali-ima-pridruzba">
+            <div class="levakolona">Дали пациентот има придружба:</div>
+            <div class="desnakolona">
+                <input type="checkbox" name="ima_pridruznik" <?= ($priem->pridruznik_id>0) ? "checked" : ""; ?> class="pacient-ima-pridruznik"/>
+<!--                --><?php //if($priem->pridruznik_id > 0) { ?><!--<input type="checkbox" name="ima_pridruznik" checked class="pacient-ima-pridruznik"/> --><?php //} ?>
+<!--                --><?php //else { ?><!-- <input type="checkbox" name="ima_pridruznik" checked class="pacient-ima-pridruznik"/> --><?php //} ?>
+            </div>
+        </div>
+        <div class="podatoci-za-pridruznik pridruznik1 <?= ($priem->pridruznik_id==0) ? "hide" : ""; ?>">
+            <fieldset class="grupa1">
+                <div class="levakolona">Име:</div>
+                <div class="desnakolona"><input name="ime" value="<?php if($priem->pridruznik_id>0) echo $priem_pridruznik->ime; ?>" class="pacient-pridruznik-ime"/></div>
+                <div class="levakolona">Презиме:</div>
+                <div class="desnakolona"><input name="prezime" value="<?php if($priem->pridruznik_id>0) echo $priem_pridruznik->prezime; ?>" class="pacient-pridruznik-prezime"/></div>
+            </fieldset>
+            <fieldset class="grupa2">
+                <div class="levakolona">Датум на прием:</div>
+                <div class="desnakolona"><input name="datum_na_priem" value="<?php if($priem->pridruznik_id>0) echo $priem_pridruznik->datum_na_priem; ?>" class="pacient-pridruznik-datum-priem"/></div>
+                <div class="levakolona">Датум на одјава:</div>
+                <div class="desnakolona"><input name="datum_na_odjava" value="<?php if($priem->pridruznik_id>0) echo $priem_pridruznik->datum_na_odjava; ?>" class="pacient-pridruznik-datum-odjava"/></div>
+            </fieldset>
+            <fieldset class="grupa3">
+                <div class="levakolona">Услуги:</div>
+                <div class="desnakolona">
+                    <select name="usluga_id" class="pacient-pridruzni-usluga">
+                        <option value=""> </option>
+                        <?php foreach($pridruznik_uslugi as $usluga) { ?>
+                            <option value="<?php echo $usluga->id ?>" <?php if($priem->pridruznik_id>0) { echo ($usluga->id==$priem_pridruznik->usluga_id) ? "selected" : ""; } ?> ><?php echo $usluga->naziv . " : ( " . $usluga->cena . " ден. )" ?></option>
+                        <?php }  ?>
+                    </select>
+                </div>
+            </fieldset>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery('.pacient-pridruznik-datum-priem').datepicker();
+        jQuery('.pacient-pridruznik-datum-odjava').datepicker();
+        jQuery(".pacient-ima-pridruznik").click(function(){
+            var elem = jQuery(this);
+            if(elem.is(':checked')) jQuery('.podatoci-za-pridruznik.pridruznik1').removeClass('hide');
+            else jQuery('.podatoci-za-pridruznik.pridruznik1').addClass('hide');
+        });
+    });
+</script>

@@ -1,0 +1,38 @@
+<div style="text-align: center; margin-bottom: 30px">Преглед на жиросметки</div>
+<div class="tab-zirosmetki">
+    <?php $vkupno = 0; ?>
+    <p class="naslovzirosmetki" > ( <span class="vkupnostavki"><?php echo count($zirosmetki, COUNT_NORMAL); ?></span> ) Жиросметки</p>
+    <div class="predtabela">
+        <table class="t-zirosmetki" border="1">
+            <thead>
+            <tr>
+                <th>Сметка</th>
+                <th>Банка</th>
+                <th class="sostojba">Состојба</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach($zirosmetki as $zsmetka){ ?>
+            <tr>
+                <td class="smetka"><?php echo $zsmetka['zirosmetka']; ?></td>
+                <td class="banka"><?php echo $zsmetka['BankaIme']; ?></td>
+                <td class="sostojba"><?php echo $zsmetka['uplata']; ?></td>
+            </tr>
+                <?php
+                $vkupno += $zsmetka['uplata'];
+            } ?>
+            </tbody>
+        </table>
+    </div>
+    <table class="sumiranje">
+        <tfoot>
+        <tr>
+            <td colspan="2">Вкупно:
+               </td>
+            <td class="vkupno"><?php echo $vkupno; ?></td>
+        </tr>
+        </tfoot>
+    </table>
+
+</div>

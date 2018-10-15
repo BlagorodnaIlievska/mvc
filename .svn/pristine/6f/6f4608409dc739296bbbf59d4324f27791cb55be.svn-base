@@ -1,0 +1,41 @@
+.bankalista  {
+    width: 365px;
+    float: left;
+
+}
+.tabela-naloglista  {
+    width: 1000px;
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.kontalista  {
+    width: 700px;
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 20px;
+   /**/
+}
+
+.kontalista-promena  {
+    width: 900px;
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    /**/
+}
+
+ .pregled-po-konto{ width: 50px !important;}
+
+.dolzi-konto{ width: 100px !important;}
+.pobaruva-konto{ width: 100px !important;;}
+.komintent-konto {width: 200px;}
+.labela-konto {float:left;}
+.tabela-pecati-nalog tfoot{ border: none;}
+.nalogdetali { width: 1000px; margin-top: 10px;}
+.banka-glavnalista .buttoncontainer { margin-top:10px; margin-bottom:10px; }
+.naslovnalozi {background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;padding: 1px;margin: 0px 0 0 0; width: 1000px;}
+.naslovnalozi-pregled {background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;padding: 1px;margin: 0px 0 0 0; width: 700px;}
+.naslovkonta {background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;padding: 1px;margin: 0px 0 0 0; width: 700px !important; }
+.naslovnalozi-promena {background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;padding: 1px;margin: 0px 0 0 0; width: 900px;}
+

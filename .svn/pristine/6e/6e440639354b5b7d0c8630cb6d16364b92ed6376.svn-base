@@ -1,0 +1,23 @@
+<div class="novazemja">
+    <form action="/index.php/bolnicko_rabotenje_podatoci/zemji/update_zemja" method="post">
+        <fieldset>
+            <input type="hidden" name="id" value="<?php echo $zemja->id  ?>"/>
+
+            <legend>Измени земја</legend>
+            Земја:<br/>
+            <input type="text" name="zemja" value="<?php echo $zemja->zemja ?>"/><br/>
+            Опис:<br/>
+            <input type="text" name="opis" value="<?php echo $zemja->opis ?>"/><br/>
+            Шифра:<br/>
+            <input type="text" name="sifra" value="<?php echo $zemja->sifra ?>"/><br/>
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="zemji_polnilista()" poraka_uspesno=" успешно изменетo"
+                poraka_neuspesno="Грешка при снимање"
+                ><span>Сними</span></button>
+
+        <br/>
+    </form>
+
+</div>

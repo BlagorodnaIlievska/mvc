@@ -1,0 +1,232 @@
+<div class="priemnica-form">
+
+    <?php
+    $delete = img(array(
+        'src' => 'images/delete.png',
+        'width' => '15',
+        'height' => '15',
+        'class' => 'deletetr',
+    ));
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $add = img(array(
+        'src' => 'images/add.png',
+        'width' => '15',
+        'height' => '15',
+        'class' => 'addtr',
+        'formaction' => '/index.php/materijalno/priemnica/novaStavka'
+    ));
+    echo form_open('materijalno/izlez/novaPovratnica');
+    ?>
+    <div class="left">
+        <label>Broj</label>
+        <input type='text' class='broj big' name="broj">
+        <label>Datum</label>
+        <input type="text" name="datum" id="datum"><br>
+    </div>
+    <div class="right">
+        <?php
+        echo form_label('Klient: ', 'klient');
+        echo form_dropdown('klient', $klient, '', 'class="izborklient"');
+        echo br();
+        ?>
+        <input type='text' class='adresa big klient' name="adresa" readonly>
+        <input type='text' class='komerc big komerc' name="komerc" readonly>
+        <input type='text' class='kontakt normal' name="kontakt" readonly>
+    </div>
+
+    <div class="artikl">
+        <label>Barcode</label>
+        <input type='text' class='barcode big' name="barcode" readonly>
+        <input type="button" value="Nov artikl" class="novartikl" formaction="/index.php/materijalno/priemnica/new_artikl">
+    </div>
+    <div class="addstavka">
+        <input type="button" value="Dodadi stavka" class="addtr button" formaction="/index.php/materijalno/priemnica/novaStavka">
+    </div>
+    <table class="tpriemnica" border="1" cellspacing="2" cellpadding="2">
+        <caption>Stavki vo dokumentot - detalno</caption>
+        <tr>
+            <th></th>
+            <th>No.</th>
+            <th>Sifra</th>
+            <th>Sifra 2</th>
+            <th>Kat. Broj</th>
+            <th>Stavka</th>
+            <th>Kol</th>
+            <th>EM</th>
+            <th>Cena</th>
+            <th>Vkupno</th>
+            <th>Ser. No</th>
+        </tr>
+        <?php
+        echo "<tr class='detali trow'>";
+        echo "<td>". $delete . "</td>";
+        echo "<td> <input type='text' class='number small' name='tnumber' readonly> </td>";
+        echo "<td> <input type='text' class='sifra medium' name='tsifra' readonly> </td>";
+        echo "<td> <input type='text' class='sifra2 medium' name='tsifra2' readonly> </td>";
+        echo "<td> <input type='text' class='katbroj medium' name='tkatbroj' readonly> </td>";
+        echo "<td> <input type='text' class='stavka big' name='tstavka' readonly> </td>";
+        echo "<td> <input type='text' class='kolicina small' name='tkolicina'> </td>";
+        echo "<td> <input type='text' class='edicinamerka small' name='tedmerka' readonly> </td>";
+        echo "<td> <input type='text' class='vleznacena medium' name='tvleznacena' readonly> </td>";
+        echo "<td> <input type='text' class='vleznavkupno medium' name='tvleznavkupno' > </td>";
+        echo "<td> <input type='text' class='seriskibroj medium' name='tseriskibroj' readonly> </td>";
+        echo "</tr>";
+        ?>
+    </table>
+    <div class="submitbutton">
+        <input type="button" value="Snimi" class="submitpriemnica button">
+    </div>
+    <div class="vkupno">
+        <label>Vkupno Kolicina</label>
+        <input type='text' class='vkupnokolicina big' name="vkupnokolicina" readonly>
+        <label>Vkupna Cena</label>
+        <input type='text' class='vkupnacena big' name="vkupnacena" readonly>
+        <label>Vlezna Vkupna Cena</label>
+        <input type='text' class='vleznavkupnacena big' name="vleznavkupnacena">
+    </div>
+    <?php
+    echo form_close();
+    ?>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('#datum').datepicker({dateFormat:'yy-mm-dd'});
+        jQuery(".tpriemnica").live('blur',function(){
+            var sum = 0, ksum = 0, vsum = 0;
+            jQuery(".tpriemnica td").each(function() {
+                var kolicina = jQuery(this).find('input[name=tkolicina]').val();
+                var vkupno = jQuery(this).find('input[name=tvkupno]').val();
+                var vleznavkupno = jQuery(this).find('input[name=tvleznavkupno]').val();
+                // add only if the value is number
+                if(!isNaN(kolicina) && kolicina.length != 0) {
+                    ksum += parseFloat(kolicina);
+                }
+                if(!isNaN(vkupno) && vkupno.length != 0) {
+                    sum += parseFloat(vkupno);
+                }
+                if(!isNaN(vleznavkupno) && vleznavkupno.length != 0) {
+                    vsum += parseFloat(vleznavkupno);
+                }
+            });
+            jQuery('.vkupnokolicina').val(ksum);
+            jQuery('.vkupnacena').val(sum);
+            jQuery('.vleznavkupnacena').val(vsum);
+        });
+        jQuery('.novartikl').live('click',function(e)
+        {
+            //console.log(jQuery(this).attr('formaction'));
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({
+                autoOpen: true, width: 800}).load(jQuery(this).attr('formaction'));
+            e.preventDefault();
+        });
+        jQuery('.addtr').live('click',function()
+        {
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({
+                autoOpen: true, width: 800}).load(jQuery(this).attr('formaction'));
+        });
+        jQuery(".deletetr").live('click', function() {
+            var trow = jQuery(this).closest('tr');
+            var trowclass = trow.attr('class');
+            if((!trow.is(":last-child")))
+            {
+                trow.remove();
+            }
+        });
+        jQuery(".kolicina").live('blur',function(){
+            var temp=jQuery(this);
+            var currentrow = temp.closest('tr');
+            var cenabezddv = currentrow.find(".bezddv").val();
+            var ddv = currentrow.find(".ddv").val();
+            if(temp.val() && cenabezdvv && ddv) presmetajSuma(temp);
+        });
+        jQuery(".bezddv").live('blur', function(){
+            var temp=jQuery(this);
+            var currentrow = temp.closest('tr');
+            var kolicina = currentrow.find(".kolicina").val();
+            var ddv = currentrow.find(".ddv").val();
+            if(temp.val() && kolicina && ddv) presmetajSuma(temp);
+        });
+        function presmetajSuma(param)
+        {
+            var currentrow = param.closest('tr');
+            var kolicina = currentrow.find(".kolicina").val();
+            var cenabezddv = currentrow.find(".bezddv").val();
+            var ddv = currentrow.find(".ddv").val();
+            var vkupnobezddv = kolicina * cenabezddv;
+            var cenasoddv = parseInt(cenabezddv) + parseInt((cenabezddv*ddv)/100);
+            currentrow.find(".vkupno").val(vkupnobezddv);
+            currentrow.find(".soddv").val(cenasoddv);
+            currentrow.find(".vleznacena").val(cenabezddv);
+            currentrow.find(".vleznavkupno").val(vkupnobezddv);
+        }
+        jQuery(".izborklient").live('change', function() {
+            var klient = jQuery('.izborklient option:selected').val();
+            var formaction = "/index.php/materijalno/priemnica/getKlientInfo"
+            var data = {
+                klientid: klient
+            }
+            jQuery.ajax({
+                url: formaction,
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery('.adresa').val(response[0].adresa);
+                    jQuery('.komerc').val(response[0].komercijalist);
+                    jQuery('.kontakt').val(response[0].kontakt + ' ' + response[0].phone1 + ', ' +
+                            response[0].phone2 + ', ' + response[0].phone3);
+                }
+            });
+        });
+        jQuery('.submitpriemnica').live('click',function(){
+            var formaction=jQuery(this).parent().parent().attr('action');
+            var dialogid=jQuery(this).parent().parent().parent().parent();
+            var index = 1;
+            jQuery('.tpriemnica tr:last').remove();
+            jQuery("tr.detali").each(function() {
+                jQuery(this).find('td').each(function() {
+                    var name = jQuery(this).find("input").attr('name');
+                    var newname = name + "[" + index + "]";
+                    jQuery(this).find("input").attr('name', newname);
+                })
+                index = parseInt(index) + 1;
+            });
+            //console.log(jQuery(this).parent().parent().serialize());
+            jQuery.ajax({
+                type: "post",
+                url: formaction,
+                data: jQuery(this).parent().parent().serialize(),
+                success:  function(response){
+                    console.log(response);
+//                    var currentrow = jQuery(this);
+                    //jQuery(".tabela").find("tr:gt(1)").remove();
+//                    var lasttr = jQuery('.tvleznifakturi tr:last');
+//                    lasttr.removeClass('hiderow');
+//                    var newrow = jQuery(lasttr).clone().insertBefore(lasttr);
+//                    newrow.find('input[name=dbid]').val(response);
+//                    newrow.find('input[name=broj]').val(jQuery('.fakturabroj').val());
+//                    newrow.find('input[name=datum]').val(jQuery('.fakturadatum').val());
+//                    newrow.find('input[name=klientid]').val(jQuery('.fakturaklient').val());
+//                    newrow.find('input[name=klient]').val(jQuery('.fakturaklient option:selected').text());
+//                    newrow.find('input[name=osnova]').val(jQuery('.osnova').val());
+//                    newrow.find('input[name=ddv]').val(jQuery('.ddv2').val());
+//                    newrow.find('input[name=vkupno]').val(jQuery('.vkupnose').val());
+//                    //jQuery('#faktura tr:last').addClass('hiderow');
+//                    //var dialogid=jQuery(this).parent().parent().parent().parent();
+                    dialogid.dialog("destroy").remove();
+//                    lasttr.addClass('hiderow');
+                }
+            });
+        });
+    });
+</script>

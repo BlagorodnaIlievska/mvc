@@ -1,0 +1,79 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Raporti extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function menu()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['magacin'] = $this->materijalno_model->magacin_dropdown();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('materijalno/raporti/menu_form', $data);
+    }
+
+    public function materijalno()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['magacin'] = $this->materijalno_model->magacin_dropdown();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('materijalno/raporti/materijalno_form', $data);
+    }
+
+    public function fakturi()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['magacin'] = $this->materijalno_model->magacin_dropdown();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('materijalno/raporti/fakturi_form', $data);
+    }
+
+    public function izlezni_fakturi()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['magacin'] = $this->materijalno_model->magacin_dropdown();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('materijalno/raporti/izlezni_fakturi_form', $data);
+    }
+
+    public function getMaterijalno()
+    {
+        $klientid = $this->input->post('klientid');
+        $tipid = $this->input->post('tipid');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getMaterijalno($klientid, $tipid);
+        echo json_encode($query);
+    }
+
+    public function getFakturi()
+    {
+        $klientid = $this->input->post('klientid');
+        $tipid = $this->input->post('tipid');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getFakturi($klientid, $tipid);
+        echo json_encode($query);
+    }
+
+    public function getIzlezniFakturi()
+    {
+        $klientid = $this->input->post('klientid');
+        $tipid = $this->input->post('tipid');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getIzlezniFakturi($klientid, $tipid);
+        echo json_encode($query);
+    }
+
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+}

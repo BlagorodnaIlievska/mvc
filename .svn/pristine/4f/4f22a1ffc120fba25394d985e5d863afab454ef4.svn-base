@@ -1,0 +1,89 @@
+#pregled_izvodi_form .tabelaizvod .izvodbroj {
+    width: 45px;
+}
+#pregled_izvodi_form .tabelaizvod tbody tr td:first-child {
+    width: 20px;
+}
+#pregled_izvodi_form .tabelaizvod .izvoddatum {
+    width: 80px;
+}
+#pregled_izvodi_form .tabelaizvod .sumapriliv {
+    width: 80px;
+}
+#pregled_izvodi_form .tabelaizvod .sumaodliv {
+    width: 80px;
+}
+#pregled_izvodi_form .tabelaizvod .prethodna {
+    width: 100px;
+}
+#pregled_izvodi_form .tabelaizvod .segasna {
+    width: 95px;
+}
+#pregled_izvodi_form .tabelaizvod .izvodzirosmetka {
+    width: 150px;
+}
+#pregled_izvodi_form div.izvod {
+    max-height: 200px;
+    overflow-y: auto;
+}
+#pregled_izvodi_form div.izvod .naslov,
+#pregled_izvodi_form div.sostojba .naslov,
+#pregled_izvodi_form div.stavka .naslov {
+    padding: 0;
+    margin: 0;
+}
+#pregled_izvodi_form div.sostojba {
+    max-height: 200px;
+    overflow-y: auto;
+    width: 370px;
+    float: left;
+    margin-left: 15px;
+}
+#pregled_izvodi_form .nov-izvod-button {
+    float: left;
+    width: 200px;
+}
+#pregled_izvodi_form .filterforma {
+    width: 315px;
+}
+#pregled_izvodi_form {
+    margin-top: 10px;
+}
+#pregled_izvodi_form div.zaedno {
+    margin-top: 10px;
+}
+#pregled_izvodi_form div.stavka {
+    margin-top: 10px;
+}
+#pregled_izvodi_form .hiddencontent {
+    display: none;
+}
+#pregled_izvodi_form .novastavka {
+    margin-top: 10px;
+}
+
+label.labelfirma {float: left;}
+label.labelklient {float: left; font-size: 14px; line-height: 1.7; margin: 0 5px; white-space: nowrap;}
+div.nov-izvod-clear {clear: both; margin: 5px 0;}
+.parametar-izvod {float: left;margin-top:10px;margin-right: 10px;}
+.naslovpregledizvodi, .naslovpregledizvodistavki, .naslovsearch, .naslovsearchizvodi, .naslovsearchstavki {background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;padding: 1px;margin: 5px 0 0 0;}
+/*#nov_izvod_form {width: 300px;}*/
+.izvod-opsti-podatoci {width: 300px;}
+#nov_izvod_form .ui-combobox-input {width: 86%;}
+#nov_izvod_form input {width: 96%;}
+.parametar-izvod span.floatleft {line-height: 1.5;margin-right: 10px;}
+.tabelasmetka th.smetka {width: 180px;}
+.smetkalabel {float: left; line-height: 1.7; margin: 0 5px;}
+.prebaruvanje_izvodi_form .stavka {float: left;margin-top: 10px;width: 100%;}
+div.izvod-search {clear:both;}
+td.sumaodliv , td.sumapriliv , td.odliv , td.priliv {text-align: right;}
+.tabelaizvod .sumaodliv,
+.tabelaizvod .sumapriliv,
+.tabelaizvod .prethodna,
+.tabelaizvod .segasna {text-align: right;}
+.smetka .parametar-izvod {margin-bottom: 10px;}
+
+.tabela-izvod-stavki td input.firmaZSmetkaID,
+.tabela-izvod-stavki td input.odliv,
+.tabela-izvod-stavki td input.priliv ,
+.tabela-izvod-stavki td input.komentar {background-color: #FFF !important;}

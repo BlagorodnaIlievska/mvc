@@ -1,0 +1,25 @@
+<div class="novaedmerka">
+    <form action="/index.php/podatoci/edmerki/create_edmerka" method="post">
+        <fieldset>
+
+
+            <legend>Нова единица мерка</legend>
+
+
+            Скратено име:<br/>
+            <input type="text" name="ime_skrateno"/><br/>
+            Долго име:<br/>
+            <input type="text" name="ime_dolgo"/><br/>
+
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="edmerka_popolnilista()" poraka_uspesno="Единицата мерка е успешно снимена"
+                poraka_neuspesno="Грешка при снимање на единицата мерка"
+                ><span>Сними</span></button>
+
+
+        <br/>
+    </form>
+
+</div>

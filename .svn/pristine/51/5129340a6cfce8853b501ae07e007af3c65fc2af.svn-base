@@ -1,0 +1,10 @@
+<div class="notacordion pacienti-priem-edit-form">
+    <h3><a href="javascript:">Прием кај доктор</a></h3>
+    <?php include('priem_includes/edit_podatoci_za_priemkajdoktor.php') ?>
+    <div class="clear"></div>
+    <h3><a href="javascript:">Податоци за Контакт</a></h3>
+    <?php include('priem_includes/podatoci_za_kontakt.php') ?>
+    <div class="clear"></div>
+    <h3><a href="javascript:">Податоци за придружник</a></h3>
+    <?php include('priem_includes/edit_podatoci_za_pridruznik.php') ?>
+</div>

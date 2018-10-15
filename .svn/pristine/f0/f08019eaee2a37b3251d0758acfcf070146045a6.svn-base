@@ -1,0 +1,134 @@
+<div class="tip-osiguruvanje-lista">
+    <div class="tip-osiguruvanje">
+        <?php if (bis_check_access('sistemsko_podesuvanje_bolnicko_rabotenje_tip_osigiruvanje_nov_button')): ?>
+            <div class="buttoncontainer">
+                <button class="button" onclick="tip_osiguruvanje_nov()">Нов тип осигурување</button>
+            </div>
+            <?php endif ?>
+        <div class="predtabela">
+        <table class="tabela-tiposiguruvanjelista">
+            <thead>
+            <tr>
+                <th class="idtip"></th>
+                <th class="nazivtip">Тип на осигурување</th>
+                <th class="konto">Конто</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".tabela-tiposiguruvanjelista").tablesorter();
+        tiposiguruvanje_polnilista();
+        jQuery(".tabela-tiposiguruvanjelista tbody tr").live('click', function () {
+            jQuery(".tabela-tiposiguruvanjelista tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+        jQuery(".tabela-tiposiguruvanjelista .edit-tr").live('click', function () {
+            tip_osiguruvanje_izmeni(jQuery(this).parent().parent().attr('tiposig_id'));
+        });
+        jQuery(".tabela-tiposiguruvanjelista .delete-tr").live('click', function () {
+            tip_osiguruvanje_delete(jQuery(this).parent().parent().attr('tiposig_id'));
+        });
+    });
+
+    function  tiposiguruvanje_polnilista()
+    {
+        var formurl = "/index.php/bolnicko_rabotenje_podatoci/tip_osiguruvanje/polnilista";
+        jQuery.ajax({
+            url:formurl,
+            type:'GET',
+            data:{},
+            dataType:'json',
+            success:function (response) {
+//                console.log(response);
+                jQuery(".tabela-tiposiguruvanjelista tbody").html('');
+                jQuery.each(response, function (index, item) {
+                    jQuery(".tabela-tiposiguruvanjelista tbody").append(('<tr tiposig_id="' + item.id + '">' +
+                            '<td>' +
+                            '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                            '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                            '</td>' +
+                            '<td>' + item.ime + '</td>' +
+                            '<td>' + item.konto_sifra + '</td>' +
+                            '</tr>'
+                            ));
+                });
+                jQuery(".tabela-tiposiguruvanjelista").trigger("update");
+            }
+        });
+    }
+    function tip_osiguruvanje_izmeni(tipid) {
+        var formurl = "/index.php/bolnicko_rabotenje_podatoci/tip_osiguruvanje/izmeni";
+        var data = {  id:tipid  }
+        jQuery.ajax({
+            url:formurl,
+            type:'GET',
+            data:data,
+            success:function (response) {
+                var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+                jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                jQuery('div.' + tempdialog).html(response);
+                jQuery('div.' + tempdialog).dialog({
+                    autoOpen:true,
+                    width:"auto",
+                    position:"center",
+                    title:"Измени земја",
+                    close:function (event, ui) {
+                        jQuery(this).dialog("destroy");
+                        jQuery(this).remove();
+                    }
+                });
+            }
+        });
+    }
+
+    function tip_osiguruvanje_delete(tipid){
+        var r=confirm("Избриши тип на осигурување");
+        if (r==true)
+        {
+            var b=confirm("Дали сте сигурни?");
+            if (b==true)
+            {
+                var formurl = "/index.php/bolnicko_rabotenje_podatoci/tip_osiguruvanje/delete_tiposiguruvanje";
+                var data = {  id:tipid  }
+                jQuery.ajax({
+                    url:formurl,
+                    type:'GET',
+                    data:data,
+                    success:function (response) {
+                        tiposiguruvanje_polnilista();
+                    }
+                });
+            }
+        }
+    }
+
+    function tip_osiguruvanje_nov() {
+        var formurl = "/index.php/bolnicko_rabotenje_podatoci/tip_osiguruvanje/nov_tip_osiguruvanje";
+        jQuery.ajax({
+            url:formurl,
+            type:'GET',
+            data:{},
+            success:function (response) {
+                var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+                jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                jQuery('div.' + tempdialog).html(response);
+                jQuery('div.' + tempdialog).dialog({
+                    autoOpen:true,
+                    width:"auto",
+                    position:"center",
+                    title:"Нов град",
+                    close:function (event, ui) {
+                        jQuery(this).dialog("destroy");
+                        jQuery(this).remove();
+                    }
+                });
+            }
+        });
+    }
+</script >

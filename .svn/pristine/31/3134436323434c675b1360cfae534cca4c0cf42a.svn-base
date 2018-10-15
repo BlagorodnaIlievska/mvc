@@ -1,0 +1,73 @@
+<div class="otpusna-lista-container">
+    <div class="otpusna-lista-heder">
+        <img class="za_view" width="900" height="130" alt="" src="/images/jzulogo.png">
+<!--        ZA PRINT-->
+        <img class="za_print" style="width: 100%;" height="130" alt="" src="images/jzulogo.png">
+<!--        ZA PRINT-->
+        <h5 style="margin-left: 75px">Email : jzuuktoarilucskopje@gmail.com</h5>
+    </div>
+    <div class="otpusna-lista-br"></div>
+    <h3 style="margin-left: 43%;">ОТПУСНА ЛИСТА</h3>
+    <br>
+    <form action="/index.php/upati/upati/create_otpusna_lista" method="post">
+        <input type="hidden" name="priem_id" value="<?php echo $priem_id ?>" />
+        <br>
+
+        <div class="otpusna-lista-leva-kolona">
+            <label class="otpusna-lista-labela-bold">Матичен број:</label>
+            <input type="text" name="embg"  class="otpusna-lista-input-vtoro" />
+            <br>
+            <label class="otpusna-lista-labela-bold" style="margin-top: 30px;">Роден:</label>
+            <input type="text" name="datum_na_raganje" class="otpusna-lista-input-vtoro" />
+            <br>
+            <label class="otpusna-lista-labela-bold" style="margin-top: 30px">Примен:</label>
+            <input type="text" name="datum_na_priem" id="datum1" class="otpusna-lista-input-vtoro" />
+            <br>
+            <label class="otpusna-lista-labela-bold" style="margin-top: 30px">Време:</label>
+            <input type="text" name="vreme_na_priem" id="vreme" class="otpusna-lista-input-vtoro" />
+        </div>
+        <div class="otpusna-lista-desna-kolona">
+            <label class="otpusna-lista-labela-bold">Пациент:</label>
+            <input type="text" name="pacient"  class="otpusna-lista-input-vtoro" />
+            <br>
+            <label class="otpusna-lista-labela-bold">Адреса:</label>
+            <input type="textarea" rows="2"  name="adresa" class="otpusna-lista-input-vtoro" />
+            <br>
+            <label class="otpusna-lista-labela-bold">Испишан:</label>
+            <input type="text" name="datum_na_ispis" id="datum2" class="otpusna-lista-input-vtoro" />
+        </div>
+        <div class="otpusna-lista-leva-podkolona">
+            <label class="otpusna-lista-labela-bold">Dg:</label><input type="text" name="dg" class="otpusna-lista-input-vtoro" />
+            <br><label class="otpusna-lista-labela-bold">Op:</label><input type="text" name="op" class="otpusna-lista-input-vtoro" />
+            <br><label class="otpusna-lista-labela-bold">Шифра:</label><input type="text" name="sifra" class="otpusna-lista-input-vtoro" />
+            <br><label class="otpusna-lista-labela-bold">Епикриза:</label><input type="text" name="epikriza" class="otpusna-lista-input-vtoro" />
+            <br><label class="otpusna-lista-labela-bold">Совет:</label><input type="text" name="sovet" class="otpusna-lista-input-vtoro" />
+        </div>
+        <div class="otpusna-lista-sredinabox">
+            <label class="otpusna-lista-labela-bold" style="font-size:14px">Напомена:</label><label
+                class="otpusna-lista-labela" style="font-size:14px">Пациентот да се јави за закажување на контролата на
+                <br> телефон 02 3147 046 најмалку десет дена пред закажаната контрола.</label>
+        </div>
+        <div class="otpusna-lista-leva-podkolona">
+            <label class="otpusna-lista-labela-bold">Одговорен хирург:</label><input type="text" name="odgovoren_hirurg" class="otpusna-lista-input-vtoro" />
+            <br><label class="otpusna-lista-labela-bold">в.д. Раководител:</label><input type="text" name="vd_rakovoditel" class="otpusna-lista-input-vtoro" />
+        </div>
+        <div class="buttons">
+            <?php if($print == 2) { ?>
+            <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_otpusna_lista&id=" class="printlink" target="_blank" >
+                <button type="button" class="print"><span>Принт</span></button>
+            </a>
+            <?php } ?>
+            <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_otpusna_lista&id=" class="printlinkupati hide" target="_blank" >
+                <button type="button" class="print"><span>Принт</span></button>
+            </a>
+            <button type="button" class="button snimi-forma-upati" style="margin-top: 25px; margin-right: 45px; float:right"
+                    poraka_uspesno="успешно снимен"
+                    poraka_neuspesno="Грешка при снимање"><span>Сними</span>
+            </button>
+        </div>
+</div>
+<script>
+    jQuery('#datum1').datepicker();
+    jQuery('#datum2').datepicker();
+</script>

@@ -1,0 +1,487 @@
+
+function odliv_priliv_nov() {
+    var prenesena_sostojba=0;
+    var kasaIme=jQuery(".ddkasa option:selected").text();
+    var kasaID=jQuery(".ddkasa option:selected").val();
+    var formurl = "/index.php/kasi/kasi/nov";
+    var prenesena_sostojba=(jQuery('.sos').val());
+    var kasaid = jQuery('.ddkasa option:selected').val();
+    if(kasaid !=0){
+        var data = {
+                prenesena_sostojba:prenesena_sostojba,
+                kasaIme:kasaIme,
+                kasaID:kasaID
+        };
+        jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+          //
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нов ",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+        }
+        });
+    }
+    else alert ('Изберете каса');
+}
+  function prebaruvanje(kasaid,period1,period2){
+      var formurl = "/index.php/kasi/kasi/getKasa_pri_prebaruvanje";
+      jQuery.ajax({
+          url:formurl,
+          type:'POST',
+          data:{
+              kasaid:kasaid,
+              period1:period1,
+              period2:period2
+          },
+          dataType:'json',
+          success:function (response) {
+//              console.log(response);
+              var vkupnostavki = response.length;
+              jQuery(".tabela-kasalista tbody").html('');
+              var sos=0;
+              jQuery.each(response, function (index, item) {
+                  if(item.firmaID > 0) var klientIme = item.firmaIme;
+                  if(item.pacient_id > 0) var klientIme = item.pacientIme+" "+item.pacientTatkovoIme+" "+item.pacientPrezime;
+                  if(item.tip==550){
+                       if(kasaid.length > 0){
+                           jQuery('.sostojbakasa').show();
+                           jQuery(".tabela-kasalista tbody").append(('<tr kasa_id="' + item.ID + '">' +
+                          '<td class="idkasa">' +
+                          '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                          '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                          '</td>' +
+                          '<td class="datumkasa">' + item.datum + '</td>' +
+                          '<td class="brojkasa">' + item.textBroj + '</td>' +
+                          '<td class="firmakasa">' + klientIme + '</td>' +
+                          '<td class="odlivkasa"></td>' +
+                          '<td class="prilivkasa text-right">' + formatnumbermkd(item.z_uplata) + '</td>' +
+                          '<td class="sostojbakasa text-right">'+ formatnumbermkd(item.sostojba) +'</td>' +
+                          '<td class="povikbrojkasa text-right">'+ item.zaPovikBroj+'</td>' +
+                          '<td class="kontobrojkasa">'+item.konto+'</td>' +
+                          '<td class="namenakasa">' + item.namena + '</td>' +
+                          '<td class="zabeleskakasa">' + item.komentar + '</td>' +
+                          '</tr>'
+                        ));
+                        }
+                       else if(kasaid.length==0) {
+                           jQuery('.sostojbakasa').hide();
+                           jQuery(".tabela-kasalista tbody").append(('<tr kasa_id="' + item.ID + '">' +
+                           '<td class="idkasa">' +
+                           '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                           '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                           '</td>' +
+                           '<td class="datumkasa">' + item.datum + '</td>' +
+                           '<td class="brojkasa text-right">' + item.textBroj + '</td>' +
+                           '<td class="firmakasa">' + klientIme + '</td>' +
+                           '<td class="odlivkasa"></td>' +
+                           '<td class="prilivkasa">' + formatnumbermkd(item.z_uplata) + '</td>' +
+                           '<td class="povikbrojkasa text-right">'+item.zaPovikBroj+'</td>' +
+                           '<td class="kontobrojkasa text-right">'+item.konto+'</td>' +
+                           '<td class="namenakasa">' + item.namena + '</td>' +
+                           '<td class="zabeleskakasa">' + item.komentar + '</td>' +
+                           '</tr>'
+                            ));
+                        }
+                  }
+                  else if(item.tip==540){
+                      if(kasaid.length > 0){
+                          jQuery('.sostojbakasa').show();
+                          jQuery(".tabela-kasalista tbody").append(('<tr kasa_id="' + item.ID + '">' +
+                          '<td class="idkasa">' +
+                          '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                          '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                          '</td>' +
+                          '<td class="datumkasa">' + item.datum + '</td>' +
+                          '<td class="brojkasa text-right">' + item.textBroj + '</td>' +
+                          '<td class="firmakasa">' + klientIme + '</td>' +
+                          '<td class="odlivkasa text-right">' + formatnumbermkd(item.z_uplata) + '</td>' +
+                          '<td class="prilivkasa"></td>' +
+                          '<td class="sostojbakasa">'+ formatnumbermkd(item.sostojba) +' </td>' +
+                          '<td class="povikbrojkasa text-right">'+item.zaPovikBroj+'</td>' +
+                          '<td class="kontobrojkasa">'+item.konto+'</td>' +
+                          '<td class="namenakasa">' + item.namena + '</td>' +
+                          '<td class="zabeleskakasa">' + item.komentar + '</td>' +
+                          '</tr>'
+                          ));
+                        }
+                      else if(kasaid.length==0){
+                          jQuery('.sostojbakasa').hide();
+                          jQuery(".tabela-kasalista tbody").append(('<tr kasa_id="' + item.ID + '">' +
+                              '<td class="idkasa">' +
+                              '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                              '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                              '</td>' +
+                              '<td class="datumkasa">' + item.datum + '</td>' +
+                              '<td class="brojkasa">' + item.textBroj + '</td>' +
+                              '<td class="firmakasa">' + klientIme + '</td>' +
+                              '<td class="odlivkasa">' + formatnumbermkd(item.z_uplata) + '</td>' +
+                              '<td class="prilivkasa"></td>' +
+                              '<td class="povikbrojkasa">'+item.zaPovikBroj+'</td>' +
+                              '<td class="kontobrojkasa">'+item.konto+'</td>' +
+                              '<td class="namenakasa">' + item.namena + '</td>' +
+                              '<td class="zabeleskakasa">' + item.komentar + '</td>' +
+                              '</tr>'
+                              ));
+                      }
+                  }
+              });
+              jQuery(".naslovkasapregled .vkupnostavki").html(vkupnostavki);
+              }
+              });
+              }
+function sostojba(kasaid,period2){
+    var formurl = "/index.php/kasi/kasi/getSostojba_pri_prebaruvanje";
+    jQuery.ajax({
+        url:formurl,
+        type:'POST',
+        data:{ kasaid:kasaid,
+               period2:period2
+        },
+        dataType:'json',
+        success:function (response) {
+            var sos=0;
+            jQuery.each(response, function (index, item) {
+                if(item.tip==550){
+                    sos = sos + parseFloat(item.z_uplata);
+                }
+                else if(item.tip==540){
+                    sos=sos-parseFloat(item.z_uplata);
+                }
+            });
+            jQuery('.sos').val(formatnumbermkd(sos));
+        }
+    });
+}
+
+function pregled_na_kasa_prebaruvanje(klientid,kasaid){
+    var formurl = "/index.php/kasi/kasi/pregled_na_kasa_prebaruvanje";
+    jQuery.ajax({
+        url:formurl,
+        type:'POST',
+        data:{
+            klientid:klientid,
+            kasaid:kasaid
+        },
+        dataType:'json',
+        success:function (response) {
+            jQuery(".tabela-pregledkasa tbody").html('');
+            var sos=0;
+            jQuery.each(response, function (index, item) {
+                if(item.tip==550){
+                    if(item.firmaID > 0) var klientIme = item.firmaIme;
+                    if(item.pacientID > 0) var klientIme = item.pacientIme+" "+item.pacientTatkovoIme+" "+item.pacientPrezime;
+                    jQuery(".tabela-pregledkasa tbody").append(('<tr kasa_id="' + item.ID + '">' +
+                        '<td class="imekasa">' + item.kasaIme + '</td>' +
+                        '<td class="datumkasa">' + item.datum + '</td>' +
+                        '<td class="brojkasa">' + item.textBroj + '</td>' +
+                        '<td class="firmakasa">' + klientIme + '</td>' +
+                        '<td class="odlivkasa"></td>' +
+                        '<td class="prilivkasa">' + item.suma + '</td>' +
+                        '<td class="zabeleskakasa">' + item.zabeleska + '</td>' +
+                        '</tr>' ));
+                }
+                else if(item.tip==540){
+                    jQuery(".tabela-pregledkasa tbody").append(('<tr kasa_id="' + item.ID + '">' +
+                        '<td class="imekasa">' + item.kasaIme + '</td>' +
+                        '<td class="datumkasa">' + item.datum + '</td>' +
+                        '<td class="brojkasa">' + item.textBroj + '</td>' +
+                        '<td class="firmakasa">' + klientIme + '</td>' +
+                        '<td class="odlivkasa">' + formatnumbermkd(item.suma) + '</td>' +
+                        '<td class="prilivkasa"></td>' +
+                        '<td class="zabeleskakasa">' + item.zabeleska + '</td>' +
+                        '</tr>'
+                        ));
+                }
+            });
+        }
+    });
+}
+
+function odliv_priliv_popolnilista() {
+    var formurl = "/index.php/kasi/kasi/popolnilista";
+    var kasaid = jQuery('.ddkasa option:selected').val();
+    izlistaj_kasi(kasaid);
+    nalozi_popolnilista();
+    jQuery(".tabela-kasalista").trigger("update");
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{kasaid:kasaid},
+        dataType:'json',
+        success:function (response) {
+            var sostojba = 0;
+            jQuery(".tabela-kasalista tbody").html('');
+//            jQuery('.sos').val((response[0].sostojba));
+            jQuery.each(response, function (index, item) {
+                if(item.firmaID > 0) var klientIme = item.firmaIme;
+                if(item.pacientID > 0) var klientIme = item.pacientIme+" "+item.pacientTatkovoIme+" "+item.pacientPrezime;
+                if(item.tip==550) {
+                    sostojba = sostojba + 1*item.suma;
+                    if(kasaid.length > 0){
+                        jQuery('.sostojbakasa').show();
+                        jQuery(".tabela-kasalista tbody").append(('<tr kasa_id="' + item.dbid + '">' +
+                        '<td class="idkasa">' +
+                        '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                        '</td>' +
+                        '<td class="datumkasa">' + item.datum + '</td>' +
+                        '<td class="brojkasa">' + item.textBroj + '</td>' +
+                        '<td class="firmakasa">' + klientIme + '</td>' +
+                        '<td class="odlivkasa"></td>' +
+                        '<td class="prilivkasa">' + formatnumbermkd(item.suma) + '</td>' +
+                        '<td class="sostojbakasa">'+item.sostojba+'</td>' +
+                        '<td class="povikbrojkasa">'+item.zaPovikBroj+'</td>' +
+                        '<td class="kontobrojkasa">'+item.konto+'</td>' +
+                        '<td class="namenakasa">' + item.namena + '</td>' +
+                        '<td class="zabeleskakasa">' + item.zabeleska + '</td>' +
+                        '</tr>'
+                        ));
+                }
+                    else if(kasaid.length ==0){
+                               jQuery('.sostojbakasa').hide();
+                               jQuery(".tabela-kasalista tbody").append(('<tr kasa_id="' + item.dbid + '">' +
+                                   '<td class="idkasa">' +
+                                   '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                                   '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                                   '</td>' +
+                                   '<td class="datumkasa">' + item.datum + '</td>' +
+                                   '<td class="brojkasa">' + item.textBroj + '</td>' +
+                                   '<td class="firmakasa">' + klientIme + '</td>' +
+                                   '<td class="odlivkasa"></td>' +
+                                   '<td class="prilivkasa">' + formatnumbermkd(item.suma) + '</td>' +
+                                   '<td class="povikbrojkasa">'+item.zaPovikBroj+'</td>' +
+                                   '<td class="kontobrojkasa">'+item.konto+'</td>' +
+                                   '<td class="namenakasa">' + item.namena + '</td>' +
+                                   '<td class="zabeleskakasa">' + item.zabeleska + '</td>' +
+                                   '</tr>'
+                                   ));
+                           }
+                }
+                else if(item.tip==540){
+                    sostojba = sostojba - 1*item.suma;
+                  if(kasaid.length > 0){
+                    jQuery('.sostojbakasa').show();
+                    jQuery(".tabela-kasalista tbody").append(('<tr kasa_id="' + item.dbid + '">' +
+                        '<td class="idkasa">' +
+                        '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                        '</td>' +
+                        '<td class="datumkasa">' + item.datum + '</td>' +
+                        '<td class="brojkasa">' + item.textBroj + '</td>' +
+                        '<td class="firmakasa">' + klientIme + '</td>' +
+                        '<td class="odlivkasa">' + formatnumbermkd(item.suma) + '</td>' +
+                        '<td class="prilivkasa"></td>' +
+                        '<td class="sostojbakasa">'+item.sostojba+'</td>' +
+                        '<td class="povikbrojkasa">'+item.zaPovikBroj+'</td>' +
+                        '<td class="kontobrojkasa">'+item.konto+'</td>' +
+                        '<td class="namenakasa">' + item.namena + '</td>' +
+                        '<td class="zabeleskakasa">' + item.zabeleska + '</td>' +
+                        '</tr>'
+                        ));
+                } else if(kasaid.length ==0){
+                                 jQuery('.sostojbakasa').hide();
+                                 jQuery(".tabela-kasalista tbody").append(('<tr kasa_id="' + item.dbid + '">' +
+                                     '<td class="idkasa">' +
+                                     '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                                     '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                                     '</td>' +
+                                     '<td class="datumkasa">' + item.datum + '</td>' +
+                                     '<td class="brojkasa">' + item.textBroj + '</td>' +
+                                     '<td class="firmakasa">' + klientIme + '</td>' +
+                                     '<td class="odlivkasa">' + formatnumbermkd(item.suma) + '</td>' +
+                                     '<td class="prilivkasa"></td>' +
+                                     '<td class="povikbrojkasa">'+item.zaPovikBroj+'</td>' +
+                                     '<td class="kontobrojkasa">'+item.konto+'</td>' +
+                                     '<td class="namenakasa">' + item.namena + '</td>' +
+                                     '<td class="zabeleskakasa">' + item.zabeleska + '</td>' +
+                                     '</tr>'
+                                     ));
+                             }
+                }
+            });
+            var nalogid=jQuery('.brojnalog_id').val();
+            jQuery(".sos").val(formatnumbermkd(sostojba));
+        }
+    });
+}
+
+function odliv_priliv_popolnisostojba() {
+    var formurl = "/index.php/kasi/kasi/popolnisostojba";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+
+            var sos=0;
+            jQuery.each(response, function (index, item) {
+
+                if(item.tip==550) {
+                    sos = sos + parseFloat(item.suma);
+                }
+                else if(item.tip==540){
+                    sos = sos - parseFloat(item.suma);
+                }
+            });
+            jQuery('.sos').val(formatnumbermkd(sos));
+        }
+    });
+}
+
+function pregledkasa_popolnilista() {
+    var formurl = "/index.php/kasi/kasi/pregled";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+//
+            jQuery(".tabela-pregledkasa tbody").html('');
+            jQuery.each(response, function (index, item) {
+                if(item.firmaID > 0) var klientIme = item.firmaIme;
+                if(item.pacientID > 0) var klientIme = item.pacientIme+" "+item.pacientTatkovoIme+" "+item.pacientPrezime;
+                if(item.tip==550){
+                    jQuery(".tabela-pregledkasa tbody").append(('<tr kasa_id="' + item.dbid + '">' +
+                        '<td  class="imekasa">' + item.kasaIme + '</td>' +
+                        '<td class="datumkasa">' + item.datum + '</td>' +
+                        '<td class="brojkasa">' + item.textBroj + '</td>' +
+                        '<td class="firmakasa">' + klientIme + '</td>' +
+                        '<td class="odlivkasa"></td>' +
+                        '<td class="prilivkasa">' + formatnumbermkd(item.suma) + '</td>' +
+                        '<td class="zabeleskakasa">' + item.zabeleska + '</td>' +
+                        '</tr>'
+                        ));
+                }
+                else if(item.tip==540){
+                    jQuery(".tabela-pregledkasa tbody").append(('<tr kasa_id="' + item.dbid + '">' +
+                        '<td class="imekasa">' + item.kasaIme + '</td>' +
+                        '<td class="datumkasa">' + item.datum + '</td>' +
+                        '<td class="brojkasa">' + item.textBroj + '</td>' +
+                        '<td class="firmakasa">' + klientIme + '</td>' +
+                        '<td class="odlivkasa">' + formatnumbermkd(item.suma) + '</td>' +
+                        '<td class="prilivkasa"></td>' +
+                        '<td class="zabeleskakasa">' + item.zabeleska + '</td>' +
+                        '</tr>'
+                        ));
+                }
+            });
+            jQuery(".tabela-pregledkasa").trigger("update");
+        }
+    });
+}
+function odliv_priliv_izmeni(kasaid) {
+    var formurl = "/index.php/kasi/kasi/izmeni";
+    var data = {  id:kasaid  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+         //   console.log('test');
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени ",
+                dialogClass: 'dialogsotabovi',
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+
+function odliv_priliv_delete(kasaid){
+    var r=confirm("Избриши");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/kasi/kasi/delete_odliv_priliv";
+            var data = {  id:kasaid  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    odliv_priliv_popolnilista();
+                }
+            });
+
+        }
+    }
+
+}
+
+function getNewKasaBroj(kasaid){
+    var formaction = '/index.php/kasi/kasi/getLastKasaBroj?id=' + kasaid;
+    jQuery.ajax({
+        url:formaction,
+        dataType: "json",
+        type:'GET',
+        success:function (response) {
+
+            var lastbroj =parseInt(response[0].broj);
+//            console.log(lastbroj);
+            var newbroj = 1*lastbroj + 1;
+            var newbrojint = newbroj;
+            var prefix = 'Каса'+ response[0].sifra+'/';
+            var currentYear = (new Date).getFullYear();
+            var godina = ""+currentYear;
+            var YY = godina.substr(2,2);
+            if(lastbroj.toString().length == 0) newbroj= prefix + '0001' + '/' + YY;
+            if(lastbroj.toString().length == 1) newbroj= prefix + '000' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 2) newbroj= prefix + '00' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 3) newbroj= prefix + '0' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 4) newbroj= prefix + newbroj + '/' + YY;
+            jQuery('span.arhivskibroj').html(newbroj);
+            jQuery('input.fakturabroj').val(newbroj);
+            jQuery('input.arhivskibrojint').val(newbrojint);
+        }
+    });
+}
+function test(){
+    var formaction = '/index.php/kasi/kasi/testKasaBroj';
+    jQuery.ajax({
+        url:formaction,
+        dataType: "json",
+        type:'GET',
+        success:function (response) {
+            console.log("kasabroj:  ", response);
+        }
+    });
+}
+function sredi_formatnumber_kasa(){
+    var odliv = jQuery(".odliv1").val();
+    var priliv = jQuery(".priliv1").val();
+    if(odliv.length > 0) jQuery(".odliv1").val(formatbrojjs(odliv));
+    if(priliv.length > 0) jQuery(".priliv1").val(formatbrojjs(priliv));
+}

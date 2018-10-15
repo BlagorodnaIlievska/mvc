@@ -1,0 +1,11 @@
+<div id="index" class="main-menu-tabs">
+    <ul>
+    <?php if (bis_check_access('planiranje_resursi_finansiski_plan_tab')): ?>
+        <li><a href="/index.php/finansiski_plan/plan/view_stavka">Финансиски план</a></li>
+            <?php endif ?>
+    <?php if (bis_check_access('planiranje_resursi_pregled_trosoci_tab')): ?>
+        <li><a href="/index.php/finansiski_plan/pregled_trosoci/view">Преглед на трошоци</a></li>
+            <?php endif ?>
+    </ul>
+
+</div>

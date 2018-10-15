@@ -1,0 +1,302 @@
+<div class="postoecka-faktura">
+        <div class="stavka">
+            <p class="naslovvleznifakturi" > ( <span class="vkupnostavki">0</span> ) Влезни фактури</p>
+            <div class="predtabela">
+                <table class="tvleznifakturi" border="1" cellspacing="2" cellpadding="2">
+                    <thead>
+                    <tr>
+                        <th>Избери</th>
+                        <th>Број</th>
+                        <th>Датум</th>
+                        <th>Коминтент</th>
+                        <th>Основа</th>
+                        <th>ДДВ</th>
+                        <th>Вкупно</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class='hiderow trow' klientid="" fakturaid="">
+                        <td><input type='checkbox' class='povrzi' name='povrzi' /></td>
+                        <td class="broj"></td>
+                        <td class="datum"></td>
+                        <td class="klient"></td>
+                        <td class="osnova"></td>
+                        <td class="ddv"></td>
+                        <td class="vkupno"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <div>
+        <button type="button" class="povrzifaktura button"><span>Поврзи</span></button>
+    </div>
+    <div class="stavkadetail">
+        <p class="naslov" > ( <span class="vkupnostavki">0</span> ) Ставки во документот - Детално</p>
+        <div class="predtabela">
+            <table class="tstavkadetail" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th>РБ</th>
+                    <th>Шифра</th>
+                    <th>Ставка</th>
+                    <th>Кол.</th>
+                    <th>ЕМ</th>
+                    <th>Цена</th>
+                    <th>Вкупно без ДДВ</th>
+                    <th>%ДДВ</th>
+                    <th>Вкупно ДДВ</th>
+                    <th>Вкупно со ДДВ</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="hiderow">
+                    <td class="number"></td>
+                    <td class="katbroj"></td>
+                    <td class="stavka"></td>
+                    <td class="kolicina"></td>
+                    <td class="em"></td>
+                    <td class="bezddv"></td>
+                    <td class="vkupno"></td>
+                    <td class="procent"></td>
+                    <td class="vkupnoddv"></td>
+                    <td class="sevkupno"></td>
+                    <td class="edmerkaid hide"></td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr  >
+                    <td colspan="3">Вкупно:</td>
+                    <td></td>
+                    <td ></td>
+                    <td class="vkupnobezddv">0</td>
+                    <td class="vkupnosoddv">0</td>
+                    <td  ></td>
+                    <td class="vkupnovkupno">0</td>
+                    <td class="vkupnoddvsevkupno">0</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function mat_fak_magacin_option_values(){
+        return '' + '<option value=""></option>'+
+            '<?php foreach($magacini as $magacin) { echo '<option value="'.$magacin->id.'">'.$magacin->ime.'</option>'; } ?>';
+    }
+    function mat_fak_edmerka_option_values(){
+        return '' + '<option value=""></option>'+
+            '<?php foreach($edinicamerka as $edmerka) { echo '<option value="'.$edmerka->id.'">'.$edmerka->ime_skrateno.'</option>'; } ?>';
+    }
+    function addNewStavkaPriemnicaLast(currentrow){
+        if(currentrow.is(":last-child"))
+        {
+            var redenbroj = jQuery('.tpriemnica tbody tr:last').find('.redenbroj').text();
+            if(redenbroj.length > 0) var newredenbroj = parseInt(redenbroj) + parseInt(1);
+            else var newredenbroj = 1;
+            jQuery(".tpriemnica tbody").append(('<tr class="detali" artikl_id="">' +
+                '<td>' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +'</td>' +
+                '<td class="redenbroj">' + newredenbroj + '</td>' +
+                '<td class="sifra"><select class="sifra-dropdown" name="sifra">'+mat_katbroj_option_values()+'</select></td>' +
+                '<td class="artikli"><select class="artikli-dropdown" name="artikli">'+mat_artikli_option_values()+'</select></td>' +
+                '<td>' + '<input class="kolicina" name="kolicina" value="" />' + '</td>' +
+                '<td class="edmerka"><select class="edmerka-dropdown" name="edmerka">'+mat_edmerka_option_values()+'</select></td>' +
+                '<td><select class="magacin" name="magacin">'+mat_magacin_option_values()+'</select></td>' +
+                '<td>' + '<input class="garantenrok" name="garantenrok" value="" />' + '</td>' +
+                '<td>' + '<input class="upotreblivodo" name="upotreblivodo" value="" />' + '</td>' +
+                '<td>' + '<input class="seriskibroj" name="seriskibroj" value="" />' + '</td>' +
+                '<td class="hide">' + '<input type="hidden" class="SID" name="SID" value="" />' + '</td>' +
+                '<td class="hide">' + '<input type="hidden" class="stavka" name="stavka" value="" />' + '</td>' +
+                '<td class="hide">' + '<input type="hidden" class="edmerkaid" name="edmerkaid" value="" />' + '</td>' +
+                '<td class="hide">' + '<input type="hidden" class="cena" name="cena" value="" />' + '</td>' +
+                '<td class="hide">' + '<input type="hidden" class="ddv" name="ddv" value="" />' + '</td>' +
+                '<td class="hide">' + '<input type="hidden" class="konto" name="konto" value="" />' + '</td>' +
+                '<td class="hide">' + '<input type="hidden" class="kontoid" name="konto" value="" />' + '</td>' +
+                '</tr>'
+                ));
+            var thisrow = jQuery('.tpriemnica tbody tr:last');
+            jQuery('.upotreblivodo').datepicker();
+            jQuery('.artikli-dropdown').combobox();
+            jQuery('.sifra-dropdown').combobox();
+            jQuery('.edmerka-dropdown').combobox();
+            jQuery('.magacin').combobox();
+            jQuery(".tpriemnica .delete-tr").click(function () {
+                var trow = jQuery(this).closest('tr');
+                trow.remove();
+                var i = 1;
+                jQuery('.tpriemnica tbody tr').each(function(){
+                    jQuery(this).find('.redenbroj').html(i);
+                    i = 1*i + 1;
+                });
+            });
+        }
+    }
+    jQuery(document).ready(function(){
+        jQuery(".tvleznifakturi").tablesorter();
+        jQuery(".tstavkadetail").tablesorter();
+        vf_dp_napolnilista();
+        jQuery(".tvleznifakturi").delegate("tbody tr.trow", "click", function () {
+            jQuery(".tvleznifakturi .trow").removeClass("active");
+            jQuery(this).addClass('active');
+            var dbid = jQuery(this).attr("fakturaid");
+            var data = {
+                dbid:dbid
+            }
+            jQuery.ajax({
+                url:"/index.php/vlezni_fakturi/pregled_vlezni/getVleznaDetali",
+                type:'POST',
+                data:data,
+                dataType:'json',
+                success:function (response) {
+                    //console.log(response);
+                    jQuery(".tstavkadetail tbody").find("tr:gt(1)").remove();
+                    var tr = jQuery('.tstavkadetail tbody tr:last');
+                    tr.removeClass('hiderow');
+                    var num = response.length;
+                    var vkupnokolicina=0;
+                    var vkupnobezddv= 0, sumavkupnobezddv = 0, sumavkupnocena =0;
+                    var sumavkupnoddv = 0, sumasevkupno =0;
+                    var vkupnosoddv=0;
+                    var vkupnovkupno=0;
+                    var vkupnovkupnoddv=0;
+                    var vkupnosevkupno=0;
+                    for (var i = 0; i < response.length; i++) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        var kolicina = response[i].kolicina;
+                        var cenabezddv = response[i].cena;
+                        var ddv = response[i].ddv;
+                        var vkupnobezddv = parseInt(cenabezddv) * parseInt(kolicina);
+                        var vkupnoddv = parseInt((vkupnobezddv * ddv) / 100);
+                        var vkupnosoddv = parseInt(vkupnobezddv) + parseInt(vkupnoddv);
+                        newrow.find(".number").html(num);
+                        newrow.find(".katbroj").html(response[i].katBroj);
+                        newrow.find(".stavka").html(response[i].stavka);
+                        newrow.find(".kolicina").html(kolicina);
+                        newrow.find(".em").html(response[i].edMerkaIme);
+                        newrow.find(".edmerkaid").html(response[i].edMerka);
+                        newrow.find(".bezddv").html(parseFloat(cenabezddv).toFixed(2));
+                        newrow.find(".soddv").html(parseFloat(response[i].cenaDDV).toFixed(2));
+                        newrow.find(".procent").html(ddv);
+                        newrow.find(".vkupno").html(parseFloat(vkupnobezddv).toFixed(2));
+                        newrow.find(".vkupnoddv").html(parseFloat(vkupnoddv).toFixed(2));
+                        newrow.find(".sevkupno").html(parseFloat(vkupnosoddv).toFixed(2));
+                        vkupnokolicina=vkupnokolicina+1*kolicina;
+//                    vkupnobezddv=vkupnobezddv+1*cenabezddv;
+                        sumavkupnocena=sumavkupnocena+parseFloat(cenabezddv);
+                        sumavkupnobezddv=sumavkupnobezddv+parseFloat(vkupnobezddv);
+                        sumavkupnoddv=sumavkupnoddv+parseFloat(vkupnoddv);
+                        sumasevkupno=sumasevkupno+parseFloat(vkupnosoddv);
+                        vkupnosoddv=vkupnosoddv+1*response[i].cenaDDV;
+                        vkupnovkupno=vkupnovkupno+1*vkupnobezddv;
+                        vkupnovkupnoddv=vkupnovkupnoddv+1*vkupnoddv;
+                        vkupnosevkupno=vkupnosevkupno+1*vkupnosoddv;
+                        num--;
+                    }
+                    jQuery(".tstavkadetail tfoot .vkupnokolicina").html(vkupnokolicina);
+                    jQuery(".tstavkadetail tfoot .vkupnobezddv").html(parseFloat(sumavkupnocena).toFixed(2));
+                    jQuery(".tstavkadetail tfoot .vkupnosoddv").html(parseFloat(sumavkupnobezddv).toFixed(2));
+                    jQuery(".tstavkadetail tfoot .vkupnovkupno").html(parseFloat(sumavkupnoddv).toFixed(2));
+                    jQuery(".tstavkadetail tfoot .vkupnovkupnoddv").html(vkupnovkupnoddv);
+                    jQuery(".tstavkadetail tfoot .vkupnoddvsevkupno").html(parseFloat(sumasevkupno).toFixed(2));
+                    jQuery(".naslov .vkupnostavki").html(response.length);
+                    tr.addClass('hiderow');
+
+                    jQuery(".tstavkadetail").trigger("update");
+                }
+            });
+        });
+        jQuery(".povrzifaktura").click(function(){
+            var stiklirani = jQuery(".tvleznifakturi tr").find('input[class="povrzi"]:checked').length;
+            if(stiklirani != 1){
+                return alert("Изберете само една влезна фактура !!!");
+            }
+            var ovakopce = jQuery(this);
+            var vrskadokumenti = jQuery('input.vrskadokumenti').val();
+            var priemnici = [];
+            if(vrskadokumenti.length > 0) var dodadenipriemnici = vrskadokumenti;
+            else var dodadenipriemnici ="Додадена фактура: ";
+            var listapriemnici ="", novapriemnica="";
+            jQuery(".tvleznifakturi tr").find('input[class="povrzi"]:checked').each(function() {
+                var row = jQuery(this).closest("tr");
+                var priemnicabroj = row.find('.broj').text();
+                var priemnicaid = row.attr('fakturaid');
+                priemnici.push(priemnicaid);
+                novapriemnica = priemnicabroj;
+                listapriemnici = listapriemnici + novapriemnica;
+                var dbid = priemnicaid;
+                var data = {
+                    dbid: dbid
+                }
+                jQuery.ajax({
+                    url: "/index.php/vlezni_fakturi/pregled_vlezni/getVleznaDetali",
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function (response) {
+                        jQuery(".tpriemnica tbody tr:last").remove();
+                        var redenbroj = jQuery('.tpriemnica tbody tr:last').find('.redenbroj').text();
+                        if(redenbroj.length > 0) var newredenbroj = parseInt(redenbroj) + parseInt(1);
+                        else var newredenbroj = 1;
+                        for ( var i = 0; i < response.length; i++ ) {
+                            jQuery(".tpriemnica tbody").append(('<tr class="detali" artikl_id="' + response[i].sifra + '">' +
+                                    '<td>' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +'</td>' +
+                                    '<td class="redenbroj">' + newredenbroj + '</td>' +
+                                    '<td>' + '<input class="sifra" name="sifra" value="'+ response[i].sifra2 +'" readonly />' + '</td>' +
+                                    '<td>' + '<input class="stavka" name="stavka" value="'+ response[i].stavka +'" />' + '</td>' +
+                                    '<td>' + '<input class="kolicina" name="kolicina" value="' + response[i].kolicina + '" /></td>' +
+                                    '<td class="edmerka"><select class="edmerka-dropdown" name="edmerka">'+mat_fak_edmerka_option_values()+'</select></td>' +
+                                    '<td><select class="magacin" name="magacin">'+mat_fak_magacin_option_values()+'</select></td>' +
+                                    '<td>' + '<input class="garantenrok" name="garantenrok" value="" />' + '</td>' +
+                                    '<td>' + '<input class="upotreblivodo" name="upotreblivodo" value="" />' + '</td>' +
+                                    '<td>' + '<input class="seriskibroj" name="seriskibroj" value="" />' + '</td>' +
+                                    '<td class="hide">' + '<input type="hidden" class="SID" name="SID" value="'+ response[i].sifra + '" />' + '</td>' +
+                                    '<td class="hide">' + '<input type="hidden" class="edmerkaid" name="edmerkaid" value="'+ response[i].edMerka + '" />' + '</td>' +
+                                    '<td class="hide">' + '<input type="hidden" class="cena" name="cena" value="'+ response[i].cena + '" />' + '</td>' +
+                                    '<td class="hide">' + '<input type="hidden" class="ddv" name="ddv" value="'+ response[i].ddv + '" />' + '</td>' +
+                                    '<td class="hide">' + '<input type="hidden" class="presmetaj_sredna" name="presmetaj_sredna" value="1" />' + '</td>' +
+                                    '</tr>'
+                                    ));
+                       var lastrow = jQuery('.tpriemnica tbody tr:last');
+                       lastrow.find('.upotreblivodo').datepicker();
+                            lastrow.find('.magacin').combobox().live("change", function(){
+                                var elem = jQuery(this);
+                                var currentrow = elem.closest('tr');
+                                addNewStavkaPriemnicaLast(currentrow);
+                            });
+                            lastrow.find('.edmerka-dropdown').combobox();
+                      if(response[i].edMerka > 0) {
+                          lastrow.find("td.edmerka .ui-combobox-input").val(response[i].edMerkaIme);
+                          lastrow.find("td.edmerka .ui-combobox-input").text(response[i].edMerkaIme);
+                         lastrow.find(".edmerkaid").val(response[i].edMerka);
+                      }
+                      else {
+                          currentrow.find("td.edmerka .ui-combobox-input").val("парче");
+                          lastrow.find("td.edmerka .ui-combobox-input").text("парче");
+                          lastrow.find(".edmerkaid").val(4);
+                      }
+                       jQuery(".tpriemnica .delete-tr").click(function () {
+                           var trow = jQuery(this).closest('tr');
+                           trow.remove();
+                           var i = 1;
+                           jQuery('.tpriemnica tbody tr').each(function(){
+                               jQuery(this).find('.redenbroj').html(i);
+                               i = 1*i + 1;
+                           });
+                       });
+                      newredenbroj = 1*newredenbroj +1;
+                      jQuery(".tpriemnica").trigger("update");
+                        }
+                    }
+                });
+                jQuery('.faktura_id').val(priemnici);
+                jQuery('.dodadenifakturi').text(dodadenipriemnici + listapriemnici);
+                jQuery('.vrskadokumenti').val(dodadenipriemnici + listapriemnici);
+                jQuery('.submitpriemnicakreirajfaktura').addClass('hide');
+                destroyparentdialog(ovakopce);
+            });
+        });
+    });
+</script>
+

@@ -1,0 +1,55 @@
+<button type="button" value="" class="button bnovobaranje"><span>Ново барање</span></button>
+<div class="stavka">
+    <p class="naslovvleznifakturi" > ( <span class="vkupnostavki">0</span> ) <span class="status">Барања</span></p>
+    <div class="predtabela">
+        <table class="tbaranja" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="deletebaranje"></th>
+                <th class="editbaranje"></th>
+
+                <th class="broj_bar">Број на барање</th>
+                <th class="datum_bar">Датум на барање</th>
+                <th class="baranje_mes">Барање за месец.</th>
+                <th class="predmet_bar">Предмет на барањето</th>
+                <th class="kl">Клиент</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='hiderow trow' id="">
+                <td class="deletebaranje"><img width="15" height="15" alt="" src="/images/delete.png"></td>
+                <td class="editbaranje"><img width="15" height="15" alt=""
+                                             src="/images/edit.png"></td>
+
+                <td class="brojb"></td>
+                <td class="datumb"></td>
+                <td class="baranjem"></td>
+                <td class="baranjep"></td>
+                <td class="kl"></td>
+
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<script>
+    jQuery(document).ready(function () {
+        baranja_napolnilista();
+
+        jQuery('.bnovobaranje').click(function () {
+            novo_baranje();
+        });
+        jQuery('.tbaranja .deletebaranje').live('click',function () {
+            //console.log(jQuery(this).parent().attr('dogovorid'));
+            delete_baranje(jQuery(this).parent().attr('id'))
+        } );
+        jQuery('.tbaranja .editbaranje').live('click',function () {
+            //console.log(jQuery(this).parent().attr('dogovorid'));
+            console.log(jQuery(this).parent().attr('id')) ;
+            izmeni_baranje(jQuery(this).parent().attr('id'));
+        } );
+    });
+</script>

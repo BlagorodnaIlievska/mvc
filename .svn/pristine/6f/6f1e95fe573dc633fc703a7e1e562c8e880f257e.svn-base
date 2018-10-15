@@ -1,0 +1,114 @@
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+class Login extends CI_Controller
+{
+
+    public function index()
+    {
+        $data['main_content'] = 'users/login_form';
+        $this->load->view('includes/template1', $data);
+    }
+
+    public function validate_credentials()
+    {
+        $this->load->model('users/membership_model');
+        $query = $this->membership_model->validate();
+
+        if ($query) // ako podatocite se verificirani ...
+        {
+            $data = array(
+                'username' => $this->input->post('username'),
+                'is_logged_in' => true
+            );
+
+            $this->session->set_userdata($data);
+            redirect('users/site/main_area');
+            /*if($query == 1)
+            {
+                redirect('site/admin_area');
+            }
+            else
+            {
+                redirect('site/members_area');
+            }*/
+        } else {
+            $this->index();
+        }
+    }
+
+    public function logout()
+    {
+        $this->session->sess_destroy();
+        redirect('/');
+
+    }
+
+    public function signup()
+    {
+        $this->load->model('users/membership_model');
+        $data['roles'] = $this->membership_model->get_roles_dropdown();
+        $this->load->view('users/admin/signup_form', $data);
+    }
+
+    public function create_member()
+    {
+        $this->load->library('form_validation');
+
+        $this->form_validation->set_rules('email', 'Email Address', 'trim|required|valid_email');
+
+        $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[4]');
+        $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[4]|max_length[32]');
+        $this->form_validation->set_rules('password2', 'Password Confirmation', 'trim|required|matches[password]');
+
+        if ($this->form_validation->run() == FALSE) {
+            echo "err";
+        } else {
+            $this->load->model('users/membership_model');
+            $data= $this->input->post();
+            unset($data['password2']);
+            $data['password']=sha1($data['password']);
+            $this->membership_model->create_member($data);
+            echo "ok";
+        }
+    }
+
+    public function update_member()
+    {
+        $this->load->library('form_validation');
+
+        $this->form_validation->set_rules('email', 'Email Address', 'trim|required|valid_email');
+
+        $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[4]');
+        $password = $this->input->post("password");
+        if(!empty($password))
+        {
+            $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[4]|max_length[32]');
+            $this->form_validation->set_rules('password2', 'Password Confirmation', 'trim|required|matches[password]');
+        }
+
+        if ($this->form_validation->run() == FALSE) {
+            echo "err";
+        } else {
+            $this->load->model('users/membership_model');
+            $data= $this->input->post();
+
+            if(!empty($data['password']))
+            {
+                $data['password']=sha1($data['password']);
+            }
+            else {
+                unset($data['password']);
+            }
+
+            $id = $data['korisnik_id'];
+            unset($data['korisnik_id']);
+            unset($data['password2']);
+            $this->membership_model->update_member($id, $data);
+            echo "ok";
+        }
+    }
+
+}
+
+
+

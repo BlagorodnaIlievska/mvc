@@ -1,0 +1,272 @@
+.ui-dialog .ui-accordion .ui-accordion-content {
+    overflow: visible;
+}
+.primenvo-pacienti {
+    width: 45px;
+}
+div.sostav-paketi {clear:both;}
+.pacienti-lista label {float: left; line-height: 1.7;}
+.priem-parametar {clear: both;}
+p.paketi, p.sostav-paketi, p.materijali
+{background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;
+    padding: 1px;margin: 5px 0 0 0; clear: left;}
+
+.glavna-lekuvanja .buttoncontainer > button,
+.glavna-lekuvanja .buttoncontainer ul.bojan-dropdownmenu
+{
+    float: left;
+    margin-left: 5px;
+}
+.bojan-dropdownmenu {
+    margin: 0;
+    /*padding: 7px 6px 0;*/
+    /*background: #7d7d7d url(img/gradient.png) repeat-x 0 -110px;*/
+    line-height: 100%;
+
+    border-radius: 2em;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0, .4);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0, .4);
+}
+.bojan-dropdownmenu li {
+
+    padding: 0 0 8px;
+    float: left;
+    position: relative;
+    list-style: none;
+}
+
+
+/* main level link */
+.bojan-dropdownmenu a {
+    font-weight: bold;
+    color: #e7e5e5;
+    text-decoration: none;
+    display: block;
+    padding:  8px 20px;
+    margin: 0;
+
+    -webkit-border-radius: 1.6em;
+    -moz-border-radius: 1.6em;
+
+    text-shadow: 0 1px 1px rgba(0,0,0, .3);
+}
+.bojan-dropdownmenu a:hover {
+    background: #000;
+    color: #fff;
+}
+
+/* main level link hover */
+.bojan-dropdownmenu .current a, .bojan-dropdownmenu li:hover > a {
+    background: #666 url(img/gradient.png) repeat-x 0 -40px;
+    color: #444;
+    border-top: solid 1px #f8f8f8;
+
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0, .2);
+    -moz-box-shadow: 0 1px 1px rgba(0,0,0, .2);
+    box-shadow: 0 1px 1px rgba(0,0,0, .2);
+
+    text-shadow: 0 1px 0 rgba(255,255,255, 1);
+}
+
+/* sub levels link hover */
+.bojan-dropdownmenu ul li:hover a, .bojan-dropdownmenu li:hover li a {
+    background: none;
+    border: none;
+    color: #666;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+}
+.bojan-dropdownmenu ul a:hover {
+    background: #0078ff url(img/gradient.png) repeat-x 0 -100px !important;
+    color: #fff !important;
+
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+
+    text-shadow: 0 1px 1px rgba(0,0,0, .1);
+}
+
+/* dropdown */
+.bojan-dropdownmenu li:hover > ul {
+    display: block;
+}
+
+/* level 2 list */
+.bojan-dropdownmenu ul {
+    display: none;
+
+    z-index: 9999999999999;
+    margin: 0;
+    padding: 0;
+    width: 250px;
+    position: absolute;
+    top: 35px;
+    left: 0;
+    /*background: #ddd url(img/gradient.png) repeat-x 0 0;*/
+    background-color: #B9C9FE;
+    border: solid 1px #b4b4b4;
+
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0, .3);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0, .3);
+    box-shadow: 0 1px 3px rgba(0,0,0, .3);
+}
+.bojan-dropdownmenu ul li {
+    float: none;
+    margin: 0;
+    padding: 0;
+}
+
+.bojan-dropdownmenu ul a {
+    font-weight: normal;
+    text-shadow: 0 1px 0 #fff;
+}
+
+/* level 3+ list */
+.bojan-dropdownmenu ul ul {
+    left: 181px;
+    top: -3px;
+}
+
+/* rounded corners of first and last link */
+.bojan-dropdownmenu ul li:first-child > a {
+    -webkit-border-top-left-radius: 9px;
+    -moz-border-radius-topleft: 9px;
+
+    -webkit-border-top-right-radius: 9px;
+    -moz-border-radius-topright: 9px;
+}
+.bojan-dropdownmenu ul li:last-child > a {
+    -webkit-border-bottom-left-radius: 9px;
+    -moz-border-radius-bottomleft: 9px;
+
+    -webkit-border-bottom-right-radius: 9px;
+    -moz-border-radius-bottomright: 9px;
+}
+
+/* clearfix */
+.bojan-dropdownmenu:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+.bojan-dropdownmenu {
+    display: inline-block;
+}
+.bojan-dropdownmenu ul li button {
+    width: 100% !important;
+    text-align: center;
+}
+.bojan-dropdownmenu ul li  {
+    padding: 5px;
+}
+html[xmlns] .bojan-dropdownmenu {
+    display: block;
+}
+
+* html .bojan-dropdownmenu {
+    height: 1%;
+}
+.informacii-fakturiranje {margin: 10px;}
+.naslovshalter, .paketi-dopolnitelni, .naslovfakturi, .naslovzapisi, .naslov-bolnicki-denovi {background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;padding: 1px;margin: 5px 0 0 0;}
+.if-priem-buttons {clear: both;margin-bottom: 20px;}
+.tabela-dijagnoza {clear: both; padding-top: 10px;}
+.shaltertabelastatusi tbody tr td.aktivni_priemi {
+    background-color: #0000ff !important;
+}
+.shaltertabelastatusi tbody tr td.fakturirani_priemi {
+    background-color: green !important;
+}
+.shaltertabelastatusi tbody tr td.zatvoreni_priemi {
+    background-color: red !important;
+}
+.shaltertabelastatusi tbody tr td.plateni_priemi {
+    background-color: yellow !important;
+}
+.shaltertabelastatusi-legenda {
+    display: inline;
+
+}
+.filtermenupriem.prikazano {
+    float: left;
+    width: 400px;
+}
+.filtermenupriem.prikazano label {width: 142px;}
+.priem.baraj-priem {
+    margin-left: 6px;
+    width: 161px;
+}
+
+.broj.baraj-priem {
+    margin: 5px 0;
+}
+
+.opsti-info-pacient label {
+    float: left;
+    line-height: 1.6;
+    width: 130px;
+}
+.opsti-info-pacient input {
+    margin-bottom: 5px;
+    width: 355px;
+}
+.primaten-pregled-pacienti select , .upaten-pregled-pacienti select {float: right;margin-left: 10px;}
+td input.paketi-kolicina {width: 100%;margin: 0;text-align: right;}
+.pregledtabs .lekovi-tabela th , .pregledtabs .lekovi-tabela td input {text-align: center;}
+.pregledtabs .lekovi-tabela td .lekovi-lek {text-align: left;}
+.labaratoriski-naod input {margin-bottom: 10px;}
+.novnaod input {margin-bottom: 10px;}
+.novbolnicki-upat .ulica {width: 90%;}
+.opsti-info-pacient h4 {margin-bottom: 10px;}
+textarea {border: 1px solid #000;}
+.normagin , .nomargin {margin: 0 !important;}
+.novodlivpriliv .snimi-kasa {padding: 5px;}
+.faktura-do-span {float: left;}
+#edit_faktura_form label.broj_lekuvanje {clear: left;}
+#edit_faktura_form span.broj_lekuvanje {float: left; line-height: 1.6;}
+#edit_faktura_form span.klient {line-height: 1.6;}
+.informacii-fakturiranje .ceni-vkupno {clear: both;}
+.informacii-fakturiranje p.paketi-dopolnitelni {clear: left;}
+.fondovski-lekuvanja .baraj {margin: 10px 10px;}
+
+/*Bolnichko Rabotenje - Shalter - Fondovski lekuvanja*/
+
+.fondovski-lekuvanja-tabela {table-layout: fixed;}
+.fondovski-lekuvanja-tabela tr td {overflow: hidden;}
+.fondovski-lekuvanja-tabela th.broj-lekuvanje {width: 115px;}
+.fondovski-lekuvanja-tabela th.pacient-lekuvanja {width: 230px;}
+.fondovski-lekuvanja-tabela th.datum {width: 90px !important;}
+.fondovski-lekuvanja-tabela th.vreme {width: 45px;}
+.fondovski-lekuvanja-tabela th.oddel {width: 170px;}
+.fondovski-lekuvanja-tabela th.paketi {width: 150px;}
+.fondovski-lekuvanja-tabela th.tip {width: 200px !important;}
+.fondovski-lekuvanja-tabela th.fond {width: auto;}
+.fondovski-lekuvanja-tabela th.realen-trosok {width: auto;}
+
+/*Bolnochko - Lekuvanja - Pregled*/
+
+.pregledtabs .paketi-tabela-2 tbody .ui-combobox .ui-combobox-input {width: 92% !important;}
+
+/*Bolnochko - Lekuvanja */
+
+.pacienti-priem-lista-aktivni-tabela th.vaznost-upat,
+.pacienti-shalter-lista-aktivni-tabela th.vaznost-upat {width: 80px;}
+
+.pacienti-priem-lista-aktivni-tabela tbody tr td.izminat_rok,
+.pacienti-shalter-lista-aktivni-tabela tbody tr td.izminat_rok {
+    background-color: red !important;
+}
+.pacienti-priem-lista-aktivni-tabela tbody tr td.vazecki_rok,
+.pacienti-shalter-lista-aktivni-tabela tbody tr td.vazecki_rok {
+    background-color: green !important;
+}

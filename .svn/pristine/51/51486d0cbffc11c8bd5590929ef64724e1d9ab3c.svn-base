@@ -1,0 +1,276 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Faktura extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+    }
+
+    public function index()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('javni_nabavki/javni_nabavki_model');
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['katbroj']=$this->artikl_model->getAllKatBroj();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $data['oddel']=$this->vlezni_fakturi_model->oddel_dropdown();
+        $data['ddv'] = $this->vlezni_fakturi_model->ddv_dropdown();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['konto'] =$this->plan_model->getKonta();
+        $data['konto220'] =$this->plan_model->getKonta220();
+        $data['konto198'] =$this->plan_model->getKonta198();
+        $data['grupa'] = $this->plan_model->konto_dropdown();
+        $data['dogovor']=$this->javni_nabavki_model->dogovor_dropdown();
+        $this->load->view('vlezni_fakturi/faktura/faktura_form', $data);
+    }
+    public function dodaj_stavka(){
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('materijalno/materijalno_model');
+        $data['proizvoditeli'] = $this->materijalno_model->proizvoditel_dropdown();
+        $data['artikl'] = $this->artikl_model->getAll();
+        $this->load->view('vlezni_fakturi/faktura/new_stavka_form', $data);
+    }
+
+    public function getArtikliDropdown()
+    {
+        $this->load->model('podatoci/artikl_model');
+        $query = $this->artikl_model->getAll();
+        echo json_encode($query);
+    }
+
+    public function getKatbrojDropdown()
+    {
+        $this->load->model('podatoci/artikl_model');
+        $query = $this->artikl_model->getAllKatBroj();
+        echo json_encode($query);
+    }
+
+    public function getDDVDropdown()
+    {
+        $this->load->model('podatoci/artikl_model');
+        $query = $this->artikl_model->getAllDDV();
+        echo json_encode($query);
+    }
+
+    public function getEdMerkiDropdown()
+    {
+        $this->load->model('podatoci/artikl_model');
+        $query = $this->artikl_model->getAllEdMerki();
+        echo json_encode($query);
+    }
+
+    public function getKontoDropdown()
+    {
+        $this->load->model('finansiski_plan/plan_model');
+        $query = $this->plan_model->getKonta();
+        echo json_encode($query);
+    }
+
+    public function getLastVFBroj()
+    {
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getLastVFBroj();
+        echo json_encode($query);
+    }
+
+    public function getSiteArtikli()
+    {
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getSiteArtikli();
+        echo json_encode($query);
+    }
+    public function getSiteArtikliB()
+    {
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getSiteArtikliB();
+        echo json_encode($query);
+    }
+
+    public function getArtikli(){
+        $proizvoditel = $this->input->post('proizvoditelid');
+        $stavka = $this->input->post('stavka');
+        $katbroj = $this->input->post('katbroj');
+        $sifra2 = $this->input->post('sifra2');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getArtikli($proizvoditel, $stavka, $katbroj, $sifra2);
+        echo json_encode($query);
+    }
+
+    public function getPodatociArtikl(){
+        $stavka = $this->input->post('stavka');
+        $katbroj = $this->input->post('katbroj');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getPodatociArtikl($stavka, $katbroj);
+        echo json_encode($query);
+    }
+
+    public function editFaktura()
+    {
+        $id = $this->input->get('id');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $query = $this->vlezni_fakturi_model->editVleznaFaktura($id);
+        $data['id'] = $id;
+        $data['query'] = $query->faktura;
+        $data['vrzani_dokumenti'] = $query->niza_docs;
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $data['grupa'] = $this->plan_model->konto_dropdown();
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['katbroj']=$this->artikl_model->getAllKatBroj();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $data['oddel']=$this->vlezni_fakturi_model->oddel_dropdown();
+        $data['ddv'] = $this->vlezni_fakturi_model->ddv_dropdown();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['konto'] =$this->plan_model->getKonta();
+        $data['konto220'] =$this->plan_model->getKonta220();
+        $data['konto198'] =$this->plan_model->getKonta198();
+//        bis_debug($query, "Fak");
+        $this->load->view('vlezni_fakturi/faktura/edit_faktura_form', $data);
+    }
+
+    public function deleteStavkaVleznaFaktura()
+    {
+        $id = $this->input->post('id');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->deleteStavkaVleznaFaktura($id);
+        echo json_encode($query);
+    }
+
+    public function deleteFaktura()
+    {
+        $id = $this->input->get('id');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->deleteFaktura($id);
+        echo json_encode($query);
+    }
+
+    public function updateFaktura()
+    {
+        $id = $this->input->post('fakturaid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->updateFaktura($id);
+        echo json_encode($query);
+    }
+
+    public function fakturaUplata()
+    {
+        $this->load->view('vlezni_fakturi/uplata/faktura_uplata_form');
+    }
+
+    public function snimenaFaktura()
+    {
+        $this->load->view('vlezni_fakturi/faktura/uspesno_snimena');
+    }
+
+    public function editUplata()
+    {
+        $data['id'] = $this->input->get('id');
+        $this->load->view('vlezni_fakturi/uplata/uplata_form', $data);
+    }
+
+    public function getUplataFaktura()
+    {
+        $fakturaid = $this->input->post('fakturaid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getUplataFaktura($fakturaid);
+        echo json_encode($query);
+    }
+
+    public function fakturaPriemnica()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('podatoci/artikl_model');
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['katbroj']=$this->artikl_model->getAllKatBroj();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['magacini'] = $this->materijalno_model->magacinJquery();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('vlezni_fakturi/priemnica/nova_priemnica', $data);
+    }
+
+    public function editPriemnica()
+    {
+        $data['id'] = $this->input->get('id');
+        $this->load->view('vlezni_fakturi/priemnica/priemnica_form', $data);
+    }
+
+    public function getPriemniciVleznaFaktura()
+    {
+        $fakturaid = $this->input->post('fakturaid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getPriemniciVleznaFaktura($fakturaid);
+        echo json_encode($query);
+    }
+
+    public function search_vlezna_faktura()
+    {
+        $brojfaktura = $this->input->post('brojfaktura');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->search_vlezna_faktura($brojfaktura);
+        echo json_encode($query);
+    }
+
+    public function povrziPriemnica()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/edmerki_model');
+        $data['magacin'] = $this->materijalno_model->magacin_dropdown();
+        $data['klient'] = $this->materijalno_model->klient_site_dropdown();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['ddv'] = $this->vlezni_fakturi_model->ddv_dropdown();
+        $this->load->view('vlezni_fakturi/faktura/povrzi_priemnica', $data);
+    }
+
+    public function proveriBrojFaktura()
+    {
+        $brojfaktura = $this->input->post('brojfaktura');
+        $klientid = $this->input->post('klientid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->proveriBrojFaktura($brojfaktura, $klientid);
+        echo json_encode($query);
+    }
+
+    public function print_vlezna_faktura()
+    {
+        $id = $this->input->get("id");
+        $faktura=(array)$this->vlezni_fakturi_model->infoVleznaFaktura($id);
+        $data['main_content'] = 'vlezni_fakturi/faktura/info_faktura_form';
+        $data['id'] = $id;
+        $data['faktura'] = $faktura;
+//        bis_debug($faktura, "fak");
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$faktura);
+    }
+    public function autocomplete_vf_artikli()
+    {
+        $this->load->model('podatoci/artikl_model');
+        $text = $this->input->get("name_startsWith");
+        $limit = $this->input->get("maxRows");
+        $cb = $this->input->get("callback");
+
+        $query = $this->artikl_model->getAutocompleteVfArtikli($text, $limit);
+
+        echo $cb.'('.json_encode($query).');';
+    }
+    public function autocomplete_vf_sifri()
+    {
+        $this->load->model('podatoci/artikl_model');
+        $text = $this->input->get("name_startsWith");
+        $limit = $this->input->get("maxRows");
+        $cb = $this->input->get("callback");
+
+        $query = $this->artikl_model->getAutocompleteVfSifri($text, $limit);
+
+        echo $cb.'('.json_encode($query).');';
+    }
+}

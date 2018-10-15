@@ -1,0 +1,45 @@
+<?php foreach ($neplateni_vf as $vf): ?>
+    <tr>
+
+        <td><?= $vf->datum ?></td>
+        <td imenapole="povikuvanjenabrojnaprimacot"><?= $vf->broj ?></td>
+        <td><?= $vf->osnova ?></td>
+        <td><?= $vf->ddv ?></td>
+        <td imenapole="iznos"><?= $vf->vkupno ?></td>
+        <td imenapole="nazivnaprimacot"><?= $vf->firmaIme ?></td>
+        <td><?= $vf->zabeleska ?></td>
+        <td class="hidden" imenapole="smetkanaprimacot"><?= $vf->ziroSka ?></td>
+        <td class="hidden" imenapole="faktura_id"><?= $vf->dbid ?></td>
+        <td class="hidden" imenapole="cel"><?= $vf->broj ?></td>
+        <?php
+        $kontx = $vfmod->getKontoZadolzuvanje($vf->dbid);
+       // print_r($kontx); die();
+        $kontaplateni = $trezor_model->getPlateniKontaPoFaktura($vf->dbid);
+        foreach ($kontx as $konto_val) {
+           //$zaokruzuvanje=explode('.',$konto_val->cenaDdv);
+           // if( $zaokruzuvanje[1] >50) $konto_val->cenaDdv=$zaokruzuvanje[0]+1;
+           // else if($zaokruzuvanje[1] <=50) $konto_val->cenaDdv=$zaokruzuvanje[0];
+
+
+            $odzemikonto = (isset($kontaplateni[$konto_val->konto]) ? $kontaplateni[$konto_val->konto] : 0);
+            if ($konto_val->cenaDdv - $odzemikonto > 1) {
+
+
+                ?>
+                <td class="hidden" imenapole="konto"><?= $konto_val->konto ?>
+                    :<?= $konto_val->cenaDdv - $odzemikonto ?>
+                    :<?= $konto_val->cenaDdv - $odzemikonto ?></td>
+            <?php
+            }
+            else {
+
+                ?>
+                <td class="hidden" imenapole="konto"><?= $konto_val->konto ?>
+                    :<?= 0 ?>
+                    :<?= 0 ?></td>
+                <?php
+            }
+        }
+        ?>
+    </tr>
+<?php endforeach; ?>

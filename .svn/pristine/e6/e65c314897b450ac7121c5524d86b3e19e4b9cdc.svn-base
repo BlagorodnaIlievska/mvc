@@ -1,0 +1,187 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+
+
+class Grad extends CI_Controller{
+
+
+
+    function __construct()
+
+    {
+
+        parent::__construct();
+
+        //$this->is_logged_in();
+
+    }
+
+
+
+    public function new_grad()
+    {
+
+        //  $this->load->model('users/membership_model');
+
+        // $data['roles'] = $this->membership_model->get_roles_dropdown();
+
+        $this->load->view('podatoci/grad/grad_form');
+
+    }
+
+
+    public function getAll(){
+        $this->load->model('podatoci/grad_model');
+        $query = $this->grad_model->getAll();
+        echo json_encode($query);
+    }
+
+    public function create_grad()
+
+    {
+
+        $this->load->library('form_validation');
+
+        $this->form_validation->set_rules('GradIme', 'Ime na grad', 'trim|required');
+        $this->form_validation->set_rules('PostBroj', 'Postenski broj', 'trim|required');
+        $this->form_validation->set_rules('Drzava', 'Drzava', 'trim|required');
+
+
+
+        if($this->form_validation->run() == FALSE)
+
+        {
+
+            $this->new_grad();
+
+        }
+
+        else
+
+        {
+
+            $this->load->model('podatoci/grad_model');
+
+            if($query = $this->grad_model->create_grad())
+
+            {
+
+                $data['main_content'] = 'podatoci/grad/grad_successful';
+
+                $this->load->view('includes/template', $data);
+
+            }
+
+            else
+
+            {
+
+                $this->load->view('podatoci/grad/grad_form');
+
+            }
+
+        }
+
+    }
+
+
+
+    public function view_grad()
+    {
+        $this->load->model('podatoci/grad_model');
+        $data['grad'] = $this->grad_model->getAll();
+        $this->load->view('podatoci/grad/edit_grad_form', $data);
+    }
+
+
+
+    public function delete_grad(){
+
+
+
+        $this->load->model('podatoci/grad_model');
+
+        $this->grad_model->delete_grad();
+
+        $this->view_grad();
+
+    }
+
+
+
+    public function edit_grad(){
+
+
+
+        $this->load->model('podatoci/grad_model');
+
+
+        $query = $this->grad_model->edit_grad();
+
+        $data['main_content'] = 'podatoci/grad/update_grad_form';
+
+        $data['grad'] = $query;
+
+        $this->load->view('includes/template', $data);
+
+        $this->view_grad();
+
+    }
+
+
+
+    public function update_grad(){
+
+
+
+        $this->load->model('podatoci/grad_model');
+
+        $query = $this->grad_model->update_grad();
+
+
+
+        if($query)
+
+        {
+
+            echo "Field updated successfully";
+
+        }
+
+        else
+
+        {
+
+            echo "No row was found ... Please try again.";
+
+        }
+
+        $this->view_grad();
+
+    }
+
+
+
+    public function is_logged_in()
+
+    {
+
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+
+        {
+
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+
+            die();
+
+        }
+
+    }
+
+
+
+}

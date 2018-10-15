@@ -1,0 +1,6 @@
+.statistika-levo {float: left;width: 480px;background-color: #FFF; }
+.statistika-levo fieldset input , .statistika-desno fieldset input {margin-bottom: 5px;float: right;}
+.statistika-levo fieldset label , .statistika-desno fieldset label {float: left;line-height: 1.7;}
+
+.statistika-desno {float: right;width: 440px;background-color: #FFF;}
+.statistika-desno fieldset input {width:320px;}

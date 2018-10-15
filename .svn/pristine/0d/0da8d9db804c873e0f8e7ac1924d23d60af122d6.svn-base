@@ -1,0 +1,13 @@
+<form action="/index.php/podatoci/banka/create_banka" method="post" >
+<fieldset>
+
+
+    <legend>Нова Банка</legend>
+
+
+    <input name="ime"/><br/>
+    <input type="button" class="snimi-forma button" izvrsi="banki_napolnilista()" value="Додади"><br/>
+
+
+</fieldset>
+</form>

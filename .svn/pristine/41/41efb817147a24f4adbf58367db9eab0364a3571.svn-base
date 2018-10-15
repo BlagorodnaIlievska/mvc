@@ -1,0 +1,27 @@
+<div id="update_fields_data_form">
+
+    <h2>Update Field Data Information</h2>
+
+    <?php
+    foreach($fields_data as $row) {
+        $f0=$row->id;
+        $f1=$row->user_id;
+        $f2=$row->field_id;
+        $f3=$row->value;
+    }
+    ?>
+
+    <h1>Role</h1>
+    <?php echo form_open('users/fields_data/update_field_data');?>
+    <?php echo form_hidden('row_id', $f0);?>
+    <?php echo form_label('Username:', 'user_id');?><br>
+    <?php echo form_dropdown('user_id', $users, $f1 ); ?><br><br>
+    <?php echo form_label('Field:', 'field_id');?><br>
+    <?php echo form_dropdown('field_id', $fields, $f2 ); ?><br><br>
+    <?php echo form_label('Value:', 'fd_value');?>
+    <?php echo form_input('fd_value', $f3, 'fd_value');?>
+    <input type="button" value="Update" class="ajaxsubmitform"><br>
+
+    <?php echo form_close(); ?>
+
+</div>

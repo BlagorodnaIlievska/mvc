@@ -1,0 +1,409 @@
+body {
+    color: #000;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+ul, li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    /*font-family: helvetica;*/
+    font-size: 14px;
+    color: #FFFFFF;
+}
+
+
+.wrapper {
+    position: relative;
+    /*margin-left: 210px;*/
+    overflow-x: auto;
+    overflow-y: scroll;
+}
+
+.content-wrapper {
+    width: 100%;
+    /*float: left;*/
+    height: 100%;
+    /*min-width: 980px;*/
+}
+
+.content-container {
+    width: 100%;
+    float: left;
+    height: 100%;
+}
+
+.content {
+    width: 100%;
+}
+
+.content {
+    border: 1px solid #000000;
+    height: 400px;
+    width: 73%;
+    float: left;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 0;
+}
+
+table tr td input {
+    background: none repeat scroll 0 0 transparent !important;
+    border: none !important;
+}
+
+table tbody {
+    border: 1px solid #AABCFE;
+}
+
+table tr:hover td input {
+    color: #3143A9;
+}
+
+table tr td input {
+    color: #333;
+}
+
+table tr td {
+    border-top: 1px solid #AABCFE;
+}
+
+.floatright {
+    float: right;
+}
+
+.floatleft {
+    float: left;
+}
+
+.ml10, .novazirosmetka input {
+    margin-left: 10px;
+}
+
+/*body {*/
+    /*font-family: verdana !important;*/
+/*}*/
+
+h4 {
+    text-align: center;
+}
+
+select {
+    font-size: 14px;
+    padding: 3px;
+}
+
+table {
+    width: 100%;
+}
+
+.ui-autocomplete.ui-menu.ui-widget.ui-widget-content.ui-corner-all {
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-width: 400px;
+}
+
+
+/*********     Gjorgji edit     **********/
+
+/*vlezni*/
+.period_klient .sumiranje.sumklienti {table-layout: fixed;}
+.period_klient .sumiranje.sumklienti td {overflow: hidden;}
+.sumiranje.sumklienti .osnovasum ,
+.sumiranje.sumklienti .vkupnoddv {width: 114px !important;}
+.sumiranje.sumklienti .vkupnovkupno {width: 131px !important;padding-right: 20px;}
+.period_klient .sumiranje.sumfakturi .vkupnolabel {width: 217px !important;}
+
+.stavka .sumiranje .vkupnolabel {width: 214px !important;}
+/*.stavka .sumiranje .osnovasum {width: 115px !important;}*/
+.period_klient .tperiodklienti {table-layout: fixed;}
+.period_klient table tr td {overflow: hidden;}
+.period_klient .osnova,
+.period_klient .ddv ,
+.period_klient .vkupno {width: 116px; }
+.period_klient .tklientfakturi {table-layout: fixed;}
+.period_klient .tklientfakturi td {overflow: hidden;}
+.period_klient .tklientfakturi .datum ,
+.period_klient .tklientfakturi .broj {width: 90px;}
+/*izlezni*/
+.tizleznifakturi .broj {width: 65px;}
+.tizleznifakturi .datum {width: 75px;}
+.tizleznifakturi .klient {width: 200px;}
+.tizleznifakturi .osnova {width: 111px;}
+.tizleznifakturi .valuta {width: 55px;}
+table tfoot tr td {color: #000 !important;}
+table.sumiranje .deletefaktura {width: 16px;}
+.tstavkadetail .redenbroj {width: 25px;}
+.tstavkadetail .sifra {width: 70px;}
+.tstavkadetail .kolicina {width: 30px;}
+.tstavkadetail .stavka {width: auto;}
+.tstavkadetail .em {width: 30px;}
+.tstavkadetail .cena {width: 100px;}
+.tstavkadetail .vkupno {width: 100px;}
+.izleznidospeanost .suma {width: 116px;}
+.sumiranje.sumfakturi .vkupnolabel {width: 177px !important;}
+/*izveshtai*/
+#pregled_form .sostojba {width: 300px; text-align: right;}
+.tab-gotovina .sostojba,
+.tab-zirosmetki .sostojba {width: 317px !important;}
+#pregled_form table {table-layout: fixed;}
+#pregled_form table tr td {overflow: hidden;}
+/*kartichki*/
+#kartica_klient_form table {table-layout: fixed;}
+#kartica_klient_form table td td {overflow: hidden;}
+#kartica_klient_form .datum {width: 72px;}
+#kartica_klient_form .dokument {width: 155px;}
+#kartica_klient_form .odliv {width: 107px;}
+#kartica_klient_form .vleznafaktura,
+#kartica_klient_form .izleznafaktura {width: 186px;}
+#kartica_klient_form .priliv {width: 100px;}
+#kartica_klient_form .zabeleska {width: auto;}
+
+#kartica_klient_form tbody .odliv,
+#kartica_klient_form tfoot .odliv,
+#kartica_klient_form tbody .vleznafaktura,
+#kartica_klient_form tfoot .vleznafaktura,
+#kartica_klient_form tbody .izleznafaktura,
+#kartica_klient_form tfoot .izleznafaktura,
+#kartica_klient_form tbody .priliv,
+#kartica_klient_form tfoot .priliv {text-align: right;}
+#kartica_klient_form .sumiranje .dva .razlika1,
+#kartica_klient_form .sumiranje .tri .sostojba,
+#kartica_klient_form .sumiranje .dva .razlika2 {text-align: right;}
+#kartica_klient_form .sostojba {width: 106px;}
+#kartica_klient_form .status {width: 100px;}
+#kartica_klient_form .sumiranjevlez .odliv {width: 94px;}
+#kartica_klient_form .sumiranjevlez .vleznafaktura {width: 129px;}
+#kartica_klient_form .valuta {width: 67px;}
+#kartica_klient_form .sumiranjeizlez .datum {width: 80px;}
+#kartica_klient_form .sumiranjeizlez .priliv {width: 94px;}
+#kartica_klient_form .sumiranjeizlez .izleznafaktura {width: 134px;}
+/*podatoci cenovnik*/
+.listapaketi td.cena {text-align: right;}
+/*FIX ZA GOOGLE CHROME - NE CEPKAJ */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+
+    .ac.tablesorter-header , th.delete.tablesorter-header, th.edit.tablesorter-header {
+        width: 1px !important;
+    }
+    /*PRIEM NA PACIENTI*/
+    .podatoci-za-priemkajdoktor .grupa1, .podatoci-za-priemkajdoktor .grupa2, .podatoci-za-priemkajdoktor .grupa3 {
+    width: 346px !important;
+    /*height: 110px !important;*/
+    }
+    .podatoci-za-kontakt .levakolona, .podatoci-za-kontakt .desnakolona {
+        padding: 1px !important;white-space: nowrap;
+    }
+    .podatoci-za-osig .grupa1, .podatoci-za-osig .grupa2, .podatoci-za-osig .grupa3 {
+        height: 140px !important;
+        width: 340px !important;
+    }
+    .podatoci-za-osig .levakolona, .podatoci-za-osig .desnakolona {
+        padding: 1px !important;
+        line-height: 1.9;
+    }
+}
+/*ZAVRSUVA FIX-OT ZA GOOGLE CHROME - NE CEPKAJ */
+
+/*Knizenje CSS*/
+
+.lekarlista table {table-layout: fixed;}
+.lekarlista table tr td {overflow: hidden}
+.lekarlista .tabela-naloglista th.broj-nalog {width: 110px;}
+.lekarlista .tabela-naloglista th.datum {width: 80px;}
+.lekarlista .tabela-naloglista th.tip {width: auto;}
+.lekarlista .nalogdetali th.redenbroj {width: 25px;}
+.lekarlista .nalogdetali th.konto {width: 70px;}
+.lekarlista .nalogdetali th.komitent {width: auto;}
+.lekarlista .nalogdetali th.opis {width: auto;}
+.lekarlista .nalogdetali th.dolg {width: 90px;}
+.lekarlista .nalogdetali th.pobaruva {width: 90px;}
+.lekarlista .nalogdetali td.dolzidet {text-align: right;}
+.lekarlista .nalogdetali td.pobaruvadet {text-align: right;}
+
+/*Zavrshuva knizenje CSS*/
+
+.tabela-sindikati .konto , td.id  , td.stapka  {text-align: right;}
+.informacii-fakturiranje .buttoncontainer {clear: both;}
+.nazivsal {max-width: 550px;overflow: hidden;}
+.buttoncontainer .fakturirajpriembutton {float: right;  }
+
+/*Meni*/
+.ui-corner-all.ui-state-focus {background:#aaaaaa; font-weight: bold !important; color: #000000 !important;}
+/*****/
+
+/*Plai - Nov Mesecen Parametar*/
+
+.nov_mesecen_parametar .novmesecen-levomeni input,
+.nov_mesecen_parametar .novmesecen-desnomeni input {float: right; margin-right: 10px;}
+.nov_mesecen_parametar fieldset fieldset input {margin-right: 0 !important;}
+.nov_mesecen_parametar li {clear: both; height: 22px; margin: 1px 0;}
+.nov_mesecen_parametar .novmesecen-levomeni fieldset {margin-bottom: 10px;}
+.nov_mesecen_parametar .novmesecen-desnomeni li {margin:5px 0;}
+/******************************/
+
+/*Bolnicko - Podatoci - Nov*/
+
+.novaedmerka { width: auto;}
+.novaedmerka .sifrarnik {width: 640px;}
+.novaedmerka .sifrarnik li { clear: both; float: left; width: 320px; margin: 1px 0;}
+.novaedmerka p {clear: both; float: left; width: 100%;}
+.novaedmerka li.ime {clear: left !important; float: left;}
+.novaedmerka li.prezime {clear: right !important; float: right; width: 270px;}
+.novaedmerka li.validen-od {clear: left !important; float: left;}
+.novaedmerka li.validen-do {clear: right !important; float: right; width: 294px;}
+.novaedmerka input,
+.novaedmerka select {float: right;}
+.novaedmerka .mkb-nov li {width: 100%; clear: both; margin:1px 0;}
+.novaedmerka .mkb-nov {width: 450px;}
+.novatiposiguruvanje li {clear: both; margin: 1px;}
+.novatiposiguruvanje input,
+.novatiposiguruvanje select {float: right; margin: 0; width: 145px;}
+.novatiposiguruvanje fieldset {width: 310px;}
+.novatiposiguruvanje .tip-osiguruvanje-nov {line-height: 20px;}
+.novatiposiguruvanje .konto-osiguruvanje-nov {line-height: 27px;}
+.tabela-tiposiguruvanjelista thead th:first-child {width: 15px;}
+.novatiposiguruvanje .tip-osiguruvanje-izmeni {line-height: 20px;}
+.novatiposiguruvanje .konto-osiguruvanje-izmeni {line-height: 27px;}
+
+/***************************************/
+
+/*Planiranje Resursi - Chovechki Resursi - Nov*/
+
+.novvraboten-podmeni .broj-licenca {margin-right: 21px;}
+.novvraboten-podmeni .vazi-od {margin-right: 39px;}
+.novvraboten-podmeni input {margin-top: 5px;}
+
+/**********************************************/
+
+/*Izvodi - Pregled - Nov Izvod*/
+
+.izvod-stavki table {table-layout: fixed;}
+.izvod-stavki table tr td {overflow: hidden;}
+.izvod-stavki #faktura td .ui-combobox-input { border: 1px solid #000000 !important; width: 82% !important;}
+.izvod-stavki .tabela-izvod-stavki thead tr th:first-child + * {width: 30px;}
+.izvod-stavki .tabela-izvod-stavki thead tr th:first-child + * + * {width: 200px;}
+.izvod-stavki .tabela-izvod-stavki thead tr th.zirosmetka {width: 90px;}
+.izvod-stavki .tabela-izvod-stavki thead tr th.odliv {width: 120px;}
+.izvod-stavki .tabela-izvod-stavki thead tr th.priliv {width: 120px;}
+.izvod-stavki .tabela-izvod-stavki thead tr th.sifra {width: 120px;}
+.izvod-stavki .tabela-izvod-stavki thead tr th.povik-broj {width: 75px;}
+.izvod-stavki .tabela-izvod-stavki thead tr th.po-faktura {width: 150px;}
+.izvod-stavki .tabela-izvod-stavki thead tr th.konto {width: 200px;}
+.izvod-stavki .tabela-izvod-stavki thead tr th.zabeleska {width: 100px;}
+#nov_izvod_form button {margin-top: 9px;}
+.izvod-stavki .tabela-izvod-stavki tbody tr td:first-child + * + * + * + * input {text-align: right;}
+.izvod-stavki .tabela-izvod-stavki tbody tr td:first-child + * + * + * + * + * input {text-align: right;}
+/*.izvod-stavki .tabela-izvod-stavki tbody tr td:first-child + * + * + * + * + * + * input {text-align: center;}*/
+.deleteIzvod , .editIzvod {cursor: pointer;}
+/********************/
+
+/*Upati Interklinicki*/
+
+.nov-artikl .novupat-podmeni ul li {clear: both;}
+.nov-artikl .novupat-podmeni ul ul li.first {float: left; clear: none; margin-bottom: 15px;}
+.nov-artikl .novupat-podmeni ul ul li.second {float: left; clear: none; margin-bottom: 15px;}
+.nov-artikl .novupat-podmeni ul ul li.last {float: right; clear: none; margin-bottom: 15px;}
+.nov-artikl .novupat-podmeni ul ul li.first input,
+.nov-artikl .novupat-podmeni ul ul li.second input {margin-right: 5px;}
+.nov-artikl .novupat-podmeni ul ul li.last input {margin-right: 0;}
+.nov-artikl .novupat-podmeni .adresaupat {width: 732px; margin: 0 !important;}
+.nov-artikl .novupat-podmeni .podracna-sluzba input {float: right; width: 245px;}
+.nov-artikl .novupat-podmeni li input.osnovosig {width: 212px;white-space: nowrap;}
+.nov-artikl .novupat-podmeni li input.karton {width: 200px;}
+.nov-artikl .novupat-podmeni .dolno-meni {width: 300px;}
+.nov-artikl .novupat-podmeni .dolno-meni input {float: right;}
+.nov-artikl .novupat-podmeni .dolno-meni select {float: right; width: 169px; height: 22px;}
+.nov-artikl .novupat-podmeni .dolno-meni li {clear: both; margin: 2px 0; height: 22px;}
+
+/*********************/
+
+/*Bolnichko - Lekuvanja - Pregled*/
+.vitalniparametri-pregled-pacienti .pregledtabs.ui-tabs {width: 800px;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti table tr td {overflow: hidden;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti table thead th:first-child {width: 25px;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti table thead th:first-child + * {width: 40px;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti table thead th:first-child + * + * {width: 470px;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti table thead th:first-child + * + * + * {width: 100px;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti table tbody td span.ui-combobox {float: none !important;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti table tbody td .ui-combobox-input { border: 1px solid #000000 !important;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti table.paketi-tabela tbody td .ui-combobox-input {width: 92% !important; }
+.pacienti-pregled .vitalniparametri-pregled-pacienti table.paketi-tabela-dopolnitelni tbody td .ui-combobox-input {width: 87% !important; }
+.pacienti-pregled .vitalniparametri-pregled-pacienti .pregled-potrosenmaterijal .pregled-potrosenmaterijal-tabela thead th:first-child {width: 20px;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti .pregled-potrosenmaterijal .pregled-potrosenmaterijal-tabela thead th:first-child + * {width: 40px;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti .pregled-potrosenmaterijal .pregled-potrosenmaterijal-tabela thead th:first-child + * + * {width: 350px;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti .pregled-potrosenmaterijal .pregled-potrosenmaterijal-tabela thead th:first-child + * + * + * {width: 130px;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti .pregled-potrosenmaterijal .pregled-potrosenmaterijal-tabela thead th:first-child + * + * + * + * {width: 230px;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti .pregled-potrosenmaterijal .pregled-potrosenmaterijal-tabela tbody td .ui-combobox-input {width: 89% !important;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti .pregled-potrosenmaterijal .pregled-potrosenmaterijal-tabela {table-layout: fixed;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti .pregled-potrosenmaterijal {width: 680px;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti .dijagnoza-tabela thead th:first-child {width: 30px !important;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti .dijagnoza-tabela thead th:first-child + * {width: 30px !important;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti .dijagnoza-tabela thead th:first-child + * + * {width: auto !important;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti .dijagnoza-tabela tbody td:first-child + * {width: 30px;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti .dijagnoza-tabela tbody td:first-child + * + * {width: auto;}
+.pacienti-pregled .vitalniparametri-pregled-pacienti .dijagnoza-tabela span.ui-combobox .ui-combobox-input {width: 94% !important;}
+.pacienti-pregled .pacienti-pregled-forma .dijagnoza_upatna {margin-bottom: 5px;}
+
+
+/*********************************/
+.vlez-form .stavka .sumiranje {table-layout: fixed;}
+.vlez-form .stavka .sumiranje td {overflow: hidden;}
+.vlez-form .stavka .sumiranje .broj ,
+.vlez-form .stavka .sumiranje .datum{width: 104px;}
+
+/*Planiranje - Nov Plan*/
+.tabelaAkt .novaAkt .planovi1-tabela tbody {border: none;}
+.tabelaAkt .novaAkt .planovi1-tabela tbody tr td {border: none; background: none;}
+.tabelaAkt .novaAkt .planovi1-tabela tbody tr td input {border: 1px solid #CCCCCC !important;}
+
+.tabela-aktivnosti {table-layout: fixed; width: 835px;}
+.tabela-aktivnosti tr td {overflow: hidden;}
+.pregled-tabela-aktivnosti .tabela-aktivnosti tbody tr td input {background-color: #ffffff !important;}
+.pregled-tabela-aktivnosti .tabela-aktivnosti tbody tr td.pacient_id input {border: 1px solid #000 !important; width: 240px !important;}
+
+.pregled-tabela-aktivnosti .tabela-aktivnosti thead th.redenbroj {width: 25px;}
+.pregled-tabela-aktivnosti .tabela-aktivnosti thead th.vreme-od {width: 70px;}
+.pregled-tabela-aktivnosti .tabela-aktivnosti thead th.vreme-do {width: 70px;}
+.pregled-tabela-aktivnosti .tabela-aktivnosti thead th.aktivnost {width: 100px;}
+.pregled-tabela-aktivnosti .tabela-aktivnosti thead th.mesto {width: 153px;}
+.pregled-tabela-aktivnosti .tabela-aktivnosti thead th.redenbroj {width: 25px;}
+
+.statistika-levo table {table-layout: fixed;}
+.statistika-levo table tr td {overflow: hidden;}
+.statistika-levo table th:first-child {width: 415px;}
+.statistika-levo table th:first-child + th ,
+.statistika-levo table th:first-child + th + th ,
+.statistika-levo table th:first-child + th + th +th ,
+.statistika-levo table th:first-child + th + th +th +th ,
+.statistika-levo table th:first-child + th + th +th +th +th ,
+.statistika-levo table th:first-child + th + th +th +th +th +th {width: 100px;}
+.statistika-levo table th:first-child + th + th +th +th +th +th +th {width: auto;}
+
+.lnaod-levomeni {
+    height: 45px;
+}
+.print_body .za_view {display: none;}
+.za_print {display: none;}
+
+/*UPATI CSS*/
+.jzu-email span {font-weight: bold;}
+.jzu-email {text-align: center;}
+.display {display: block !important;}
+.prvasodrzina-soglasnost {width: 100%;height:120px;clear: both;float: left;}
+.vtorasodrzina-soglasnost {width: 100%;clear: both;}
+.tretasodrzina-soglasnost {width: 100%; clear: both;}
+.oe-firma {padding-left: 50px;
+    padding-top: 10px;}
+.ui-autocomplete-input {
+    background-color: #FFFFFF !important;
+    margin: 0 !important;
+    width: 100%;
+}
+input[readonly] {background-color: #e0e0e0;}

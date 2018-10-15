@@ -1,0 +1,55 @@
+<?php
+
+class Vraboteni_model extends CI_Model
+{
+
+    public function create_vraboten()
+    {
+        $insert                = $this->db->insert('bis_vraboteni', $this->input->post());
+        return $insert;
+    }
+
+    public function getVraboteni()
+    {
+        $this->db->select('bis_vraboteni.*');
+        $this->db->from('bis_vraboteni');
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getVraboten($id)
+    {
+
+        $this->db->where('id', $id);
+        $query = $this->db->get('bis_vraboteni');
+        $return=$query->result();
+        if ($query->num_rows > 0) {
+            return $return[0];
+        }
+
+    }
+
+    public function delete_vraboten($id)
+    {
+
+        $this->db->where('id', $id);
+        $this->db->delete('bis_vraboteni');
+    }
+
+    public function update_vraboten()
+    {
+        $field_update_data = $this->input->post();
+        $this->db->where('id', $field_update_data['id']);
+        unset($field_update_data['id']);
+        $update = $this->db->update('bis_vraboteni', $field_update_data);
+        return $update;
+    }
+
+}

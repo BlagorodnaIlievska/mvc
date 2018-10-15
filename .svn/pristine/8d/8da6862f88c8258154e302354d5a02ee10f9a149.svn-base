@@ -1,0 +1,59 @@
+<div class="grupen_prikaz_form">
+        <?php if (bis_check_access('izlezni_fakturi_pregled_izlezni_fakturi_grupen_pregled_pecati_button')): ?>
+    <span class="print"><?php echo anchor('izlezni_fakturi/pregled_izlezni/pecati_site_izlezni', 'Печати'); ?></span>
+        <?php endif ?>
+    <div class="prikaz">
+        <?php
+        $platena = array(8, 9, 10);
+        if(isset($fak)): foreach($fak as $row){ ?>
+            <table class="<?php if($row->status == 1) {
+                echo "platena grafic";
+            } else {
+                echo "neplatena grafic";
+            } ?>" border='1' cellpadding='2'>
+            <?php
+            echo "<tr>" ;
+            echo "<td width='80'>" . $row->broj . "</td>";
+            echo "<td width='120'>" . $row->datum . "</td>";
+            echo "</tr>";
+            echo "<tr>" ;
+            echo "<td width='200'>" . $row->firma . "</td>";
+            echo '<input type="hidden" class="fakturaid" name="fakturaid" value="'.$row->fakturaid.'">';
+            echo "</tr>";
+            echo "<tr>" ;
+            if($row->status == 1)
+            {
+                echo "<td width='80' >платена</td>";
+            }
+            else
+            {
+                echo "<td width='80'>не е платена</td>";
+            }
+            echo "<td width='120'>" . $row->vkupno . "</td>";
+            echo "</tr>";
+        }
+            echo " </table>";
+        endif; ?>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.grafic tr').live("dblclick", function(){
+            var id = jQuery(this).find('.fakturaid').val();
+            //console.log(id);
+            var formaction= "/index.php/izlezni_fakturi/pregled_izlezni/editIzleznaFaktura?id=" + id;
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({
+                autoOpen: true,
+                width: 1100,
+                close: function(event, ui){
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+                //buttons:{ "Close": function() { jQuery(this).dialog('destroy'); } }
+            }).load(formaction);
+        });
+    });
+</script>

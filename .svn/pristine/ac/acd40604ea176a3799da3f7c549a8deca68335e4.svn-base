@@ -1,0 +1,127 @@
+
+function proizvoditel_nov() {
+
+    var formurl = "/index.php/podatoci/proizvoditeli/nov";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нов Производител",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+          //  jQuery(".korisnici-korisnikpostoi").change(function () {
+           //     korisnici_proveridalipostoi(jQuery(this));
+           // });
+           // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+           //     korisnici_proveridalipostoi(jQuery(this));
+          //  });
+         //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+
+
+function proizvoditel_popolnilista() {
+    var formurl = "/index.php/podatoci/proizvoditeli/popolnilista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            jQuery(".tabela-proizvoditellista tbody").html('');
+
+            jQuery.each(response, function (index, item) {
+                //  console.log(item);
+
+                jQuery(".tabela-proizvoditellista tbody").append(('<tr proizvoditel_id="' + item.id + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+
+                    '</td>' +
+                    '<td>' + item.ime + '</td>' +
+
+                    '</tr>'
+                    ));
+            });
+            jQuery(".tabela-proizvoditellista").trigger("update");
+
+
+        }
+    });
+}
+
+
+function proizvoditel_izmeni(proizvoditelid) {
+    var formurl = "/index.php/podatoci/proizvoditeli/izmeni";
+    var data = {  id:proizvoditelid  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени Производител",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+
+}
+
+function proizvoditel_delete(proizvoditelid){
+    var r=confirm("Избриши Производител");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/podatoci/proizvoditeli/delete_proizvoditel";
+            var data = {  id:proizvoditelid  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    proizvoditel_popolnilista();
+                }
+            });
+
+        }
+    }
+
+}
+

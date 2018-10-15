@@ -1,0 +1,81 @@
+<div class="nov-klient ">
+    <form action="/index.php/podatoci/klienti/update_klient" method="post" enctype="multipart/form-data" target="_blank">
+        <div class="novklient-levomeni">
+            <input type="hidden" name="firmaID" value="<?php echo $klient->firmaID ?>">
+
+            Име :<br/>
+            <input type="text" name="ime" class="ime" value="<?php echo $klient->ime ?>"><br/>
+
+
+            Адреса:<br/>
+            <input type="text" name="adresa" class="adresa" value="<?php echo $klient->adresa ?>"><br/>
+
+
+            Град:<br/>
+            <input type="text" name="gradID" class="grad" value="<?php echo $klient->gradID ?>"><br/>
+            Контакт : <br/>
+            <input type="text" name="kontakt" class="kontakt" value="<?php echo $klient->kontakt ?>"><br/>
+            Позиција : <br/>
+            <input type="text" name="pozicija" class="pozicija" value="<?php echo $klient->pozicija ?>"><br/>
+
+            Телефон1 : <br/>
+            <input type="text" name="phone1" class="phone1" value="<?php echo $klient->phone1 ?>"><br/>
+            Телефон2 : <br/>
+            <input type="text" name="phone2" class="phone2" value="<?php echo $klient->phone2 ?>"><br/>
+
+            Мобилен1 : <br/>
+            <input type="text" name="phone3" class="phone3" value="<?php echo $klient->phone3 ?>"><br/>
+
+            Мобилен2 : <br/>
+            <input type="text" name="phone4" class="phone4" value="<?php echo $klient->phone4 ?>"><br/>
+            Факс : <br/>
+            <input type="text" name="fax" class="fax" value="<?php echo $klient->fax ?>"><br/>
+            Е-пошта : <br/>
+            <input type="text" name="email" class="email" value="<?php echo $klient->email ?>"><br/>
+
+           Тип на клиент:<br/>
+            <select name="klTipID">
+                <option value="0">A</option>
+                <option value="1">B</option>
+            </select><br/>
+           Жиро сметка : <br/>
+            <input type="text" name="ziroSka" class="ziroSka" value="<?php echo $klient->ziroSka ?>"><br/>
+            <label>Банка: </label>
+            <select name="bankaDBroj">
+                <option value="0"></option>
+                <?php foreach ($banka as $bankaid => $bankavalue) { ?>
+                <option value="<?php  echo $bankaid  ?>" <?php echo ($bankaid == $klient->bankaDBroj ? "selected" : "") ?> ><?php  echo $bankavalue  ?></option>
+                <?php } ?>
+            </select><br/>
+            Даночен број: <br/>
+            <input type="text" name="edb" class="edb" value="<?php echo $klient->edb ?>"><br/>
+            Тип на клиент:<br/>
+            <select name="kontFlag">
+                <option value="1">Фирма</option>
+                <option value="2">интерно конто</option>
+                <option value="3">физичко лице</option>
+            </select><br/>
+        </div>
+        <div class="novartikal-desnomeni">
+            Слика:<br/>
+            <?php if (isset($sliki[0])) { ?>
+
+            <img src="<?php echo $sliki[0]['link'] ?>" title="<?php echo $sliki[0]['ime'] ?>" width="220" height="150" />
+
+            <?php } ?><br />
+
+        <div class="clear"></div>
+        <div class="novartikal-podmeni">
+
+            <label>Коментар :</label>
+            <textarea style="overflow-y:scroll;width:99%;resize: none;" class="komentar" name="komentar"><?php echo $klient->komentar ?></textarea>
+
+        </div>
+
+        <br/>
+
+
+
+    </form>
+</div>
+

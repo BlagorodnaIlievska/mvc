@@ -1,0 +1,172 @@
+<div class="left-menu">
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            jQuery("#accordion").accordion({
+                heightStyle: "content",
+                activate: function (event, ui) {
+                    var hid = jQuery(ui.newHeader.context).attr("id");
+                    if (hid === undefined) {
+                        jQuery.cookie('menustate', null, { expires: 2, path: '/' });
+                    } else {
+                        jQuery.cookie('menustate', hid, { expires: 2, path: '/' });
+                    }
+                }
+            });
+            jQuery("#accordion li").click(function () {
+                jQuery(this).removeClass("active");
+                jQuery.cookie('activemenu', jQuery(this).attr("class"), { expires: 2, path: '/' });
+                jQuery(this).addClass("active");
+            });
+            // check cookie for accordion state
+            if (jQuery.cookie('menustate')) {
+                jQuery('#accordion').accordion('activate', "#accordion #" + jQuery.cookie('menustate'));
+            }
+            if (jQuery.cookie('activemenu')) {
+                jQuery('#accordion').find("." + jQuery.cookie('activemenu')).addClass("active");
+            }
+            jQuery('.menu1-folding-button').click(function () {
+                if (jQuery(this).hasClass("menitoezatvoreno")) {
+                    window.bojanwidth = 210;
+                    jQuery(this).removeClass("menitoezatvoreno");
+                    jQuery(".main-menu-tabs1").show();
+                    jQuery(".left-menu").css("width", 210);
+
+                    $(window).resize();
+
+                } else {
+                    window.bojanwidth = 10;
+                    jQuery(this).addClass("menitoezatvoreno");
+                    jQuery(".main-menu-tabs1").hide();
+                    jQuery(".left-menu").css("width", 10);
+                    $(window).resize();
+
+                }
+
+            })
+        });
+
+    </script>
+    <div id="menu1" class="main-menu-tabs1">
+
+        <div id="accordion" class="menu1">
+            <h3 class="acc-info">Инфо</h3>
+            <div>
+                <ul class="accordion">
+                    <li class="menu-info"><a class="menu-vlezni-fakturi" href="/index.php/info">Инфо</a></li>
+                </ul>
+            </div>
+            <?php if (bis_check_access('levo_meni_finansisko_rabotenje_celo')): ?>
+                <h3 class="acc-finansisko-rabotenje">Финансиско работење</h3>
+
+                <div>
+                    <ul class="accordion">
+
+                        <?php if (bis_check_access('levo_meni_finansisko_rabotenje_vlezni_fakturi')): ?>
+                            <li class="menu-vlezni-fakturi"><a href="/index.php/vlezni_fakturi/menu/main_menu" class="menu-vlezni-fakturi">Влезни Фактури</a></li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_finansisko_rabotenje_izlezni_fakturi')): ?>
+                            <li class="menu-izlezni-fakturi"><a href="/index.php/izlezni_fakturi/menu/main_menu" class="menu-izlezni-fakturi">Излезни Фактури</a></li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_finansisko_rabotenje_izvodi')): ?>
+                            <li class="menu-izvodi"><a href="/index.php/izvodi/menu/index" class="menu-izvodi">Изводи</a></li>
+                            <!-- <li><a href="/index.php/profakturi/menu/main_menu">Profakturi</a></li> -->
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_finansisko_rabotenje_karticki')): ?>
+                            <li class="menu-kartici"><a href="/index.php/kartici/menu/index" class="menu-kartici">Картички</a></li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_finansisko_rabotenje_kasa')): ?>
+                            <li class="menu-kasa"><a href="/index.php/kasa/menu/index" class="menu-kasa">Каса</a></li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_finansisko_rabotenje_materijalno')): ?>
+                            <li class="menu-materijalno"><a href="/index.php/materijalno/menu/index" class="menu-materijalno">Материјално</a></li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_finansisko_rabotenje_izvestai')): ?>
+                            <li class="menu-raporti"><a href="/index.php/raporti/menu/index" class="menu-raporti">Извештаи</a></li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_finansisko_rabotenje_knizenje')): ?>
+                            <li class="menu-knizenje"><a href="/index.php/knizenje/menu/index" class="menu-knizenje">Книжење</a></li>
+                        <?php endif ?>
+                    </ul>
+                </div>
+            <?php endif ?>
+
+            <?php if (bis_check_access('levo_meni_bolnicko_rabotenje_celo')): ?>
+                <h3 class="acc-bolnicko-rabotenje">Болничко работење</h3>
+
+                <div>
+                    <ul class="accordion">
+
+                        <?php if (bis_check_access('levo_meni_bolnicko_rabotenje_pacienti')): ?>
+                            <li class="menu-pacienti"><a href="/index.php/pacienti/menu/index" class="menu-pacienti">Пациенти</a></li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_bolnicko_rabotenje_lekuvanja')): ?>
+                            <li class="menu-lekuvanja"><a href="/index.php/pacienti/menu/lekuvanja" class="menu-lekuvanja">Лекувања</a></li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_bolnicko_rabotenje_shalter')): ?>
+                            <li class="menu-shalter"><a href="/index.php/pacienti/menu/shalter" class="menu-shalter">Шалтер</a></li>
+                        <?php endif ?>
+                        <!--                    <li class="menu-upati"><a href="/index.php/pacienti/menu/upati" class="menu-upati">Упати</a></li>-->
+                        <!--                    <li class="menu-trebuvanje"><a href="/index.php/pacienti/menu/trebuvanje" class="menu-trebuvanje">Требување</a>-->
+                        <!--                    </li>-->
+
+                    </ul>
+                </div>
+            <?php endif ?>
+
+            <?php if (bis_check_access('levo_meni_planiranje_celo')): ?>
+                <h3 class="acc-planiranje-resursi">Планирање ресурси</h3>
+
+                <div>
+                    <ul class="accordion">
+
+                        <?php if (bis_check_access('levo_meni_planiranje_finansiski_plan')): ?>
+                            <li class="menu-resursi"><a href="/index.php/finansiski_plan/plan/index">Финансиски план</a></li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_planiranje_covecki_resursi')): ?>
+                            <li class="menu-resursi1"><a href="/index.php/covecki_resursi/menu/index">Човечки ресурси</a></li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_planiranje_smensko_planiranje')): ?>
+                            <!--<li class="menu-vraboteni"><a href="/index.php/vraboteni/main_menu/menu" class="menu-vraboteni">Вработени</a></li>-->
+                            <li class="menu-planiranje"><a href="/index.php/planiranje/nov_plan/index">Сменско планирање</a></li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_planiranje_plati')): ?>
+                            <li class="menu-plati"><a href="/index.php/plati/plati/index">Плати</a></li>
+                        <?php endif ?>
+                        <?//php if (bis_check_access('levo_meni_planiranje_plati')): ?>
+                        <li class="menu-statistika"><a href="/index.php/statisticki_podatoci/statistika/index">Статистички податоци</a></li>
+                        <?//php endif ?>
+
+                    </ul>
+                </div>
+            <?php endif ?>
+
+            <?php if (bis_check_access('levo_meni_sistemsko_celo')): ?>
+                <h3 class="acc-planiranje-resursi">Системско подесување</h3>
+
+                <div>
+                    <ul class="accordion">
+                        <?php if (bis_check_access('levo_meni_finansisko_rabotenje_pocetna')): ?>
+                            <li class="menu-start"><a href="/index.php/start/podesuvanja/main_menu" class="menu-start">Почетнo</a></li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_sistemsko_korisnici')): ?>
+                            <li class="menu-korisnici"><a href="/index.php/korisnici/main_menu" class="menu-korisnici">Корисници</a></li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_sistemsko_finansisko_rabotenje_podatoci')): ?>
+                            <li class="menu-finansisko-podatoci"><a href="/index.php/podatoci/site/admin_area" class="menu-podatoci">Финансиско работење</a></li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_sistemsko_bolnicko_podatoci')): ?>
+                            <li class="menu-bolnicko-podatoci"><a href="/index.php/pacienti/menu/podatoci" class="menu-podatoci">Болничко работење</a></li>
+                        <?php endif ?>
+                        <?php if (bis_check_access('levo_meni_sistemsko_planiranje_resursi')): ?>
+                            <li class="menu-planiranje-podatoci"><a href="/index.php/plata_podatoci/podatoci/index">Планирање ресурси</a></li>
+                        <?php endif ?>
+
+                    </ul>
+                </div>
+            <?php endif ?>
+        </div>
+    </div>
+    <div class="menu1-folding">
+        <div class="menu1-folding-button"></div>
+    </div>
+</div>

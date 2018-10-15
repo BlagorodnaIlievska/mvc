@@ -1,0 +1,23 @@
+<div id="vlezizlez" class="sub-menu-tabs">
+    <ul>
+        <?php if (bis_check_access('vlezni_fakturi_pregled_na_vlezni_fakturi_detalen_pregled_tab')): ?>
+             <li><?php echo anchor('vlezni_fakturi/pregled_vlezni/detalenPregled', 'Детален преглед'); ?></li>
+        <?php endif ?>
+<!--        --><?php //if (bis_check_access('vlezni_fakturi_pregled_na_vlezni_fakturi_grupen_pregled_tab')): ?>
+<!--            <li>--><?php //echo anchor('vlezni_fakturi/pregled_vlezni/grupenPregled', 'Групен преглед'); ?><!--</li>-->
+<!--        --><?php //endif ?>
+    </ul>
+</div>
+<!--<div id="vlezizlez" class="sub-menu-tabs">-->
+<!--    <ul>-->
+<!--        <li><a href="#detalenpregled">Детален преглед</a></li>-->
+<!--        <li><a href="#grupenpregled">Групен преглед</a></li>-->
+<!--    </ul>-->
+<!--    <div id="detalenpregled"></div>-->
+<!--    <div id="grupenpregled"></div>-->
+<!--</div>-->
+<!--<script>-->
+<!--    jQuery(document).ready(function () {-->
+<!--        loadPregledFakturi();-->
+<!--    });-->
+<!--</script>-->

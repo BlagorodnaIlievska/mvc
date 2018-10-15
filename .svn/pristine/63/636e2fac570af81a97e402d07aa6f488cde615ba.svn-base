@@ -1,0 +1,96 @@
+<style type="text/css">
+    .trezorskorabotenje-pratki-podatoci-tabela th {
+        font-size: 9px;
+    }
+    .trezorskorabotenje-pratki-podatoci-tabela td {
+        font-size: 12px;
+    }
+</style>
+<div class="trezorskorabotenje">
+
+    <div class="buttoncontainer">
+        <button type="button" class="button cmd-trezor-dodadipratka" onclick="trezor_novapratka()"><span>Додади пратка</span></button>
+        <button type="button" class="button cmd-trezor-dodadipodatok" onclick="trezor_novapratkapodatoci(trezor_aktivnapratka())"><span>Додади Податок</span></button>
+    </div>
+
+    <div class="trezorskorabotenje-prikaz">
+        <p class="trezorskorabotenje-naslov-pratki"> ( <span class="trezorskorabotenje-vkupnopratki">0</span> ) Број на пратки</p>
+
+        <div class="trezorskorabotenje-pratki">
+            <table class="trezorskorabotenje-pratki-tabela" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th> </th>
+                    <th> </th>
+                    <th>Пратка Бр.</th>
+
+                    <th>Датум</th>
+
+                    <th>Бр. на Податоци</th>
+                    <th>Контролен Збир</th>
+                    <th>Забелешка</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+        <p class="trezorskorabotenje-naslov-pratki-podatoci"> ( <span class="trezorskorabotenje-pratkipodatoci-vkupnopratki">0</span> ) Број на податоци</p>
+<!--        smetkanazadolzuvanje 	podsmetkanazadolzuvanje 	kontonazadolzuvanje 	prognazadolzuvanje 	cel 	sifra 	iznos 	smetkanaprimacot-->
+<!--        nazivnaprimacot 	podsmetkanaprimacot 	kontonaprimacot 	programanaprimacot 	povikuvanjenabrojnaprimacot 	vidobrazec 	nacin 	edb-->
+        <div class="trezorskorabotenje-pratki-podatoci">
+            <table class="trezorskorabotenje-pratki-podatoci-tabela" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th> </th>
+                    <th>smetkanazadolzuvanje</th>
+                    <th>podsmetkanazadolzuvanje</th>
+                    <th>kontonazadolzuvanje</th>
+                    <th>prognazadolzuvanje</th>
+                    <th>cel</th>
+                    <th>sifra</th>
+                    <th>iznos</th>
+
+                    <th>nazivnaprimacot</th>
+                    <th>smetkanaprimacot</th>
+                    <th>podsmetkanaprimacot</th>
+<!--                    <th>kontonaprimacot</th>-->
+<!--                    <th>programanaprimacot</th>-->
+                    <th>povikuvanjenabrojnaprimacot</th>
+                    <th>vidobrazec</th>
+                    <th>nacin</th>
+<!--                    <th>edb</th>-->
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+<script>
+jQuery(document).ready(function(){
+    jQuery(".trezorskorabotenje-pratki-tabela tbody tr").live("click", function () {
+        jQuery(".trezorskorabotenje-pratki-tabela tbody tr").removeClass("active");
+        jQuery(this).addClass("active");
+        trezor_pratkilista_podatoci({id: jQuery(this).attr("pratka_id")});
+    });
+    jQuery(".trezorskorabotenje-pratki-tabela .edit-tr").live("click", function () {
+        trezor_updatepratka(jQuery(this).parent().parent().attr("pratka_id"));
+    });
+    jQuery(".trezorskorabotenje-pratki-podatoci-tabela .edit-tr").live("click", function () {
+        trezor_editpratkapodatoci(jQuery(this).parent().parent().attr("item_id"));
+    });
+    jQuery(".trezorskorabotenje-pratki-podatoci-tabela .delete-tr").live("click", function () {
+        if(confirm("Дали сте сигурни за бришење на документот ?!")) trezor_deletepratkapodatoci(jQuery(this).parent().parent().attr("item_id"), jQuery(this).parent().parent().attr("pratka_id"));
+    });
+    jQuery(".trezorskorabotenje-pratki-podatoci-tabela .info-tr").live("click", function () {
+        trezor_infopratkapodatoci(jQuery(this).parent().parent().attr("item_id"));
+    });
+
+    jQuery(".trezorskorabotenje-pratki-tabela").tablesorter();
+    jQuery(".trezorskorabotenje-pratki-podatoci-tabela").tablesorter();
+    trezor_pratkilista();
+});
+</script>

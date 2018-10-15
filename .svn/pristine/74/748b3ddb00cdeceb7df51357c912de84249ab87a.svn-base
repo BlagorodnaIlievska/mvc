@@ -1,0 +1,159 @@
+<div id="uplata_form">
+    <?php
+    if(isset($id)) echo '<input type="hidden" class="fakturaid" name="fakturaid" value="'.$id.'">';
+    ?>
+<div class="priemnica">
+    <p style="margin-bottom: 0;" class="naslov clearboth">Приемници по фактура</p>
+    <table class="tpriemnica" border="1" cellspacing="2" cellpadding="2">
+        <thead>
+        <tr>
+            <th>Број</th>
+            <th>Датум</th>
+            <th>Магацин</th>
+            <th>Коминтент</th>
+            <th>Основа</th>
+            <th>Вк. ддв</th>
+            <th>Вкупно</th>
+            <th>Забелешка</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class='hiderow trow'>
+            <td class='broj'></td>
+            <td class='dbid hide'></td>
+            <td class='datum'></td>
+            <td class='magacin'></td>
+            <td class='klient'></td>
+            <td class='osnova'></td>
+            <td class='ddv'></td>
+            <td class='vkupno'></td>
+            <td class='zabeleska'></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+    <div class="priemnicadetail">
+        <p style="margin-bottom: 0;" class="naslov clearboth">Ставки во документот - детално</p>
+        <table class="tpriemnicadetail" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th>РБ</th>
+                <th>Шифра</th>
+                <th>Шифра 2</th>
+                <th>Кат. бр.</th>
+                <th>Ставка</th>
+                <th>Кол.</th>
+                <th>ЕМ</th>
+                <th>без ддв</th>
+                <th>со ддв</th>
+                <th>%</th>
+                <th>Вкупно</th>
+                <th>Цена</th>
+                <th>Вкупно</th>
+                <th>Сер. број</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='hiderow'>
+                <td class='number'></td>
+                <td class='sifra'></td>
+                <td class='sifra2'></td>
+                <td class='katbroj'></td>
+                <td class='stavka'></td>
+                <td class='kolicina'></td>
+                <td class='em'></td>
+                <td class='bezddv'></td>
+                <td class='soddv'></td>
+                <td class='procent'></td>
+                <td class='vkupno'></td>
+                <td class='vleznacena'></td>
+                <td class='sevkupno'></td>
+                <td class='seriskibroj'></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery(".tpriemnica").tablesorter();
+        jQuery(".tpriemnicadetail").tablesorter();
+        var fakturaid = jQuery('.fakturaid').val();
+        //console.log(fakturaid);
+        var data = {
+            fakturaid: fakturaid
+        }
+        jQuery.ajax({
+            url: "/index.php/vlezni_fakturi/faktura/getPriemniciVleznaFaktura",
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+                //console.log(response);
+                jQuery(".tpriemnica").find("tr:gt(1)").remove();
+                var tr = jQuery('.tpriemnica tr:last');
+                tr.removeClass('hiderow');
+                for ( var i = 0; i < response.length; i++ ) {
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.find('.dbid').text(response[i].dbid);
+                    newrow.find('.broj').text(response[i].broj);
+                    newrow.find('.datum').text(response[i].datum);
+                    newrow.find('.klient').text(response[i].firmaIme);
+                    newrow.find('.osnova').text(response[i].osnova);
+                    newrow.find('.ddv').text(response[i].ddv);
+                    newrow.find('.vkupno').text(response[i].vkupno);
+                    newrow.find('.zabeleska').text(response[i].zabeleska);
+                }
+                //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                tr.addClass('hiderow');
+                jQuery(".tpriemnica").trigger("update");
+            }
+        });
+        jQuery(".tpriemnica").delegate("tr.trow", "click", function(){
+            var dbid = jQuery(this).find('.dbid').text();
+            var data = {
+                dbid: dbid
+            }
+            jQuery.ajax({
+                url: "/index.php/materijalno/vlez_izlez/getVleznaRobaDetali",
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery(".tpriemnicadetail").find("tr:gt(1)").remove();
+                    var tr = jQuery('.tpriemnicadetail tr:last');
+                    tr.removeClass('hiderow');
+                    var num = response.length;
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        var kolicina = response[i].kolicina;
+                        var cenabezddv = response[i].cenabezddv;
+                        var ddv = response[i].ddv;
+                        var vleznacena = response[i].vleznacena;
+                        var vkupno = parseInt(cenabezddv) * parseInt(kolicina);
+                        var sevkupno = parseInt(vleznacena) * parseInt(kolicina);
+                        newrow.find('.number').text("." + num);
+                        newrow.find('.sifra').text(response[i].sifra);
+                        newrow.find('.sifra2').text(response[i].sifra2);
+                        newrow.find('.katbroj').text(response[i].katBroj);
+                        newrow.find('.stavka').text(response[i].stavka);
+                        newrow.find('.kolicina').text(kolicina);
+                        //newrow.find('.em').val(response[i].edmerka);
+                        newrow.find('.bezddv').text(cenabezddv);
+                        newrow.find('.soddv').text(response[i].cenasoddv);
+                        newrow.find('.procent').text(ddv);
+                        newrow.find('.vkupno').text(vkupno);
+                        newrow.find('.vleznacena').text(vleznacena);
+                        newrow.find('.sevkupno').text(sevkupno);
+                        //newrow.find('.seriskibroj').val();
+                        num--;
+                    }
+                    tr.addClass('hiderow');
+                    jQuery(".tpriemnicadetail").trigger("update");
+                }
+            });
+        });
+    });
+</script>

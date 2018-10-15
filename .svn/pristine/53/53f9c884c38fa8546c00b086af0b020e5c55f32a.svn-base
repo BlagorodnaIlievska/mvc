@@ -1,0 +1,56 @@
+table th.tablesorter-header {
+    background-image: url('/images/bg.gif');
+    cursor: pointer;
+    font-weight: bold;
+    background-repeat: no-repeat;
+    background-position: center left;
+    padding-left: 20px;
+    border-right: 1px solid #dad9c7;
+    margin-left: -1px;
+}
+
+table th.tablesorter-headerSortDown {
+    background-image: url('/images/desc.gif');
+    background-color: #3399FF;
+}
+
+
+table th.tablesorter-headerSortUp {
+    background-image: url('/images/asc.gif');
+    background-color: #3399FF;
+}
+
+/*table:not(.flexigrid-tabela) td.number ,*/
+/*table:not(.flexigrid-tabela) td.procent ,*/
+/*table:not(.flexigrid-tabela) td.em ,*/
+/*table:not(.flexigrid-tabela) th.broj {width: 20px;}*/
+
+table td.stavka,
+table th.stavka {
+    width: 330px;
+}
+
+/*table:not(.flexigrid-tabela).tstavki*/
+/*table:not(.flexigrid-tabela) td.ddv,*/
+/*table:not(.flexigrid-tabela) table:not(.flexigrid-tabela).tstavki select.ddv {width: 50px;}*/
+/*table:not(.flexigrid-tabela) td.katbroj ,*/
+/*table:not(.flexigrid-tabela) td.kolicina ,*/
+/*table:not(.flexigrid-tabela) td.rok ,*/
+/*table:not(.flexigrid-tabela) td.datum ,*/
+/*table:not(.flexigrid-tabela) td.broj ,*/
+/*table:not(.flexigrid-tabela) td.valuta {width: 30px;}*/
+/*table:not(.flexigrid-tabela) td.zabeleska {width:550px ;}*/
+table th.delete.tablesorter-header,
+table th.edit.tablesorter-header {
+    width: 0px;
+}
+
+select {
+    border: 1px solid #000;
+    padding-left: 3px !important;
+    padding: 0 !important;
+}
+
+.hidden {
+    display: none;
+}

@@ -1,0 +1,11 @@
+<div id="vnesi_dogovor" class="pop-menu-tabs">
+    <ul>
+        <li><a href="#dogovor">Договор</a></li>
+        <!--            <li><a href="#uplata">Уплата</a></li>-->
+        <!--            <li><a href="#priemnici">Приемници</a></li>-->
+    </ul>
+    <div id="dogovor"></div>
+    <!--        <div id="uplata"></div>-->
+    <!--        <div id="priemnici"></div>-->
+</div>
+

@@ -1,0 +1,421 @@
+<?php
+
+class Konta_model extends CI_Model
+{
+
+
+    public function create_klasa(){
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('konta', $new_field_insert_data);
+        return $insert;
+    }
+    public function create_grupa(){
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('konta', $new_field_insert_data);
+        return $insert;
+    }
+    public function create_konto(){
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('konta', $new_field_insert_data);
+        return $insert;
+    }
+    public function delete_klasa($id)
+    {
+        $this->db->where('id',$id );
+        $this->db->delete('konta');
+    }
+    public function update_klasa()
+    {
+        $field_update_data = $this->input->post();
+        $this->db->where('id', $this->input->post('id'));
+        $update = $this->db->update('konta', $field_update_data);
+
+        return $update;
+    }
+    public function povrzi_konta()
+    {
+        $field_update_data = $this->input->post();
+        $this->db->where('id', $this->input->post('id'));
+        $update = $this->db->update('konta', $field_update_data);
+
+        return $update;
+    }
+
+
+
+    public function getAll_klasa()
+    {
+        $this->db->select('*');
+        $this->db->from('konta');
+        //$this->db->where("parent_klasa",0);
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+    public function getAll_grupa()
+    {
+        $this->db->select('*');
+        $this->db->from('konta');
+        //$this->db->where("parent_grupa",0);
+        //$this->db->where("parent_klasa!=",0);
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+    public function getAll_konto()
+    {
+        $this->db->select('*');
+        $this->db->from('konta');
+
+       // $this->db->where("parent_grupa !=",0);
+       // $this->db->where("parent_klasa !=",0);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+    public function getGrupi($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('konta');
+        //$this->db->where("parent_klasa",$id);
+        //$this->db->where("parent_grupa",0);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function getGrupa($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('konta');
+        $this->db->where("id",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    } public function getKonta($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('konta');
+
+        $this->db->where("id",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+
+    public function getKlasa($id)
+    {
+        $this->db->select("*");
+        $this->db->where('id', $id);
+
+        $query = $this->db->get('konta');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    } public function getKlasi()
+    {
+        $this->db->select("*");
+        //$this->db->where('parent_klasa', 0);
+       // $this->db->where('parent_klasa', 0);
+        $query = $this->db->get('konta');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+
+    public function getZirosmetki()
+    {
+        $this->db->select("*");
+        $query = $this->db->get('bis_zirosmetki');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+    function get_firma_dropdown()
+    {
+        $this->db->select('MFID, Ime');
+        $this->db->from('xmf');
+        $this->db->order_by('MFID');
+        $query    = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[''] = 'избери фирма';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['MFID']] = $row['Ime'];
+            }
+        }
+
+        return $dropdown;
+
+    }
+
+    public function create_zirosmetka()
+    {
+        $new_field_insert_data =  $this->input->post();
+
+        $insert = $this->db->insert('bis_zirosmetki', $new_field_insert_data);
+
+        return $insert;
+    }
+
+    public function getAll_smetka()
+    {
+        $this->db->select('
+                   zirosmetki.TZSID as id,
+                   zirosmetki.tzsBroj as broj,
+                   banka.BankaIme as banka_ime,
+                   xmf.Ime as firma_ime,
+                   Oddel.imeOddel as oddel,
+                   Pododdel.pododdelIme as pododdel
+                   ');
+        $this->db->from('zirosmetki');
+        $this->db->join('xmf', 'zirosmetki.MFID=xmf.MFID');
+        $this->db->join('banka', 'zirosmetki.bankaID=banka.BankaID');
+        $this->db->join('Pododdel', 'zirosmetki.pododdelID=Pododdel.pododdelID');
+        $this->db->join('Oddel', 'zirosmetki.oddelID=Oddel.oddelID');
+        //$this->db->join('komerc','firma.komercID=komerc.komercID');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function delete_smetka()
+    {
+
+        $this->db->where('TZSID', $this->uri->segment(4));
+        $this->db->delete('zirosmetki');
+    }
+
+    public function edit_smetka()
+    {
+
+        $this->db->where('TZSID', $this->uri->segment(4));
+        $query = $this->db->get('zirosmetki');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+
+    public function update_smetka()
+    {
+        $field_update_data = array(
+
+            'tzsBroj' => $this->input->post('tzsBroj'), 'bankaID' => $this->input->post('bankaID'), 'pocetnaSos' => 0, 'order' => 0, 'firmaID' => 1, 'MFID' => $this->input->post('MFID'), 'oddelID' => $this->input->post('oddelID'), 'pododdelID' => $this->input->post('pododdelID')
+
+        );
+
+        $this->db->where('TZSID', $this->input->post('TZSID'));
+        $update = $this->db->update('zirosmetki', $field_update_data);
+
+        return $update;
+    }
+
+    public function create_kasa()
+    {
+        $new_field_insert_data = array(
+
+            'kasaName' => $this->input->post('kasaName'), 'MFID' => $this->input->post('MFID'), 'order' => 0, 'oddelID' => $this->input->post('oddelID'), 'pododdelID' => $this->input->post('pododdelID')
+
+
+        );
+
+        $insert = $this->db->insert('kasi', $new_field_insert_data);
+
+        return $insert;
+    }
+
+    public function getAll_kasa()
+    {
+
+        $this->db->select('
+                   kasi.kasaId as id,
+                   kasi.kasaName as kasa_ime,
+                   xmf.Ime as firma_ime,
+                   Oddel.imeOddel as oddel,
+                   Pododdel.pododdelIme as pododdel
+                   ');
+        $this->db->from('kasi');
+        $this->db->join('xmf', 'kasi.MFID=xmf.MFID');
+
+        $this->db->join('Pododdel', 'kasi.pododdelID=Pododdel.pododdelID');
+        $this->db->join('Oddel', 'kasi.oddelID=Oddel.oddelID');
+        //$this->db->join('komerc','firma.komercID=komerc.komercID');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function delete_kasa()
+    {
+
+        $this->db->where('kasaId', $this->uri->segment(4));
+        $this->db->delete('kasi');
+    }
+
+    public function edit_kasa()
+    {
+
+        $this->db->where('kasaId', $this->uri->segment(4));
+        $query = $this->db->get('kasi');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+
+    public function update_kasa()
+    {
+        $field_update_data = array(
+
+
+            'kasaName' => $this->input->post('kasaName'), 'MFID' => $this->input->post('MFID'), 'order' => 0, 'oddelID' => $this->input->post('oddelID'), 'pododdelID' => $this->input->post('pododdelID')
+
+        );
+
+        $this->db->where('kasaId', $this->input->post('kasaId'));
+        $update = $this->db->update('kasi', $field_update_data);
+
+        return $update;
+    }
+
+    public function create_magacin()
+    {
+        $new_field_insert_data = array(
+
+
+            'MFID' => $this->input->post('firma'), 'magTip' => $this->input->post('magTip'), 'magIme' => $this->input->post('magIme'), 'magLokacija' => $this->input->post('magLokacija'), 'oddelID' => $this->input->post('oddelID'), 'pododdelID' => $this->input->post('pododdelID')
+
+
+        );
+
+        $insert = $this->db->insert('magacin', $new_field_insert_data);
+
+        return $insert;
+    }
+
+    public function getAll_magacin()
+    {
+        $this->db->select('
+                   magacin.magacinID as id,
+                   magacin.magLokacija as lokacija,
+                   magacin.magIme as magacin_ime,
+                   magacin.magTip as tip,
+                   xmf.Ime as firma_ime,
+                   Oddel.imeOddel as oddel,
+                   Pododdel.pododdelIme as pododdel
+                   ');
+        $this->db->from('magacin');
+        $this->db->join('xmf', 'magacin.MFID=xmf.MFID');
+
+        $this->db->join('Pododdel', 'magacin.pododdelID=Pododdel.pododdelID');
+        $this->db->join('Oddel', 'magacin.oddelID=Oddel.oddelID');
+        //$this->db->join('komerc','firma.komercID=komerc.komercID');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function delete_magacin()
+    {
+
+        $this->db->where('magacinID', $this->uri->segment(4));
+        $this->db->delete('magacin');
+    }
+
+    public function edit_magacin()
+    {
+
+        $this->db->where('magacinID', $this->uri->segment(4));
+        $query = $this->db->get('magacin');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+
+    public function update_magacin()
+    {
+        $field_update_data = array(
+
+
+            'MFID' => $this->input->post('firma'), 'magTip' => $this->input->post('magTip'), 'magIme' => $this->input->post('magIme'), 'magLokacija' => $this->input->post('magLokacija'), 'oddelID' => $this->input->post('oddelID'), 'pododdelID' => $this->input->post('pododdelID'));
+
+        $this->db->where('magacinID', $this->input->post('magacinID'));
+        $update = $this->db->update('magacin', $field_update_data);
+
+        return $update;
+    }
+    public function filtriraj_po_konto($konto){
+        $this->db->select('konta.sifra, konta.opis,konta.id');
+        $this->db->from('konta');
+       if($konto!=0) $this->db->where('konta.id',$konto);
+        $q=$this->db->get();
+        if ($q->num_rows > 0) {
+            return $q->result();
+        }
+    }
+}

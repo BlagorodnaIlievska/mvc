@@ -1,0 +1,19 @@
+<div class="content-container">
+    <div id="main_menu" class="main-menu-tabs">
+        <ul>
+
+            <?php if (bis_check_access('vlezni_fakturi_pregled_na_vlezni_fakturi_menu')): ?>
+                <li><a href="/index.php/vlezni_fakturi/pregled_vlezni/detalenPregled">Преглед на влезни фактури</a></li>
+            <?php endif ?>
+<!--            --><?php //if (bis_check_access('vlezni_fakturi_pregled_na_dospeanost_fakturi_menu')): ?>
+<!--                <li><a href="/index.php/vlezni_fakturi/pregled_dospeanost/menu">Преглед по доспеаност</a></li>-->
+<!--            --><?php //endif ?>
+
+            <!--            <li><a href="/index.php/vlezni_fakturi/fin_grupiranje/menu">Фин. Групирање</a></li>-->
+            <?php if (bis_check_access('vlezni_fakturi_period_klient_fakturi_menu')): ?>
+                <li><a href="/index.php/vlezni_fakturi/period_klient/menu">Период/Клиент</a></li>
+            <?php endif ?>
+                 <li><a href="/index.php/trezor/trezor/menu">Трезор</a></li>
+        </ul>
+    </div>
+</div>

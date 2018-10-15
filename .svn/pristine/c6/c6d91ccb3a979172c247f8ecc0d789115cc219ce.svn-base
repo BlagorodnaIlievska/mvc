@@ -1,0 +1,300 @@
+<?php
+
+class Kartici_model extends CI_Model{
+
+    public function create_something()
+    {
+        $insert_data = array(
+            'magIme' => $this->input->post('magacin_name'),
+            'MFID' => 1,
+            'magTip' => $this->input->post('tip_magacin'),
+            'magLokacija' => $this->input->post('magacin_lokacija')
+        );
+
+        $insert = $this->db->insert('magacin', $insert_data);
+        return $insert;
+    }
+
+
+    function komercijalist_dropdown()
+    {
+        $this->db->select('komercID, komercName');
+        $this->db->from('komerc');
+        $this->db->order_by('komercID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = 'Site';
+            $dropdown['14'] = '<< Bez Komercijalist >>';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['komercID']] = $row['komercName'];
+            }
+        }
+        return $dropdown;
+    }
+    public function getKlient($klientid){
+        $this->db->select('firma.ime as ime');
+        $this->db->from('firma');
+        $this->db->where('firmaID', $klientid);
+        $r = $this->db->get();
+        $res = $r->row_array();
+        return $res;
+    }
+
+    public function getCelaKarticaKlient($klientid)
+    {
+        $tip1 = array(10, 20);
+        $this->db->select('
+                    stavka.tip,
+                    stavka.textBroj,
+                    stavka.datum,
+                    stavka.p_vkupno as suma,
+                    stavka.komentar,
+                    stavka.firmaID,
+                    firma.ime as firmaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID');
+        $this->db->where('stavka.firmaID', $klientid);
+        $this->db->where_in('stavka.tip', $tip1);
+       // $this->db->order_by('ID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = array();
+        }
+        $tip2 = array(40, 50);
+        $this->db->select('
+                    tip,
+                    textBroj,
+                    datum,
+                    z_uplata as suma,
+                    komentar
+                    ');
+        $this->db->from('stavka');
+        $this->db->where('firmaID', $klientid);
+        $this->db->where_in('tip', $tip2);
+        $this->db->order_by('ID');
+        $query2 = $this->db->get();
+        if($query2->num_rows() > 0)
+        {
+            $result2 = $query2->result();
+        }
+        else
+        {
+            $result2 = array();
+        }
+        $result = array_merge($result, $result2);
+        return $result;
+    }
+
+    public function getPregledKlienti($pogled, $komercijalist)
+    {
+        //$this->db->distinct();
+        $this->db->select('
+                    stavka.firmaID as firmaID,
+                    firma.ime as firmaIme,
+                    firma.komentar as komentar
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        //$this->db->join('komerc', 'firma.komercID = komerc.komercID', 'left');
+        //if($pogled) $this->db->where('stavka.ZSID', $pogled);
+        //else $this->db->where('stavka.ZSID', 1);
+        if($komercijalist) $this->db->where('firma.komercID', $komercijalist);
+        $this->db->group_by('stavka.firmaID');
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getVleznaKarticaKlient($klientid)
+    {
+        //$tip = array(10, 40);
+        $this->db->select('
+                    tip,
+                    textBroj,
+                    datum,
+                    p_vkupno as suma,
+                    zaPovikBroj as status,
+                    komentar
+                    ');
+        $this->db->from('stavka');
+        $this->db->where('firmaID', $klientid);
+        $this->db->where('tip', 10);
+        $this->db->order_by('ID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = array();
+        }
+        $this->db->select('
+                    tip,
+                    textBroj,
+                    datum,
+                    z_uplata as suma,
+                    zaPovikBroj as status,
+                    komentar
+                    ');
+        $this->db->from('stavka');
+        $this->db->where('firmaID', $klientid);
+        $this->db->where('tip', 40);
+        $this->db->order_by('ID');
+        $query2 = $this->db->get();
+        if($query2->num_rows() > 0)
+        {
+            $result2 = $query2->result();
+        }
+        else
+        {
+            $result2 = array();
+        }
+        $result = array_merge($result, $result2);
+        return $result;
+    }
+
+    public function getIzleznaKarticaKlient($klientid)
+    {
+        //$tip = array(20, 50);
+        $this->db->select('
+                    tip,
+                    textBroj,
+                    datum,
+                    p_vkupno as suma,
+                    zaPovikBroj as status,
+                    komentar
+                    ');
+        $this->db->from('stavka');
+        $this->db->where('firmaID', $klientid);
+        $this->db->where_in('tip', 20);
+        $this->db->order_by('ID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = array();
+        }
+        $this->db->select('
+                    tip,
+                    textBroj,
+                    datum,
+                    z_uplata as suma,
+                    zaPovikBroj as status,
+                    komentar
+                    ');
+        $this->db->from('stavka');
+        $this->db->where('firmaID', $klientid);
+        $this->db->where_in('tip', 50);
+        $this->db->order_by('ID');
+        $query2 = $this->db->get();
+        if($query2->num_rows() > 0)
+        {
+            $result2 = $query2->result();
+        }
+        else
+        {
+            $result2 = array();
+        }
+        $result = array_merge($result, $result2);
+        return $result;
+    }
+
+    public function getPodatociKlienti()
+    {
+        //$this->db->distinct();
+        $this->db->select('
+                    stavka.tip,
+                    stavka.textBroj,
+                    stavka.datum,
+                    stavka.firmaID as firmaID,
+                    firma.ime as firmaIme,
+                    firma.komentar as komentar
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->group_by('stavka.firmaID');
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getPrometKlienti()
+    {
+        $tip1 = array(10, 20);
+        $this->db->select('
+                    stavka.tip as tip,
+                    stavka.p_vkupno as suma,
+                    firma.komentar as zabeleska,
+                    firma.ime as firmaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->where_in('tip', $tip1);
+        $this->db->group_by('stavka.firmaID, stavka.tip');
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = array();
+        }
+        $tip2 = array(40, 50);
+        $this->db->select('
+                    stavka.tip as tip,
+                    stavka.z_uplata as suma,
+                    firma.komentar as zabeleska,
+                    firma.ime as firmaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->where_in('tip', $tip2);
+        $this->db->group_by('stavka.firmaID, stavka.tip');
+        $this->db->order_by('stavka.ID');
+        $query2 = $this->db->get();
+        if($query2->num_rows() > 0)
+        {
+            $result2 = $query2->result();
+        }
+        else
+        {
+            $result2 = array();
+        }
+        $result = array_merge($result, $result2);
+        return $result;
+
+        // Use pid as key
+        foreach ($arr1 as $key => $value) {
+            $arr1_new[$value['pid']] = $value;
+        }
+    }
+}

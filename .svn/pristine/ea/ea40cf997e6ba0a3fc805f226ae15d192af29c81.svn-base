@@ -1,0 +1,164 @@
+<div class="print-ps">
+
+
+    <div class="ps-naslov-levo"><h4>ЗАВОД ЗА СТАТИСТИКА НА РЕПУБЛИКА МАКЕДОНИЈА</h4></div>
+    <div class="ps-zastita-podatoci-div">
+        <p class="ps-zastita-podatoci">Податоците што се прибираат со овој извештај представуваат
+            лични податоци кои се заштитени согласно Законот за државна статистика</p>
+    </div>
+    <div class="ps-slvesnik-div">
+        <p class="ps-slvesnik">Член 26 од законот за државна статистика <br>„Службен весник на
+            Република Македонија“ бр.54/97</p>
+    </div>
+    <form action="/index.php/upati/upati/create_potvrda_za_smrt" method="post">
+        <input type="hidden" name="priem_id" value="<?php echo $priem_id ?>"/>
+        <div class="ps-naslov">
+            <h4 style="text-align: center;margin-top: -10px;">ПОТВРДА ЗА СМРТ И ЛЕКАРСКИ ИЗВЕШТАЈ ЗА ПРИЧИНАТА ЗА СМРТ </h4>
+            <label style="margin-left: -10px">ЗДРАВСТВЕНА УСТАНОВА, ПРЕГЛЕДУВАЧ НА МРТОВЦИ, МАТИЧАР </label>
+            <input type="text" name="zdravstvena_ustanova_pregleduvac_maticar" style="width: 250px"/>
+
+            <label>Реден бр. </label><input type="text" name="reden_br" style="width: 40px"/>
+        </div>
+        <div class="ps-container">
+            <h4>ПОТВРДА ЗА СМРТ  <span style="margin-left: 266px;">ЛЕКАРСКИ ИЗВЕШТАЈ ЗА ПРИЧИНАТА ЗА СМРТ</span></h4>
+            <div class="ps-levo">
+                <label class="potvrda-smrt-labela">1. Презиме и име на умрениот и презиме пред склучување на брак</label>
+                <input type="text" name="prezime_ime_na_umreniot" style="width: 200px"  class="potvrda-smrt-input"/>
+                <br>
+                <label class="potvrda-smrt-labela">2. Пол</label> <select name="pol_na_umreniot" id="pol-na-umreniot" style="width: 150px;">
+                <option value="Машки">Машки</option>
+                <option value="Женски">Женски</option>
+            </select>
+                <br>
+                <label class="potvrda-smrt-labela">3. Дата на смртта </label><input type="text" name="data_na_smrtta" style="width: 100px" class="datum"/>
+                <label>во</label> <input type="text" name="cas_na_smrtta" class="vreme" style="width: 50px"/> <label>часот.</label>
+                <br>
+                <label class="potvrda-smrt-labela">4. Место на смртта:</label><br>
+                <label>&nbsp;&nbsp;&nbsp;Населено место,</label>
+                <label class="potvrda-smrt-labela"> Општина</label> <input type="text" name="opstina_na_smrtta" style="width: 130px"/>
+                <br>
+                <label class="potvrda-smrt-labela">5. Дата на раѓањето и ЕМБГ</label> <input type="text" name="data_i_embg" style="width: 100px"/>
+                <label class="potvrda-smrt-labela">во</label> <input type="text" name="cas_na_ragjanje" style="width: 50px"/><label style="margin-left: 20px;"> часот.</label>
+                <br>
+                <label class="potvrda-smrt-labela">6. Место на раѓање: Населено место</label> <input type="text" name="naseleno_mesto_ragjanje" style="width: 115px"/>
+                <label style="margin-left: 20px;" class="potvrda-smrt-labela opstina">Општина</label> <input type="text" name="opstina_na_ragjanje" style="width: 141px"/>
+                <br>
+                <label class="potvrda-smrt-labela">7. Последно живеалиште:<br><sub style="margin-left: 20px">Населено
+                    место</sub></label> <input type="text" name="naseleno_mesto_posledno_zivealiste" style="width: 120px"/>
+                <br><label style="margin-left: 20px;" class="potvrda-smrt-labela ">Општина</label> <input type="text" name="opstina_posledno_zivealiste" style="width: 141px"/>
+                <br>
+                <label style="margin-left: 20px;" class="potvrda-smrt-labela">Адреса</label> <input type="text" name="adresa_posledno_zivealiste" style="width: 280px"/>
+                <br>
+                <label class="potvrda-smrt-labela">8. Брачна состојба</label><input type="text" name="bracna_sostojba" style="width: 100px"/><br>
+                <label class="potvrda-smrt-labela">9. Државјанство</label> <input type="text" name="drzavjanstvo" style="width: 122px"/><br>
+
+                <label class="potvrda-smrt-labela">10. Презиме и име на родителите:</label><br>
+                <label style="margin-left: 20px;" class="potvrda-smrt-labela"> Татко:</label><input type="text" name="prezime_i_ime_na_tatko" style="width: 250px"/><br>
+                <label style="margin-left: 20px;" class="potvrda-smrt-labela"> Мајка:</label><input type="text" name="prezime_i_ime_na_majka" style="width: 250px"/><br>
+                <label class="potvrda-smrt-labela"> Дата на раѓање на мајката и ЕМБГ: </label>
+                <label style="font-size: 9px;" class="potvrda-smrt-labela">(за умрено новороденче до 1 година)</label>
+                <input type="text" name="data_ragjanje_i_embg_majka" style="width: 200px"/><br>
+                <label class="potvrda-smrt-labela">11. a) Дали умрениот бил лекуван од болеста од која умрел:</label><br>
+                <input type="radio" name="umrel_lekuvan_od" id="umrel-lekuvan-od-da" value="ДА" style="margin-left: 50px"/>
+                <label style="margin-left: 20px;" class="potvrda-smrt-labela" for="umrel-lekuvan-od-da">ДА</label>
+                <br><input type="radio" name="umrel_lekuvan_od" id="umrel-lekuvan-od-ne" value="НЕ" style="margin-left: 50px"/>
+                <label  style="margin-left: 20px;" class="potvrda-smrt-labela" for="umrel-lekuvan-od-ne">НЕ</label><br>
+                <label class="potvrda-smrt-labela">&nbsp;&nbsp;&nbsp; б) Смртта е:</label>
+                <br><input type="radio" name="smrtta_e" id="smrtta-e-prirodna" onchange="proveriSmrt()" value="ПРИРОДНА"
+                           style="margin-left: 50px"/><label style="margin-left: 20px;" class="potvrda-smrt-labela" for="smrtta-e-prirodna">ПРИРОДНА</label>
+                <br><input type="radio" name="smrtta_e" id="smrtta-e-nasilna" onchange="proveriSmrt()" value="НАСИЛНА"
+                           style="margin-left: 50px"/><label style="margin-left: 20px;" class="potvrda-smrt-labela"
+                                                             for="smrtta-e-nasilna">НАСИЛНА</label>
+                <br>
+                <input type="radio" name="smrtta_e_nasilna" id="smrtta-e-nasilna-nesrekjen-slicaj" class="skrij"
+                       value="НЕСРЕЌЕН СЛИЧАЈ" style="margin-left: 80px"/><label style="margin-left: 20px;"
+                                                                                 id="lbl-smrtta-e-nasilna-nesrekjen-slicaj" class="potvrda-smrt-labela"
+                                                                                 for="smrtta-e-nasilna-nesrekjen-slicaj">НЕСРЕЌЕН СЛУЧАЈ</label>
+                <br><input type="radio" name="smrtta_e_nasilna" id="smrtta-e-nasilna-samoubistvo" class="skrij"
+                           value="САМОУБИСТВО" style="margin-left: 80px"/><label id="lbl-smrtta-e-nasilna-samoubistvo"  style="margin-left: 20px;"
+                                                                                 class="potvrda-smrt-labela"
+                                                                                 for="smrtta-e-nasilna-samoubistvo">САМОУБИСТВО</label>
+                <br><input type="radio" name="smrtta_e_nasilna" id="smrtta-e-nasilna-ubistvo" class="skrij"
+                           value="УБИСТВО" style="margin-left: 80px"/><label id="lbl-smrtta-e-nasilna-ubistvo"  style="margin-left: 20px;"
+                                                                             class="potvrda-smrt-labela"
+                                                                             for="smrtta-e-nasilna-ubistvo">УБИСТВО</label>
+                <br>
+                <ul>
+                    <li><label class="potvrda-smrt-labela">12. Ако умрениот бил лекуван да се наведе:</label></li><br>
+                    <li><label class="potvrda-smrt-labela-vovleceno">a) Дата на последниот преглед:</label>&nbsp;<input
+                            type="text" name="data_na_posleden_pregled" style="width: 150px" class="datum"/></li>
+                    <li><label class="potvrda-smrt-labela-vovleceno">б) Назив на здравствената установа:</label>&nbsp;<input
+                            type="text" name="naziv_na_zdravstvena_ustanova_posleden_pregled" style="width: 150px"/></li>
+                    <li><label class="potvrda-smrt-labela-vovleceno">в) Број на здравствен картон:</label>&nbsp;<input
+                            type="text" name="br_zdravstven_karton" style="width: 150px"/></li>
+                </ul>
+                <br>
+                <label class="potvrda-smrt-labela">13. Смртта ја утврдил: (лекар или друго здравствено лице <br>&nbsp;&nbsp;&nbsp; овластено за преглед на мртовци)</label>
+                <br><label class="potvrda-smrt-labela">&nbsp;&nbsp;&nbsp;&nbsp;Презиме и име </label><input type="text" name="utvrdil_smrt_prezime_i_ime" style="width: 220px"/>
+                <br><label class="potvrda-smrt-labela">&nbsp;&nbsp;&nbsp;&nbsp;Во</label>&nbsp;<input type="text" name="utvrdil_smrt_vreme" style="width: 100px"/> <label>часот,</label>
+                <input type="text" name="utvrdil_smrt_datum_god" style="width: 100px; margin-left: 15px;" class="datum"/>&nbsp;<label>година.</label>
+                <br><label class="potvrda-smrt-labela">&nbsp;&nbsp;&nbsp;&nbsp;Потпис на лицето што ја утврдило смртта<br></label>
+                <p style="margin-left: 20px;"><input type="text" name="utvrdil_smrt_potpis" style="width: 260px; margin-left: 20px; margin-right: 30px;"/> </p><br><br>
+            </div>
+
+
+            <div class="ps-desno">
+                <label class="potvrda-smrt-labela">14. <strong>Причина за смрт</strong></label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label
+                    class="potvrda-smrt-labela-bold">I.</label>
+                <br><label class="potvrda-smrt-labela-vovleceno">a) Болест или состојба која довела до
+                смрт</label><br><input type="text" name="pricina_smrt_bolest_ili_sostojba1" class="potvrda-smrt-input-vovleceno" style="width: 260px"/>
+                <input type="text" name="pricina_smrt_bolest_ili_sostojba2" style="width: 50px"/>
+                <br><label class="potvrda-smrt-labela-vovleceno">б) Предходни причини</label><br>
+                <input type="text" name="pricina_smrt_predhodni1" style="width: 260px"/>
+                <input type="text" name="pricina_smrt_predhodni2" style="width: 50px"/>
+                <br><label class="potvrda-smrt-labela-vovleceno">в) Морбидни состојби, ако постојат, кои ја предизвикале<br>
+                горната причина, ставајќи ја основната причина последна</label><br>
+                <input type="text" name="pricina_smrt_morbidni_sostojbi1" class="potvrda-smrt-input-vovleceno" style="width: 220px"/>
+                <input type="text" name="pricina_smrt_morbidni_sostojbi2" style="width: 50px"/>
+                <br><label class="potvrda-smrt-labela-vovleceno">г) <strong>ОСНОВНА</strong> причина за смрт</label><br>
+                <input type="text" name="pricina_smrt_osnovna1" class="potvrda-smrt-input-vovleceno" style="width: 150px"/>
+                <input  type="text" name="pricina_smrt_osnovna2" style="width: 50px;"/>
+                <input type="text" name="pricina_smrt_osnovna3" style="width: 50px"/>
+                <br><label class="potvrda-smrt-labela-vovleceno"><strong>НАДВОРЕШНА</strong> причина за смрт</label><br>
+                <input type="text" name="pricina_smrt_nadvoresna1" style="width: 220px"/>
+                <input type="text" name="pricina_smrt_nadvoresna2" style="width: 50px"/>
+                <input type="text" name="pricina_smrt_nadvoresna3" style="width: 50px"/>
+                <br>
+                <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label class="potvrda-smrt-labela-bold">II.</label>
+                <br><label class="potvrda-smrt-labela-vovleceno">Други значајни состојби што можеле да доведат до
+                смрт,<br> но не се во врска
+                со болеста или состојбана која предизвикала смрт</label><br><input type="text" name="pricina_smrt_drugi_znacajni_sostojbi" class="potvrda-smrt-input-vovleceno" style="width: 260px"/>
+                <br><label class="potvrda-smrt-labela">
+                <stronger>*</stronger>
+                <small>Ова не го опфаќа начинот на умирање како пример:<br> срцева
+                    инсуфициенција, респираторна инсуфициенција и слично.
+                </small>
+            </label>
+                <br>
+                <br><label class="potvrda-smrt-labela">15. Податоците се дадени од<br> Обдукционен
+                наод бр.</label>&nbsp;<input type="text" name="obdukcionen_naod_br" style="width: 80px"/>&nbsp;<label>дата</label>&nbsp;<input type="text" name="obdukcionen_naod_data"
+                                                                                                        style="width: 80px" class="datum"/>
+                <br><label class="potvrda-smrt-labela-vovleceno">Во</label>&nbsp;<input type="text" name="obdukcionen_naod_vreme" style="width: 250px"/>
+                <br>
+                <br><label class="potvrda-smrt-labela-vovleceno">Потпис на лекарот</label><br>
+                <p><input type="text" name="potpis_na_lekar" class="potvrda-smrt-input-vovleceno" style="width: 250px"/></p>
+                <br><br>
+                <div class="ps-beleski">
+                    <br><label style="font-size: 12px;"><b style="font-size: 12px;">Белешки за матичарот:</b> Овој случај е
+                    запишан во<br> Матичната книга на умрените која
+                    се<br>води за место</label> <input type="text" name="beleska_maticar_mesto" style="width: 140px"/><br>
+                    <label> општина</label> <input type="text" name="beleska_maticar_opstina" style="width: 135px"/>
+                    <label> под тековен број</label><br>
+                    <input type="text" name="beleska_maticar_tekoven_br" style="width: 170px"/>
+                    <label>за</label>&nbsp;<input type="text" name="beleska_maticar_godina" class="datum2" style="width: 80px"/> <label>година.</label>
+
+                    <br><label>Потпис на матичарот</label> <br>
+                    <input type="text" name="potpis_na_maticar" style="width: 300px; "/> <br><br>
+                </div>
+            </div>
+
+
+        </div>
+    </form>
+</div>
+

@@ -1,0 +1,56 @@
+<div id="update_katalog2_form">
+
+
+
+
+
+
+
+
+
+
+<table class="tabela" border="1" cellspacing="2" cellpadding="2">
+
+    <tr>
+
+
+
+        <td>ид</td>
+
+
+
+        <td>Име на производ</td>
+
+
+
+    </tr>
+
+
+
+    <?php if(isset($katalog2)): foreach($katalog2->result() as $row){
+
+
+
+    echo "<tr>";
+
+
+    echo "<td>" . $row->SID. "</td>";
+    echo "<td>" . $row->S1Ime. "</td>";
+
+}
+
+    ?>
+
+    </table>
+
+
+
+    <?php endif; ?>
+
+
+
+
+
+
+
+</div>

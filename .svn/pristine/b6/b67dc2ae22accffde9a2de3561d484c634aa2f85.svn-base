@@ -1,0 +1,26 @@
+<div class="nov-pridones">
+    <form action="/index.php/plata_podatoci/pridonesi/create_pridonesi" method="post">
+        <fieldset>
+            <legend>Нов придонес</legend>
+            Назив:<br/>
+            <input type="text" name="naziv"/><br/>
+            Жиросметка:<br/>
+            <input type="text" name="zirosmetka"/><br/>
+            Стапка:<br/>
+            <input type="text" name="stapka"/><br/>
+            Цел на уплата:<br/>
+            <input type="text" name="cel_na_uplata"/><br/>
+            Повикувачки број:<br/>
+            <input type="text" name="povikuvacki_broj"/><br/>
+            Банка депонент:<br/>
+            <input type="text" name="banka_id"/><br/>
+            Уплатна сметка:<br/>
+            <input type="text" name="uplatna_smetka"/><br/>
+        </fieldset>
+        <br/>
+        <button type="button" class="button snimi-forma" izvrsi="pridonesi_polnilista()" poraka_uspesno="Придонесот е успешно снимен"
+                poraka_neuspesno="Грешка при снимање на придонес">
+                <span>Сними</span></button>
+        <br/>
+    </form>
+</div>

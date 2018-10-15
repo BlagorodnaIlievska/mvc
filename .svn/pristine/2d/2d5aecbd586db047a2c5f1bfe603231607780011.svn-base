@@ -1,0 +1,26 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Fin_grupiranje extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function menu()
+    {
+        $this->load->view('vlezni_fakturi/fin_grupiranje/menu_form');
+    }
+    public function getFinGrupiranje()
+    {
+        $pogled = $this->input->post('pogledid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getFinGrupiranje($pogled);
+//        if(isset($pogled))
+//        {
+//           if($pogled == 4)  $query = $this->vlezni_fakturi_model->getFinGrupiranje();
+//            else  $query = $this->vlezni_fakturi_model->baraj_pogrupi($pogled);
+//        }
+        echo json_encode($query);
+    }
+}

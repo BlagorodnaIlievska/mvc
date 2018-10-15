@@ -1,0 +1,40 @@
+function  popolni_specifikacija()
+{
+    var formurl = "/index.php/materijalno/specifikacija/polnilista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            var redenbroj = 1;
+
+            var vkupnostavki = response.length;
+            var site_clenovi = '';
+            var niza_clenovi = [];
+            jQuery(".tabela-stavkispecifikacija tbody").html('');
+            jQuery.each(response, function (index, item) {
+                var razlika=0;
+
+              razlika = item.vlez.kolicina - item.izlez.kolicina;
+                jQuery(".tabela-stavkispecifikacija tbody").append(('<tr id="' + item.ID + '">' +
+
+                    '<td class="id">' + redenbroj + '</td>' +
+                    '<td class="datum">' +item.sifra+ '</td>' +
+                    '<td class="magacin">' + item.stavka + '</td>' +
+                    '<td class="pretsedatel">' + item.vlez.kolicina + '</td>' +
+                    '<td class="clenovi_popis">' + item.izlez.kolicina + '</td>' +
+                    '<td class="clenovi_popis">' + razlika + '</td>' +
+                    '</tr>'
+                    ));
+
+
+                redenbroj = 1*redenbroj + 1*1;
+
+            });
+            jQuery(".tabela-stavkispecifikacija").trigger("update");
+            jQuery(".tabela-stavkispecifikacija tbody tr:first").click();
+        }
+    });
+}

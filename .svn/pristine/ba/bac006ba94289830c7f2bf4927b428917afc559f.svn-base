@@ -1,0 +1,190 @@
+<?php  if (!defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
+
+class Pregled_vlezni extends CI_Controller
+{
+
+	function __construct()
+	{
+		parent::__construct();
+	}
+
+    public function menu()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['klient']       = $this->materijalno_model->klient_dropdown();
+        $this->load->view('vlezni_fakturi/pregled_vlezni/menu_form', $data);
+    }
+
+	public function baraj()
+	{
+		$this->load->view('vlezni_fakturi/pregled_vlezni/baraj_form');
+	}
+
+	public function baraj_status()
+	{
+		$filterid = $this->input->post('filterid');
+		$statid   = $this->input->post('statusid');
+		$this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+		$query = $this->vlezni_fakturi_model->getStatus($statid, $filterid);
+		echo json_encode($query);
+	}
+
+	public function create_faktura()
+	{
+		$this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+		$query = $this->vlezni_fakturi_model->create_faktura();
+		echo json_encode($query);
+	}
+
+	public function detalenPregled()
+	{
+		$this->load->model('materijalno/materijalno_model');
+		$this->load->model('kartici/kartici_model');
+		$data['klient']        = $this->materijalno_model->klient_site_dropdown();
+		//$data['komercijalist'] = $this->kartici_model->komercijalist_dropdown();
+		$this->load->view('vlezni_fakturi/pregled_vlezni/detalen_pregled_form', $data);
+	}
+    public function proveri_dali_ja_ima_fakturata(){
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $id=$this->input->get('id');
+        $query=$this->vlezni_fakturi_model->proveri_dali_ja_ima($id);
+        //print_r($query); die();
+        echo json_encode($query);
+
+
+    }
+
+	public function editVleznaFaktura()
+	{
+		$data['id']           = $this->input->get('id');
+		$this->load->view('vlezni_fakturi/pregled_vlezni/edit_faktura_form', $data);
+	}
+
+	public function getNeplateniVlezniFakturi()
+	{
+		$brojfaktura = $this->input->post('brojfaktura');
+		$firmaid     = $this->input->post('firmaid');
+		$this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+		$query = $this->vlezni_fakturi_model->getNeplateniVlezniFakturi($brojfaktura, $firmaid);
+		echo json_encode($query);
+	}
+
+    public function getSiteVlezniFakturi()
+    {
+       // $brojfaktura = $this->input->post('brojfaktura');
+       // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getSiteVlezniFakturi();
+        echo json_encode($query);
+    }
+    public function site_vlezni()
+    {
+        // $brojfaktura = $this->input->post('brojfaktura');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->site_vlezni();
+        echo json_encode($query);
+    }
+
+    public function getVleznaDetali()
+	{
+		$id = $this->input->post('dbid');
+		$this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+		$query = $this->vlezni_fakturi_model->getVleznaDetali($id);
+      bis_debug($query, "faktura");
+		echo json_encode($query);
+	}
+
+	public function getVlezniFakturi()
+	{
+		$this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+		$query = $this->vlezni_fakturi_model->getVlezniFakturi();
+		echo json_encode($query);
+	}
+
+	public function grupenPregled()
+	{
+		$this->load->model('materijalno/materijalno_model');
+		$this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+		$data['klient']       = $this->materijalno_model->klient_dropdown();
+		$query                = $this->vlezni_fakturi_model->site_vlezni();
+		$data['fak']          = $query;
+		$this->load->view('vlezni_fakturi/pregled_vlezni/grupen_pregled_form', $data);
+	}
+
+	public function is_logged_in()
+	{
+		$is_logged_in = $this->session->userdata('is_logged_in');
+
+		if (!isset($is_logged_in) || $is_logged_in != true) {
+			echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+			die();
+		}
+	}
+
+	public function nova_faktura()
+	{
+		$this->load->view('vlezni_fakturi/pregled_vlezni/vnesi_faktura_form');
+	}
+
+	public function pecati_faktura()
+	{
+
+		$this->load->helper('to_pdf');
+		$id = $this->input->get('id');
+		$this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+		$this->load->model('materijalno/materijalno_model');
+		$q = $this->vlezni_fakturi_model->editVleznaFaktura($id);
+
+		$query         = $this->vlezni_fakturi_model->getVleznaDetali($id);
+		$data['q']     = $q;
+		$data['id']    = $id;
+		$data['query'] = $query;
+		// page info here, db calls, etc.
+		$html = $this->load->view('vlezni_fakturi/pecatenje/faktura_pecati', $data, true);
+		header('Content-type: application/pdf');
+		echo pdf_create($html, 'Faktura ' . $id, false);
+		//write_file('name', $data);
+		//if you want to write it to disk and/or send it as an attachment
+
+	}
+
+	public function pecati_site_vlezni()
+	{
+
+		$this->load->helper('to_pdf');
+		$id = $this->input->get('id');
+		$this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+
+		$q = $this->vlezni_fakturi_model->site_vlezni();
+
+		//$query = $this->vlezni_fakturi_model->getVleznaDetali($id);
+		$data['q'] = $q;
+		//  $data['id'] = $id;
+		// $data['query'] = $query;
+		// page info here, db calls, etc.
+		$html = $this->load->view('vlezni_fakturi/pecatenje/pecati_site_vlezni', $data, true);
+
+		$data = pdf_create($html, '', false);
+		header('Content-type: application/pdf; charset=utf-8');
+		header('Content-Disposition: inline; filename="the.pdf"');
+		//header('Content-Length: ' . sizeof($data));
+		//if you want to write it to disk and/or send it as an attachment
+		echo $data;
+	}
+
+	public function pregled()
+	{
+		$klientid    = $this->input->post('klientid');
+		$statusid    = $this->input->post('statusid');
+		$period1     = $this->input->post('period1');
+		$period2     = $this->input->post('period2');
+		$brojfaktura = $this->input->post('brojfaktura');
+		$status      = $this->input->post('status');
+		$this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+		$query = $this->vlezni_fakturi_model->getPregled($klientid, $statusid, $period1, $period2, $brojfaktura, $status);
+		echo json_encode($query);
+	}
+}

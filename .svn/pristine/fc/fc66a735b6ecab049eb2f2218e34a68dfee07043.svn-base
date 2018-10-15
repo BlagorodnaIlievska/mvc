@@ -1,0 +1,70 @@
+<?php  if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class Gradovi extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+    }
+
+    public function nov()
+    {
+        $this->load->view('podatoci/gradovi/nov');
+    }
+
+
+    public function izmeni()
+    {
+        $this->load->model('podatoci/gradovi_model');
+        $data['grad']     = $this->gradovi_model->getGrad($this->input->get("id"));
+        $this->load->view('podatoci/gradovi/izmeni', $data);
+    }
+
+
+
+    public function lista()
+    {
+        $this->load->view('podatoci/gradovi/lista');
+    }
+
+    public function popolnilista()
+    {
+
+        //$data['main_content'] = 'podatoci/katalog/popolnilista';
+        $this->load->model('podatoci/gradovi_model');
+        $return = $this->gradovi_model->getGradovi();
+        echo json_encode($return);
+    }
+
+
+
+
+
+    public function create_grad()
+    {
+        $this->load->model('podatoci/gradovi_model');
+        $this->gradovi_model->create_grad();
+        echo "ok";
+    }
+
+
+
+    public function update_grad()
+    {
+        $this->load->model('podatoci/gradovi_model');
+        $this->gradovi_model->update_grad();
+        echo "ok";
+    }
+
+    public function delete_grad()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('podatoci/gradovi_model');
+        $this->gradovi_model->delete_grad($id);
+        echo "ok";
+    }
+}

@@ -1,0 +1,66 @@
+<div class="izmeni-mesecen-parametar">
+    <form action="/index.php/plati/mesecni_parametri/update_mesecen_parametar" method="post">
+        <fieldset>
+            <legend>Измени месечен параметар</legend>
+            <div class="novmesecen-levomeni">
+                <ul>
+
+                <input type="hidden" name="id" value="<?php echo $parametar->id  ?>"/>
+                    <li><span class="spanmesec">Месец на обработка: </span>
+                <?php echo form_dropdown('mesec',$mesec, $parametar->mesec, 'class="mesec"'); ?></li>
+                    <li> <span class="spangodina">Година на обработка: </span>
+                <select name="godina" class="godina">
+                    <?php for ($i=2010; $i<2026; $i++) { ?>
+                    <option value="<?= $i; ?>"><?php echo $i; ?></option>
+                    <?php } ?>
+                </select>
+                    </li>
+                    <li><label>Максимален број на часови:</label> <input type="text" name="max_broj_casovi" value="<?php echo $parametar->max_broj_casovi  ?>" /></li>
+                    <li><label>Вредност на бодот:</label> <input type="text" name="vrednost_na_bod" value="<?php echo $parametar->vrednost_na_bod  ?>" /></li>
+                    <li><label>Часови од претходен месец:</label> <input type="text" name="casovi_prethoden_mesec" value="<?php echo $parametar->casovi_prethoden_mesec  ?>" /></li>
+                    <li><label>Лимит бруто плати:</label> <input type="text" name="limit_bruto_plati" value="<?php echo $parametar->limit_bruto_plati  ?>" /></li>
+                    <li><label>Нето хранарина:</label> <input type="text" name="neto_hranarina" value="<?php echo $parametar->neto_hranarina  ?>" /></li>
+                <fieldset class="max-minat-trud">
+                    <legend>Максимум минат труд</legend>
+                    <li><label>Мажи:</label> <input type="text" name="max_minat_trud_mazi" value="<?php echo $parametar->max_minat_trud_mazi  ?>" /></li>
+                    <li><label>Жени:</label> <input type="text" name="max_minat_trud_zeni" value="<?php echo $parametar->max_minat_trud_zeni  ?>" /></li>
+                </fieldset>
+                    <li><label>Синдикална чланарина:</label> <input type="text" name="sindikalna_clanarina" value="<?php echo $parametar->sindikalna_clanarina  ?>" /></li>
+                    <fieldset class="max-minat-trud">
+                        <legend>Минат труд</legend>
+                        <li><label>Мажи:</label> <input type="text" name="minat_trud_mazi" value="<?php echo $parametar->minat_trud_mazi  ?>" /></li>
+                        <li><label>Жени:</label> <input type="text" name="minat_trud_zeni" value="<?php echo $parametar->minat_trud_zeni  ?>" /></li>
+                    </fieldset>
+                    <li><label>Боледување 1:</label> <input type="text" name="boleduvanje_1" value="<?php echo $parametar->boleduvanje_1  ?>" /></li>
+                    <li><label>Боледување 2:</label> <input type="text" name="boleduvanje_2" value="<?php echo $parametar->boleduvanje_2  ?>" /></li>
+                    <li><label>Боледување 3:</label> <input type="text" name="boleduvanje_3" value="<?php echo $parametar->boleduvanje_3  ?>" /></li>
+                    <li><label>Тежина на работа:</label> <input type="text" name="tezina_na_rabota" value="<?php echo $parametar->tezina_na_rabota  ?>" /></li>
+                </ul>
+            </div>
+            <div class="novmesecen-desnomeni">
+                <li><label>Не Нормирани саати:</label> <input type="text" name="ne_normirani_casovi" value="<?php echo $parametar->ne_normirani_casovi  ?>" /></li>
+                <li><label>Сменско работење:</label> <input type="text" name="smensko_rabotenje" value="<?php echo $parametar->smensko_rabotenje  ?>" /></li>
+                <li><label>Ноќен труд: </label><input type="text" name="noken_trud" value="<?php echo $parametar->noken_trud  ?>" /></li>
+                <li><label>Државни празници: </label><input type="text" name="drzavni_praznici" value="<?php echo $parametar->drzavni_praznici  ?>" /></li>
+                <li><label>Дежурство 1:</label> <input type="text" name="dezurstvo_1" value="<?php echo $parametar->dezurstvo_1  ?>" /></li>
+                <li><label>Дежурство 2:</label> <input type="text" name="dezurstvo_2" value="<?php echo $parametar->dezurstvo_2  ?>" /></li>
+                <li><label>Прекувремена работа 1:</label> <input type="text" name="prekuvremena_rabota_1" value="<?php echo $parametar->prekuvremena_rabota_1  ?>" /></li>
+                <li><label>Прекувремена работа 2:</label> <input type="text" name="prekuvremena_rabota_2" value="<?php echo $parametar->prekuvremena_rabota_2  ?>" /></li>
+                <li><label>Прекувремена работа 3:</label> <input type="text" name="prekuvremena_rabota_3" value="<?php echo $parametar->prekuvremena_rabota_3  ?>" /></li>
+                <li><label>Принуден одмор:</label> <input type="text" name="prinuden_odmor" value="<?php echo $parametar->prinuden_odmor  ?>" /></li>
+                <li><label>Процент на заем:</label> <input type="text" name="procent_na_zaem" value="<?php echo $parametar->procent_na_zaem  ?>" /></li>
+                <li><label>Платено отсуство:</label> <input type="text" name="plateno_otsustvo" value="<?php echo $parametar->plateno_otsustvo  ?>" /></li>
+                <li><label>Минимално за здравство:</label> <input type="text" name="min_za_zdravstvo" value="<?php echo $parametar->min_za_zdravstvo  ?>" /></li>
+                <li><label>Минимално за пензиско:</label> <input type="text" name="min_za_penzisko" value="<?php echo $parametar->min_za_penzisko  ?>" /></li>
+                <li><label>Бруто просечен личен доход:</label> <input type="text" name="bruto_prosecen_licen_dohod" value="<?php echo $parametar->bruto_prosecen_licen_dohod  ?>" /></li>
+                <li><label>Ослободување за персонален данок:</label> <input type="text" name="osloboduvanje_personalen_danok" value="<?php echo $parametar->osloboduvanje_personalen_danok  ?>" /></li>
+                <li><label>Гранична сума за персонален данок:</label> <input type="text" name="granicna_suma_personalen_danok" value="<?php echo $parametar->granicna_suma_personalen_danok  ?>" /></li>
+                <li><label>Број на пресметка:</label> <input type="text" name="broj_na_presmetka" value="<?php echo $parametar->broj_na_presmetka  ?>" /></li>
+            </div>
+        </fieldset>
+        <div class="addstavka floatright">
+            <button type="button" class="button snimi-forma" izvrsi="mesecni_parametri_polnilista()"
+                    poraka_uspesno="Успешно изменетo" poraka_neuspesno="Грешка при снимање"><span>Сними</span></button>
+        </div>
+    </form>
+</div>

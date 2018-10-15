@@ -1,0 +1,4 @@
+.proizvoditel-glavnalista .buttoncontainer { margin-top:10px; margin-bottom:10px; }
+.idzemja { width: 20px;}
+.zemjilista{ width: 600px; }
+.zemja-glavnalista .buttoncontainer { margin-top:10px; margin-bottom:10px; }

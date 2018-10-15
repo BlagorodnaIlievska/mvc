@@ -1,0 +1,407 @@
+<?php
+
+class Pacienti_pomosen_model extends CI_Model
+{
+
+    public function getPocetnaSostojba($id)
+    {
+        $this->db->select("bis_pacienti_pregledi.*,bis_pacienti.*");
+        $this->db->from("bis_pacienti_pregledi");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=bis_pacienti_pregledi.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->where("bis_pacienti_pregledi.id", $id);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0];
+    }
+    public function getFullPriem($id){
+        $this->db->select("bis_pacienti_priem.*,bis_pacienti.*");
+        $this->db->from("bis_pacienti_priem");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id", "left");
+        $this->db->where("bis_pacienti_priem.id", $id);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0];
+    }
+    public function getPriemOsiguruvanje($id){
+        $this->db->select("bis_pacienti_osig.*");
+        $this->db->from("bis_pacienti_osig");
+        $this->db->where("bis_pacienti_osig.id", $id);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0];
+    }
+    public function getPriemPridruznik($id){
+        $this->db->select("bis_pacienti_pridruznik.*");
+        $this->db->from("bis_pacienti_pridruznik");
+        $this->db->where("bis_pacienti_pridruznik.id", $id);
+        $query = $this->db->get();
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result[0];
+        }
+        else return false;
+    }
+    public function getPregled($id)
+    {
+        $this->db->select("bis_pacienti_pregledi_dijagnoza.*,bis_pacienti.*");
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=bis_pacienti_pregledi_dijagnoza.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->where("bis_pacienti_pregledi_dijagnoza.id", $id);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0];
+    }
+    public function getPregledDijagnoza($id)
+    {
+
+    }
+
+    public function getUpatVrednosti($id)
+    {
+        $this->db->select('bis_upat.*,bis_pacienti.*,bis_pacienti_osig.*,
+                           bis_osnov_na_osiguruvanje.naziv as osnov_na_osiguruvanje');
+        $this->db->from('bis_upat');
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=bis_upat.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->join("bis_pacienti_osig", "bis_pacienti_osig.pacient_id=bis_pacienti_priem.pacient_id");
+        $this->db->join("bis_osnov_na_osiguruvanje", "bis_pacienti_priem.participacija=bis_osnov_na_osiguruvanje.id", "left");
+        $this->db->where("bis_upat.id", $id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            foreach ($result as $key => $row) {
+                $search = array(
+                    "radiodijagnosticki",
+                    "interklinicki",
+                    "interbolnicki",
+                    "interoddelenski",
+                    "laboratoriski_naod",
+                    "radiodijagnosticki_naod",
+                    "laboratoriski",
+                    "bolnicki",
+                    "konzolijarno_mislenje",
+                );
+                $replace =
+                    array(
+                        "Упат:Радио Дијаг.",
+                        "Упат:Интерклинички",
+                        "Упат:Интерболнички",
+                        "Упат:Интеродделенски",
+                        "Наод:Лабараториски Наод",
+                        "Наод:Радиодијагностички Наод",
+                        "Упат:Лабараториски",
+                        "Упат:Болнички",
+                        "Упат:Конзолијарно мислење",
+                    );
+                $result[$key]->tip_upat_label = str_replace($search, $replace, $result[$key]->tip_upat);
+            }
+            return $result[0];
+        } else return false;
+    }
+
+    public function updateUpatVrednosti($data)
+    {
+        $id = $data['update_id'];
+        unset($data['update_id']);
+        $updatedata = $data;
+        $this->db->where("id", $id);
+        $this->db->update("bis_upat", $updatedata);
+        return $id;
+    }
+    public function getReceptiVrednosti($id)
+    {
+        $this->db->select('recepti.*,bis_pacienti.*,bis_pacienti_osig.*');
+        $this->db->from('recepti');
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=recepti.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->join("bis_pacienti_osig", "bis_pacienti_osig.pacient_id=bis_pacienti_priem.pacient_id");
+        $this->db->where("recepti.id", $id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            foreach ($result as $key => $row) {
+                $search = array(
+                    "recepta_stranski_osiguranik",
+                    "recepta_domasen_osiguranik",
+
+                );
+                $replace =
+                    array(
+                        "Рецепта:Странски осигураник.",
+                        "Рецепта:Домашен осигураник",
+
+                    );
+                $result[$key]->tip_upat_label = str_replace($search, $replace, $result[$key]->tip);
+            }
+            return $result[0];
+        } else return false;
+    }
+
+    public function updateReceptiVrednosti($data)
+    {
+        $id = $data['update_id'];
+        unset($data['update_id']);
+        $updatedata = $data;
+        $this->db->where("id", $id);
+        $this->db->update("recepti", $updatedata);
+        return $id;
+    }
+    public function getObrazecVrednosti($id)
+    {
+        $this->db->select('obrazec_c.*,bis_pacienti.*,bis_pacienti_osig.*');
+        $this->db->from('obrazec_c');
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=obrazec_c.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->join("bis_pacienti_osig", "bis_pacienti_osig.pacient_id=bis_pacienti_priem.pacient_id");
+        $this->db->where("obrazec_c.id", $id);
+
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            foreach ($result as $key => $row) {
+                foreach ($result as $key => $row) {
+                    $search = array(
+                        "obrazec_s",
+
+                    );
+                    $replace =
+                        array(
+                            "Образец:Образец С.",
+
+
+                        );
+                $result[$key]->tip_upat_label = str_replace($search, $replace, $result[$key]->tip);
+            }
+            }
+            return $result[0];
+        }
+         else return false;
+    }
+
+    public function updateObrazecVrednosti($data)
+    {
+        $id = $data['update_id'];
+        unset($data['update_id']);
+        $updatedata = $data;
+        $this->db->where("id", $id);
+        $this->db->update("obrazec_c", $updatedata);
+        return $id;
+    }
+    public function getIzjavaDetali($id)
+    {
+        $this->db->where("id", $id);
+        $query = $this->db->get("izjavi");
+
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            return $result[0];
+        } else return false;
+    }
+    public function getIzjaviVrednosti($id)
+    {
+        $this->db->select('izjavi.*,bis_pacienti.*,bis_pacienti_osig.*');
+        $this->db->from('izjavi');
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=izjavi.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->join("bis_pacienti_osig", "bis_pacienti_osig.pacient_id=bis_pacienti_priem.pacient_id");
+        $this->db->where("izjavi.id", $id);
+
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            foreach ($result as $key => $row) {
+                $search = array(
+                    "izjavi",
+                    "izjava_za_soglasnost",
+                );
+                $replace =
+                    array(
+                        "Образец:Изјава",
+                        "Образец:Изјава за согласност",
+                    );
+                $result[$key]->tip_upat_label = str_replace($search, $replace, $result[$key]->tip);
+            }
+            return $result[0];
+        } else return false;
+    }
+
+    public function updateIzjaviVrednosti($data)
+    {
+        $id = $data['update_id'];
+        unset($data['update_id']);
+        $updatedata = $data;
+        $this->db->where("id", $id);
+        $this->db->update("izjavi", $updatedata);
+        return $id;
+    }
+    public function getOtpusnaListaVrednosti($id)
+    {
+        $this->db->select("bis_otpusna_lista.*, bis_pacienti_priem.*, bis_pacienti.*");
+        $this->db->from("bis_otpusna_lista");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=bis_otpusna_lista.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->where("bis_otpusna_lista.id", $id);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0];
+    }
+    public function updateOtpusnaListaVrednosti($data)
+    {
+        $id = $data['update_id'];
+        unset($data['update_id']);
+        $data["datum_na_priem"] = bis_convert_date_mk_to_usa($data["datum_na_priem"]);
+        $data["datum_na_ispis"] = bis_convert_date_mk_to_usa($data["datum_na_ispis"]);
+        $updatedata = $data;
+        $this->db->where("id", $id);
+        $this->db->update("bis_otpusna_lista", $updatedata);
+        return $id;
+    }
+
+    public function getPotvrdaZaSmrtVrednosti($id)
+    {
+        $this->db->select("bis_potvrda_za_smrt.*, bis_pacienti_priem.*, bis_pacienti.*");
+        $this->db->from("bis_potvrda_za_smrt");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=bis_potvrda_za_smrt.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->where("bis_potvrda_za_smrt.id", $id);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0];
+    }
+
+    public function updatePotvrdaZaSmrtVrednosti($data)
+    {
+        $id = $data['update_id'];
+        unset($data['update_id']);
+        $updatedata = $data;
+        $this->db->where("id", $id);
+        $this->db->update("bis_potvrda_za_smrt", $updatedata);
+        return $id;
+    }
+
+    public function getPotvrdaZaSmrt($id)
+    {
+        $this->db->select("bis_pacienti_pregledi.*,");
+        $this->db->from("bis_pacienti_pregledi");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=bis_pacienti_pregledi.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->where("bis_pacienti_pregledi.id", $id);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0];
+    }
+
+    public function getTrebuvanjeZaKrvKrvniProdukti($id)
+    {
+        $this->db->select("bis_pacienti_pregledi.*,");
+        $this->db->from("bis_pacienti_pregledi");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=bis_pacienti_pregledi.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->where("bis_pacienti_pregledi.id", $id);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0];
+    }
+
+    public function getOtpusnaLista($id)
+    {
+        $this->db->select("bis_pacienti_pregledi.*,");
+        $this->db->from("bis_pacienti_pregledi");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=bis_pacienti_pregledi.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->where("bis_pacienti_pregledi.id", $id);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0];
+    }
+
+    public function getMrtoveckaPridruznica($id)
+    {
+        $this->db->select("bis_pacienti_pregledi.*,");
+        $this->db->from("bis_pacienti_pregledi");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=bis_pacienti_pregledi.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->where("bis_pacienti_pregledi.id", $id);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0];
+    }
+
+    public function getPokanaZaKonzilijarenPregled($id)
+    {
+        $this->db->select("bis_pacienti_pregledi.*,");
+        $this->db->from("bis_pacienti_pregledi");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=bis_pacienti_pregledi.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->where("bis_pacienti_pregledi.id", $id);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0];
+    }
+
+//    public function getBiohemiskiAnalizi($id)
+//    {
+//        $this->db->select("bis_pacienti_pregledi.*");
+//        $this->db->from("bis_pacienti_pregledi");
+//        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=bis_pacienti_pregledi.priem_id");
+//        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+//        $this->db->where("bis_pacienti_pregledi.id", $id);
+//        $query = $this->db->get();
+//        $result = $query->result();
+//        return $result[0];
+//    }
+
+    public function getBiohemiskaAnalizaVrednosti($id)
+    {
+        $this->db->select("biohemiski_analizi.*, bis_pacienti_priem.*, bis_pacienti.*");
+        $this->db->from("biohemiski_analizi");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=biohemiski_analizi.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->where("biohemiski_analizi.id", $id);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0];
+    }
+
+    public function updateBiohemiskaAnalizaVrednosti($data)
+    {
+        $id = $data['update_id'];
+        unset($data['update_id']);
+        $datum = $data['datum'];
+        unset($data['datum']);
+        $data['datum'] = bis_convert_date_mk_to_usa($datum);
+        $updatedata = $data;
+        $this->db->where("id", $id);
+        $this->db->update("biohemiski_analizi", $updatedata);
+        return $id;
+    }
+
+    public function getZapisZaPriemVrednosti($id)
+    {
+        $this->db->select("bis_zapis_za_priem.*, bis_pacienti_priem.*, bis_pacienti.*");
+        $this->db->from("bis_zapis_za_priem");
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.id=bis_zapis_za_priem.priem_id");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->where("bis_zapis_za_priem.id", $id);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0];
+    }
+
+    public function updateZapisZaPriemVrednosti($data)
+    {
+        $id = $data['update_id'];
+        unset($data['update_id']);
+        $datum = $data['datum'];
+        unset($data['datum']);
+        unset($data['vo_organizaciona_edinica']);
+        $data['datum'] = bis_convert_date_mk_to_usa($datum);
+        $updatedata = $data;
+        $this->db->where("id", $id);
+        $this->db->update("bis_zapis_za_priem", $updatedata);
+        return $id;
+    }
+}

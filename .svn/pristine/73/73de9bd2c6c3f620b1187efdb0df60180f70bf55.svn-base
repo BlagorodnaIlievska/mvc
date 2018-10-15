@@ -1,0 +1,144 @@
+<div>
+<?php
+    if(!$kartici){
+        print_r("Во моментов нема таква картица."); die();
+    }
+//print_r($kartici); die(); ?>
+<p align='center'>Преглед на картица</p>
+<br/><br/>
+<table align="center"  class="tkartici" border="1">
+    <thead>
+    <tr>
+        <th>Датум</th>
+        <th>Коминтент</th>
+
+        <th>Документ</th>
+
+        <th>Влез</th>
+        <th>Излез</th>
+        <th>Состојба</th>
+        <th class="edmerka">ЕМ</th>
+
+        <th>Влезна цена</th>
+        <th>Средна цена</th>
+        <th>Вкупно</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+    foreach($kartici as $kartica){
+        $sostojba = 0;
+ ?>
+    <tr>
+        <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $kartica->datum; ?></td>
+        <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $kartica->firmaIme; ?></td>
+        <?php
+        if($kartica->tip == 710){
+            ?>
+
+            <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo 'Pri. ' . $kartica->broj; ?></td>
+        <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; text-align: right"><? echo $kartica->kolicina; ?></td>
+            <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;  text-align: right"></td>
+                <?php
+            $sostojba = $sostojba + $kartica->kolicina;
+            ?>
+            <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;  text-align: right"><? $sostojba;  ?></td>
+   <?php     }
+        ?>
+        <?php
+        if($kartica->tip == 720){
+            ?>
+
+            <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; "><? echo 'Isp. ' . $kartica->broj; ?></td>
+            <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"></td>
+            <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; text-align: right"><? echo $kartica->kolicina; ?></td>
+            <?php
+            $sostojba = $sostojba - $kartica->kolicina;
+            ?>
+            <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;  text-align: right"><? $sostojba;  ?></td>
+            <?php     }
+        ?>
+        <?php
+        if($kartica->tip == 715){
+            ?>
+
+            <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; "><? echo 'So Pov. br ' . $kartica->broj; ?></td>
+            <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; "></td>
+            <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; text-align: right "><? echo $kartica->kolicina; ?></td>
+            <?php
+            $sostojba = $sostojba - $kartica->kolicina;
+            ?>
+            <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;  text-align: right"><? $sostojba;  ?></td>
+            <?php     }
+        ?>
+        <?php
+        if($kartica->tip == 719){
+            ?>
+
+            <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; "><? echo 'So Int. Pri. br ' . $kartica->broj; ?></td>
+            <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; text-align: right "><? echo $kartica->kolicina; ?></td>
+            <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; "></td>
+            <?php
+            $sostojba = $sostojba + $kartica->kolicina;
+            ?>
+            <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; text-align: right "><? $sostojba;  ?></td>
+            <?php     }
+        ?>
+        <?php
+        if($kartica->tip == 726){
+            ?>
+
+            <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; "><? echo 'So Int. Isp. br ' . $kartica->broj; ?></td>
+            <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;  text-align: right"><? echo $kartica->kolicina; ?></td>
+            <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; "></td>
+            <?php
+            $sostojba = $sostojba + $kartica->kolicina;
+            ?>
+            <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; text-align: right "><? $sostojba;  ?></td>
+            <?php     }
+        ?>
+        <?php
+        if($kartica->tip == 729){
+            ?>
+
+            <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; "><? echo 'So Int. Isp. br ' . $kartica->broj; ?></td>
+            <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; "></td>
+            <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;  text-align: right"><? echo $kartica->kolicina; ?></td>
+            <?php
+            $sostojba = $sostojba - $kartica->kolicina;
+            ?>
+            <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;  text-align: right"><? $sostojba;  ?></td>
+            <?php     }
+        ?>
+
+
+
+        <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; text-align: right"><? echo $kartica->edMerka; ?></td>
+
+        <td  style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; text-align: right "><? echo $kartica->vleznacena; ?></td>
+        <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; text-align: right"><? echo $kartica->srednacena; ?></td>
+
+        <?php
+
+        if($kartica->tip == 720){
+            $vkupno = $kartica->kolicina * $kartica->srednacena;
+        }else{
+            $vkupno = $kartica->kolicina * $kartica->vleznacena;
+        }
+
+        ?>
+        <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; text-align: right"><? echo $vkupno; ?></td>
+
+    </tr>
+
+        <?php
+    }
+
+    ?>
+    </tbody>
+</table>
+<br>
+<br>
+<br>
+</div>

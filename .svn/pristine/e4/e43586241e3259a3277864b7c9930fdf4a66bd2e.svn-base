@@ -1,0 +1,45 @@
+<?php include("head.php") ?>
+<div class="header-container">
+    <div class="header">
+        <div class="titles">
+            <h1>БИС - Болнички Информациони Системи</h1>
+
+            <h2>Тринити Системи Дооел</h2>
+        </div>
+    </div>
+    <?php
+    $CI =& get_instance();
+
+    $query = $CI->session->userdata('logiran');
+    if ($query) {
+        //echo "LOGIRAN".$query;
+    } else {
+        if ($_SERVER['REQUEST_URI'] =="/" || $_SERVER['REQUEST_URI'] =="/index.php" ||  $_SERVER['REQUEST_URI'] =="/index.php/") {
+            //
+
+        } else {
+            //  echo "Nelogiran";
+            redirect("/");
+        }
+
+    }
+    ?>
+    <div class="nav-bar">
+        <div class="sub-navbar">
+            <ul class="left">
+                <?php  if ($query) { ?>
+                    <li class="second"><?php include('firma.dropdown.php') ?></li>
+                <?php } ?>
+            </ul>
+            <ul class="right">
+                <?php if ($query) { ?>
+                    <!--                    <li><a href="#">Системско нагодување</a></li>-->
+                    <!--                    <li><a href="#">Промени лозинка</a></li>-->
+                    <li class="izlez"><a href="/index.php/korisnici/korisnici/izlezi">Излези</a></li>
+                <?php } ?>
+            </ul>
+        </div>
+
+    </div>
+</div>
+

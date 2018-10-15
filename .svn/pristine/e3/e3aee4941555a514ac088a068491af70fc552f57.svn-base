@@ -1,0 +1,49 @@
+<?php  if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class Platimpin extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('plati/platimpin_model');
+        $this->load->helper('download');
+    }
+
+    function getPlatiMPIN($mesec, $godina)
+    {
+        $this->platimpin_model->mesec = $mesec;
+        $this->platimpin_model->godina = $godina;
+
+        $this->platimpin_model->loadPodatoci();
+        $this->platimpin_model->loadFrima();
+        $this->platimpin_model->loadMesecniParametri();
+        $this->platimpin_model->loadPridonesi();
+
+
+        $mpin = $this->platimpin_model->generateMPIN();
+        $mpin = iconv("UTF-8", "Windows-1251", $mpin);
+//         echo($mpin);
+        force_download("mpin$mesec.$godina.txt", $mpin);
+
+    }
+
+    function getPlatiTREZOR($mesec, $godina)
+    {
+        $this->platimpin_model->mesec = $mesec;
+        $this->platimpin_model->godina = $godina;
+
+        $this->platimpin_model->loadPodatoci();
+        $this->platimpin_model->loadFrima();
+        $this->platimpin_model->loadMesecniParametri();
+        $this->platimpin_model->loadPridonesi();
+
+
+        $mpin = $this->platimpin_model->generateTrezorPlati();
+//        $mpin = iconv("UTF-8", "Windows-1251", $mpin);
+//         echo($mpin);
+        force_download("trezor$mesec.$godina.kuc", $mpin);
+
+    }
+}

@@ -1,0 +1,42 @@
+<?php
+
+class Sindikat_model extends CI_Model
+{
+
+    public function getSindikati()
+    {
+        $query = $this->db->get('bis_sindikati');
+        return $query->result();
+    }
+
+
+    public function getSindikat($id)
+    {
+        $this->db->where("id", $id);
+        $query = $this->db->get('bis_sindikati');
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_sindikat()
+    {
+        $insert_data = $this->input->post();
+        $insert      = $this->db->insert('bis_sindikati', $insert_data);
+        return $insert;
+    }
+
+
+    public function delete_sindikat($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_sindikati');
+    }
+
+    public function update_sindikat()
+    {
+        $field_update_data =	$this->input->post();
+        $this->db->where('id',$field_update_data['id']);
+        $this->db->update('bis_sindikati', $field_update_data);
+    }
+}

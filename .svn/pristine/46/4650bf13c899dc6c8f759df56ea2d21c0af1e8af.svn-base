@@ -1,0 +1,57 @@
+<div class="novaedmerka">
+    <form action="/index.php/site_lekari/lekari/create_lekar" method="post">
+        <fieldset>
+
+
+         <legend>Нов</legend>
+            <ul class="sifrarnik">
+              <li>Архивски број:
+              <input type="text" name="arhivski_broj"/></li>
+                <li>Данночен број:
+              <input type="text" name="danocen_broj"/></li>
+                <li>Шифра:
+                <input type="text" name="sifra_zu"/></li>
+                <li>Назив:
+                <input type="text" name="zdravstvena_ustanova"/></li>
+                <li>Единица:
+                <input type="text" name="rabotna_edinica"/></li>
+                <li>Дејност:
+                <input type="text" name="dejnost"/></li>
+                <li>Специјалност:
+                <input type="text" name="specijalnosti"/></li>
+                <li>Адреса:
+                <input type="text" name="adresa"/></li>
+                <li>Место:
+                <input type="text" name="mesto"/></li>
+                <li>Факсимил:
+                <input type="text" name="faksimil"/></li>
+                <li class="ime">Име:
+                <input type="text" name="ime"/></li>
+                <li class="prezime">Презиме:
+                <input type="text" name="prezime"/></li>
+                <li class="validen-od">Валиден од:
+                <input type="text" name="validen_od"/></li>
+                <li class="validen-do">Валиден до:
+                <input type="text" name="validen_do"/></li>
+                <li>Мед. сестра:
+                <input type="text" name="clen_na_tim"/></li>
+               <p>Редовна замена</p>
+                <li>Факсимил:
+                <input type="text" name="faksimil_zamena"/></li>
+                <li class="ime">Име:
+                <input type="text" name="ime_zamena"/></li>
+                <li class="prezime">Презиме:
+                <input type="text" name="prezime_zamena"/></li>
+            </ul>
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="site_lekari_popolnilista()" poraka_uspesno=" успешно снимена"
+                poraka_neuspesno="Грешка при снимање"
+                ><span>Сними</span></button>
+
+
+        <br/>
+    </form>
+
+</div>

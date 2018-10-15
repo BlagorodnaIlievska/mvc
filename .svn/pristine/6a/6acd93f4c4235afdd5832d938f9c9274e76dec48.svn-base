@@ -1,0 +1,104 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Period_klient extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function menu()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['klient'] = $this->materijalno_model->klient_site_dropdown();
+        $this->load->view('vlezni_fakturi/period_klient/menu_form', $data);
+    }
+
+    public function  getAllKlienti()
+    {
+        $klientid = $this->input->post('klientid');
+        $period1 = $this->input->post('periodod');
+        $period2 = $this->input->post('perioddo');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getAllKlienti($klientid, $period1, $period2);
+        echo json_encode($query);
+    }
+
+    public function  getFakturaKlient()
+    {
+        $klientid = $this->input->post('klientid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getFakturaKlient($klientid);
+        echo json_encode($query);
+    }
+    public function  getFakturaKlientKlientDatum()
+    {
+
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getFakturaKlientKlientDatum($this->input->post('klientid'),
+            $this->input->post('periodod'),$this->input->post('perioddo'));
+        echo json_encode($query);
+    }
+    public function baraj_pogrupi()
+    {
+        $pogled = $this->input->post('pogledid');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        if(isset($pogled))
+        {
+            if($pogled == 4)  $query = $this->vlezni_fakturi_model->baraj_site_grupi1();
+            else  $query = $this->vlezni_fakturi_model->baraj_pogrupi1($pogled);
+        }
+
+        echo json_encode($query);
+    }
+
+    public function pecati_site_klienti_iznos(){
+        $klientid = $this->input->get('klientid');
+        $period1 = $this->input->get("periodod");
+        $period2 = $this->input->get("perioddo");
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getAllKlienti($klientid, $period1, $period2);
+        $data['klienti'] = $query;
+        $data['periodod'] = $period1;
+        $data['perioddo'] = $period2;
+        $data['main_content'] = 'vlezni_fakturi/pecatenje/period_klienti_site';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+
+    }
+    public function pecati_fakturi_po_klient(){
+    $klientid = $this->input->get('klientid');
+        $period1 = $this->input->get('periodod');
+        $period2 = $this->input->get('perioddo');
+        $klientime = $this->input->get('klientime');
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+        $query = $this->vlezni_fakturi_model->getFakturaKlientKlientDatum($klientid, $period1, $period2);
+        $data['fakturi_klient'] = $query;
+        $data['periodod'] = $period1; $data['perioddo'] = $period2;
+        $data['klientime'] = $klientime;
+        $data['main_content'] = 'vlezni_fakturi/pecatenje/period_klient_fakturi';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+
+    public function pecati_lista_na_sumi_po_klienti(){
+
+        $this->load->helper('to_pdf');
+
+        $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+
+        $q=$this->vlezni_fakturi_model->site_klienti();
+
+
+        $data['q']=$q;
+
+        // page info here, db calls, etc.
+        $html = $this->load->view('vlezni_fakturi/pecatenje/lista_na_sumi_po_klienti', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+        //if you want to write it to disk and/or send it as an attachment
+
+    }
+}

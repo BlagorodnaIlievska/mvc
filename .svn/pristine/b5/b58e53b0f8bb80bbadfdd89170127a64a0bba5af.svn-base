@@ -1,0 +1,81 @@
+<?php
+
+class Joins_model extends CI_Model{
+
+    function  join_users_roles()
+    {
+        $query = $this->db->select('
+                   users.id,
+                   users.username,
+                   users.email,
+                   roles.name')
+            ->from('users')
+            ->join('roles', 'users.role_id= roles.id')
+            ->get();
+
+        /*  query za join i na tabelata fields_data za prikaz na site polinja za user
+         $query = $this->db->select('
+                   users.id,
+                   users.username,
+                   users.email,
+                   roles.name,
+                   fields_data.id as fd_id,
+                   fields_data.value,
+                   ')
+            ->from('users')
+            ->join('roles', 'users.role_id= roles.id')
+            ->join('fields_data','users.id= fields_data.user_id')
+            ->get();
+         */
+        return $query;
+    }
+
+    function  join_fields_roles()
+    {
+        $query = $this->db->select('
+                   fields.id,
+                   fields.name,
+                   fields.type,
+                   fields.label,
+                   roles.name as role_name
+                   ')
+            ->from('fields')
+            ->join('roles', 'fields.role_id= roles.id')
+            ->get();
+
+        return $query;
+    }
+
+    function  join_fieldsdata_users_fields()
+    {
+        $query = $this->db->select('
+                   fields_data.id,
+                   fields_data.value,
+                   users.username,
+                   fields.name
+                   ')
+            ->from('fields_data')
+            ->join('users', 'fields_data.user_id= users.id')
+            ->join('fields', 'fields_data.field_id= fields.id')
+            ->get();
+
+        return $query;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

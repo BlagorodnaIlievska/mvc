@@ -1,0 +1,203 @@
+<div id="lager_menu">
+    <div class="lagermenu-filter">
+    <?php  echo form_open('materijalno/lager_lista/new_magacin'); ?>
+<?php if (bis_check_access('materijalno_magacin_filter_po_magacin')): ?>
+        <span>Магацин:</span>
+        <select name="magacin" class="magacin searchlager">
+            <option value="0">Сите</option>
+            <?php foreach ($magacini as $magacin) { ?>
+                <option value="<?php echo $magacin->id ?>"><?php echo $magacin->ime ?></option>
+            <?php } ?>
+        </select>
+        <?php endif ?>
+<?php if (bis_check_access('materijalno_magacin_filter_po_artikl')): ?>
+        <label>Артикл:</label>
+        <select name="artikli" class="artikli-dropdown grupa searchlager">
+        <option value=""> </option>
+            <option value="0"><?php echo "Сите"; ?></option>
+        <?php foreach($artikli as $artikal) { ?>
+            <option value="<?php echo $artikal->SID ?>"><?php echo '('.$artikal->sifra.') '.$artikal->S1Ime ?></option>
+        <?php }  ?>
+        </select>
+        <?php endif ?>
+        <span>Прикажи:</span>
+        <select name="nacinnaprikaz" class="nacinnaprikaz searchlager">
+            <option value="0">Фактуриран</option>
+            <option value="1" selected>Тековен</option>
+        </select>
+
+        <?php echo form_close(); ?>
+    </div>
+    <div class="prikaz">
+        <p class="naslovlagerlista" > ( <span class="vkupnostavki">0</span> )  Картици</p>
+        <div class="predtabela">
+        <table class="lagerlista" border="1" cellspacing="2" cellpadding="2">
+        <thead>
+            <tr>
+                <th class="sifra">Шифра</th>
+                <th class="stavka">Ставка</th>
+                <th class="edmerka">ЕМ</th>
+                <th class="kolicina">Кол</th>
+                <th class="srcena">Ср. Цена</th>
+                <th class="vrednost">Вредност</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class='hiderow'>
+            <td class='sifra'></td>
+            <td class='stavka'></td>
+            <td class='edmerka'></td>
+            <td class='kolicina'></td>
+            <td class='srednacena'></td>
+            <td class='vrednost'></td>
+            </tr>
+        </tbody>
+        </table>
+        </div>
+        <table class="sumiranje summatmag">
+            <tfoot>
+            <tr>
+                <td class="vkupno sifra">Вкупно:</td>
+                <td class="katbroj"></td>
+                <td class="stavka"></td>
+                <td class="kolicina"></td>
+                <td class="kolicina"></td>
+                <td class="srcena"></td>
+                <td class="vrednost"></td>
+            </tr>
+            </tfoot>
+        </table>
+
+        <?php if (bis_check_access('materijalno_magacin_pecati')): ?>
+        <a href="" target="_blank" class="cmd-printlink-magacin">
+            <button type="button" class="pecatikartica print"><span>Печати</span></button>
+        </a>
+            <?php endif ?>
+
+    </div>
+</div>
+
+<script>
+function addrow(i,lastrow,response){
+    var newrow = jQuery(lastrow).clone().insertAfter(lastrow);
+    newrow.find('.sifra').html(response[i].sifra2);
+    newrow.find('.stavka').html(response[i].stavka);
+    newrow.find('.edmerka').html(response[i].edmerka);
+    newrow.find('.kolicina').html(response[i].kolicina);
+    if(response[i].srednacena > 0) {
+        newrow.find('.srednacena').html(formatnumbermkd(response[i].srednacena));
+        newrow.find('.vrednost').html(formatnumbermkd(parseInt(response[i].srednacena) * parseInt(response[i].kolicina)));
+    }
+    else {
+        newrow.find('.srednacena').html(0);
+        newrow.find('.vrednost').html(0);
+    }
+}
+function fill_table(response){
+//        console.log(response);
+    jQuery(".lagerlista").find("tr:gt(1)").remove();
+    var tr = jQuery('.lagerlista tr:last');
+    tr.removeClass('hiderow');
+    var vkupno = 0;
+    for ( var i = 0; i < response.length; i++ ) {
+        if(parseInt(response[i].srednacena) > 0) vkupno = 1*vkupno + (parseInt(response[i].srednacena) * parseInt(response[i].kolicina));
+        addrow(i,tr,response);
+    }
+    tr.addClass('hiderow');
+    jQuery(".naslovlagerlista .vkupnostavki").html(response.length);
+    jQuery(".sumiranje tfoot .vkupno").html("Вкупно:");
+    jQuery(".sumiranje tfoot .vrednost").html(formatnumbermkd(vkupno));
+    jQuery(".lagerlista").trigger("update");
+}
+jQuery(document).ready(function() {
+    jQuery('.magacin.searchlager').combobox();
+    jQuery('.lagermenu-filter .grupa').combobox();
+    jQuery("table.lagerlista").tablesorter();
+    jQuery('.datum').datepicker();
+    var datum = jQuery('.datum').val();
+    var data = {
+        grupaid: 0,
+        nacinnaprikaz: jQuery('.nacinnaprikaz option:selected').val()
+    }
+    jQuery.ajax({
+        url: "/index.php/materijalno/lager_lista/getLagerLista",
+        type: 'POST',
+        data: data,
+        dataType: 'json',
+        success: function(response) {
+        fill_table(response)   ;
+        }
+    });
+    jQuery('.searchlager').live('change',function(){
+//            var grupaid = jQuery('.grupa option:selected').val();
+//            var grupaid = jQuery('.ui-combobox-input').val();
+        var grupaid = jQuery('.artikli-dropdown').val();
+        var datum = jQuery('.datum').val();
+        var magacin = jQuery('.magacin option:selected').val();
+        var nacinnaprikaz = jQuery('.nacinnaprikaz option:selected').val();
+        jQuery('.pdfgrupaid').val(grupaid);
+        jQuery('.pdfdatum').val(datum);
+        var data = {
+            grupaid: grupaid,
+            datum: datum,
+            magacin: magacin,
+            nacinnaprikaz: nacinnaprikaz
+        }
+        jQuery.ajax({
+            url: "/index.php/materijalno/lager_lista/getLagerLista",
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+            fill_table(response)   ;
+            }
+        });
+    });
+    jQuery('.magacinbutton').click(function() {
+        var formaction=jQuery(this).parent().attr('action');
+        var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+        jQuery("body").append('<div class="'+tempdialog+'"></div>');
+        jQuery('div.'+tempdialog).dialog({ autoOpen: true }).load(formaction);
+    });
+    jQuery('.ajaxmagacinform').live('click',function(){
+        var formaction=jQuery(this).parent().attr('action');
+        //var formmethod=jQuery(this).parent().attr('method');
+        var dialogid=jQuery(this).parent().parent().parent();
+        jQuery.ajax({
+            type: "post",
+            url: formaction,
+            data: jQuery(this).parent().serialize(),
+            success:  function(data){
+                var $tabs = jQuery('.main-menu-tabs').tabs();
+                var selected = $tabs.tabs('option', 'selected');
+                jQuery(".main-menu-tabs").tabs('load',selected);
+                dialogid.dialog("destroy");
+            }
+        });
+    });
+
+    jQuery(".cmd-printlink-magacin").click(function(){
+        if (typeof grupaid == "undefined") grupaid = 0;
+        if (typeof magacin == "undefined") magacin = 0;
+
+        var grupaid = jQuery('.artikli-dropdown').val();
+
+        var magacin = jQuery('.magacin option:selected').val();
+
+        /*   jQuery.ajax({
+
+               url:'/index.php/materijalno/vlez_izlez/pecati_site_priemnici?magacinid='+ magacinid + '&klientid=' + klientid + '&pogledid=' + pogledid,
+               type:'GET',
+
+               dataType:'json',
+              success:function (response) {}
+            });
+*/
+        jQuery(".cmd-printlink-magacin").attr("href","/index.php/print/pdf?view=/index.php/materijalno/lager_lista/printLagerLista&magacin="+ magacin + "&grupaid=" + grupaid);
+
+
+    });
+
+
+});
+</script>

@@ -1,0 +1,76 @@
+<div class="info-faktura-fzom-form">
+<?php echo form_open('izlezni_fakturi/faktura/create_faktura_fzom'); ?>
+<fieldset>
+    <legend>Излезна фактура од добавувач</legend>
+    <div class="faktura-od-dobavuvac">
+        <div class="f-od-dobavuvac broj">
+            <label>Број: </label>
+            <span class="arhivskibroj"><?= $faktura->textBroj; ?></span>
+        </div>
+        <div class="f-od-dobavuvac klient">
+            <label>Коминтент: </label>
+            <label>Министерство за здравство</label>
+        </div>
+        <div class="f-od-dobavuvac datum">
+            <label>Датум :</label>
+            <span class="datum"><?= $faktura->datum; ?></span>
+        </div>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>Ставки во документот - детално</legend>
+    <div class="predtabela">
+    <table class="tstavki-infofzomfaktura" border="1" cellpadding="2" id="faktura">
+        <thead>
+        <tr>
+            <th class="redenbr">РБ</th>
+            <th class="sifra">Шифра на пакет/услуга</th>
+            <th class="naziv">Назив на услугата</th>
+            <th class="kolicina">Количина/денови/третмани</th>
+            <th class="ref-cena">Референтна цена</th>
+            <th class="vkupno">Вкупен износ</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php if(is_array($faktura_stavki)){ ?>
+            <?php $i=1; foreach($faktura_stavki as $detali): ?>
+                <tr class="detali trow">
+                    <td><?= $i ?></td>
+                    <td><?= $detali->sifra; ?></td>
+                    <td><?= $detali->stavkaIme; ?></td>
+                    <td><?= $detali->stavkaKolicina; ?></td>
+                    <td class="cena"><?= $detali->stavkaCena; ?></td>
+                    <td class="vkupno"><?= $detali->stavkaCena*$detali->stavkaKolicina; ?></td>
+                </tr>
+                <?php $i++; ?>
+            <?php endforeach; ?>
+        <?php }; ?>
+        </tbody>
+    </table>
+    </div>
+</fieldset>
+<fieldset class="ceni">
+    <legend>За наплата</legend><br>
+    <label>Вкупно здравствени услуги со партиципација: </label>
+    <input type="text" class="vkupnopaket inlineceni" value="" readonly><br>
+    <label>Вкупен износ на пресметана партиципација: </label>
+    <input type="text" class="presmetanaparticipacija inlineceni" value="<?= $faktura->presmetana_participacija; ?>" readonly><br>
+    <label>Вкупен износ на наплатена партиципација: </label>
+    <input type="text" class="naplatenaparticipacija inlineceni" value="<?= $faktura->naplatena_participacija; ?>" readonly><br>
+    <label>Вкупно за наплата од ФЗОМ: </label>
+    <input type="text" class="vkupnofzom inlineceni" value="<?= $faktura->vkupno_fzom; ?>" readonly><br>
+</fieldset>
+<?php echo form_close(); ?>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".tstavki-infofzomfaktura tbody tr").each(function(){
+            jQuery(this).find(".cena").html(formatnumbermkd(jQuery(this).find(".cena").html()));
+            jQuery(this).find(".vkupno").html(formatnumbermkd(jQuery(this).find(".vkupno").html()));
+        });
+        jQuery(".vkupnopaket").val(formatnumbermkd(jQuery(".vkupnopaket").val()));
+        jQuery(".presmetanaparticipacija").val(formatnumbermkd(jQuery(".presmetanaparticipacija").val()));
+        jQuery(".naplatenaparticipacija").val(formatnumbermkd(jQuery(".naplatenaparticipacija").val()));
+        jQuery(".vkupnofzom").val(formatnumbermkd(jQuery(".vkupnofzom").val()));
+    });
+</script>

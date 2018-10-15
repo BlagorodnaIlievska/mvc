@@ -1,0 +1,554 @@
+<div class="izleznidospeanost">
+        <?php if (bis_check_access('izlezni_fakturi_pregled_dospeanost_komitent_pacient')): ?>
+            <div class="filter-dospeanost">
+            <?php echo form_open('izlezni_fakturi/pregled_dospeanost/getDospeanostKlient'); ?>
+            <div class="komintent">
+                <label>Коминтент: </label>
+                <?php echo form_dropdown('klient', $klient,'','class="pdklient pregleddospeanost"'); ?>
+            </div>
+            <div class="pacient">
+                <label class="pacient">Пациент: </label>
+                <?php echo form_dropdown('pacient', $pacienti, '', 'class="pdpacient pregleddospeanost"'); ?>
+            </div>
+            <?php    echo form_close(); ?>
+            </div>
+        <?php endif ?>
+    <input type="hidden" name="datum" class="today">
+    <div class="idnina">
+    <p class="naslovidnina" > ( <span class="vkupnostavki">0</span> ) За плаќање во иднина</p>
+    <div class="predtabela">
+    <table class="tabelaidnina" border="1" cellspacing="2" cellpadding="2">
+        <thead>
+        <tr>
+            <th class="rok">Рок до</th>
+            <th class="broj">Број</th>
+            <th class="datum">Датум</th>
+            <th class="klient">Клиент</th>
+            <th class="suma">Сума</th>
+            <th class="uplati">Уплати</th>
+            <th class="dolg">Долг</th>
+            <th class="zabeleska">Забелешка</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class='hiderow'>
+            <td class='rok'></td>
+            <td class="number"></td>
+            <td class="datum"></td>
+            <td class="klient"></td>
+            <td class="suma"></td>
+            <td class="uplati"></td>
+            <td class="vkupno"></td>
+            <td class="zabeleska"></td>
+        </tr>
+        </tbody>
+     </table>
+     </div>
+     <table class="sumiranje sumidnina">
+     <tfoot>
+         <tr>
+             <td class="rok"></td>
+             <td class="broj"></td>
+             <td class="datum"></td>
+             <td class="vkupnolabel" style="width:214px;">Вкупно:</td>
+             <td class="osnovasum" style="width:104px;"></td>
+             <td class="vkupnoddv" style="width:104px;"></td>
+             <td class="vkupnovkupno" style="width:104px;"></td>
+<!--             <td class="" style="width:0px;"></td>-->
+             <td></td>
+         </tr>
+     </tfoot>
+     </table>
+         <?php if (bis_check_access('izlezni_fakturi_pregled_dospeanost_pecati_idnina_button')): ?>
+        <a href="" target="_blank" class="cmd-printlink-dospeanost-idnina">
+            <button type="button" class="pecatikartica print"><span>Печати</span></button>
+        </a>
+         <?php endif ?>
+    </div><br>
+    <div class="denes">
+    <p class="naslovdenes" > ( <span class="vkupnostavki">0</span> ) За плаќање денес</p>
+    <div class="predtabela">
+    <table class="tabeladenes" border="1" cellspacing="2" cellpadding="2">
+        <thead>
+        <tr>
+            <th class="rok">Рок до</th>
+            <th class="broj">Број</th>
+            <th class="datum">Датум</th>
+            <th class="klient">Клиент</th>
+            <th class="suma">Сума</th>
+            <th class="uplati">Уплати</th>
+            <th class="dolg">Долг</th>
+            <th class="zabeleska">Забелешка</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class='hiderow'>
+            <td class='rok'></td>
+            <td class="number"></td>
+            <td class="datum"></td>
+            <td class="klient"></td>
+            <td class="suma"></td>
+            <td class="uplati"></td>
+            <td class="vkupno"></td>
+            <td class="zabeleska"></td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+    <table class="sumiranje sumdenes">
+    <tfoot>
+         <tr>
+             <td class="rok"></td>
+             <td class="broj"></td>
+             <td class="datum"></td>
+             <td class="vkupnolabel" style="width:210px;">Вкупно:</td>
+             <td class="osnovasum"></td>
+             <td class="vkupnoddv" style="width:106px;"></td>
+             <td class="vkupnovkupno" style="width:104px;"></td>
+<!--             <td class="" style="width:0px;"></td>-->
+             <td></td>
+         </tr>
+    </tfoot>
+    </table>
+        <?php if (bis_check_access('izlezni_fakturi_pregled_dospeanost_pecati_denes_button')): ?>
+        <a href="" target="_blank" class="cmd-printlink-dospeanost-denes">
+            <button type="button" class="pecatikartica print"><span>Печати</span></button>
+        </a>
+        <?php endif ?>
+
+    </div><br>
+    <div class="minato">
+    <p class="naslovminato" > ( <span class="vkupnostavki">0</span> ) Со поминат рок на плаќање</p>
+    <div class="predtabela">
+    <table class="tabelaminato" border="1" cellspacing="2" cellpadding="2">
+        <thead>
+        <tr>
+            <th class="rok">Рок до</th>
+            <th class="broj">Број</th>
+            <th class="datum">Датум</th>
+            <th class="klient">Клиент</th>
+            <th class="suma">Сума</th>
+            <th class="uplati">Уплати</th>
+            <th class="dolg">Долг</th>
+            <th class="zabeleska">Забелешка</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class='hiderow'>
+            <td class='rok'></td>
+            <td class="number"></td>
+            <td class="datum"></td>
+            <td class="klient"></td>
+            <td class="suma"></td>
+            <td class="uplati"></td>
+            <td class="vkupno"></td>
+            <td class="zabeleska"></td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+    <table class="sumiranje summinato">
+    <tfoot>
+         <tr>
+             <td class="rok"></td>
+             <td class="broj"></td>
+             <td class="datum"></td>
+            <td class="vkupnolabel" style="width:210px;">Вкупно:</td>
+            <td class="osnovasum" style="width:105px;"></td>
+            <td class="vkupnoddv" style="width:104px;"></td>
+            <td class="vkupnovkupno" style="width:104px;"></td>
+<!--            <td class="" style="width:0px;"></td>-->
+            <td></td>
+         </tr>
+    </tfoot>
+    </table>
+    </div>
+    <?php if (bis_check_access('izlezni_fakturi_pregled_dospeanost_pecati_minato_button')): ?>
+    <a href="" target="_blank" class="cmd-printlink-dospeanost-minato">
+        <button type="button" class="pecatikartica print"><span>Печати</span></button>
+    </a>
+    <?php endif ?>
+
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery(".pdklient, .pdpacient").combobox();
+        jQuery(".tabelaidnina").tablesorter();
+        jQuery(".tabeladenes").tablesorter();
+        jQuery(".tabelaminato").tablesorter();
+        jQuery(".today" ).datepicker({dateFormat:'yy-mm-dd'}).datepicker("setDate", new Date());
+        var today = jQuery('.today').val();
+        var date1 = (today.toString()).trim();
+        var date2;
+        var dataAll = {
+            klientid: 0
+        }
+        jQuery.ajax({
+            url: '/index.php/izlezni_fakturi/pregled_dospeanost/getDospeanostKlient',
+            data: dataAll,
+            type: 'POST',
+            dataType: 'json',
+            success: function(response) {
+//                console.log(response);
+                var today = jQuery('.today').val();
+                jQuery(".tabelaminato tbody").find("tr:gt(1)").remove();
+                jQuery(".tabeladenes tbody").find("tr:gt(1)").remove();
+                jQuery(".tabelaidnina tbody").find("tr:gt(1)").remove();
+                var vkupnostavki = response.length;
+                var idnina = 0, denes = 0, minato = 0;
+                var denessuma = 0, denesuplati = 0, denesdolg =0;
+                var idninasuma = 0, idninauplati = 0, idninadolg =0;
+                var minatosuma = 0, minatouplati = 0, minatodolg =0;
+                var temp;        var splited_array=[];   var joined_array = [];
+                for ( var i = 0; i < response.length; i++ ) {
+                    splited_array=[];
+                    joined_array=[];
+//                    var fak_vkupno = response[i].p_vkupno;
+//                    var fak_uplati = response[i].uplati;
+//                    var fak_dolg = 1*fak_vkupno - 1*fak_uplati;
+                    //  console.log(response[i].rok);
+                    temp=response[i].rok;
+                    splited_array = (temp).split('-');
+                    //console.log(splited_array);
+
+                    var j = 0;
+                    for(var m = (splited_array.length - 1); m >= 0; m--){
+                        joined_array[j] = splited_array[m];
+                   j++;
+                    }
+                    var joined_date = joined_array[0] + '-' + joined_array[1] + '-' + joined_array[2];
+                    date2 = (joined_date.toString()).trim();
+                     //console.log(date2);
+                    console.log(date1,date2);
+                    if(date1 < date2) //naplata vo idnina
+                    {
+                        var tr = jQuery('.tabelaidnina tr:eq(1)');
+                        tr.removeClass('hiderow');
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('.rok').html(response[i].rok);
+                        newrow.find('.number').html(response[i].textBroj);
+                        newrow.find('.datum').html(response[i].datum);
+                        if(response[i].firmaID > 0)
+                        {
+                            var fak_vkupno = response[i].p_vkupno;
+                            var fak_uplati = response[i].uplati;
+                            var fak_dolg = 1*fak_vkupno - 1*fak_uplati;
+                            newrow.find('.klient').html(response[i].firmaIme);
+                            newrow.find('.suma').html(formatnumbermkd(parseFloat(fak_vkupno)));
+                            newrow.find('.uplati').html(formatnumbermkd(parseFloat(fak_uplati)));
+                            newrow.find('.vkupno').html(formatnumbermkd(parseFloat(fak_dolg)));
+                            idnina = idnina + 1;
+                            idninasuma =1 * idninasuma + 1 * response[i].p_vkupno;
+                            idninauplati = 1 * idninauplati + 1 * response[i].uplati;
+                            idninadolg =1 * idninadolg + 1 * (response[i].p_vkupno - response[i].uplati);
+                        }
+                        if(response[i].pacientID > 0)
+                        {
+                            var pacientIme = response[i].pacientIme+" "+response[i].pacientTatkovoIme+" "+response[i].pacientPrezime;
+                            newrow.find('.klient').html(pacientIme);
+                            newrow.find('.suma').html(formatnumbermkd(parseFloat(response[i].pacientIznos)));
+                            newrow.find('.uplati').html(formatnumbermkd(parseFloat(response[i].pacientIznos)));
+                            newrow.find('.vkupno').html(formatnumbermkd(parseFloat(response[i].pacientIznos)));
+                            idnina = idnina + 1;
+                            idninasuma =1 * idninasuma + 1 * response[i].p_vkupno;
+                            idninauplati = 1 * idninauplati + 1 * response[i].uplati;
+                            idninadolg =1 * idninadolg + 1 * (response[i].p_vkupno - response[i].uplati);
+                        }
+                        newrow.find('.zabeleska').html(response[i].komentar);
+                    }
+                    if(date1 == date2) // naplata denes
+                    {
+                        var tr = jQuery('.tabeladenes tr:eq(1)');
+                        tr.removeClass('hiderow');
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('.rok').html(response[i].rok);
+                        newrow.find('.number').html(response[i].textBroj);
+                        newrow.find('.datum').html(response[i].datum);
+                        if(response[i].firmaID > 0)
+                        {
+                            var fak_vkupno = response[i].p_vkupno;
+                            var fak_uplati = response[i].uplati;
+                            var fak_dolg = 1*fak_vkupno - 1*fak_uplati;
+                            newrow.find('.klient').html(response[i].firmaIme);
+                            newrow.find('.suma').html(formatnumbermkd(fak_vkupno));
+                            newrow.find('.uplati').html(formatnumbermkd(fak_uplati));
+                            newrow.find('.vkupno').html(formatnumbermkd(fak_dolg));
+                            denes = denes + 1;
+                            denessuma =1 * denessuma + 1 * response[i].p_vkupno;
+                            denesuplati = 1 * denesuplati + 1 * response[i].uplati;
+                            denesdolg =1 * denesdolg + 1 * (response[i].p_vkupno - response[i].uplati);
+                        }
+                        if(response[i].pacientID > 0)
+                        {
+                            var pacientIme = response[i].pacientIme+" "+response[i].pacientTatkovoIme+" "+response[i].pacientPrezime;
+                            newrow.find('.klient').html(pacientIme);
+                            newrow.find('.suma').html(formatnumbermkd(response[i].pacientIznos));
+                            newrow.find('.uplati').html(formatnumbermkd(response[i].pacientIznos));
+                            newrow.find('.vkupno').html(formatnumbermkd(response[i].pacientIznos));
+                            denes = denes + 1;
+                            denessuma =1 * denessuma + 1 * response[i].p_vkupno;
+                            denesuplati = 1 * denesuplati + 1 * response[i].uplati;
+                            denesdolg =1 * denesdolg + 1 * (response[i].p_vkupno - response[i].uplati);
+                        }
+                        newrow.find('.zabeleska').html(response[i].komentar);
+                    }
+                    if(date1 > date2) // pominat rok za plakjanje
+                    {
+                        var tr = jQuery('.tabelaminato tr:eq(1)');
+                        tr.removeClass('hiderow');
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('.rok').html(response[i].rok);
+                        newrow.find('.number').html(response[i].textBroj);
+                        newrow.find('.datum').html(response[i].datum);
+                        if(response[i].firmaID > 0)
+                        {
+                            var fak_vkupno = response[i].p_vkupno;
+                            var fak_uplati = response[i].uplati;
+                            var fak_dolg = 1*fak_vkupno - 1*fak_uplati;
+                            newrow.find('.klient').html(response[i].firmaIme);
+                            newrow.find('.suma').html(formatnumbermkd(parseFloat(fak_vkupno)));
+                            newrow.find('.uplati').html(formatnumbermkd(parseFloat(fak_uplati)));
+                            newrow.find('.vkupno').html(formatnumbermkd(parseFloat(fak_dolg)));
+                            minato = minato + 1;
+                            minatosuma =1 * minatosuma + 1 * response[i].p_vkupno;
+                            minatouplati = 1 * minatouplati + 1 * response[i].uplati;
+                            minatodolg =1 * minatodolg + 1 * (response[i].p_vkupno - response[i].uplati);
+                        }
+                        if(response[i].pacientID > 0)
+                        {
+                            var pacientIme = response[i].pacientIme+" "+response[i].pacientTatkovoIme+" "+response[i].pacientPrezime;
+                            newrow.find('.klient').html(pacientIme);
+                            newrow.find('.suma').html(formatnumbermkd(parseFloat(response[i].pacientIznos)));
+                            newrow.find('.uplati').html(formatnumbermkd(parseFloat(response[i].pacientIznos)));
+                            newrow.find('.vkupno').html(formatnumbermkd(parseFloat(response[i].pacientIznos)));
+                            minato = minato + 1;
+                            minatosuma =1 * minatosuma + 1 * response[i].p_vkupno;
+                            minatouplati = 1 * minatouplati + 1 * response[i].uplati;
+                            minatodolg =1 * minatodolg + 1 * (response[i].p_vkupno - response[i].uplati);
+                        }
+                        newrow.find('.zabeleska').html(response[i].komentar);
+                    }
+                    tr.addClass('hiderow');
+                }
+                jQuery(".naslovidnina .vkupnostavki").html(idnina + " во листа");
+                jQuery(".naslovdenes .vkupnostavki").html(denes + " во листа");
+                jQuery(".naslovminato .vkupnostavki").html(minato + " во листа");
+                jQuery(".summinato .osnovasum").html(formatnumbermkd( minatosuma));
+                jQuery(".summinato .vkupnoddv").html(formatnumbermkd(minatouplati));
+                jQuery(".summinato .vkupnovkupno").html(formatnumbermkd(minatodolg));
+                jQuery(".sumdenes .osnovasum").html(formatnumbermkd(denessuma));
+                jQuery(".sumdenes .vkupnoddv").html(formatnumbermkd(denesuplati));
+                jQuery(".sumdenes .vkupnovkupno").html(formatnumbermkd(denesdolg));
+                jQuery(".sumidnina .osnovasum").html(formatnumbermkd(idninasuma));
+                jQuery(".sumidnina .vkupnoddv").html(formatnumbermkd(idninauplati));
+                jQuery(".sumidnina .vkupnovkupno").html(formatnumbermkd(idninadolg));
+                jQuery(".tabelaidnina").trigger("update");
+                jQuery(".tabeladenes").trigger("update");
+                jQuery(".tabelaminato").trigger("update");
+            }
+        });
+        jQuery('.pdklient').change(function(){
+            jQuery('div.pacient').addClass('hide');
+        });
+        jQuery('.pdpacient').change(function(){
+            jQuery('div.komintent').addClass('hide');
+        });
+        jQuery('.pregleddospeanost').live('change',function(){
+            var klient = jQuery('.pdklient option:selected').val();
+            var pacient = jQuery('.pdpacient option:selected').val();
+            var formaction = jQuery(this).parent().parent().attr('action');
+            var data = {
+                klientid: klient,
+                pacientid: pacient
+            }
+            jQuery.ajax({
+                url: formaction,
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+//                    console.log(response);
+                    jQuery(".tabelaminato tbody").find("tr:gt(0)").remove();
+                    jQuery(".tabeladenes tbody").find("tr:gt(0)").remove();
+                    jQuery(".tabelaidnina tbody").find("tr:gt(0)").remove();
+                    var vkupnostavki = response.length;
+                    var idnina = 0, denes = 0, minato = 0;
+                    var denessuma = 0, denesuplati = 0, denesdolg =0;
+                    var idninasuma = 0, idninauplati = 0, idninadolg =0;
+                    var minatosuma = 0, minatouplati = 0, minatodolg =0;
+                    var temp;        var splited_array=[];   var joined_array = [];
+                    if(response.length > 0)
+                    {
+                    for ( var i = 0; i < response.length; i++ ) {
+                        splited_array=[];
+                        joined_array=[];
+                    var fak_vkupno = response[i].p_vkupno;
+                    var fak_uplati = response[i].uplati;
+                    var fak_dolg = 1*fak_vkupno - 1*fak_uplati;
+
+                        //  console.log(response[i].rok);
+                        temp=response[i].rok;
+                        splited_array = (temp).split('-');
+                        //console.log(splited_array);
+
+                        var j = 0;
+                        for(var m = (splited_array.length - 1); m >= 0; m--){
+                            joined_array[j] = splited_array[m];
+                            j++;
+                        }
+                        var joined_date = joined_array[0] + '-' + joined_array[1] + '-' + joined_array[2];
+                        date2 = (joined_date.toString()).trim();
+
+                        if(date1 < date2) //naplata vo idnina
+                        {
+                            var tr = jQuery('.tabelaidnina tr:eq(1)');
+                            tr.removeClass('hiderow');
+                            var newrow = jQuery(tr).clone().insertAfter(tr);
+                            newrow.find('.rok').html(response[i].rok);
+                            newrow.find('.number').html(response[i].textBroj);
+                            newrow.find('.datum').html(response[i].datum);
+                            newrow.find('.zabeleska').html(response[i].komentar);
+                            if(response[i].firmaID > 0)
+                            {
+                                var fak_vkupno = response[i].p_vkupno;
+                                var fak_uplati = response[i].uplati;
+                                var fak_dolg = 1*fak_vkupno - 1*fak_uplati;
+                                newrow.find('.klient').html(response[i].firmaIme);
+                                newrow.find('.suma').html(formatnumbermkd(parseFloat(fak_vkupno).toFixed(2)));
+                                newrow.find('.uplati').html(formatnumbermkd(parseFloat(fak_uplati).toFixed(2)));
+                                newrow.find('.vkupno').html(formatnumbermkd(parseFloat(fak_dolg).toFixed(2)));
+                                idnina = idnina + 1;
+                                idninasuma =1 * idninasuma + 1 * response[i].p_vkupno;
+                                idninauplati = 1 * idninauplati + 1 * response[i].uplati;
+                                idninadolg =1 * idninadolg + 1 * (response[i].p_vkupno - response[i].uplati);
+                            }
+                            if(response[i].pacientID > 0)
+                            {
+                                var pacientIme = response[i].pacientIme+" "+response[i].pacientTatkovoIme+" "+response[i].pacientPrezime;
+                                newrow.find('.klient').html(pacientIme);
+                                newrow.find('.suma').html(formatnumbermkd(parseFloat(response[i].pacientIznos).toFixed(2)));
+                                newrow.find('.uplati').html(formatnumbermkd(parseFloat(response[i].pacientIznos).toFixed(2)));
+                                newrow.find('.vkupno').html(formatnumbermkd(parseFloat(response[i].pacientIznos).toFixed(2)));
+                                idnina = idnina + 1;
+                                idninasuma =1 * idninasuma + 1 * response[i].pacientIznos;
+                                idninauplati = 1 * idninauplati + 1 * response[i].uplati;
+                                idninadolg =1 * idninadolg + 1 * (response[i].pacientIznos - response[i].uplati);
+                            }
+                        }
+                        if(date1 == date2) // naplata denes
+                        {
+                            var tr = jQuery('.tabeladenes tr:eq(1)');
+                            tr.removeClass('hiderow');
+                            var newrow = jQuery(tr).clone().insertAfter(tr);
+                            newrow.find('.rok').html(response[i].rok);
+                            newrow.find('.number').html(response[i].textBroj);
+                            newrow.find('.datum').html(response[i].datum);
+                            if(response[i].firmaID > 0)
+                            {
+                                var fak_vkupno = response[i].p_vkupno;
+                                var fak_uplati = response[i].uplati;
+                                var fak_dolg = 1*fak_vkupno - 1*fak_uplati;
+                                newrow.find('.klient').html(response[i].firmaIme);
+                                newrow.find('.suma').html(formatnumbermkd(parseFloat(fak_vkupno).toFixed(2)));
+                                newrow.find('.uplati').html(formatnumbermkd(parseFloat(fak_uplati).toFixed(2)));
+                                newrow.find('.vkupno').html(formatnumbermkd(parseFloat(fak_dolg).toFixed(2)));
+                                denes = denes + 1;
+                                denessuma =1 * denessuma + 1 * response[i].p_vkupno;
+                                denesuplati = 1 * denesuplati + 1 * response[i].uplati;
+                                denesdolg =1 * denesdolg + 1 * (response[i].p_vkupno - response[i].uplati);
+                            }
+                            if(response[i].pacientID > 0)
+                            {
+                                var pacientIme = response[i].pacientIme+" "+response[i].pacientTatkovoIme+" "+response[i].pacientPrezime;
+                                newrow.find('.klient').html(pacientIme);
+                                newrow.find('.suma').html(formatnumbermkd(parseFloat(response[i].pacientIznos).toFixed(2)));
+                                newrow.find('.uplati').html(formatnumbermkd(parseFloat(response[i].pacientIznos).toFixed(2)));
+                                newrow.find('.vkupno').html(formatnumbermkd(parseFloat(response[i].pacientIznos).toFixed(2)));
+                                denes = denes + 1;
+                                denessuma =1 * denessuma + 1 * response[i].pacientIznos;
+                                denesuplati = 1 * denesuplati + 1 * response[i].uplati;
+                                denesdolg =1 * denesdolg + 1 * (response[i].pacientIznos - response[i].uplati);
+                            }
+                            newrow.find('.zabeleska').html(response[i].komentar);
+                            denes = denes + 1;
+                            denessuma =1 * denessuma + 1 * response[i].p_vkupno;
+                            denesuplati = 1 * denesuplati + 1 * response[i].p_vkupno;
+                            denesdolg =1 * denesdolg + 1 * response[i].p_vkupno;
+                        }
+                        if(date1 > date2) // pominat rok za plakjanje
+                        {
+                            var tr = jQuery('.tabelaminato tr:eq(1)');
+                            tr.removeClass('hiderow');
+                            var newrow = jQuery(tr).clone().insertAfter(tr);
+                            newrow.find('.rok').html(response[i].rok);
+                            newrow.find('.number').html(response[i].textBroj);
+                            newrow.find('.datum').html(response[i].datum);
+                            if(response[i].firmaID > 0)
+                            {
+                                var fak_vkupno = response[i].p_vkupno;
+                                var fak_uplati = response[i].uplati;
+                                var fak_dolg = 1*fak_vkupno - 1*fak_uplati;
+                                newrow.find('.klient').html(response[i].firmaIme);
+                                newrow.find('.suma').html(formatnumbermkd(parseFloat(fak_vkupno).toFixed(2)));
+                                newrow.find('.uplati').html(formatnumbermkd(parseFloat(fak_uplati).toFixed(2)));
+                                newrow.find('.vkupno').html(formatnumbermkd(parseFloat(fak_dolg).toFixed(2)));
+                                minato = minato + 1;
+                                minatosuma =1 * minatosuma + 1 * response[i].p_vkupno;
+                                minatouplati = 1 * minatouplati + 1 * response[i].uplati;
+                                minatodolg =1 * minatodolg + 1 * (response[i].p_vkupno - response[i].uplati);
+                            }
+                            if(response[i].pacientID > 0)
+                            {
+                                var pacientIme = response[i].pacientIme+" "+response[i].pacientTatkovoIme+" "+response[i].pacientPrezime;
+                                newrow.find('.klient').html(pacientIme);
+                                newrow.find('.suma').html(formatnumbermkd(parseFloat(response[i].pacientIznos).toFixed(2)));
+                                newrow.find('.uplati').html(formatnumbermkd(parseFloat(response[i].pacientIznos).toFixed(2)));
+                                newrow.find('.vkupno').html(formatnumbermkd(parseFloat(response[i].pacientIznos).toFixed(2)));
+                                minato = minato + 1;
+                                minatosuma =1 * minatosuma + 1 * response[i].pacientIznos;
+                                minatouplati = 1 * minatouplati + 1 * response[i].uplati;
+                                minatodolg =1 * minatodolg + 1 * (response[i].pacientIznos - response[i].uplati);
+                            }
+                            newrow.find('.zabeleska').html(response[i].komentar);
+                        }
+                        tr.addClass('hiderow');
+                    }
+                        jQuery(".naslovidnina .vkupnostavki").html(idnina + " во листа");
+                        jQuery(".naslovdenes .vkupnostavki").html(denes + " во листа");
+                        jQuery(".naslovminato .vkupnostavki").html(minato + " во листа");
+                        jQuery(".summinato .osnovasum").html(formatnumbermkd( minatosuma));
+                        jQuery(".summinato .vkupnoddv").html(formatnumbermkd(minatouplati));
+                        jQuery(".summinato .vkupnovkupno").html(formatnumbermkd(minatodolg));
+                        jQuery(".sumdenes .osnovasum").html(formatnumbermkd(denessuma));
+                        jQuery(".sumdenes .vkupnoddv").html(formatnumbermkd(denesuplati));
+                        jQuery(".sumdenes .vkupnovkupno").html(formatnumbermkd(denesdolg));
+                        jQuery(".sumidnina .osnovasum").html(formatnumbermkd(idninasuma));
+                        jQuery(".sumidnina .vkupnoddv").html(formatnumbermkd(idninauplati));
+                        jQuery(".sumidnina .vkupnovkupno").html(formatnumbermkd(idninadolg));
+                        jQuery(".tabelaidnina").trigger("update");
+                        jQuery(".tabeladenes").trigger("update");
+                        jQuery(".tabelaminato").trigger("update");
+                    }
+                }
+            });
+        });
+
+        jQuery(".cmd-printlink-dospeanost-idnina").click(function(){
+            var klient = jQuery('.pdklient option:selected').val();
+var pacient = jQuery('.pdpacient option:selected').val();
+            jQuery(".cmd-printlink-dospeanost-idnina").attr("href","/index.php/print/pdf?view=/index.php/izlezni_fakturi/pregled_dospeanost/pecati_dospeanost_idnina&klientid=" + klient + "&pacientid=" + pacient);
+        });
+        jQuery(".cmd-printlink-dospeanost-denes").click(function(){
+            var klient = jQuery('.pdklient option:selected').val();
+var pacient = jQuery('.pdpacient option:selected').val();
+            jQuery(".cmd-printlink-dospeanost-denes").attr("href","/index.php/print/pdf?view=/index.php/izlezni_fakturi/pregled_dospeanost/pecati_dospeanost_denes&klientid=" + klient + "&pacientid=" + pacient);
+        });
+        jQuery(".cmd-printlink-dospeanost-minato").click(function(){
+            var klient = jQuery('.pdklient option:selected').val();
+var pacient = jQuery('.pdpacient option:selected').val();
+            jQuery(".cmd-printlink-dospeanost-minato").attr("href","/index.php/print/pdf?view=/index.php/izlezni_fakturi/pregled_dospeanost/pecati_dospeanost_minato&klientid=" + klient + "&pacientid=" + pacient);
+        });
+
+    });
+</script>

@@ -1,0 +1,439 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+
+class Plati extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    function index()
+    {
+        $data['main_content'] = 'plati/index';
+        $this->load->view('includes/template', $data);
+    }
+
+    public function lista()
+    {
+        $this->load->model('plati/mesecni_parametri_model');
+        $data['mesec'] = $this->mesecni_parametri_model->mesec_dropdown();
+        $this->load->view('plati/plati/lista', $data);
+    }
+
+
+    public function getVraboteniPlata()
+    {
+        $this->load->model('plati/plati_model');
+        $query = $this->plati_model->getVraboteniPlata();
+       // print_r($query);
+        echo json_encode($query);
+    }
+
+    public function vraboteni_prikazi()
+    {
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $this->load->model('smenska_grupa/smena_model');
+        $id=$this->input->get('id');
+        $vraboten=$this->covecki_resursi_model->getVraboten($id);
+        $data['vraboten'] =$vraboten;
+        $data['smena']=$this->smena_model->smena_dropdown();
+        $data['firma']=$this->covecki_resursi_model->get_firmi();
+        $data['oddel']=$this->covecki_resursi_model->get_oddeli();
+        $data['pododdel']=$this->covecki_resursi_model->get_pododdeli();
+        $data['id'] =$id ;
+        $this->load->view('plati/prikaz', $data);
+    }
+
+    function pdf_create()
+    {
+        require_once(BASEPATH."plugins/dompdf/dompdf_config.inc.php");
+        $html = $this->input->post('html');
+        $stream = true;
+        $papersize = 'letter';
+        $orientation = 'portrait';
+        $dompdf = new DOMPDF();
+        $dompdf->load_html($html);
+        $dompdf->set_paper($papersize, $orientation);
+        $dompdf->render();
+        $filename = "plati";
+        if ($stream)
+        {
+            $options['Attachment'] = 0;
+            $options['Accept-Ranges'] = 0;
+            $options['compress'] = 1;
+            $dompdf->stream($filename.".pdf", $options);
+        }
+        else
+        {
+            write_file("$filename.pdf", $dompdf->output());
+        }
+    }
+
+    function presmetajPlata()
+    {
+        $this->load->model('plati/plati_model');
+        $query = $this->plati_model->presmetajPlata();
+        //print_r($query);
+        echo json_encode($query);
+    }
+    function proveriPlata()
+    {
+        $this->load->model('plati/plati_model');
+        $query = $this->plati_model->proveriPlata();
+        echo json_encode($query);
+    }
+    public function pecatenje()
+    {
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $this->load->model('plati/mesecni_parametri_model');
+        $data['firma'] = $this->covecki_resursi_model->get_firmi();
+        $data['oddeli'] = $this->covecki_resursi_model->get_oddeli();
+        $data['meseci'] = $this->mesecni_parametri_model->mesec_dropdown();
+        $data['godini'] = range(2010,2020);
+        //bis_debug($data['meseci'], 'meseci');
+        $this->load->view('plati/pecatenje/index', $data);
+    }
+    public function plati_vlezni_podatoci_pdf()
+    {
+        $oddel = $this->input->get('oddel');
+        $mesec = $this->input->get('mesec');
+        $godina = $this->input->get('godina');
+        $this->load->model('pacienti/pacienti_model');
+        $this->load->model('plati/plati_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $vraboteni =  $this->covecki_resursi_model->getVlezniPodatociZaPlata($oddel, $mesec, $godina);
+        $ustanova = $this->pacienti_model->getUstanovaInfo($oddel);
+        //bis_debug($vraboteni, "podatoci");
+        $data['main_content'] = 'plati/pecatenje/plata_vlezni_parametri';
+        $data['vraboteni'] = $vraboteni;
+        $data['ustanova'] = $ustanova;
+        $data['mesec'] = $mesec;
+        $data['godina'] = $godina;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$vraboteni);
+    }
+    public function plati_kontrolen_list_pdf()
+    {
+        $oddel = $this->input->get('oddel');
+        $mesec = $this->input->get('mesec');
+        $godina = $this->input->get('godina');
+        $this->load->model('pacienti/pacienti_model');
+        $this->load->model('plati/plati_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $vraboteni =  $this->covecki_resursi_model->getVlezniPodatociZaPlata($oddel, $mesec, $godina);
+        $ustanova = $this->pacienti_model->getUstanovaInfo($oddel);
+        //bis_debug($vraboteni, "podatoci");
+        $data['main_content'] = 'plati/pecatenje/plata_kontrolen_list';
+        $data['vraboteni'] = $vraboteni;
+        $data['ustanova'] = $ustanova;
+        $data['mesec'] = $mesec;
+        $data['godina'] = $godina;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$vraboteni);
+    }
+
+    public function plati_platen_spisok_pdf()
+    {
+        $oddel = $this->input->get('oddel');
+        $mesec = $this->input->get('mesec');
+        $godina = $this->input->get('godina');
+        $this->load->model('pacienti/pacienti_model');
+        $this->load->model('plati/plati_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+//        $vraboteni =  $this->covecki_resursi_model->getVlezniPodatociZaPlata($oddel, $mesec, $godina);
+        $vraboteni_plati =  $this->plati_model->getPlata($oddel, $mesec, $godina);
+        $ustanova = $this->pacienti_model->getUstanovaInfo($oddel);
+        //bis_debug($vraboteni_plati, "plati");
+        $data['main_content'] = 'plati/pecatenje/plata_platen_spisok';
+        $data['vraboteni'] = $vraboteni_plati;
+        $data['ustanova'] = $ustanova;
+        $data['mesec'] = $mesec;
+        $data['godina'] = $godina;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$vraboteni_plati);
+    }
+    public function plati_rekapitular_1_pdf()
+    {
+        $oddel = $this->input->get('oddel');
+        $mesec = $this->input->get('mesec');
+        $godina = $this->input->get('godina');
+        $this->load->model('pacienti/pacienti_model');
+        $this->load->model('plati/plati_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+       // $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+   //    $p=$this->plati_model->dali_e_clen_na_sindikat(451);
+     //  print_r($p); die();
+//        $vraboteni =  $this->covecki_resursi_model->getVlezniPodatociZaPlata($oddel, $mesec, $godina);
+        $vraboteni_plati =  $this->plati_model->getPlata($oddel, $mesec, $godina);
+        $neto_od_redovna_rabota=$this->plati_model->getNetoOdRedovnaRabota($oddel,$mesec,$godina);
+        $mobilni_telefoni=$this->plati_model->getMobilniTelefoni($oddel,$mesec,$godina);
+        $odbitok=$this->plati_model->getOdbitokVoRekapitular($oddel,$mesec,$godina);
+        $osiguruvanje=$this->plati_model->getOsiguruvanje($oddel,$mesec,$godina);
+        $lekarska_komora=$this->plati_model->getLekarskaKomora($oddel,$mesec,$godina);
+        $sindikat=$this->plati_model->getSindikatVoRekapitular($oddel,$mesec,$godina);
+        $krediti_rekapitular=$this->plati_model->getKreditiVoRekapitular();
+        $danocno_osloboduvanje=$this->plati_model->getDanocnoOsloboduvanje($oddel,$mesec,$godina);
+        $danok=$this->plati_model->getDanok($oddel,$mesec,$godina);
+        $pio=$this->plati_model->getPIO($oddel,$mesec,$godina);
+        $zdravstvo=$this->plati_model->getZdravstvo($oddel,$mesec,$godina);
+        $vrabotuvanje=$this->plati_model->getPridonesZaVrabotuvanje($oddel,$mesec,$godina);
+        $dop_pridones=$this->plati_model->getDopolnitelenPridonesZaZdravstvo($oddel,$mesec,$godina);
+        $bruto_plata=$this->plati_model->getBrutoVoRekapitular($oddel,$mesec,$godina);
+        $bruto_slozenost=$this->plati_model->getBrutoIznosSlozenost($oddel,$mesec,$godina);
+        $bruto_uslovi=$this->plati_model->getBrutoIznosUslovi($oddel,$mesec,$godina);
+        $bruto_rakovodenje=$this->plati_model->getBrutoIznosRakovodenje($oddel, $mesec, $godina);
+        $bruto_minat_trud=$this->plati_model->getBrutoIznosMinatTrud($oddel, $mesec, $godina);
+       //print_r($neto_od_redovna_rabota); die();
+        $ustanova = $this->pacienti_model->getUstanovaInfo($oddel);
+         //print_r($ustanova); die();
+        //bis_debug($vraboteni_plati, "plati");
+        $data['main_content'] = 'plati/pecatenje/plata_rekapitular_1';
+        $data['vraboteni'] = $vraboteni_plati;
+        $data['neto'] =$neto_od_redovna_rabota;
+        $data['mobilni_telefoni']=$mobilni_telefoni;
+        $data['osiguruvanje']=$osiguruvanje;
+        $data['odbitok']=$odbitok;
+        $data['lekarska_komora']=$lekarska_komora;
+        $data['sindikat']=$sindikat;
+        $data['ustanova'] = $ustanova;
+        $data['krediti']=$krediti_rekapitular;
+        $data['danocno_osloboduvanje']=$danocno_osloboduvanje;
+        $data['danok']=$danok;
+        $data['pio']=$pio;
+        $data['zdravstvo']=$zdravstvo;
+        $data['vrabotuvanje']=$vrabotuvanje;
+        $data['dop_pridones']=$dop_pridones;
+        $data['bruto']=$bruto_plata;
+        $data['bruto_slozenost']=$bruto_slozenost;
+        $data['bruto_uslovi'] =$bruto_uslovi;
+        $data['bruto_rakovodenje']=$bruto_rakovodenje;
+        $data['bruto_minat_trud']=$bruto_minat_trud;
+        $data['mesec'] = $mesec;
+        $data['godina'] = $godina;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$vraboteni_plati);
+    }
+    public function pecati_livce_za_plata_pdf()
+    {
+       // $oddel = $this->input->get('oddel');
+       $vrabotenid=$this->input->get('vrabotenid');
+       $mesec = $this->input->get('mesec');
+       $godina = $this->input->get('godina');
+       // $this->load->model('pacienti/pacienti_model');
+        $this->load->model('plati/plati_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $vraboten=$this->covecki_resursi_model->getVraboten($vrabotenid);
+        $plata_vraboten=$this->plati_model->getVrabotenPlata($vrabotenid,$mesec,$godina);
+        $mesecni_parametri_vraboten= $this->plati_model->getVrabotenMesecniParametri($vrabotenid,$mesec,$godina);
+        $krediti_vraboten=$this->plati_model->getVrabotenKrediti($vrabotenid);
+//        $vraboteni =  $this->covecki_resursi_model->getVlezniPodatociZaPlata($oddel, $mesec, $godina);
+      //  $vraboteni_plati =  $this->plati_model->getPlata($oddel, $mesec, $godina);
+        $vraboteni_plati= 1;
+      //  $ustanova = $this->pacienti_model->getUstanovaInfo($oddel);
+        //print_r($ustanova); die();
+       // bis_debug($vraboteni_plati, "plati");
+        $data['main_content'] = 'plati/pecatenje/livce_za_plata';
+       // $data['vraboteni'] = $vraboteni_plati;
+       // $data['ustanova'] = $ustanova;
+        $data['vraboten'] =$vraboten;
+        $data['plata_vraboten']=$plata_vraboten;
+        $data['krediti_vraboten']=$krediti_vraboten;
+      // print_r($data['krediti_vraboten']); die();
+        $data['parametri']=$mesecni_parametri_vraboten;
+        $data['mesec'] = $mesec;
+        $data['godina'] = $godina;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$vraboteni_plati);
+    }
+    public function plati_rekapitular_vkalkulirani_casovi()
+    {
+        $oddel = $this->input->get('oddel');
+        $mesec = $this->input->get('mesec');
+        $godina = $this->input->get('godina');
+        $this->load->model('pacienti/pacienti_model');
+        $this->load->model('plati/plati_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+//        $vraboteni =  $this->covecki_resursi_model->getVlezniPodatociZaPlata($oddel, $mesec, $godina);
+        $vraboteni_plati =  $this->plati_model->getPlata($oddel, $mesec, $godina);
+        $mesecni_parametri=$this->plati_model->getVrednostNaBod($mesec,$godina);
+        $efektivni_casovi= $this->plati_model->getEfektivniCasovi($mesec,$godina);
+        $vkupno_casovi_redovna_rabota=$this->plati_model->getCasoviRedovnaRabota($oddel,$mesec,$godina);
+        $bruto_slozenost=$this->plati_model->getBrutoIznosSlozenost($oddel,$mesec,$godina);
+        $bruto_uslovi=$this->plati_model->getBrutoIznosUslovi($oddel,$mesec,$godina);
+        $bruto_rakovodenje=$this->plati_model->getBrutoIznosRakovodenje($oddel, $mesec, $godina);
+        $vkupno_casovi_noken_trud=$this->plati_model-> getCasoviNoknaRabota($oddel,$mesec,$godina);
+        $suma_noken_trud=$this->plati_model->getSumaNoknaRabota($oddel,$mesec,$godina);
+        $vkupno_casovi_praznici=$this->plati_model->getCasoviPraznik($oddel,$mesec,$godina);
+        $suma_praznici=$this->plati_model->getSumaPraznici($oddel,$mesec,$godina);
+        $vkupno_casovi_dezurstvo=$this->plati_model->getCasoviDezurstvo($oddel,$mesec,$godina);
+        $suma_dezurstvo=$this->plati_model->getSumaDezurstvo($oddel,$mesec,$godina);
+        $vkupno_casovi_boleduvanje_1=$this->plati_model->getCasoviBoleduvanje1($oddel,$mesec,$godina);
+      //  print_r($vkupno_casovi_boleduvanje_1); die();
+        $vkupno_casovi_boleduvanje_2=$this->plati_model->getCasoviBoleduvanje2($oddel,$mesec,$godina);
+
+        $vkupno_casovi_boleduvanje_3=$this->plati_model->getCasoviBoleduvanje3($oddel,$mesec,$godina);
+        $vkupno_casovi_boleduvanje_nad_30=$this->plati_model->getCasoviBoleduvanjenad30($oddel,$mesec,$godina);
+        $suma_boleduvanje_1=$this->plati_model->getSumaBoleduvanje1($oddel,$mesec,$godina);
+        $suma_boleduvanje_2=$this->plati_model->getSumaBoleduvanje2($oddel,$mesec,$godina);
+        $suma_boleduvanje_3=$this->plati_model->getSumaBoleduvanje3($oddel,$mesec,$godina);
+        $suma_boleduvanje_nad_30=$this->plati_model->getSumaBoleduvanjeNad30($oddel,$mesec,$godina);
+        $bruto_minat_trud=$this->plati_model->getBrutoIznosMinatTrud($oddel, $mesec, $godina);
+        $bruto_plata=$this->plati_model->getBrutoVoRekapitular($oddel,$mesec,$godina);
+        $mobilni_telefoni=$this->plati_model->getMobilniTelefoni($oddel,$mesec,$godina);
+        $odbitok=$this->plati_model->getOdbitokVoRekapitular($oddel,$mesec,$godina);
+        $osiguruvanje=$this->plati_model->getOsiguruvanje($oddel,$mesec,$godina);
+        $lekarska_komora=$this->plati_model->getLekarskaKomora($oddel,$mesec,$godina);
+        $sindikat=$this->plati_model->getSindikatVoRekapitular($oddel,$mesec,$godina);
+        $krediti_rekapitular=$this->plati_model->getKreditiVoRekapitular();
+        $neto_od_redovna_rabota=$this->plati_model->getNetoOdRedovnaRabota($oddel,$mesec,$godina);
+        // print_r($mesecni_parametri); die();
+        $ustanova = $this->pacienti_model->getUstanovaInfo($oddel);
+        //print_r($ustanova); die();
+        //bis_debug($vraboteni_plati, "plati");
+        $data['main_content'] = 'plati/pecatenje/plati_rekapitular_vkalkulirani_casovi';
+        $data['vraboteni'] = $vraboteni_plati;
+        $data['ustanova'] = $ustanova;
+        $data['mesec'] = $mesec;
+        $data['godina'] = $godina;
+        $data['vrednost_na_bod']=$mesecni_parametri;
+        $data['efektivni_casovi']=$efektivni_casovi;
+        $data['casovi_redovna_rabota']=$vkupno_casovi_redovna_rabota;
+        $data['bruto_slozenost']=$bruto_slozenost;
+        $data['bruto_uslovi'] =$bruto_uslovi;
+        $data['bruto_rakovodenje']=$bruto_rakovodenje;
+        $data['vkupno_casovi_nokna_rabota']=$vkupno_casovi_noken_trud;
+        $data['suma_noken_trud'] =  $suma_noken_trud;
+        $data['vkupno_casovi_praznici']= $vkupno_casovi_praznici;
+        $data['suma_praznici']=$suma_praznici;
+        $data['vkupno_casovi_dezurstvo']=$vkupno_casovi_dezurstvo;
+        $data['suma_dezurstvo']=  $suma_dezurstvo;
+        $data['vkupno_casovi_boleduvanje_1']= $vkupno_casovi_boleduvanje_1;
+        $data['vkupno_casovi_boleduvanje_2']= $vkupno_casovi_boleduvanje_2;
+        $data['vkupno_casovi_boleduvanje_3']= $vkupno_casovi_boleduvanje_3;
+        $data['vkupno_casovi_boleduvanje_nad_30']= $vkupno_casovi_boleduvanje_nad_30;
+        $data['suma_boleduvanje_1']=$suma_boleduvanje_1;
+        $data['suma_boleduvanje_2'] =$suma_boleduvanje_2;
+        $data['suma_boleduvanje_3']=$suma_boleduvanje_3;
+        $data['suma_boleduvanje_nad_30']=$suma_boleduvanje_nad_30;
+        $data['bruto_minat_trud']=$bruto_minat_trud;
+        $data['bruto_plata']=$bruto_plata;
+        $data['mobilni_telefoni']=$mobilni_telefoni;
+        $data['osiguruvanje']=$osiguruvanje;
+        $data['odbitok']=$odbitok;
+        $data['lekarska_komora']=$lekarska_komora;
+        $data['sindikat']=$sindikat;
+        $data['krediti']=$krediti_rekapitular;
+        $data['neto'] =$neto_od_redovna_rabota;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$vraboteni_plati);
+    }
+    public function plati_rekapitular_3()
+    {
+        $oddel = $this->input->get('oddel');
+        $mesec = $this->input->get('mesec');
+        $godina = $this->input->get('godina');
+        $this->load->model('pacienti/pacienti_model');
+        $this->load->model('plati/plati_model');
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+//        $vraboteni =  $this->covecki_resursi_model->getVlezniPodatociZaPlata($oddel, $mesec, $godina);
+        $vraboteni_plati =  $this->plati_model->getPlata($oddel, $mesec, $godina);
+        $mesecni_parametri=$this->plati_model->getVrednostNaBod($mesec,$godina);
+        $efektivni_casovi= $this->plati_model->getEfektivniCasovi($mesec,$godina);
+        $vkupno_casovi_redovna_rabota=$this->plati_model->getCasoviRedovnaRabota($oddel,$mesec,$godina);
+        $bruto_slozenost=$this->plati_model->getBrutoIznosSlozenost($oddel,$mesec,$godina);
+        $bruto_uslovi=$this->plati_model->getBrutoIznosUslovi($oddel,$mesec,$godina);
+        $bruto_rakovodenje=$this->plati_model->getBrutoIznosRakovodenje($oddel, $mesec, $godina);
+        $bruto_minat_trud=$this->plati_model->getBrutoIznosMinatTrud($oddel, $mesec, $godina);
+        $vkupno_casovi_noken_trud=$this->plati_model-> getCasoviNoknaRabota($oddel,$mesec,$godina);
+        $suma_noken_trud=$this->plati_model->getSumaNoknaRabota($oddel,$mesec,$godina);
+        $vkupno_casovi_praznici=$this->plati_model->getCasoviPraznik($oddel,$mesec,$godina);
+        $suma_praznici=$this->plati_model->getSumaPraznici($oddel,$mesec,$godina);
+        $vkupno_casovi_dezurstvo=$this->plati_model->getCasoviDezurstvo($oddel,$mesec,$godina);
+        $suma_dezurstvo=$this->plati_model->getSumaDezurstvo($oddel,$mesec,$godina);
+        $vkupno_casovi_boleduvanje_1=$this->plati_model->getCasoviBoleduvanje1($oddel,$mesec,$godina);
+        //  print_r($vkupno_casovi_boleduvanje_1); die();
+        $vkupno_casovi_boleduvanje_2=$this->plati_model->getCasoviBoleduvanje2($oddel,$mesec,$godina);
+
+        $vkupno_casovi_boleduvanje_3=$this->plati_model->getCasoviBoleduvanje3($oddel,$mesec,$godina);
+        $vkupno_casovi_boleduvanje_nad_30=$this->plati_model->getCasoviBoleduvanjenad30($oddel,$mesec,$godina);
+        $suma_boleduvanje_1=$this->plati_model->getSumaBoleduvanje1($oddel,$mesec,$godina);
+        $suma_boleduvanje_2=$this->plati_model->getSumaBoleduvanje2($oddel,$mesec,$godina);
+        $suma_boleduvanje_3=$this->plati_model->getSumaBoleduvanje3($oddel,$mesec,$godina);
+        $suma_boleduvanje_nad_30=$this->plati_model->getSumaBoleduvanjeNad30($oddel,$mesec,$godina);
+        $dodatok=$this->plati_model->getDodatok($oddel,$mesec,$godina);
+        $danok=$this->plati_model->getDanok($oddel,$mesec,$godina);
+        $pio=$this->plati_model->getPIO($oddel,$mesec,$godina);
+        $zdravstvo=$this->plati_model->getZdravstvo($oddel,$mesec,$godina);
+        $vrabotuvanje=$this->plati_model->getPridonesZaVrabotuvanje($oddel,$mesec,$godina);
+        $dop_pridones=$this->plati_model->getDopolnitelenPridonesZaZdravstvo($oddel,$mesec,$godina);
+        $mobilni_telefoni=$this->plati_model->getMobilniTelefoni($oddel,$mesec,$godina);
+        $odbitok=$this->plati_model->getOdbitokVoRekapitular($oddel,$mesec,$godina);
+        $osiguruvanje=$this->plati_model->getOsiguruvanje($oddel,$mesec,$godina);
+        $lekarska_komora=$this->plati_model->getLekarskaKomora($oddel,$mesec,$godina);
+        $sindikat=$this->plati_model->getSindikatVoRekapitular($oddel,$mesec,$godina);
+        $krediti_rekapitular=$this->plati_model->getKreditiVoRekapitular();
+
+        // print_r($mesecni_parametri); die();
+        $ustanova = $this->pacienti_model->getUstanovaInfo($oddel);
+        //print_r($ustanova); die();
+        //bis_debug($vraboteni_plati, "plati");
+        $data['main_content'] = 'plati/pecatenje/plati_rekapitular_3';
+        $data['vraboteni'] = $vraboteni_plati;
+        $data['ustanova'] = $ustanova;
+        $data['mesec'] = $mesec;
+        $data['godina'] = $godina;
+        $data['vrednost_na_bod']=$mesecni_parametri;
+        $data['efektivni_casovi']=$efektivni_casovi;
+        $data['casovi_redovna_rabota']=$vkupno_casovi_redovna_rabota;
+        $data['bruto_slozenost']=$bruto_slozenost;
+        $data['bruto_uslovi'] =$bruto_uslovi;
+        $data['bruto_rakovodenje']=$bruto_rakovodenje;
+        $data['bruto_minat_trud']=$bruto_minat_trud;
+        $data['vkupno_casovi_nokna_rabota']=$vkupno_casovi_noken_trud;
+        $data['suma_noken_trud'] =  $suma_noken_trud;
+        $data['vkupno_casovi_praznici']= $vkupno_casovi_praznici;
+        $data['suma_praznici']=$suma_praznici;
+        $data['vkupno_casovi_dezurstvo']=$vkupno_casovi_dezurstvo;
+        $data['suma_dezurstvo']=  $suma_dezurstvo;
+        $data['vkupno_casovi_boleduvanje_1']= $vkupno_casovi_boleduvanje_1;
+        $data['vkupno_casovi_boleduvanje_2']= $vkupno_casovi_boleduvanje_2;
+        $data['vkupno_casovi_boleduvanje_3']= $vkupno_casovi_boleduvanje_3;
+        $data['vkupno_casovi_boleduvanje_nad_30']= $vkupno_casovi_boleduvanje_nad_30;
+        $data['suma_boleduvanje_1']=$suma_boleduvanje_1;
+        $data['suma_boleduvanje_2'] =$suma_boleduvanje_2;
+        $data['suma_boleduvanje_3']=$suma_boleduvanje_3;
+        $data['suma_boleduvanje_nad_30']=$suma_boleduvanje_nad_30;
+        $data['dodatok']=$dodatok;
+        $data['danok']=$danok;
+        $data['pio']=$pio;
+        $data['zdravstvo']=$zdravstvo;
+        $data['vrabotuvanje']=$vrabotuvanje;
+        $data['dop_pridones']=$dop_pridones;
+        $data['mobilni_telefoni']=$mobilni_telefoni;
+        $data['osiguruvanje']=$osiguruvanje;
+        $data['odbitok']=$odbitok;
+        $data['lekarska_komora']=$lekarska_komora;
+        $data['sindikat']=$sindikat;
+        $data['krediti']=$krediti_rekapitular;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$vraboteni_plati);
+    }
+
+    public function test()
+    {
+        $id = 1948;
+        $this->load->model('plati/plati_model');
+        $suma = $this->plati_model->presmetajBrutoPlataVraboten($id, 6, 2013);
+        $zadrski = $this->plati_model->presmetajZadrskiPlataVraboten($id, 6, 2013);
+        //bis_debug($suma,'suma');
+        //bis_debug($zadrski,'zadrski');
+    }
+    public function podeli_plata(){
+        $this->load->view("plati/plati/podeli_plata");
+
+
+    }
+}

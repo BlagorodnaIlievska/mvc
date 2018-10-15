@@ -1,0 +1,21 @@
+<div class="novapodgrupa">
+    <fieldset>
+        <legend>Нова подгрупа</legend>
+        <form accept-charset="utf-8" method="post" action="/index.php/paketi/paket/create_podgrupa">
+            <input type="hidden" name="parent_grupa" value="<?php echo $idnagrupa ?>" />
+            Назив на група: <?php echo $nazivnagrupa ?><br />
+
+
+            Подгрупа:<br />
+            <input type="text" value="" name="naziv"><br />
+
+            <!--   Адреса:<br />
+               <input type="text" value="" name="adresa"><br />
+               Даночен број:<br />
+               <input type="text" value="" name="danocenbroj"><br />-->
+
+            <br/>
+            <input type="button" class="ajaxpodgrupacreateform button" value="Додади"><br/>
+        </form>
+    </fieldset>
+</div>

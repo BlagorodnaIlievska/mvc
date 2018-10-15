@@ -1,0 +1,5 @@
+<div id="vlezizlez" class="sub-menu-tabs">
+    <ul>
+        <li><?   echo anchor('start/zirosmetki/zirosmetki_list', 'Листа на сметки'); ?></li>
+    </ul>
+</div>

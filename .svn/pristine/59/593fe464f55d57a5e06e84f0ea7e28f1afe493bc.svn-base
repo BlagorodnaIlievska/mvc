@@ -1,0 +1,353 @@
+function  popis_polnilista()
+{
+    var formurl = "/index.php/materijalno/popis/polnilista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            var redenbroj = 1;
+            var vkupnostavki = response.length;
+            var site_clenovi = '';
+            var niza_clenovi = [];
+            jQuery(".tabela-popis tbody").html('');
+            jQuery.each(response, function (index, item) {
+                var vrabotenFullName = item.vrabotenIme+" "+item.vrabotenPrezime;
+                site_clenovi = '';
+                niza_clenovi = [];
+                jQuery.each(item.clen_popis, function (index2, clen) {
+                    site_clenovi = clen.vrabotenIme+" "+clen.vrabotenPrezime;
+                    niza_clenovi.push(site_clenovi);
+                });
+                jQuery(".tabela-popis tbody").append(('<tr popis_id="' + item.id + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                    '</td>' +
+                    '<td class="id">' + redenbroj + '</td>' +
+                    '<td class="datum">' + item.datum_popis + '</td>' +
+                    '<td class="magacin">' + item.magacinIme + '</td>' +
+                    '<td class="pretsedatel">' + vrabotenFullName + '</td>' +
+                    '<td class="clenovi_popis">' + niza_clenovi + '</td>' +
+                    '</tr>'
+                    ));
+                redenbroj = 1*redenbroj + 1*1;
+            });
+            jQuery(".naslovpopis .vkupnostavki").html(vkupnostavki);
+            jQuery(".tabela-popis").trigger("update");
+            jQuery(".tabela-popis tbody tr:first").click();
+        }
+    });
+}
+function nov_popis() {
+    var formurl = "/index.php/materijalno/popis/nov_popis";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data: {},
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width: 1024,
+                position:[00, 00],
+                modal:true,
+                title:"Нов месечен параметар",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function popis_izmeni(popis_id) {
+    var formurl = "/index.php/materijalno/popis/izmeni";
+    var data = {  id: popis_id  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"1024",
+                position:[0, 0],
+                modal:true,
+                title:"Измени попис",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function popis_delete(popis_id){
+    var r=confirm("Избриши попис");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/materijalno/popis/delete_popis";
+            var data = {  id: popis_id  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    popis_polnilista();
+                }
+            });
+        }
+    }
+}
+function get_stavki_popis(popis_id) {
+    var data = {
+        id: popis_id
+    }
+    var formurl = "/index.php/materijalno/popis/get_stavki_popis";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            jQuery(".tabela-stavkipopis tbody").html('');
+            var vkupnostavki = response.length;
+            if(response.length > 0)
+            {
+                var redovi = 1;
+                jQuery.each(response, function (index, item) {
+                    jQuery(".tabela-stavkipopis tbody").append('<tr>' +
+                        '<td class="redenbroj">' + redovi + '</td>' +
+                        '<td class="sifra">' + item.artiklSifra + '</td>' +
+                        '<td class="artikl">' + item.artiklIme + '</td>' +
+                        '<td class="mera">' + item.edMerkaIme + '</td>' +
+                        '<td class="kolicina">' + item.kolicina + '</td>' +
+                        '<td class="sredna_cena">' + item.sredna_cena + '</td>' +
+                        '<td class="iznos_softver">' + item.iznos_softver + '</td>' +
+                        '<td class="zabeleska">' + item.zabeleska + '</td>' +
+                        '</tr>');
+                    redovi = redovi + 1*1;
+                });
+                jQuery(".naslovstavkipopis .vkupnostavki").html(vkupnostavki);
+                jQuery(".tabela-stavkipopis").trigger("update");
+            }
+        }
+    });
+}
+function  nova_stavka_popis()
+{
+    var redovi = jQuery(".tabela-stavki-popis tbody tr").length;
+    redovi = 1*redovi + 1*1;
+    jQuery(".tabela-stavki-popis tbody").append(('<tr>' +
+        '<td>' +
+        '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+        '</td>' +
+        '<td class="redenbr">' + redovi + '</td>' +
+        '<td class="sifra">' + '<select class="sifra-dropdown"></select>' + '</td>' +
+        '<td class="artikli">' + '<select class="artikli-dropdown"></select>' + '</td>' +
+        '<td class="mera">' + '</td>' +
+        '<td class="kolicina presmetajiznos">' + '<input type="text" class="kolicina" name="stavka_popis[' + redovi + '][kolicina]" />' + '</td>' +
+        '<td class="sredna_cena presmetajiznos">' + '<input type="text" class="sredna_cena" name="stavka_popis[' + redovi + '][sredna_cena]" />' + '</td>' +
+        '<td class="iznos_softver">' + '<input type="text" class="iznos_softver" name="stavka_popis[' + redovi + '][iznos_softver]" />' + '</td>' +
+        '<td class="zabeleska">' + '<input type="text" class="zabeleska" name="stavka_popis[' + redovi + '][zabeleska]" />' + '</td>' +
+        '<td class="artikl_id hide">' + '<input type="hidden" class="artikl_id" name="stavka_popis[' + redovi + '][artikl_id]" />' + '</td>' +
+        '<td class="edmerka_id hide">' + '<input type="hidden" class="edmerka_id" name="stavka_popis[' + redovi + '][mera]" />' + '</td>' +
+        '</tr>'
+    ));
+    var lastrow = jQuery('.tabela-stavki-popis tbody tr:last');
+    jQuery.ajax({
+        url:  "/index.php/vlezni_fakturi/faktura/getArtikliDropdown",
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            for(var i = 0; i < response.length;i++)
+            {
+                lastrow.find('.artikli-dropdown').append('<option value="'+response[i].SID+'">'+response[i].S1Ime+'</option>')
+            }
+            lastrow.find('.artikli-dropdown').val();
+        }
+    });
+    jQuery.ajax({
+        url:  "/index.php/vlezni_fakturi/faktura/getKatbrojDropdown",
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            for(var i = 0; i < response.length;i++)
+            {
+                lastrow.find('.sifra-dropdown').append('<option value="'+response[i].sifra+'">'+response[i].sifra+'</option>')
+            }
+            lastrow.find('.sifra-dropdown').val();
+        }
+    });
+    jQuery('.artikli-dropdown').combobox();
+    jQuery('.sifra-dropdown').combobox();
+    jQuery(".tabela-stavki-popis").trigger("update");
+}
+function  nova_stavka_popis_magacin()
+{
+    var magacin = jQuery('.magacinID').val();
+    if(magacin == 0) return alert("Изберете магацин !!!");
+    var data = {
+        magacin: magacin
+    }
+    jQuery.ajax({
+        url: "/index.php/materijalno/lager_lista/getLagerLista",
+        type:'POST',
+        data: data,
+        dataType:'json',
+        success:function (response) {
+            console.log(response);
+            jQuery(".tabela-stavki-popis tbody").html('');
+            var redovi = jQuery(".tabela-stavki-popis tbody tr").length;
+            jQuery.each(response, function (index, item) {
+            jQuery(".tabela-stavki-popis tbody").append(('<tr>' +
+                '<td>' +
+                '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                '</td>' +
+                '<td class="redenbr">' + redovi + '</td>' +
+                '<td>' + item.sifra2  + '</td>' +
+                '<td>' + item.stavka  + '</td>' +
+                '<td>' + item.edmerka  + '</td>' +
+                '<td>' + item.kolicina  + '</td>' +
+                '<td>' + item.srednacena  + '</td>' +
+                '<td class="iznos_softver">' + '<input type="text" class="iznos_softver" name="stavka_popis[' + redovi + '][iznos_softver]" />' + '</td>' +
+                '<td class="zabeleska">' + '<input type="text" class="zabeleska" name="stavka_popis[' + redovi + '][zabeleska]" />' + '</td>' +
+                '<td class="kolicina hide">' + '<input type="hidden" value="'+ item.kolicina +'" class="kolicina" name="stavka_popis[' + redovi + '][kolicina]" />' + '</td>' +
+                '<td class="sredna_cena hide">' + '<input type="hidden" value="'+ item.srednacena +'" class="sredna_cena" name="stavka_popis[' + redovi + '][sredna_cena]" />' + '</td>' +
+//                '<td class="zabeleska">' + '<input type="text" class="zabeleska" name="stavka_popis[' + redovi + '][zabeleska]" />' + '</td>' +
+                '<td class="artikl_id hide">' + '<input type="hidden"  value="'+ item.sifra +'" class="artikl_id" name="stavka_popis[' + redovi + '][artikl_id]" />' + '</td>' +
+                '<td class="edmerka_id hide">' + '<input type="hidden"  value="'+ item.edmerkaID +'" class="edmerka_id" name="stavka_popis[' + redovi + '][mera]" />' + '</td>' +
+                '</tr>'
+                ));
+                redovi = 1*redovi + 1*1;
+                var currentrow = jQuery(".tabela-stavki-popis tbody tr:last");
+                presmetajIznosPoRed(currentrow);
+            });
+            jQuery(".tabela-stavki-popis").trigger("update");
+        }
+    });
+}
+function  nova_stavka_popis_edit()
+{
+    var redovi = jQuery(".tabela-stavki-popis tbody tr").length;
+    redovi = 1*redovi + 1*1;
+    jQuery(".tabela-stavki-popis tbody").append(('<tr>' +
+        '<td>' +
+        '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+        '</td>' +
+        '<td class="redenbr">' + redovi + '</td>' +
+        '<td class="sifra">' + '<select class="sifra-dropdown"></select>' + '</td>' +
+        '<td class="artikli">' + '<select class="artikli-dropdown"></select>' + '</td>' +
+        '<td class="mera">' + '</td>' +
+        '<td class="kolicina presmetajiznos">' + '<input type="text" class="kolicina" name="stavka_popis[' + redovi + '][kolicina]" />' + '</td>' +
+        '<td class="kolicina_magacin">' + '<input type="text" class="kolicina_magacin" name="stavka_popis[' + redovi + '][kolicina_magacin]" />' + '</td>' +
+        '<td class="kolicina_realna">' + '<input type="text" class="kolicina_realna" name="stavka_popis[' + redovi + '][kolicina_realna]" />' + '</td>' +
+        '<td class="sredna_cena presmetajiznos">' + '<input type="text" class="sredna_cena" name="stavka_popis[' + redovi + '][sredna_cena]" />' + '</td>' +
+        '<td class="iznos_softver">' + '<input type="text" class="iznos_softver" name="stavka_popis[' + redovi + '][iznos_softver]" />' + '</td>' +
+        '<td class="iznos_magacin">' + '<input type="text" class="iznos_magacin" name="stavka_popis[' + redovi + '][iznos_magacin]" />' + '</td>' +
+        '<td class="iznos_realen">' + '<input type="text" class="iznos_realen" name="stavka_popis[' + redovi + '][iznos_realen]" />' + '</td>' +
+        '<td class="zabeleska">' + '<input type="text" class="zabeleska" name="stavka_popis[' + redovi + '][zabeleska]" />' + '</td>' +
+        '<td class="artikl_id hide">' + '<input type="hidden" class="artikl_id" name="stavka_popis[' + redovi + '][artikl_id]" />' + '</td>' +
+        '<td class="edmerka_id hide">' + '<input type="hidden" class="edmerka_id" name="stavka_popis[' + redovi + '][mera]" />' + '</td>' +
+        '</tr>'
+        ));
+    var lastrow = jQuery('.tabela-stavki-popis tbody tr:last');
+    jQuery.ajax({
+        url:  "/index.php/vlezni_fakturi/faktura/getArtikliDropdown",
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            for(var i = 0; i < response.length;i++)
+            {
+                lastrow.find('.artikli-dropdown').append('<option value="'+response[i].SID+'">'+response[i].S1Ime+'</option>')
+            }
+            lastrow.find('.artikli-dropdown').val();
+        }
+    });
+    jQuery.ajax({
+        url:  "/index.php/vlezni_fakturi/faktura/getKatbrojDropdown",
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            for(var i = 0; i < response.length;i++)
+            {
+                lastrow.find('.sifra-dropdown').append('<option value="'+response[i].sifra+'">'+response[i].sifra+'</option>')
+            }
+            lastrow.find('.sifra-dropdown').val();
+        }
+    });
+    jQuery('.artikli-dropdown').combobox();
+    jQuery('.sifra-dropdown').combobox();
+    jQuery(".tabela-stavki-popis").trigger("update");
+}
+function popis_getPodatociArtiklByStavka(stavka, elem)
+{
+    var data = {
+        stavka: stavka,
+        katbroj: ''
+    }
+    jQuery.ajax({
+        url:"/index.php/vlezni_fakturi/faktura/getPodatociArtikl",
+        type:'POST',
+        data: data,
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            var currentrow = elem.closest('tr');
+            currentrow.find("td.sifra .ui-combobox-input").val(response[0].sifra2);;
+            currentrow.find(".artikl_id").val(response[0].sifra1);
+            currentrow.find(".mera").html(response[0].EdMerkaIme);
+            currentrow.find(".edmerka_id").val(response[0].EdMerkaID);
+        }
+    });
+}
+function popis_getPodatociArtiklBySifra(sifra, elem)
+{
+    var data = {
+        stavka: 0,
+        katbroj: sifra
+    }
+    jQuery.ajax({
+        url:"/index.php/vlezni_fakturi/faktura/getPodatociArtikl",
+        type:'POST',
+        data: data,
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            var currentrow = elem.closest('tr');
+            currentrow.find("td.artikli .ui-combobox-input").val(response[0].stavka);
+            currentrow.find(".artikl_id").val(response[0].sifra1);
+            currentrow.find(".mera").html(response[0].EdMerkaIme);
+            currentrow.find(".edmerka_id").val(response[0].EdMerkaID);
+        }
+    });
+}
+function presmetajIznosPoRed(row)
+{
+//    var row = elem.closest('tr');
+    var kolicina = row.find("input.kolicina").val();
+    var sredna_cena = row.find("input.sredna_cena").val();
+    var iznos = kolicina * sredna_cena;
+    row.find("input.iznos_softver").val(iznos);
+//    jQuery(".tstavki tbody tr").each(function() {
+//    if(!isNaN(osnova) && osnova.length != 0)
+//    {
+//        osnovasum += parseFloat(osnova);
+//    }
+//    });
+}

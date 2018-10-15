@@ -1,0 +1,377 @@
+<div class="period_klient">
+    <?php if (bis_check_access('izlezni_fakturi_period_klient_komitent_pacient_data')): ?>
+    <div class="period-klient-filter">
+    <form class="priodklientfilterforma" action="/index.php/vlezni_fakturi/period_klient/getAllKlienti">
+        <div class="grupafilter-pk">
+        <div class="periodkonto">
+            <label>Коминтент: </label>
+            <?php echo form_dropdown('klient', $klient,'','class="pkklient parametar"'); ?>
+            <label class="pacient-pk">Пациент: </label>
+            <?php echo form_dropdown('pacient', $pacienti, '', 'class="pkpacient parametar"');?>
+        </div>
+        <div class="perioddatum">
+            <span>Период од:</span>
+            <input type="text" class="periodod2 parametar" name="periodod2"/>
+            <span style="margin: 0 5px;">до:</span>
+            <input type="text" class="perioddo2 parametar" name="perioddo2"/>
+        </div>
+        <div class="reset-baraj">
+            <button type="button" value="" class="button resetbarajpolinja">
+                <span>Ресетирај</span>
+            </button>
+        </div>
+        </div>
+    </form>
+    </div>
+        <?php endif ?>
+
+    <div class="prikaz">
+        <p class="naslovperiod" > ( <span class="vkupnostavki">0</span> ) Листа на суми по клиенти</p>
+        <div class="predtabela">
+        <table class="tperiodklienti" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th>Клиент</th>
+                <th>Вкупно</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='hiderow trow'>
+                <td class="klient"></td>
+                <td class="klientid hide"></td>
+                <td class="vkupno"></td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+        <table class="sumiranje sumklienti">
+            <tfoot>
+            <tr>
+                <td class="vkupnolabel">Вкупно:</td>
+                <td class="vkupnovkupno"></td>
+            </tr>
+            </tfoot>
+        </table>
+        <?php if (bis_check_access('izlezni_fakturi_period_klient_pecati_button')): ?>
+        <a href="" target="_blank" class="cmd-printlink-site">
+            <button type="button" class="pecatikartica print"><span>Печати</span></button>
+        </a>
+            <?php endif ?>
+    </div>
+    <div class="detali">
+        <p class="naslovperioddetali" > ( <span class="vkupnostavki">0</span> ) Листа на фактури</p>
+        <div class="predtabela">
+        <table class="tklientfakturi" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="datum">Датум</th>
+                <th class="broj">Број</th>
+                <th class="vkupno">Вкупно</th>
+<!--                <th class="grupa">Група</th>-->
+                <th class="zabeleska">Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='hiderow' flag="">
+                <td class="dbid hide"></td>
+                <td class="datum"></td>
+                <td class="broj"></td>
+                <td class="vkupno"></td>
+<!--                <td class="grupa"></td>-->
+                <td class="zabeleska"></td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+        <table class="sumiranje sumfakturi sumizlezni-pk">
+            <tfoot>
+            <tr>
+                <td class="datum"></td>
+                <td class="vkupnolabel" >Вкупно:</td>
+                <td class="vkupnovkupno"></td>
+                <td class="grupa"></td>
+                <td class="zabeleska"></td>
+            </tr>
+            </tfoot>
+        </table>
+<?php if (bis_check_access('izlezni_fakturi_period_klient_pecati_button')): ?>
+        <a href="" target="_blank" class="cmd-printlink-detali">
+            <button type="button" class="pecatikartica print"><span>Печати детално</span></button>
+        </a>
+            <?php endif ?>
+    </div>
+</div>
+<script>
+function period_klient_lista_if() {
+    jQuery.ajax({
+        url: "/index.php/izlezni_fakturi/period_klient/getAllKlienti",
+        data: jQuery(".priodklientfilterforma").serialize(),
+        type: 'POST',
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            if (response == null) {
+                period_klient_isprazniklientitabela();
+                return true;
+            }
+            var vkupnostavki = response.length;
+            jQuery(".tperiodklienti").find("tr:gt(1)").remove();
+            var tr = jQuery('.tperiodklienti tr:last');
+            tr.removeClass('hiderow');
+            var klientosnova = 0, klientddv = 0, klientvkupno = 0;
+            for ( var i = 0; i < response.length; i++ ) {
+                var newrow = jQuery(tr).clone().insertAfter(tr);
+                if(response[i].firmaID > 0)
+                {
+                    newrow.attr("flag", 1);
+                    newrow.find('.klientid').html(response[i].firmaID);
+                    newrow.find('.klient').html(response[i].firmaIme);
+                    newrow.find('.vkupno').html(formatnumbermkd(response[i].vkupno));
+                    klientvkupno =1 * klientvkupno + 1 * response[i].vkupno;
+                }
+                if(response[i].pacientID > 0)
+                {
+                    newrow.attr("flag", 2)
+                    var pacientIme = response[i].pacientIme+" "+response[i].pacientTatkovoIme+" "+response[i].pacientPrezime;
+                    newrow.find('.klientid').html(response[i].pacientID);
+                    newrow.find('.klient').html(pacientIme);
+                    newrow.find('.vkupno').html(response[i].pacientIznos);
+                    klientvkupno =1 * klientvkupno + 1 * response[i].pacientIznos;
+                }
+            }
+            tr.addClass('hiderow');
+            jQuery(".naslovperiod .vkupnostavki").html(vkupnostavki + " во листа");
+            jQuery(".sumklienti .vkupnovkupno").html( formatnumbermkd(klientvkupno));
+            jQuery(".tperiodklienti").trigger("update");
+        }
+    });
+}
+function period_klient_ispraznifakturitabela() {
+    jQuery(".tklientfakturi tbody tr").each(function () {
+        if (jQuery(this).hasClass("hiderow")) {
+
+        } else {
+            jQuery(this).remove();
+        }
+    });
+}
+    jQuery(document).ready(function() {
+        var klientime=''; var klientID; var flag = 0;
+        jQuery(".pkklient, .pkpacient").combobox();
+        jQuery('.periodod2').datepicker({dateFormat:'yy-mm-dd'});
+        jQuery('.periodod2').datepicker('setDate', new Date(2013, 00, 01));
+        jQuery('.perioddo2').datepicker({dateFormat:'yy-mm-dd'});
+        jQuery('.perioddo2').datepicker('setDate', new Date());
+        jQuery(".tperiodklienti").tablesorter();
+        jQuery(".tklientfakturi").tablesorter();
+        jQuery('.pkklient, .pkpacient').change(function(){
+           var n = jQuery(this).val();
+            klientID = n;
+            klientime = jQuery(this).find('option:selected').text();
+
+            if(n != '' && n != 0){
+                $(".cmd-printlink-site").hide();
+            }else if(n == '' || n == 0){
+                $(".cmd-printlink-site").show();
+            }
+        });
+        period_klient_lista_if();
+        jQuery('.period_klient .resetbarajpolinja').click(function () {
+            jQuery('.period_klient .periodod2').datepicker('setDate', new Date(2013, 00, 01));
+            jQuery('.period_klient .perioddo2').datepicker('setDate', new Date());
+            jQuery('.period_klient .filterbrojfaktura').val('');
+            jQuery('.period_klient .ui-combobox-input').val("Сите");
+            jQuery('.period_klient .pkklient').val(0);
+            jQuery('.period_klient .pkpacient').val(0);
+            period_klient_lista_if();
+        });
+        jQuery(".tperiodklienti").delegate("tr.trow", "click", function(){
+            jQuery(".tperiodklienti .trow").removeClass("active");
+            jQuery(this).addClass('active');
+            klientID = jQuery(this).find(".klientid").html();
+            klientime = jQuery(this).find(".klient").html();
+
+            flag = jQuery(this).attr("flag");
+            if(flag == 1)
+            {
+                var klientid = jQuery(this).find('.klientid').html();
+                var periodod_new = jQuery(".periodod2").val();
+                var perioddo_new = jQuery(".perioddo2").val();
+                var data = {
+                    klientid: klientid,
+                    periodod : periodod_new,
+                    perioddo : perioddo_new
+                }
+                jQuery.ajax({
+                    url: "/index.php/izlezni_fakturi/period_klient/getFakturaKlient",
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        //console.log(response);
+                        var fakturiosnova = 0, fakturiddv = 0, fakturivkupno =0;
+                        var vkupnostavki = response.length;
+                        jQuery(".tklientfakturi").find("tr:gt(1)").remove();
+                        var tr = jQuery('.tklientfakturi tr:last');
+                        tr.removeClass('hiderow');
+                        for ( var i = 0; i < response.length; i++ ) {
+                            var newrow = jQuery(tr).clone().insertAfter(tr);
+                            newrow.find('.datum').html(response[i].datum);
+                            newrow.find('.broj').html(response[i].broj);
+                            newrow.find('.vkupno').html(formatnumbermkd(response[i].vkupno));
+//                            newrow.find('.grupa').html(response[i].grupa);
+                            newrow.find('.zabeleska').html(response[i].zabeleska);
+                            fakturiosnova = 1 * fakturiosnova + 1 * response[i].osnova;
+                            fakturiddv =1 * fakturiddv + 1 * response[i].ddv;
+                            fakturivkupno =1 * fakturivkupno + 1 * response[i].vkupno;
+                        }
+                        tr.addClass('hiderow');
+                        jQuery(".naslovperioddetali .vkupnostavki").html(vkupnostavki + " во листа");
+                        jQuery(".sumfakturi .vkupnovkupno").html( formatnumbermkd(fakturivkupno.toFixed(2)));
+                        jQuery(".tklientfakturi").trigger("update");
+                    }
+                });
+            }
+            if(flag == 2)
+            {
+                var pacientid = jQuery(this).find('.klientid').html();
+                var periodod_new = jQuery(".periodod2").val();
+                var perioddo_new = jQuery(".perioddo2").val();
+                var data = {
+                    pacientid: pacientid,
+                    periodod: periodod_new,
+                    perioddo: perioddo_new
+                }
+                jQuery.ajax({
+                    url: "/index.php/izlezni_fakturi/period_klient/getFakturaPacient",
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        //console.log(response);
+                        var fakturivkupno =0;
+                        var vkupnostavki = response.length;
+                        jQuery(".tklientfakturi").find("tr:gt(1)").remove();
+                        var tr = jQuery('.tklientfakturi tr:last');
+                        tr.removeClass('hiderow');
+                        for ( var i = 0; i < response.length; i++ ) {
+                            var newrow = jQuery(tr).clone().insertAfter(tr);
+                            newrow.find('.datum').html(response[i].datum);
+                            newrow.find('.broj').html(response[i].broj);
+                            newrow.find('.vkupno').html(formatnumbermkd(response[i].pacientIznos));
+//                            newrow.find('.grupa').html(response[i].grupa);
+                            newrow.find('.zabeleska').html(response[i].zabeleska);
+                            fakturivkupno =1 * fakturivkupno + 1 * response[i].pacientIznos;
+                        }
+                        tr.addClass('hiderow');
+                        jQuery(".naslovperioddetali .vkupnostavki").html(vkupnostavki + " во листа");
+                        jQuery(".sumfakturi .vkupnovkupno").html( formatnumbermkd(fakturivkupno.toFixed(2)));
+                        jQuery(".tklientfakturi").trigger("update");
+                    }
+                });
+            }
+        });
+        jQuery('.parametar').live('change',function(){
+            var klient = jQuery('.pkklient option:selected').val();
+            var pacient = jQuery('.pkpacient option:selected').val();
+            var period1 = jQuery('.periodod2').val();
+            var period2 = jQuery('.perioddo2').val();
+            if(klient == 0 && pacient == 0) var formaction = "/index.php/izlezni_fakturi/period_klient/getAllKlienti";
+            if(klient > 0 || pacient > 0) var formaction = "/index.php/izlezni_fakturi/period_klient/getAllKlientiByCriteria";
+            else var formaction = "/index.php/izlezni_fakturi/period_klient/getAllKlienti";
+
+            var data = {
+                klientid: klient,
+                pacientid: pacient,
+                periodod: period1,
+                perioddo: period2
+            }
+            jQuery.ajax({
+                url: formaction,
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+//                    console.log(response);
+                    var vkupnostavki = response.length;
+                    jQuery(".tperiodklienti").find("tr:gt(1)").remove();
+                    jQuery(".tklientfakturi").find("tr:gt(1)").remove();
+                    var tr = jQuery('.tperiodklienti tr:last');
+                    tr.removeClass('hiderow');
+                    var klientvkupno =0;
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        if(klient > 0)
+                        {
+                            newrow.attr("flag", 1);
+                            newrow.find('.klientid').html(response[i].firmaID);
+                            newrow.find('.klient').html(response[i].firmaIme);
+                            newrow.find('.vkupno').html(formatnumbermkd(response[i].vkupno));
+                            klientvkupno =1 * klientvkupno + 1 * response[i].vkupno;
+                        }
+                        else if(pacient > 0)
+                        {
+                            newrow.attr("flag", 2);
+                            newrow.find('.klientid').html(response[i].pacientID);
+                            var pacientIme = response[i].pacientIme+" "+response[i].pacientTatkovoIme+" "+response[i].pacientPrezime;
+                            newrow.find('.klient').html(pacientIme);
+                            newrow.find('.vkupno').html(formatnumbermkd(response[i].pacientIznos));
+                            klientvkupno =1 * klientvkupno + 1 * response[i].pacientIznos;
+                        }
+                        else
+                        {
+                            if(response[i].firmaID > 0)
+                            {
+                                newrow.attr("flag", 1);
+                                newrow.find('.klientid').html(response[i].firmaID);
+                                newrow.find('.klient').html(response[i].firmaIme);
+                                newrow.find('.vkupno').html(formatnumbermkd(response[i].vkupno));
+                                klientvkupno =1 * klientvkupno + 1 * response[i].vkupno;
+                            }
+                            if(response[i].pacientID > 0)
+                            {
+                                newrow.attr("flag", 2)
+                                var pacientIme = response[i].pacientIme+" "+response[i].pacientTatkovoIme+" "+response[i].pacientPrezime;
+                                newrow.find('.klientid').html(response[i].pacientID);
+                                newrow.find('.klient').html(pacientIme);
+                                newrow.find('.vkupno').html(formatnumbermkd(response[i].pacientIznos));
+                                klientvkupno =1 * klientvkupno + 1 * response[i].pacientIznos;
+                            }
+                        }
+                    }
+                    tr.addClass('hiderow');
+                    jQuery(".naslovperiod .vkupnostavki").html(vkupnostavki + " во листа");
+                    jQuery(".sumklienti .vkupnovkupno").html( formatnumbermkd(klientvkupno.toFixed(2)));
+                    jQuery(".tperiodklienti").trigger("update");
+                }
+            });
+        });
+        $(".cmd-printlink-site").on("click", function(){
+            var periodod = $(".periodod2").val();
+            var perioddo = $(".perioddo2").val();
+            $(".cmd-printlink-site").attr("href","/index.php/print/pdf?view=/index.php/izlezni_fakturi/period_klient/pecati_site_klienti_iznos&periodod=" + periodod +
+                    "&perioddo=" + perioddo + "&klientid=0&pacientid=0");
+            // $(".cmd-printlink-site").attr("href","/index.php/print/pdf?view=/index.php/vlezni_fakturi/period_klient/pecati_site_klienti_iznos_osnova?periodod=" + periodod + "perioddo=" + perioddo + "klientid=0");
+
+        });
+        $(".cmd-printlink-detali").click(function(){
+            if(flag == 0){
+                alert("Ве молиме изберете клиент");
+                return false;
+            }else{
+            var periodod = $(".periodod2").val();
+            var perioddo = $(".perioddo2").val();
+                if(flag == 1){
+                    console.log(decodeURIComponent(klientime));
+                    $(".cmd-printlink-detali").attr("href","/index.php/print/pdf?view=/index.php/izlezni_fakturi/period_klient/pecati_fakturi_po_klient&periodod=" + periodod + "&perioddo=" + perioddo +
+                            "&klientid=" + klientID + "&tip=komintent");
+                }else
+                if(flag == 2){
+                    console.log(decodeURIComponent(klientime));
+                    $(".cmd-printlink-detali").attr("href","/index.php/print/pdf?view=/index.php/izlezni_fakturi/period_klient/pecati_fakturi_po_klient&periodod=" + periodod + "&perioddo=" + perioddo +
+                            "&klientid=" + klientID + "&tip=pacient");
+                }
+}
+        });
+    });
+</script>

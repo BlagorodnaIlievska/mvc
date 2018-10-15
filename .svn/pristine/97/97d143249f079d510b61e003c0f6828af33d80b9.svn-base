@@ -1,0 +1,51 @@
+<?php
+
+class Proizvoditeli_model extends CI_Model
+{
+
+    public function getProizvoditeli()
+    {
+      //  $this->db->where("parent_id", 0);
+        $query = $this->db->get('bis_proizvoditeli');
+        return $query->result();
+    }
+
+
+    public function getProizvoditel($id)
+    {
+        $this->db->where("id", $id);
+        $query = $this->db->get('bis_proizvoditeli');
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_proizvoditel()
+    {
+        $insert_data = $this->input->post();
+        $insert      = $this->db->insert('bis_proizvoditeli', $insert_data);
+        return $insert;
+    }
+
+
+    public function delete_proizvoditel($id)
+    {
+
+        $this->db->where('id', $id);
+        $this->db->delete('bis_proizvoditeli');
+
+
+    }
+
+    public function update_proizvoditel()
+    {
+        $field_update_data =	$this->input->post();
+
+        $this->db->where('id',$field_update_data['id']);
+        unset($field_update_data['id']);
+        $this->db->update('bis_proizvoditeli', $field_update_data);
+    }
+
+
+
+}

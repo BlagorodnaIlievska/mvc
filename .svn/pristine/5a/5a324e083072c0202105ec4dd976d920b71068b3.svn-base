@@ -1,0 +1,27 @@
+<div class="novazemja">
+    <form action="/index.php/bolnicko_rabotenje_podatoci/zemji/create_zemja" method="post">
+        <fieldset>
+
+
+            <legend>Нова земја</legend>
+
+
+            Земја:<br/>
+            <input type="text" name="zemja"/><br/>
+            Основ двојазичен образец/европска картичка:<br/>
+            <input type="text" name="opis"/><br/>
+            Шифра:<br/>
+            <input type="text" name="sifra"/><br/>
+
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="zemji_polnilista()" poraka_uspesno="Земјата е успешно снимена"
+                poraka_neuspesno="Грешка при снимање на земја"
+                ><span>Сними</span></button>
+
+
+        <br/>
+    </form>
+
+</div>

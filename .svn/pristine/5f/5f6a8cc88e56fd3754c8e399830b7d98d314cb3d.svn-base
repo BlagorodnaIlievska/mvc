@@ -1,0 +1,77 @@
+<div id="dospeanost_form">
+    <?php
+    $pogled = array(
+        '0' => 'Должници',
+        '1' => 'Наш долг'
+    );
+    $metodi = array(
+        '0' => 'ФИФО Уплати',
+        '1' => 'Рачно затворени'
+    );
+    ?>
+    <div class="filter-karticki">
+
+        <?php
+        echo form_open('izvodi/menu/baraj_izvod');
+
+        echo form_label('Поглед: ', 'pogled');
+        echo form_dropdown('pogled', $pogled, 0, 'id="pogled" formaction="/index.php/#"');
+        echo form_label('Методи: ', 'metodi');
+        echo form_dropdown('metodi', $metodi, 0, 'id="metodi" formaction="/index.php/#"');
+        ?>
+        <label for="datum">Состојба на: </label>
+        <input type='text' name="datum" id="datum" class='inline big' readonly><br>
+        <?php
+        echo form_close();
+        ?>
+    </div>
+    <div class="stavka">
+        <div class="predtabela">
+        <table class="tabelasmetka" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th>Шифра</th>
+                <th>Шифра 2</th>
+                <th>Клиент</th>
+                <th><= 15</th>
+                <th><= 30</th>
+                <th><= 60</th>
+                <th><= 90</th>
+                <th><= 180</th>
+                <th><= 1 год.</th>
+                <th><= 2 год.</th>
+                <th>> 2 год.</th>
+                <th>Вк. Доспеаност</th>
+                <th>Вк. Долг</th>
+
+            </tr>
+
+            <?php
+
+            echo "<tr  class='telo'>";
+            echo "<td> <input type='text' class='sifra medium' name='sifra' readonly> </td>";
+            echo "<td> <input type='text' class='sifra2 medium' name='sifra2' readonly> </td>";
+            echo "<td> <input type='text' class='klient big' name='klient' readonly> </td>";
+            echo "<td> <input type='text' class='15 medium' name='15' readonly> </td>";
+            echo "<td> <input type='text' class='30 medium' name='30' readonly> </td>";
+            echo "<td> <input type='text' class='60 medium' name='60' readonly> </td>";
+            echo "<td> <input type='text' class='90 medium' name='90' readonly> </td>";
+            echo "<td> <input type='text' class='180 medium' name='180' readonly> </td>";
+            echo "<td> <input type='text' class='1god medium' name='1god' readonly> </td>";
+            echo "<td> <input type='text' class='2god medium' name='2god' readonly> </td>";
+            echo "<td> <input type='text' class='pogolemo2god medium' name='pogolemo2god' readonly> </td>";
+            echo "<td> <input type='text' class='vkupnodosp big' name='vkupnodosp' readonly> </td>";
+            echo "<td> <input type='text' class='vkupnodolg big' name='vkupnodolg' readonly> </td>";
+
+            echo "</tr>";
+
+            ?>
+        </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('#datum').datepicker();
+    });
+</script>

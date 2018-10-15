@@ -1,0 +1,99 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Profaktura extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+
+    }
+    public function nova_faktura()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $data['grupa'] = $this->materijalno_model->grupa_dropdown();
+        $this->load->view('profakturi/profaktura_form', $data);
+    }
+    public function dodaj_stavka(){
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->artikl_model->getAll();
+        $data['proizvoditeli'] = $this->materijalno_model->proizvoditel_dropdown();
+        $data['artikl'] = $query;
+        $this->load->view('profakturi/new_stavka_form', $data);
+    }
+    public  function pregled()
+    {
+        $klientid = $this->input->post('klientid');
+        $nacinid = $this->input->post('nacinid');
+        $statusid = $this->input->post('statusid');
+        $this->load->model('profakturi/profaktura_model');
+        $query = $this->profaktura_model->getPregled($klientid, $statusid, $nacinid);
+        echo json_encode($query);
+    }
+    public function create_faktura()
+    {
+        $this->load->model('profakturi/profaktura_model');
+        $this->profaktura_model->create_faktura();
+        // $this->vlezni_fakturi_model->create_detali_faktura();
+
+        //print_r($query); die();
+        /*if($query = $this->vlezni_fakturi_model->create_faktura())
+        {
+            $data['main_content'] = 'vlezni_fakturi/faktura/uspesno';
+            $this->load->view('includes/template', $data);
+        }
+        else
+        {
+            $data['main_content'] = 'vlezni_fakturi/faktura/neuspesno';
+            $this->load->view('includes/template', $data);
+        }*/
+    }
+    public function baraj_faktura_status()
+    {
+        $status = $this->input->post('statusid');
+        $this->load->model('profakturi/profaktura_model');
+        if(isset($status))
+        {
+            if($status == 0)  $query = $this->profaktura_model->baraj_faktura_site();
+            else  $query = $this->profaktura_model->baraj_faktura_status($status);
+        }
+
+        echo json_encode($query);
+    }
+    public function baraj_faktura_klient()
+    {
+        $klient = $this->input->post('klientid');
+        $this->load->model('profakturi/profaktura_model');
+        if(isset($klient))
+        {
+            if($klient == 0)  $query = $this->profaktura_model->baraj_faktura_site();
+            else  $query = $this->profaktura_model->baraj_faktura_klient($klient);
+        }
+
+        echo json_encode($query);
+    }
+    public function baraj_faktura_nacin()
+    {
+        $nacin = $this->input->post('nacinid');
+        $this->load->model('profakturi/profaktura_model');
+        if(isset($nacin))
+        {
+            if($nacin == 0)  $query = $this->profaktura_model->baraj_faktura_site();
+            else  $query = $this->profaktura_model->baraj_faktura_nacin($nacin);
+        }
+
+        echo json_encode($query);
+    }
+    public function baraj(){
+        $this->load->view('profakturi/baraj_form');
+    }
+    public function baraj_status()
+    {
+        $filterid = $this->input->post('filterid');
+        $statid = $this->input->post('statusid');
+        $this->load->model('profakturi/profaktura_model');
+        $query = $this->profaktura_model->getStatus($statid,$filterid);
+        echo json_encode($query);
+    }
+}

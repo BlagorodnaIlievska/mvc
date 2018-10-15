@@ -1,0 +1,39 @@
+<div class="novafirma">
+    <form accept-charset="utf-8" method="post" action="/index.php/start/firma/create_firma">
+        <fieldset>
+            <legend>Нова Фирма</legend>
+
+            Име на фирма:<br/>
+            <input type="text" value="" name="ime"><br/>
+            Шифра:<br/>
+            <input type="text" value="" name="sifra"><br/>
+
+            Адреса:<br/>
+            <input type="text" value="" name="adresa"><br/>
+            Даночен број:<br/>
+            <input type="text" value="" name="danocenbroj"><br/>
+            Матичен број:<br/>
+            <input type="text" value="" name="embs"><br/>
+            ДДВ Обврзник:<br/>
+            <select name="ddv_obvrznik">
+                <option value="0">Не</option>
+                <option value="1">Да</option>
+            </select>
+            <br/>
+            Град:<br/>
+            <select name="grad_id">
+                <option value="0"></option>
+				<?php foreach ($gradovi as $grad) { ?>
+                <option value="<?php echo $grad->id ?>"><?php echo $grad->ime ?></option>
+				<?php } ?>
+            </select>  <br>
+            Телефон:<br/>
+            <input type="text" value="" name="telefon"><br/>
+            Факс:<br/>
+            <input type="text" value="" name="faks"><br/>
+
+        </fieldset>
+        <br/>
+        <input type="button" class="ajaxcreatefirma button" value="Додади"><br/>
+    </form>
+</div>

@@ -1,0 +1,21 @@
+<div class="novaedmerka">
+    <form action="/index.php/smenska_grupa/smena/update_smena" method="post">
+        <fieldset>
+            <input type="hidden" name="id" value="<?php echo $smena->id  ?>"/>
+
+            <legend>Измени </legend>
+            Име:<br/>
+            <input type="text" name="ime" value="<?php echo $smena->ime ?>"/><br/>
+            Број:<br/>
+            <input type="text" name="broj" value="<?php echo $smena->broj ?>"/><br/>
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="smenska_grupa_popolnilista()" poraka_uspesno=" успешно изменета"
+                poraka_neuspesno="Грешка при снимање"
+                ><span>Сними</span></button>
+
+        <br/>
+    </form>
+
+</div>

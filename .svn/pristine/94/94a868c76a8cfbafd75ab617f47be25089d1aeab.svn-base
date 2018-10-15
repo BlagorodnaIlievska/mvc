@@ -1,0 +1,48 @@
+<div class="mkb-glavnalista">
+    <div class="mkblista">
+        <?php if (bis_check_access('sistemsko_podesuvanje_bolnicko_rabotenje_mkb10_nova_button')): ?>
+        <div class="buttoncontainer">
+            <button class="button" onclick="mkb_nov()">Новa</button>
+        </div>
+            <?php endif ?>
+        <div class="predtabela">
+        <table class="tabela-mkblista">
+            <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Шифра</th>
+                <th class="mkbopis">Опис</th>
+                <th>Неприфатена примарна дијагноза</th>
+                <th>Возраст</th>
+                <th>Пол</th>
+                <th>Гл. дијагностичка категорија</th>
+
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+
+        </table>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        mkb_popolnilista();
+        jQuery(".tabela-mkblista").tablesorter();
+
+        jQuery(".tabela-mkblista tbody tr").live('click', function () {
+            jQuery(".tabela-mkblista tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+        jQuery(".tabela-mkblista .edit-tr").live('click', function () {
+            mkb_izmeni(jQuery(this).parent().parent().attr('mkbid'));
+        });
+        jQuery(".tabela-mkblista .delete-tr").live('click', function () {
+            mkb_delete(jQuery(this).parent().parent().attr('mkbid'));
+        });
+
+    });
+</script>

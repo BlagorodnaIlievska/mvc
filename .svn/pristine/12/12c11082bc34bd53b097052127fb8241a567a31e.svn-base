@@ -1,0 +1,45 @@
+<div class="korisnici-novkorisnik">
+    <form method="post" action="/index.php/users/login/update_member">
+	    <div class="korisnici-osvnovniinformacii">
+        <fieldset >
+            <legend>Основни Информации</legend>
+            <input type="hidden" value="<?= $podatoci->id; ?>" name="korisnik_id"/>
+
+            Корисничко име: <br/>
+            <input type="text" value="<?= $podatoci->username; ?>" class="korisnici-korisnikpostoi" name="username"/><br/>
+            Лозинка: <br/>
+            <input type="text" value="" name="password"/><br/>
+            Повтори Лозинка: <br/>
+            <input type="text" value="" name="password2"/><br/>
+            e-mail: <br/>
+            <input type="text" value="<?= $podatoci->email; ?>" name="email"/><br/>
+            Вработен: <br/>
+            <select name="covecki_resursi_id">
+                <option value="0"></option>
+				<?php foreach ($coveckiresursi as $cr) { ?>
+                <option value="<?php echo $cr->id ?>" <?php echo ( $cr->id == $podatoci->covecki_resursi_id ? "selected" : "" ) ?> ><?php echo $cr->ime ?> <?php echo $cr->prezime ?></option>
+				<?php } ?>
+            </select>
+            Работна група: <br/>
+            <select name="uloga_id">
+                <option value="0"></option>
+                <?php foreach ($rabotni_grupi as $grupa) { ?>
+                    <option value="<?php echo $grupa->ulogi_id ?>" <?php echo ( $grupa->ulogi_id == $podatoci->uloga_id ? "selected" : "" ) ?> ><?php echo $grupa->uloga_ime ?> <?php echo $cr->prezime ?></option>
+                <?php } ?>
+            </select>
+
+        </fieldset>
+        </div>
+
+        <div class="clear"></div>
+	    <br />
+        <button type="button" class="button snimi-forma" izvrsi="bis_korisniciReload()"
+                poraka_uspesno="Податоците се успешно изменети" poraka_neuspesno="Грешка при измена на податоците" >
+            <span>Зачувај</span></button>
+    </form>
+</div>
+
+<script>
+    jQuery('[name="covecki_resursi_id"]').combobox();
+    jQuery('[name="uloga_id"]').combobox();
+</script>

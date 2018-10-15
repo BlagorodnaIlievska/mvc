@@ -1,0 +1,238 @@
+<div class="faktura-fzom-form">
+<?php echo form_open('izlezni_fakturi/faktura/create_faktura_fzom'); ?>
+<fieldset>
+    <legend>Излезна фактура</legend>
+    <div class="faktura-od-dobavuvac">
+        <div class="f-od-dobavuvac broj">
+            <label>Број: </label>
+            <span class="arhivskibroj"></span>
+            <input type="hidden" name="broj" class="fakturabroj">
+            <input type="hidden" name="arhivskibrojint" class="arhivskibrojint">
+            <input type="hidden" class="vrzaniFakturi" name="vrzani_fakturi">
+        </div>
+        <div class="f-od-dobavuvac klient">
+            <label>Коминтент: </label>
+            <label>ФЗОМ</label>
+        </div>
+        <div class="f-od-dobavuvac datum">
+            <label>Датум :</label>
+            <input type="text" name="datum" class="fakturadatum">
+        </div>
+    </div>
+</fieldset>
+<fieldset class="filter-fzom-faktura">
+    <legend>Параметри</legend>
+    <div id="filter-fzom-form">
+    <div class="filter-fzom-period">
+        <span>Период од:</span>
+        <input type="text" class="periodod filterfzom" name="filter-periodod"/>
+        <span style="margin: 0 5px;">до:</span>
+        <input type="text" class="perioddo filterfzom" name="filter-perioddo"/>
+        <input type="hidden" class="oddel filterfzom" name="filter-fzom-oddel" value="<?= $oddel; ?>"/>
+    </div>
+<!--    <div class="filter-fzom-komintent">-->
+<!--        <label>Оддел: </label>-->
+<!--        <select class="filter-fzom-oddel filterfzom" name="filter-fzom-oddel">-->
+<!--            <option value="0">Сите</option>-->
+<!--            <option value="41">Трауматологија</option>-->
+<!--            <option value="44">Ургентен центар</option>-->
+<!--            <option value="60">Управа</option>-->
+<!--            <option value="42">Карил</option>-->
+<!--            <option value="43">Ортопедија</option>-->
+<!--        </select>-->
+<!--    </div>-->
+    </div>
+</fieldset>
+<fieldset>
+    <legend>Ставки во документот - детално</legend>
+    <div class="predtabela">
+        <table class="tstavki-fakturi fzomfaktura" border="1" cellpadding="2" id="faktura">
+            <thead>
+            <tr>
+                <th class="ac"></th>
+                <th class="redenbr">РБ</th>
+                <th class="broj-faktura">Број на фактура</th>
+                <th class="broj-lekuvanje">Број на лекување</th>
+                <th class="datum">Датум</th>
+                <th class="klient">Коминтент</th>
+                <th class="referentna-cena">Референтна цена</th>
+                <th class="participacija">Партиципација</th>
+                <th class="naplata-za-fzom">Наплата за ФЗОМ</th>
+                <th class="valuta">Валута</th>
+                <th class="oddel">Оддел</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <table class="tstavki fzomfaktura hide" border="1" cellpadding="2" id="faktura">
+            <thead>
+            <tr>
+                <th class="delete"></th>
+                <th class="redenbr">РБ</th>
+                <th class="sifra">Шифра на пакет/услуга</th>
+                <th class="naziv">Назив на услугата</th>
+                <th class="kolicina">Количина/денови/третмани</th>
+                <th class="ref-cena">Референтна цена</th>
+                <th class="vkupno">Вкупен износ</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</fieldset>
+<fieldset class="ceni">
+    <legend>За наплата</legend><br>
+    <label>Вкупно здравствени услуги со партиципација: </label>
+    <input type="text" class="vkupnopaket inlineceni" name="vkupnopaket" readonly><br>
+    <label>Вкупен износ на пресметана партиципација: </label>
+    <input type="text" class="presmetanaparticipacija inlineceni" name="presmetana" readonly><br>
+    <label>Вкупен износ на наплатена партиципација: </label>
+    <input type="text" class="naplatenaparticipacija inlineceni" name="naplatena" readonly><br>
+    <label>Вкупно за наплата од ФЗОМ: </label>
+    <input type="text" class="vkupnofzom inlineceni" name="vkupnofzom" readonly><br>
+</fieldset>
+<div class="otkazi-snimi-novafak">
+    <div class="snimi">
+        <div class="submitclosebutton">
+            <button type="button" class="submitclosefaktura button"><span>Зачувај</span></button>
+        </div>
+    </div>
+    <div class="drugo">
+        <div class="otkazibutton">
+            <button type="button" class="otkazifaktura button"><span>Откажи</span></button>
+        </div>
+    </div>
+</div>
+<?php echo form_close(); ?>
+</div>
+<script>
+jQuery(document).ready(function () {
+    jQuery(".fakturabroj").focus();
+    jQuery(".fakturaklient").combobox();
+    jQuery('.fakturadatum').datepicker();
+    jQuery('.fakturadatum').datepicker('setDate', new Date());
+    jQuery('.rok').datepicker({});
+    jQuery('.periodod').datepicker({dateFormat:'dd-mm-yy'});
+    jQuery('.perioddo').datepicker({dateFormat:'dd-mm-yy'});
+//    jQuery('.periodod').datepicker('setDate', new Date(2013, 00, 01));
+    jQuery('.perioddo').datepicker('setDate', new Date());
+
+    getNewIzleznaFakturaBroj();
+    getIzlezniFakturiZaFzom();
+
+    jQuery(".filterfzom").live('change', function () {
+        var elem = jQuery(this);
+        getIzlezniFakturiZaFzom();
+    });
+    jQuery(".delete").live('click', function () {
+        var trow = jQuery(this).closest('tr');
+        var trowclass = trow.attr('class');
+        if ((!trow.is(":last-child"))) {
+            trow.remove();
+        }
+        var i = 1;
+        jQuery('.tstavki tbody tr').each(function () {
+            jQuery(this).find('.number').html(i);
+            i = 1 * i + 1;
+        });
+    });
+    jQuery(".kolicina").live('blur', function () {
+        var temp = jQuery(this);
+        var currentrow = temp.closest('tr');
+        var cenabezddv = currentrow.find(".bezddv").val();
+        if (temp.val() && cenabezddv) presmetajSuma(temp);
+    });
+    jQuery(".bezddv").live('blur', function () {
+        var temp = jQuery(this);
+        var currentrow = temp.closest('tr');
+        var kolicina = currentrow.find(".kolicina").val();
+        if (temp.val() && kolicina) presmetajSuma(temp);
+    });
+    jQuery(".tstavki").live('blur', function () {
+        var osnovasum = 0, vkupnosum = 0;
+        jQuery(".tstavki td").each(function () {
+            var osnova = jQuery(this).find('.vkupno1').val();
+            var vkupno = jQuery(this).find('.vkupno2').val();
+            // add only if the value is number
+            if (!isNaN(osnova) && osnova.length != 0) {
+                osnovasum += parseFloat(osnova);
+            }
+            if (!isNaN(vkupno) && vkupno.length != 0) {
+                vkupnosum += parseFloat(vkupno);
+            }
+        });
+        jQuery('.osnova').val(osnovasum);
+        jQuery('.vkupnose').val(vkupnosum);
+        jQuery('.tvkupen-iznos-novafak').find('.vkupnoosnova').text(osnovasum);
+        jQuery('.tvkupen-iznos-novafak').find('.vkupnoddv').text(vkupnosum);
+    });
+    jQuery('.otkazifaktura').click(function () {
+        destroyparentdialog(jQuery(this));
+    });
+    jQuery('.submitclosefaktura').click(function () {
+        var ovakopce = jQuery(this);
+        var formaction = jQuery(this).parent().parent().parent().parent().attr('action');
+        jQuery.ajax({
+            type: "post",
+            url: formaction,
+            data: jQuery(this).parent().parent().parent().parent().serialize(),
+            success: function (response) {
+                destroyparentdialog(ovakopce);
+                if_dp_napolnilista();
+            }
+        });
+    });
+    jQuery(".fakturabroj").live('blur', function () {
+        var brojfaktura = jQuery(this).val();
+        var klient = jQuery('.fakturaklient').val();
+        if ((brojfaktura.length > 0) && (klient.length > 0)) {
+            //console.log(brojfaktura, klient);
+            var data = {
+                brojfaktura: brojfaktura,
+                klientid: klient
+            }
+            jQuery.ajax({
+                type: "post",
+                url: "/index.php/vlezni_fakturi/faktura/proveriBrojFaktura",
+                data: data,
+                dataType: "JSON",
+                success: function (response) {
+                    //console.log(response);
+                    if (response.length > 0) {
+                        jQuery('.submitclosefaktura').addClass('hide');
+                        alert("Веќе постоечки број на фактура за овој клиент!!!");
+                    }
+                    else jQuery('.submitclosefaktura').removeClass('hide');
+                }
+            });
+        }
+    });
+    jQuery(".fakturaklient").live('change', function () {
+        var brojfaktura = jQuery('.fakturabroj').val();
+        var klient = jQuery(this).val();
+        if ((brojfaktura.length > 0) && (klient.length > 0)) {
+            //console.log(brojfaktura, klient);
+            var data = {
+                brojfaktura: brojfaktura,
+                klientid: klient
+            }
+            jQuery.ajax({
+                type: "post",
+                url: "/index.php/vlezni_fakturi/faktura/proveriBrojFaktura",
+                data: data,
+                dataType: "JSON",
+                success: function (response) {
+                    //console.log(response);
+                    if (response.length > 0) {
+                        jQuery('.submitclosefaktura').addClass('hide');
+                        alert("Веќе постоечки број на фактура за овој клиент!!!");
+                    }
+                    else jQuery('.submitclosefaktura').removeClass('hide');
+                }
+            });
+        }
+    });
+});
+</script>

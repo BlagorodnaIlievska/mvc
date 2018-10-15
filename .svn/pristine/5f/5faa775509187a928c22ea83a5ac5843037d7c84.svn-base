@@ -1,0 +1,103 @@
+<?php
+
+class Lekar_model extends CI_Model
+{
+
+    public function getLekari()
+    {
+        //  $this->db->where("parent_id", 0);
+        $this->db->limit(50);
+        $query = $this->db->get('bis_lekari_site');
+        return $query->result();
+    }
+
+
+    public function getLekar($id)
+    {
+        $this->db->where("id", $id);
+        $query = $this->db->get('bis_lekari_site');
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_lekar()
+    {
+        $insert_data = $this->input->post();
+        $insert      = $this->db->insert('bis_lekari_site', $insert_data);
+        return $insert;
+    }
+
+
+    public function delete_lekar($id)
+    {
+
+        $this->db->where('id', $id);
+        $this->db->delete('bis_lekari_site');
+
+
+    }
+
+    public function update_lekar()
+    {
+        $field_update_data =	$this->input->post();
+
+        $this->db->where('id',$field_update_data['id']);
+        unset($field_update_data['id']);
+        $this->db->update('bis_lekari_site', $field_update_data);
+    }
+
+    public function smena_dropdown(){
+        $this->db->select('id, ime');
+        $this->db->from('smenska_grupa');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = 'избери';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime'];
+            }
+        }
+        return $dropdown;
+
+    }
+    public function lekari_site(){
+        $this->db->select('tip_dogovor');
+        $this->db->from('bis_lekari_site');
+        $query = $this->db->get();
+        return $query->result();
+    }
+    public function lekari_dropdown(){
+        $this->db->select('id, ime,prezime');
+        $this->db->from('bis_lekari_site');
+
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = '';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime'].' '.
+                    $row['prezime'];
+            }
+        }
+        return $dropdown;
+    }
+    public function lekari_dropdownB(){
+        $this->db->select('*');
+        $this->db->from('bis_lekari_site');
+       // $this->db->limit(200);
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = '';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] =$row['sifra_zu'].': '. $row['zdravstvena_ustanova'] .': '.
+                    $row['ime'].' '. $row['prezime'];
+            }
+        }
+        return $dropdown;
+    }
+}

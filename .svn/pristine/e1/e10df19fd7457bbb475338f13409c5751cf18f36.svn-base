@@ -1,0 +1,36 @@
+.filter-karticki {margin: 10px 0;}
+.filter-karticki select {margin-right: 10px;}
+#pregled_klienti_form .result .print {margin-top: 10px;}
+td .klient.big {width: 150px;}
+.filter-karticki select {padding: 3px !important;}
+.naslovvikartici, .naslovvkartici, .naslovikartici {background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;padding: 1px;margin: 5px 0 0 0;}
+#kartica_klient_form .filter-karticki label {float: left; line-height: 1.7; margin-right: 5px;}
+.karticivlezizlez, .karticivlez, .karticiizlez {clear: both;}
+table tr td {overflow: hidden;}
+#kartica_klient_form table tfoot tr td {font-weight: bold; border-right: 0; border-left: 0;}
+#kartica_klient_form .sumiranje tfoot td:first-child {width: 87px !important; text-align: left;}
+#kartica_klient_form .sumiranje tfoot td:first-child + * {width: 170px !important;}
+#kartica_klient_form .sumiranje tfoot td:first-child + * + * {width: 121px !important;}
+#kartica_klient_form .sumiranje tfoot td:first-child + * + * + * {width: 202px !important;}
+#kartica_klient_form .sumiranje tfoot td:first-child + * + * + * + * {width: 201px !important; text-align: right;}
+#kartica_klient_form .sumiranje tfoot td:first-child + * + * + * + * + * {width: 116px !important;}
+#kartica_klient_form .sumiranje tfoot td:first-child + * + * + * + * + * + * {width: auto !important;}
+#kartica_klient_form .sumiranjevlez tfoot td:first-child {width: 87px !important;}
+#kartica_klient_form .sumiranjevlez tfoot td:first-child + * {width: 82px !important;}
+#kartica_klient_form .sumiranjevlez tfoot td:first-child + * + * {width: 170px !important;}
+#kartica_klient_form .sumiranjevlez tfoot td:first-child + * + * + * {width: 122px !important;}
+#kartica_klient_form .sumiranjevlez tfoot td:first-child + * + * + * + * {width: 201px !important; text-align: right;}
+#kartica_klient_form .sumiranjevlez tfoot td:first-child + * + * + * + * + * {width: 121px !important;}
+#kartica_klient_form .sumiranjevlez tfoot td:first-child + * + * + * + * + * + * {width: 115px !important;}
+#kartica_klient_form .sumiranjevlez tfoot td:first-child + * + * + * + * + * + * + * {width: auto;}
+#kartica_klient_form .sumiranjeizlez tfoot td:first-child {width: 88px;}
+#kartica_klient_form .sumiranjeizlez tfoot td:first-child + * {width: 82px;}
+#kartica_klient_form .sumiranjeizlez tfoot td:first-child + * + * {width: 170px;}
+#kartica_klient_form .sumiranjeizlez tfoot td:first-child + * + * + * {width: 114px;}
+#kartica_klient_form .sumiranjeizlez tfoot td:first-child + * + * + * + * {width: 201px;}
+#kartica_klient_form .sumiranjeizlez tfoot td:first-child + * + * + * + * + * {width: 120px; text-align: right;}
+#kartica_klient_form .sumiranjeizlez tfoot td:first-child + * + * + * + * + * + * {width: 115px;}
+#kartica_klient_form .sumiranjeizlez tfoot td:first-child + * + * + * + * + * + * + * {width: auto;}
+
+.komitent-filter {width: 400px;display: inline-block;float: left;}
+.komitent-filter .ui-autocomplete-input {width: 265px !important;}

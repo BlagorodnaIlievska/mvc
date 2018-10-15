@@ -1,0 +1,7 @@
+<div id="main_menu" class="main-menu-tabs">
+    <ul>
+	    <?php foreach($menus as $menu) { ?>
+        <li class="<?php echo $menu['class'] ?>"><a href="<?php echo $menu['link']  ?>"><?php echo $menu['label']  ?></a></li>
+	    <?php } ?>
+    </ul>
+</div>

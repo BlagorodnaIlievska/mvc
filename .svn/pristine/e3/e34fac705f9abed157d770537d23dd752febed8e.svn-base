@@ -1,0 +1,162 @@
+<div class="vlez-form-plata content-area">
+    <?php
+    $month = date("m");
+    ?>
+    <div class="span">
+        <?php if (bis_check_access('planiranje_resursi_plati_plata_button')): ?>
+            <div class="buttonplata">
+                <button type="button" onclick="podeli_plati()" class="button"><span>Плата</span></button>
+            </div>
+                <?php endif ?>
+
+
+    </div>
+<!--        --><?php //if (bis_check_access('planiranje_resursi_plati_pecati_button')): ?>
+<!--            <div class="buttonprintaj">-->
+<!--                <button type="button" value="" class="printaj print button"><span>Печати</span></button>-->
+<!--            </div>-->
+<!--        --><?php //endif ?>
+    <div class="filtermenu">
+        <div class="filter-vleznifak">
+            <span class="spanmesec">Месец: </span>
+            <?php echo form_dropdown('mesec',$mesec, '', 'class="mesec-plata barajplata"'); ?>
+            <span class="spangodina">Година: </span>
+            <select name="godina" class="godina-plata barajplata">
+                <?php
+                for ($i=2010; $i<2026; $i++)
+                { ?>
+                    <option value="<?= $i; ?>"><?php echo $i; ?></option>
+                <?php } ?>
+            </select>
+
+        </div>
+    </div>
+
+    <div class="lista-na-vraboteni-cr clear">
+        <p class="naslovplata" > ( <span class="vkupnostavki">0</span> ) <span class="status">Вработени</span></p>
+        <div class="predtabela">
+        <table class="filter-covecki-resursi" >
+            <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th class="redenbr">РБ</th>
+                <th>Име</th>
+                <th>Презиме</th>
+                <th>ЕМБГ</th>
+                <th>Бруто плата</th>
+                <th>Придонес за ПИО</th>
+                <th>Придонес за здравство</th>
+                <th>Придонес за вработување</th>
+                <th>Вкупно придонеси</th>
+                <th>Нето плата</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+</div>
+
+<script>
+jQuery(document).ready(function () {
+    var currentDate = new Date();
+    var mesec = currentDate.getMonth()+1;
+    var godina = currentDate.getFullYear();
+    jQuery(".mesec").val(mesec);
+    jQuery(".mesec-plata").val(mesec);
+    jQuery(".godina-plata").val(godina);
+    jQuery('.periodod').datepicker({dateFormat:'yy-mm-dd'});
+    jQuery('.periodod').datepicker('setDate', new Date(2013,00,01));
+    jQuery('.perioddo').datepicker({dateFormat:'yy-mm-dd'});
+    jQuery('.perioddo').datepicker('setDate', new Date());
+
+    jQuery('.filter-covecki-resursi').tablesorter();
+    reload_covecki_resursi_plata(mesec, godina);
+
+    jQuery('.printaj').click(function () {
+        var htmlTable = jQuery(".lista-na-vraboteni-cr").html();
+        var printurl = "/index.php/plati/plati/pdf_create";
+        var data = {  html:htmlTable  }
+        jQuery.ajax({
+            url:printurl,
+            type:'POST',
+            data:data,
+            success:function (response) {
+
+            }
+        });
+    });
+
+    jQuery('.bnovraboten').click(function () {
+        nov_vraboten();
+    });
+    jQuery(".buttonplata").live("click", function () {
+        if (jQuery(".filtermenu-plata").hasClass("prikazano")) {
+            jQuery(".filtermenu-plata").hide(500);
+            jQuery(".filtermenu-plata").removeClass("prikazano");
+        } else {
+            jQuery(".filtermenu-plata").show(500);
+            jQuery(".filtermenu-plata").addClass("prikazano");
+        }
+    });
+
+    jQuery('.presmetajplatabutton').click(function () {
+        var mesec = jQuery(".mesec").val();
+        var godina = jQuery(".godina").val();
+        proveriplata(mesec,godina);
+    });
+    jQuery(".filtermenu-vraboten input, .filtermenu-vraboten select").val('');
+    jQuery(".filtermenu-vraboten input, .filtermenu-vraboten select").change(function () {
+        clearTimeout(window.listatimeout);
+        window.listatimeout = setTimeout("vraboteni_popolnilistasotimeout()", 600);
+    });
+    jQuery(".filtermenu-vraboten input, .filtermenu-vraboten select").keyup(function () {
+        clearTimeout(window.listatimeout);
+        window.listatimeout = setTimeout("vraboteni_popolnilistasotimeout()", 600);
+    });
+
+    jQuery(".filter-covecki-resursi tbody .info-tr").live('click', function () {
+        vraboteni_prikazi(jQuery(this).parent().parent().attr("vrabotenid"));
+    });
+    jQuery(".filter-covecki-resursi tbody .print-tr").live('click', function () {
+
+
+            var mesec = jQuery(".mesec-plata").val();
+            var godina = jQuery(".godina-plata").val();
+
+             var vraboten_id= jQuery(this).parent().parent().attr("vrabotenid");
+              console.log(mesec,godina,vraboten_id);
+            var link_href = "/index.php/print/pdf?view=/index.php/plati/plati/pecati_livce_za_plata_pdf&vrabotenid="+vraboten_id+"&mesec="+mesec+"&godina="+godina;;
+            jQuery(".filter-covecki-resursi tbody .print-tr").attr("href",link_href);
+
+    });
+    jQuery('.ajaxvrabotenupdate').live('click', function () {
+        var formaction = jQuery(this).parent().attr('action');
+        var formmethod = jQuery(this).parent().attr('method');
+        jQuery.ajax({
+            type:"post",
+            url:formaction,
+            data:decodeURIComponent(jQuery(this).parent().serialize()),
+            success:function (data) {
+                if (jQuery.trim(data)=="ok"){
+                    reload_covecki_resursi();
+                    alert('Успешно');
+                } else {
+                    alert('Грешка');
+                }
+            }
+        });
+        destroyparentdialog(jQuery(this));
+    });
+    jQuery('.barajplata').live("change", function () {
+        var mesec = jQuery(".mesec-plata").val();
+        var godina = jQuery(".godina-plata").val();
+        reload_covecki_resursi_plata(mesec, godina);
+    });
+
+});
+</script>

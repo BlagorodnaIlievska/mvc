@@ -1,0 +1,2239 @@
+<?php
+
+class Izlezni_fakturi_model extends CI_Model{
+
+    public function create_faktura()
+    {
+        $lekuvanje_id = $this->input->post('lekuvanje_id');
+        $sokonto = $this->input->post('checkkonto');
+        $cenovnik = $this->input->post('cenovnik');
+        if(strlen($sokonto) > 0)
+        {
+            $tipID = $this->input->post('konto');
+            $insert_data = array(
+                'MFID' => 1,
+                'tip' => 20,
+                'datum' => $this->input->post('datum'),
+                'datetime' => time(),
+                'sysDateCreated' => time(),
+                'datum_zapis' => $this->input->post('datum'),
+                'textBroj'=>$this->input->post('broj'),
+                'arhTextBroj'=>$this->input->post('broj'),
+                'arhIntBroj'=>$this->input->post('arhivskibrojint'),
+                'intBroj'=>$this->input->post('arhivskibrojint'),
+                'komintent_ime'=>$this->input->post('komintent_ime'),
+                'firmaID'=>$this->input->post('klient'),
+                'komentar'=>$this->input->post('zabeleska'),
+                'p_osnova'=>$this->input->post('vkupnose'),
+                'lekuvanje_id'=>$lekuvanje_id,
+                'p_vkupno'=>$this->input->post('vkupnose'),
+                'flagStatus'=>$this->input->post('platena_options'),
+                'rokDatum'=>$this->input->post('rok'),
+                'rokPlat'=>$this->input->post('rokdenovi'),
+                'tipID'=>$this->input->post('konto'),
+                'nacinID'=>$this->input->post('nacin_options'),
+                'firma_id' => $this->input->post('oddel'),
+                'zaKlientID'=>$this->input->post('zaklient'),
+                'valutaID'=>$this->input->post('valuta_options')
+            );
+        }
+        else
+        {
+            $insert_data = array(
+                'MFID' => 1,
+                'tip' => 20,
+                'datum' => $this->input->post('datum'),
+                'datetime' => time(),
+                'sysDateCreated' => time(),
+                'datum_zapis' => $this->input->post('datum'),
+                'textBroj'=>$this->input->post('broj'),
+                'arhIntBroj'=>$this->input->post('arhivskibrojint'),
+                'intBroj'=>$this->input->post('arhivskibrojint'),
+                'komintent_ime'=>$this->input->post('komintent_ime'),
+                'arhTextBroj'=>$this->input->post('broj'),
+                'firmaID'=>$this->input->post('klient'),
+                'komentar'=>$this->input->post('zabeleska'),
+                'vrska_dokumenti'=>$this->input->post('vrskadokumenti'),
+                'p_osnova'=>$this->input->post('vkupnose'),
+                'lekuvanje_id'=>$lekuvanje_id,
+                'p_vkupno'=>$this->input->post('vkupnose'),
+                'rokDatum'=>$this->input->post('rok'),
+                'rokPlat'=>$this->input->post('rokdenovi'),
+                //'tipID'=>$this->input->post('konto'),
+                'firma_id' => $this->input->post('oddel'),
+                'zaKlientID'=>$this->input->post('zaklient'),
+                'valutaID'=>$this->input->post('valuta_options')
+            );
+        }
+        $insert = $this->db->insert('stavka', $insert_data);
+        if($insert) $id = $this->db->insert_id();
+        else $id = false;
+
+        if($lekuvanje_id) $this->zatvori_fakturiraj_lekuvanje($lekuvanje_id, $id);
+        $vrzaniispratnici = $this->input->post('ispratnici_id');
+        $myArray = explode(',', $vrzaniispratnici);
+        foreach ($myArray as $key => $val)
+        {
+            $faktura = array(
+                'zaDokID' => $id
+            );
+            $this->db->where('ID', $val);
+            $this->db->update('stavka', $faktura);
+        }
+
+        $stavka = $this->input->post('stavka');
+        foreach($stavka as $index => $value)
+        {
+            $new_stavka = $this->input->post('stavka');
+            $new_sifra = $this->input->post('sifra');
+            $new_cena = $this->input->post('bezddv');
+//            $new_cenaddv = $this->input->post('soddv');
+            $new_kolicina = $this->input->post('kolicina');
+            $new_tipstavka = $this->input->post('tipstavka');
+            $new_edmerka = $this->input->post('edmerkaid');
+            if(strlen($sokonto) > 0)
+            {
+                $new_konto = $this->input->post('kontostavka');
+                $detali_data = array(
+                    'ID' => $id,
+                    'SID' => $new_sifra[$index],
+                    'Stavka' => $new_stavka[$index],
+                    'Cena' => $new_cena[$index],
+                    'kolicina' => $new_kolicina[$index],
+                    'edinica_merka' => $new_edmerka[$index],
+                    'tip_stavka' => $new_tipstavka[$index],
+                    'konto' => $new_konto[$index],
+                    'cenovnik' => $cenovnik,
+                );
+                $kontiranje=array(
+                    'konto'=>$new_konto[$index],
+                    'suma'=>$new_cena[$index],
+                    'tip'=>'izleznafaktura'
+                );
+                $k=$this->db->insert('kontiranje',$kontiranje);
+            }
+            else
+            {
+                $detali_data = array(
+                    'ID' => $id,
+                    'SID' => $new_sifra[$index],
+                    'Stavka' => $new_stavka[$index],
+                    'Cena' => $new_cena[$index],
+                    'kolicina' => $new_kolicina[$index],
+                    'tip_stavka' => $new_tipstavka[$index],
+                    'edinica_merka' => $new_edmerka[$index],
+                    'cenovnik' => $cenovnik
+                );
+            }
+            $detali = $this->db->insert('stavkadetali', $detali_data);
+        }
+
+        if($insert)
+        {
+            $lastbroj = $this->getLastIFBroj();
+            $newbroj = $lastbroj+1;
+            $this->incrementIFBroj($newbroj);
+        }
+        return $id;
+    }
+
+    public function zatvori_fakturiraj_lekuvanje($lekuvanje_id, $faktura_id)
+    {
+        $data["priem_status"] = 50;
+        $data["faktura_id"] = $faktura_id;
+        $this->db->where('id', $lekuvanje_id);
+        $this->db->update('bis_pacienti_priem', $data);
+    }
+
+
+    public function getLastIFBroj()
+    {
+        $this->db->select('broj');
+        $this->db->from('autoincrement');
+        $this->db->where('id','2');
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0]->broj;
+    }
+
+    public function incrementIFBroj($newbroj)
+    {
+        $newbroj = array(
+            'broj' => $newbroj
+        );
+        $this->db->where('id', '2');
+        $query = $this->db->update('autoincrement', $newbroj);
+        return $query;
+    }
+
+    public function create_detali_faktura()
+    {
+        $insert_data = array(
+            'ID' => 1,
+            'SID' => 20
+        );
+
+        $insert = $this->db->insert('stavkadetali', $insert_data);
+        return $insert;
+    }
+    public function site_izlezni(){
+        $d=date("Y-m-d");
+        $this->db->select('
+                    stavka.ID as fakturaid,
+                    stavka.fzom_status as fzom_status,
+                     stavka.ministerstvo_status as ministerstvo_status,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    stavka.arhTextBroj as arhiva,
+                    stavka.p_osnova as osnova,
+                    stavka.p_ddv as ddv,
+                    stavka.p_vkupno as vkupno,
+                    stavka.flagStatus as status,
+                    stavka.rokDatum as rok,
+                    stavka.tipID as grupa,
+                    stavka.vkupno_fzom as vkupno_fzom,
+                    stavka.nacinID as nacin,
+                    stavka.valutaID as valuta,
+                    stavka.zaKlientID as zaKlient,
+                    stavka.komentar as zabeleska,
+                    stavka.firmaID as firmaID,
+                    stavka.pacient_id as pacientID,
+                    bis_firmi.ime as zadolzen_oddel,
+                    firma.ime as firma,
+                    bis_pacienti.ime as pacient_ime,
+                    bis_pacienti.prezime as pacient_prezime
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_firmi', 'stavka.firma_id = bis_firmi.id', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->where('stavka.tip',20);
+        $this->db->or_where('stavka.tip',25);
+        $this->db->or_where('stavka.tip',26);
+        $this->db->where('stavka.broj_na_nalog_knizenje',0);
+        $this->db->order_by('stavka.ID','desc');
+        $query = $this->db->get();
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public function site_fzom(){
+        $d=date("Y-m-d");
+        $this->db->select('
+                    stavka.ID as fakturaid,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    stavka.arhTextBroj as arhiva,
+                    stavka.p_osnova as osnova,
+                    stavka.p_ddv as ddv,
+                    stavka.p_vkupno as vkupno,
+                    stavka.flagStatus as status,
+                    stavka.rokDatum as rok,
+                    stavka.tipID as grupa,
+                    stavka.nacinID as nacin,
+                    stavka.valutaID as valuta,
+                    stavka.zaKlientID as zaKlient,
+                    stavka.komentar as zabeleska,
+                    stavka.firmaID as firmaID,
+                    firma.ime as firma,
+                    bis_pacienti.ime as pacient_ime,
+                    bis_pacienti.prezime as pacient_prezime
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->where('stavka.tip',25);
+        $this->db->where('stavka.broj_na_nalog_knizenje',0);
+        $query = $this->db->get();
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public function  getFaktura($fakturaid)   {
+        $this->db->select('
+                    stavka.ID as fakturaid,
+                    stavka.datum as datum,
+                    stavka.fzom_status as fzom_status,
+                    stavka.ministerstvo_status as ministerstvo_status,
+                    stavka.textBroj as broj,
+                    stavka.tip as tip,
+                    stavka.arhTextBroj as arhiva,
+                    stavka.p_osnova as osnova,
+                    stavka.p_ddv as ddv,
+                    stavka.p_vkupno as vkupno,
+                    stavka.flagStatus as status,
+                    stavka.rokDatum as rok,
+                    stavka.tipID as grupa,
+                    stavka.nacinID as nacin,
+                    stavka.valutaID as valuta,
+                    stavka.zaKlientID as zaKlient,
+                    stavka.komentar as zabeleska,
+                    stavka.firmaID as firmaID,
+                    stavka.vkupno_fzom as vkupno_fzom,
+                     stavka.presmetana_participacija as participacija,
+                    firma.ime as firma,
+                    firma.firmaID as firma_id,
+                    konta.sifra as konto,
+                    konta.id as konto_id,
+                    konta.opis as naziv,
+                    bis_pacienti.ime as pacient_ime,
+                    bis_pacienti.prezime as pacient_prezime
+
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('konta', 'stavka.tipID = konta.id', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        //$this->db->where('stavka.tip',20);
+        $this->db->where('stavka.ID',$fakturaid);
+        $query = $this->db->get();
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public function  getFaktura_pobaruva($fakturaid)   {
+        $this->db->select('
+                    stavka.ID as fakturaid,
+                    stavka.fzom_status as fzom_status,
+                    stavka.ministerstvo_status as ministerstvo_status,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    stavka.tip as tip,
+                    stavka.arhTextBroj as arhiva,
+                    stavka.p_osnova as osnova,
+                    stavka.p_ddv as ddv,
+                    stavka.p_vkupno as vkupno,
+                    stavka.flagStatus as status,
+                    stavka.rokDatum as rok,
+                    stavka.tipID as grupa,
+                    stavka.nacinID as nacin,
+                    stavka.valutaID as valuta,
+                    stavka.zaKlientID as zaKlient,
+                    stavka.komentar as zabeleska,
+                      stavka.vkupno_fzom as vkupno_fzom,
+                    stavka.firmaID as firmaID,
+                    stavka.presmetana_participacija as participacija,
+                    firma.ime as firma,
+                    firma.firmaID as firma_id,
+                    konta.trosok_konto as konto,
+                    konta.id as konto_id,
+
+                    konta.opis as naziv,
+                    bis_pacienti.ime as pacient_ime,
+                    bis_pacienti.prezime as pacient_prezime
+
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('konta', 'stavka.tipID = konta.id', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        //$this->db->where('stavka.tip',20);
+        $this->db->where('stavka.ID',$fakturaid);
+        $query = $this->db->get();
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public function getPregled($klientid, $pacientid, $statusid, $period1, $period2, $brojfaktura)
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    stavka.p_osnova as osnova,
+                    stavka.p_ddv as ddv,
+                    stavka.p_vkupno as vkupno,
+                    stavka.komentar as zabeleska,
+                    stavka.presmetana_participacija as pacientIznos,
+                    stavka.firmaID as firmaID,
+                    stavka.pacient_id as pacientID,
+                    firma.ime as firmaIme,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.tatkovoime as pacientTatkovoIme,
+                    bis_pacienti.prezime as pacientPrezime
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        if($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+        if($pacientid > 0) $this->db->where('stavka.pacient_id', $pacientid);
+        if(strlen($period1) > 0) $this->db->where('stavka.datum >=', $period1);
+        if(strlen($period2) > 0) $this->db->where('stavka.datum <=', $period2);
+        if ($statusid == 1) $this->db->where('stavka.flagStatus', '1');
+        if ($statusid == 2) $this->db->where('stavka.flagStatus !=', '1');
+        if(strlen($brojfaktura) > 0) $this->db->like('stavka.textBroj',$brojfaktura, 'both');
+        $this->db->where('stavka.tip','20');
+        $query = $this->db->get();
+        $novresult = '';
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            $this->load->model('vlezni_fakturi/vlezni_fakturi_model');
+            foreach ($result as $row) {
+                $row->dokumenti = $this->vlezni_fakturi_model->getPriemniciPoVleznaFaktura($row->dbid);
+                $novresult[] = $row;
+            }
+        }
+        else
+        {
+            $novresult = false;
+        }
+        return $novresult;
+    }
+
+    public function getNeplateniIzlezniFakturi($brojfaktura, $firmaid)
+    {
+        $niza=array('20','25');
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    stavka.p_osnova as osnova,
+                    stavka.p_ddv as ddv,
+                    stavka.p_vkupno as vkupno,
+                    stavka.vkupno_fzom as fzom,
+                    stavka.komentar as zabeleska,
+                    firma.ime as firmaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->where_in('stavka.tip',$niza);
+
+        $this->db->where('stavka.flagStatus !=','1');
+        $this->db->where('stavka.firmaID',$firmaid);
+
+        if(strlen($brojfaktura) > 1) $this->db->like('stavka.textBroj',$brojfaktura, 'both');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getIzlezniFakturi()
+    {
+        $niza = array(20,25,26);
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.tip as tip_faktura,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    stavka.p_osnova as osnova,
+                    stavka.p_ddv as ddv,
+                    stavka.p_vkupno as vkupno,
+                    stavka.vkupno_fzom as fzom,
+                    stavka.presmetana_participacija as pacientIznos,
+                    stavka.participacija_id as participacija_id,
+                    stavka.komentar as zabeleska,
+                    stavka.valutaID as valuta,
+                    stavka.firmaID as firmaID,
+                    stavka.pacient_id as pacientID,
+                    stavka.lekuvanje_id as lekuvanje,
+                    firma.ime as firmaIme,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.tatkovoime as pacientTatkovoIme,
+                    bis_pacienti.prezime as pacientPrezime,
+                    bis_firmi.ime as oddel
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->join('bis_firmi', 'stavka.firma_id = bis_firmi.id', 'left');
+        $this->db->where_in('stavka.tip',$niza);
+        $query = $this->db->get();
+        $novresult= '';
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            foreach($result as $row){
+                $row->dokumenti=$this->getIspratniciPoIzleznaFaktura($row->dbid);
+                $novresult[]=$row;
+            }
+        }
+        else
+        {
+            $novresult = false;
+        }
+        return $novresult;
+    }
+
+    public function getIspratniciPoIzleznaFaktura($id)
+    {
+        $this->db->select('*');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->where('stavka.zaDokID',$id);
+        $query = $this->db->get();
+
+
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getIzleznaDetali($id)
+    {
+        $this->db->select('
+                    stavkadetali.stavkaDetaliID as dbid,
+                    stavkadetali.SID as sifra,
+                    stavkadetali.stavka as stavka,
+                    stavkadetali.kolicina as kolicina,
+                    stavkadetali.cena as cena,
+                    stavkadetali.cenaDDV as cenaDDV,
+                    stavkadetali.DDV as ddv,
+                    stavkadetali.edinica_merka as edMerka,
+                    stavkadetali.konto as konto,
+                    stavkadetali.ddv_konto as ddvkonto,
+                    stavkadetali.cenovnik as cenovnik,
+                    stavkadetali.iznos_participacija as iznos_participacija,
+                    stavkadetali.sifra_paket as sifra_paket,
+                    stavka.arhTextBroj as broj,
+                    s1.katBroj as katBroj,
+                    s1.sifra as sifra2,
+                    bis_edmerki.ime_dolgo as edMerkaIme,
+                    konta.sifra as kontoSifra,
+                    konta.opis as naziv,
+                    firma.ime as firma
+                    ');
+        $this->db->from('stavkadetali');
+        $this->db->join('s1', 'stavkadetali.SID = s1.SID', 'left');
+        $this->db->join('stavka', 'stavkadetali.SID = stavka.ID', 'left');
+        $this->db->join('bis_edmerki', 'stavkadetali.edinica_merka = bis_edmerki.id', 'left');
+        $this->db->join('konta', 'stavkadetali.konto = konta.id', 'left');
+        $this->db->join('firma', 'stavkadetali.firmaID = firma.firmaID', 'left');
+        $this->db->where('stavkadetali.ID',$id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            foreach($result as $row){
+                $row->sifra_usluga=$this->getUslugaSifra($row->cenovnik, $row->sifra);
+                $novresult[]=$row;
+            }
+            return $novresult;
+        }
+        else
+        {
+            $result = false;
+            return $result;
+        }
+    }
+    public function getUslugaSifra($cenovnik, $id)
+    {
+        if($cenovnik > 0)
+        {
+            if($cenovnik == 1) $tabela = "paketi";
+            if($cenovnik == 2) $tabela = "dsg_uslugi";
+            if($cenovnik == 3) $tabela = "dnevnaBol_uslugi";
+            if($cenovnik == 4) $tabela = "spec_kon_prev_zz";
+            if($cenovnik == 9) $tabela = "s1";
+
+            if($cenovnik >=1 && $cenovnik <= 4) $this->db->where('id', $id);
+            if($cenovnik == 9) $this->db->where('SID', $id);
+            $query = $this->db->get($tabela);
+            if($query->num_rows() == 1)
+            {
+                $result = $query->result();
+                return $result[0]->sifra;
+            }
+            else
+            {
+                $result = false;
+                return $result;
+            }
+        }
+    }
+    public function getIzleznaPaketDetali($id)
+    {
+        $this->db->select('
+                    stavkadetali.stavkaDetaliID as dbid,
+                    stavkadetali.SID as sifra,
+                    stavkadetali.stavka as stavka,
+                    stavkadetali.kolicina as kolicina,
+                    stavkadetali.cena as cena,
+                    s1.katBroj as katBroj,
+                    edmerka.edMerkaSkr as edmerka
+                    ');
+        $this->db->from('stavkadetali');
+        $this->db->join('s1', 'stavkadetali.SID = s1.SID', 'left');
+        $this->db->join('edmerka', 's1.EdMerka = edmerka.edMerkaID', 'left');
+        $this->db->where('stavkadetali.ID',$id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function updateFaktura($id)
+    {
+        $cenovnik = $this->input->post('cenovnik');
+        $sokonto = $this->input->post('checkkonto');
+        if(strlen($sokonto) > 0)
+        {
+            $tipID = $this->input->post('konto');
+
+            $update_data = array(
+                'datum' => $this->input->post('datum'),
+                'sysDateChanged' => time(),
+                'komintent_ime'=>$this->input->post('komintent_ime'),
+                'firmaID'=>$this->input->post('klient'),
+                'pacient_id'=>$this->input->post('pacient'),
+                'komentar'=>$this->input->post('zabeleska'),
+                'p_osnova'=>$this->input->post('vkupnose'),
+                'p_vkupno'=>$this->input->post('vkupnose'),
+                'komentar'=>$this->input->post('zabeleska'),
+                'vrska_dokumenti'=>$this->input->post('vrskadokumenti'),
+                'rokDatum'=>$this->input->post('rok'),
+                'rokPlat'=>$this->input->post('rokdenovi'),
+                'tipID'=>$this->input->post('konto'),
+                'zaKlientID'=>$this->input->post('zaklient'),
+                'valutaID'=>$this->input->post('valuta_options')
+            );
+            $nalog_id= $this->input->post('broj_nalog');
+            $konto_id= $tipID = $this->input->post('konto');
+            $this->update_nalog_po_sifra($nalog_id,$this->get_sifra_konto($konto_id));
+            $this->update_nalog_po_vtoro_konto($nalog_id,$this->get_vtoro_konto($konto_id));
+        }
+        else
+        {
+            $update_data = array(
+                'datum' => $this->input->post('datum'),
+                'sysDateChanged' => time(),
+                'komintent_ime'=>$this->input->post('komintent_ime'),
+                'firmaID'=>$this->input->post('klient'),
+                'pacient_id'=>$this->input->post('pacient'),
+                'komentar'=>$this->input->post('zabeleska'),
+                'p_osnova'=>$this->input->post('vkupnose'),
+                'p_vkupno'=>$this->input->post('vkupnose'),
+                'komentar'=>$this->input->post('zabeleska'),
+                'vrska_dokumenti'=>$this->input->post('vrskadokumenti'),
+                'rokDatum'=>$this->input->post('rok'),
+                'rokPlat'=>$this->input->post('rokdenovi'),
+                'zaKlientID'=>$this->input->post('zaklient'),
+                'valutaID'=>$this->input->post('valuta_options')
+            );
+        }
+        $this->db->where('ID', $id);
+        $update = $this->db->update('stavka', $update_data);
+
+        $vrzaniispratnici = $this->input->post('ispratnici_id');
+        $myArray = explode(',', $vrzaniispratnici);
+        foreach ($myArray as $key => $val)
+        {
+            $faktura = array(
+                'zaDokID' => $id
+            );
+            $this->db->where('ID', $val);
+            $this->db->update('stavka', $faktura);
+        }
+
+        $stavka = $this->input->post('stavka');
+        $dolzina = 0;
+        if(gettype($stavka) == "string") $dolzina = strlen($stavka);
+        if(gettype($stavka) == "array") $dolzina = count($stavka);
+
+        if($dolzina > 0)
+        {
+            foreach($stavka as $index => $value)
+            {
+                $delete_stavka = $this->input->post('brisistavka');
+                $detal = $this->input->post('dbid');
+                $detalid = $detal[$index];
+                if($delete_stavka[$index] == 1)
+                {
+                    $this->db->where('stavkaDetaliID', $detalid);
+                    $this->db->delete('stavkadetali');
+                }
+                else
+                {
+                    $new_stavka = $this->input->post('stavka');
+                    $new_sifra = $this->input->post('sifra');
+                    $new_cena = $this->input->post('bezddv');
+                    $new_kolicina = $this->input->post('kolicina');
+                    $new_edmerka = $this->input->post('edmerkaid');
+                    if(strlen($sokonto) > 0)
+                    {
+                        $new_konto = $this->input->post('kontostavka');
+                        $detali_data = array(
+                            'ID' => $id,
+                            'SID' => $new_sifra[$index],
+                            'Stavka' => $new_stavka[$index],
+                            'Cena' => $new_cena[$index],
+                            'kolicina' => $new_kolicina[$index],
+                            'edinica_merka' => $new_edmerka[$index],
+                            'konto' => $new_konto[$index],
+                            'cenovnik' => $cenovnik,
+                            'firmaID' => $this->input->post('klient')
+                        );
+                        $kontiranje=array(
+                            'konto'=>$new_konto[$index],
+                            'suma'=>$new_cena[$index],
+                            'tip'=>'izleznafaktura'
+                        );
+                        $k=$this->db->insert('kontiranje',$kontiranje);
+                    }
+                    else
+                    {
+                        $detali_data = array(
+                            'ID' => $id,
+                            'SID' => $new_sifra[$index],
+                            'Stavka' => $new_stavka[$index],
+                            'Cena' => $new_cena[$index],
+                            'kolicina' => $new_kolicina[$index],
+                            'edinica_merka' => $new_edmerka[$index],
+                            'cenovnik' => $cenovnik,
+                            'firmaID' => $this->input->post('klient')
+                        );
+                    }
+                    if($detalid > 0)
+                    {
+                        $this->db->where('stavkaDetaliID', $detalid);
+                        $this->db->update('stavkadetali', $detali_data);
+                    }
+                    else $this->db->insert('stavkadetali', $detali_data);
+                }
+            }
+        }
+        return $update;
+    }
+    function get_sifra_konto($id){
+        $this->db->select('konta.sifra');
+        $this->db->from('konta');
+        $this->db->where('konta.id',$id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result[0]->sifra;
+    }
+    function get_vtoro_konto($id){
+        $this->db->select('konta.trosok_konto');
+        $this->db->from('konta');
+        $this->db->where('konta.id',$id);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result[0]->trosok_konto;
+    }
+    function update_nalog_po_sifra($nalog_id,$sifra_konto){
+        $update=array('konto'=>$sifra_konto);
+        $this->db->where('nalog_id',$nalog_id);
+        $this->db->where('za_promena_konto',1);
+        $up = $this->db->update('nalog_detali', $update);
+        return $up;
+    }
+    function update_nalog_po_vtoro_konto($nalog_id,$sifra_konto){
+        $update=array('konto'=>$sifra_konto);
+        $this->db->where('nalog_id',$nalog_id);
+        $this->db->where('za_promena_konto',0);
+        $up = $this->db->update('nalog_detali', $update);
+        return $up;
+    }
+    public function updateFakturaPaket($id)
+    {
+        $update_data = array(
+            'MFID' => 1,
+            'datum' => $this->input->post('datum'),
+            'textBroj'=>$this->input->post('broj'),
+            'arhTextBroj'=>$this->input->post('arhiva'),
+            'firmaID'=>$this->input->post('klient'),
+//            'p_osnova'=>$this->input->post('osnova'),
+//            'p_ddv'=>$this->input->post('ddv2'),
+            'p_vkupno'=>$this->input->post('vkupnopaket'),
+            'presmetana_participacija'=>$this->input->post('presmetana'),
+            'naplatena_participacija'=>$this->input->post('naplatena'),
+            'vkupno_fzom'=>$this->input->post('vkupnofzom'),
+            'flagStatus'=>$this->input->post('platena_options'),
+            'rokDatum'=>$this->input->post('rok'),
+            'tipID'=>$this->input->post('konto'),
+            'nacinID'=>$this->input->post('nacin_options'),
+            'zaKlientID'=>$this->input->post('zaklient'),
+            'valutaID'=>$this->input->post('valuta_options')
+        );
+        $this->db->where('ID', $id);
+        $update = $this->db->update('stavka', $update_data);
+
+        $stavka = $this->input->post('stavka');
+        foreach($stavka as $index => $value)
+        {
+            $detal = $this->input->post('dbid');
+            $detalid = $detal[$index];
+            $new_stavka = $this->input->post('stavka');
+            $new_sifra = $this->input->post('sifra');
+            $new_kolicina = $this->input->post('kolicina');
+            $new_cena = $this->input->post('refcena');
+            $detali_data = array(
+                'ID' => $id,
+                'SID' => $new_sifra[$index],
+                'Stavka' => $new_stavka[$index],
+                'Cena' => $new_cena[$index],
+//                'cenaDdv' => $new_cenaddv[$index],
+                'kolicina' => $new_kolicina[$index]
+//                'DDV' => $new_ddv[$index]
+            );
+            if($detalid > 0)
+            {
+                $this->db->where('stavkaDetaliID', $detalid);
+                $detali = $this->db->update('stavkadetali', $detali_data);
+            }
+            else $detali = $this->db->insert('stavkadetali', $detali_data);
+//            $insert = $this->db->insert('stavkadetali', $detali_data);
+        }
+        return $update;
+    }
+
+    public function deleteStavkaIzleznaFaktura($id)
+    {
+        $this->db->where('stavkaDetaliID', $id);
+        $result = $this->db->delete('stavkadetali');
+        return $result;
+    }
+
+    public function getUplataFaktura($fakturaid)
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.tip as tip,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    stavka.z_uplata as suma,
+                    stavka.komentar as zabeleska,
+                    zirosmetki.tzsBroj as smetka,
+                    zirosmetkib.tzsBroj as firmaSmetka,
+                    firma.ime as firmaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('zirosmetki', 'stavka.firmaZSmetkaID = zirosmetki.TZSID', 'left');
+        $this->db->join('zirosmetki as zirosmetkib', 'stavka.ZSID = zirosmetkib.TZSID', 'left');
+        $this->db->where('stavka.zaDokID',$fakturaid);
+        $this->db->where('stavka.tip', 50);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getArtikli($proizvoditel, $stavka, $katbroj, $sifra2)
+    {
+        $this->db->select('
+                    s1.SID as sifra1,
+                    s1.sifra as sifra2,
+                    s1.katBroj as katBroj,
+                    s1.S1Ime as stavka,
+                    s1.Cen0 as cena,
+                    s1.SDDV as ddv,
+                    s0.SOIme as grupa
+                    ');
+        $this->db->from('s1');
+        $this->db->join('s0', 's1.SID0 = s0.SID0', 'left');
+        if($stavka) $this->db->like('s1.S1Ime',$stavka, 'both');
+        if($katbroj) $this->db->like('s1.katBroj',$katbroj, 'both');
+        if($sifra2) $this->db->like('s1.sifra',$sifra2, 'both');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getPaketi($proizvoditel, $stavka, $katbroj, $sifra2)
+    {
+        $this->db->select('
+                    s1.SID as sifra1,
+                    s1.sifra as sifra2,
+                    s1.katBroj as katBroj,
+                    s1.S1Ime as stavka,
+                    s1.za_fond as refcena,
+                    s1.za_fzom as fzom,
+                    s0.SOIme as grupa
+                    ');
+        $this->db->from('s1');
+        $this->db->join('s0', 's1.SID0 = s0.SID0', 'left');
+        if($stavka) $this->db->like('s1.S1Ime',$stavka, 'both');
+        if($katbroj) $this->db->like('s1.katBroj',$katbroj, 'both');
+        if($sifra2) $this->db->like('s1.sifra',$sifra2, 'both');
+        $this->db->where('s1.paket', 1);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getDospeanostKlient($klientid, $pacientid)
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.rokDatum as rok,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.p_vkupno as p_vkupno,
+                    stavka.komentar as komentar,
+                    stavka.presmetana_participacija as pacientIznos,
+                    stavka.firmaID as firmaID,
+                    stavka.pacient_id as pacientID,
+                    firma.ime as firmaIme,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.tatkovoime as pacientTatkovoIme,
+                    bis_pacienti.prezime as pacientPrezime
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->where('stavka.flagStatus !=','1');
+        if($klientid > 0) $this->db->where('stavka.firmaID',$klientid);
+        if($pacientid > 0) $this->db->where('stavka.pacient_id',$pacientid);
+        $this->db->where('stavka.tip','20');
+        $query = $this->db->get();
+
+        $novresult= '';
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            foreach($result as $row){
+                $row->uplati=$this->getUplatiPoIzleznaFaktura($row->dbid);
+                $novresult[]=$row;
+            }
+        }
+        return $novresult;
+    }
+
+    public function getUplatiPoIzleznaFaktura($id)
+    {
+        $this->db->select('SUM(z_uplata) as uplata');
+        $this->db->from('stavka');
+        $this->db->where('stavka.zaDokID',$id);
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            return $result[0]->uplata;
+        }
+        else
+        {
+            $result = false;
+            return $result;
+        }
+    }
+
+    public function getAll_denes($klientid, $pacientid)
+    {
+        $d=date('Y-m-d');
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.rokDatum as rok,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.p_vkupno as p_vkupno,
+                    stavka.komentar as komentar,
+                    stavka.presmetana_participacija as pacientIznos,
+                    stavka.firmaID as firmaID,
+                    stavka.pacient_id as pacientID,
+                    firma.ime as firmaIme,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.tatkovoime as pacientTatkovoIme,
+                    bis_pacienti.prezime as pacientPrezime
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->where('stavka.flagStatus !=','1');
+        if($klientid > 0) $this->db->where('stavka.firmaID',$klientid);
+        if($pacientid > 0) $this->db->where('stavka.pacient_id',$pacientid);
+        $this->db->where('stavka.rokDatum', $d);
+        $this->db->where('stavka.tip','20');
+        $query = $this->db->get();
+
+        $novresult= '';
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            foreach($result as $row){
+                $row->uplati=$this->getUplatiPoIzleznaFaktura($row->dbid);
+                $novresult[]=$row;
+            }
+        }
+        return $novresult;
+    }
+    public function getAll_pominatrok($klientid, $pacientid)
+    {
+        $d=date('Y-m-d');
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.rokDatum as rok,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.p_vkupno as p_vkupno,
+                    stavka.komentar as komentar,
+                    stavka.presmetana_participacija as pacientIznos,
+                    stavka.firmaID as firmaID,
+                    stavka.pacient_id as pacientID,
+                    firma.ime as firmaIme,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.tatkovoime as pacientTatkovoIme,
+                    bis_pacienti.prezime as pacientPrezime
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->where('stavka.flagStatus !=','1');
+        if($klientid > 0) $this->db->where('stavka.firmaID',$klientid);
+        if($pacientid > 0) $this->db->where('stavka.pacient_id',$pacientid);
+    $this->db->where('stavka.tip','20');
+        $this->db->where('stavka.rokDatum <',$d);
+        $query = $this->db->get();
+
+        $novresult= '';
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            foreach($result as $row){
+                $row->uplati=$this->getUplatiPoIzleznaFaktura($row->dbid);
+                $novresult[]=$row;
+            }
+        }
+        return $novresult;
+}
+    public function getAll_idnina($klientid, $pacientid)
+    {
+        $d=date('Y-m-d');
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.rokDatum as rok,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.p_vkupno as p_vkupno,
+                    stavka.komentar as komentar,
+                    stavka.presmetana_participacija as pacientIznos,
+                    stavka.firmaID as firmaID,
+                    stavka.pacient_id as pacientID,
+                    firma.ime as firmaIme,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.tatkovoime as pacientTatkovoIme,
+                    bis_pacienti.prezime as pacientPrezime
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->where('stavka.flagStatus !=','1');
+        $this->db->where('stavka.tip','20');
+        $this->db->where('stavka.rokDatum >',$d);
+        if($klientid > 0) $this->db->where('stavka.firmaID',$klientid);
+        if($pacientid > 0) $this->db->where('stavka.pacient_id',$pacientid);
+
+        $query = $this->db->get();
+
+        $novresult= '';
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            foreach($result as $row){
+                $row->uplati=$this->getUplatiPoIzleznaFaktura($row->dbid);
+                $novresult[]=$row;
+            }
+        }
+        return $novresult;
+    }
+
+    public function editIzleznaFaktura($id)
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    stavka.arhTextBroj as arhiva,
+                    stavka.p_osnova as osnova,
+                    stavka.p_ddv as ddv,
+                    stavka.p_vkupno as vkupno,
+                    stavka.flagStatus as status,
+                    stavka.rokDatum as rok,
+                    stavka.rokPlat as rokdenovi,
+                    stavka.tipID as konto,
+                    stavka.nacinID as nacin,
+                    stavka.valutaID as valuta,
+                    stavka.zaKlientID as zaKlient,
+                    stavka.komentar as zabeleska,
+                    stavka.firmaID as firmaID,
+                    stavka.pacient_id as pacientID,
+                    stavka.vrska_dokumenti as vrskadokumenti,
+                    stavka.broj_na_nalog_knizenje as broj_nalog,
+                    firma.ime as firmaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->where('stavka.ID', $id);
+        $query = $this->db->get();
+        if($query->num_rows() == 1)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function editIzleznaFakturaPriem($id)
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    stavka.arhTextBroj as arhiva,
+                    stavka.p_vkupno as vkupno,
+                    stavka.presmetana_participacija as iznos,
+                    stavka.flagStatus as status,
+                    stavka.datum_zapis as rok,
+                    stavka.rokPlat as rokdenovi,
+                    stavka.tipID as konto,
+                    stavka.nacinID as nacin,
+                    stavka.valutaID as valuta,
+                    stavka.zaKlientID as zaKlient,
+                    stavka.komentar as zabeleska,
+                    stavka.pacient_id as pacientID,
+                    stavka.vrska_dokumenti as vrskadokumenti,
+                    stavka.lekuvanje_id as broj_lekuvanje,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.tatkovoime as pacientTatkovoIme,
+                    bis_pacienti.prezime as pacientPrezime,
+                    stavkadetali.stavka as paket,
+                    stavkadetali.cena as ref_cena
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+
+        $this->db->join('stavkadetali', 'stavka.ID = stavkadetali.ID', 'left');
+        $this->db->where('stavka.ID', $id);
+        $query = $this->db->get();
+        if($query->num_rows() == 1)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function editIzleznaFakturaPaket($id)
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    stavka.arhTextBroj as arhiva,
+                    stavka.p_osnova as osnova,
+                    stavka.p_ddv as ddv,
+                    stavka.p_vkupno as vkupno,
+                    stavka.presmetana_participacija as presmetana,
+                    stavka.naplatena_participacija as naplatena,
+                    stavka.vkupno_fzom as vkupnoFzom,
+                    stavka.flagStatus as status,
+                    stavka.rokDatum as rok,
+                    stavka.tipID as grupa,
+                    stavka.nacinID as nacin,
+                    stavka.valutaID as valuta,
+                    stavka.zaKlientID as zaKlient,
+                    stavka.komentar as zabeleska,
+                    stavka.firmaID as firmaID,
+                    firma.ime as firmaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->where('stavka.ID', $id);
+        $query = $this->db->get();
+        if($query->num_rows() == 1)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getFinGrupiranje($pogled)
+    {
+        if($pogled == 0)
+            $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.p_vkupno as suma,
+                    stavka.komentar as zabeleska,
+                    firma.ime as firmaIme
+                    ');
+        else
+            $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.p_vkupno as suma,
+                    stavka.komentar as zabeleska,
+                    firma.ime as firmaIme,
+                    tip.tipIme as tip
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        if($pogled == 0)
+        {
+            $this->db->where('stavka.tipID IS ','NULL', false);
+        }
+        else{
+
+            $this->db->join('tip', 'stavka.tipID = tip.tipID', 'left');
+        }
+        $this->db->where('stavka.tip', 20);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getAllKlienti($period1, $period2)
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.datum as datum,
+                    SUM(stavka.p_vkupno) as vkupno,
+                    stavka.firmaID as firmaID,
+                    firma.ime as firmaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+//        if(!isset($grupaid) || (trim($grupaid)==='')) $this->db->where(array('stavka.tipID' => NULL));
+        $this->db->where('stavka.tip','20');
+        $this->db->where('stavka.firmaID >','0');
+        if(strlen($period1) > 0) $this->db->where('stavka.datum >=', $period1);
+        if(strlen($period2) > 0) $this->db->where('stavka.datum <=', $period2);
+        $this->db->group_by('stavka.firmaID');
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+
+        if($query->num_rows > 0)
+        {
+            $result =  $query->result();
+        }
+
+        // za pacienti
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.datum as datum,
+                    SUM(stavka.presmetana_participacija) as pacientIznos,
+                    stavka.pacient_id as pacientID,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.tatkovoime as pacientTatkovoIme,
+                    bis_pacienti.prezime as pacientPrezime
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+//        if(!isset($grupaid) || (trim($grupaid)==='')) $this->db->where(array('stavka.tipID' => NULL));
+        $this->db->where('stavka.tip','20');
+        $this->db->where('stavka.pacient_id >','0');
+        if(strlen($period1) > 0) $this->db->where('stavka.datum >=', $period1);
+        if(strlen($period2) > 0) $this->db->where('stavka.datum <=', $period2);
+        $this->db->group_by('stavka.pacient_id');
+        $this->db->order_by('stavka.ID');
+        $query2 = $this->db->get();
+
+        if($query2->num_rows > 0)
+        {
+            $result2 = $query2->result();
+            $resultx = array_merge($result, $result2);
+        }
+        else  $resultx = $result;
+
+        return $resultx;
+    }
+
+    public function getAllKlientiByCriteria($klientid, $pacientid, $period1, $period2)
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.datum as datum,
+                    SUM(stavka.p_vkupno) as vkupno,
+                    SUM(stavka.presmetana_participacija) as pacientIznos,
+                    stavka.firmaID as firmaID,
+                    stavka.pacient_id as pacientID,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.tatkovoime as pacientTatkovoIme,
+                    bis_pacienti.prezime as pacientPrezime,
+                    firma.ime as firmaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        if($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+        if($pacientid > 0) $this->db->where('stavka.pacient_id', $pacientid);
+        if(strlen($period1) > 0) $this->db->where('stavka.datum >=', $period1);
+        if(strlen($period2) > 0) $this->db->where('stavka.datum <=', $period2);
+        $this->db->where('stavka.tip','20');
+        if($klientid > 0)
+        {
+            $this->db->where('stavka.firmaID >','0');
+            $this->db->group_by('stavka.firmaID');
+        }
+        if($pacientid > 0)
+        {
+            $this->db->where('stavka.pacient_id >','0');
+            $this->db->group_by('stavka.pacient_id');
+        }
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+
+        if($query->num_rows > 0)  $result =  $query->result();
+        else $result = false;
+
+        return $result;
+    }
+
+    public function site_vlezni(){
+
+        $this->db->select('
+                    stavka.ID as fakturaid,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    stavka.arhTextBroj as arhiva,
+                    stavka.p_osnova as osnova,
+                    stavka.p_ddv as ddv,
+                    stavka.p_vkupno as vkupno,
+                    stavka.flagStatus as status,
+                    stavka.rokDatum as rok,
+                    stavka.tipID as grupa,
+                    stavka.nacinID as nacin,
+                    stavka.valutaID as valuta,
+                    stavka.zaKlientID as zaKlient,
+                    stavka.komentar as zabeleska,
+                    stavka.firmaID as firmaID,
+                    firma.ime as firma
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->where('stavka.tip',20);
+        $query = $this->db->get();
+
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public function getFakturaKlient($klientid, $periodod, $perioddo)
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    stavka.p_osnova as osnova,
+                    stavka.p_ddv as ddv,
+                    stavka.p_vkupno as vkupno,
+                    stavka.komentar as zabeleska,
+                    firma.ime as firmaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->where('stavka.firmaID',$klientid);
+         if(strlen($periodod) > 0)  $this->db->where('stavka.datum >=', $periodod);
+        if(strlen($perioddo) > 0) $this->db->where('stavka.datum <=', $perioddo);
+        $this->db->where('stavka.tip',20);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+
+    public function getFakturaPacient($pacientid, $periodod, $perioddo)
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    stavka.presmetana_participacija as pacientIznos,
+                    stavka.komentar as zabeleska,
+                    tip.tipIme as grupa,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.tatkovoime as pacientTatkovoIme,
+                    bis_pacienti.prezime as pacientPrezime
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->join('tip', 'stavka.tipID = tip.tipID', 'left');
+        $this->db->where('stavka.pacient_id',$pacientid);
+        if(strlen($periodod) > 0)  $this->db->where('stavka.datum >=', $periodod);
+        if(strlen($perioddo) > 0) $this->db->where('stavka.datum <=', $perioddo);
+        $this->db->where('stavka.tip',20);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+
+    public function getFakturaFzom($id)
+    {
+        $this->db->select('
+                    stavka.*,
+                    bis_firmi.*
+                    ');
+        $this->db->from('stavka');
+//        $this->db->join('stavkadetali', 'stavka.ID = stavkadetali.ID', 'left');
+        $this->db->join('bis_firmi', 'stavka.firma_id = bis_firmi.id', 'left');
+        $this->db->where('stavka.ID',$id);
+        $query = $this->db->get();
+
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            $result[0]->stavki = $this->getStavkiPoIzleznaFaktura($id);
+//            $result[0]->stavki = $this->getInfoIzleznaDetali($id);
+            return $result[0];
+        }
+    }
+
+    function zirosmetka_dropdown()
+    {
+        $this->db->select('TZSID, tzsBroj, bankaID, MFID');
+        $this->db->from('zirosmetki');
+        $this->db->order_by('TZSID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = '';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['TZSID']] = $row['tzsBroj'];
+            }
+        }
+        return $dropdown;
+    }
+
+    function zirosmetka_site_dropdown()
+    {
+        $this->db->select('TZSID, tzsBroj, bankaID, MFID');
+        $this->db->from('zirosmetki');
+        $this->db->order_by('TZSID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown['0'] = 'Site';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['TZSID']] = $row['tzsBroj'];
+            }
+        }
+        return $dropdown;
+    }
+    public function getStatus($statid,$filterid)
+    {
+        //$this->db->distinct();
+        $this->db->select('
+                    stavka.textBroj,
+                    stavka.datum,
+                    firma.ime as firma,
+                    stavka.ZSID as ZSID,
+                    stavka.p_vkupno,
+                    stavka.komentar
+
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->like('stavka.textBroj', $filterid);
+        $this->db->where('stavka.tip','20');
+        if($statid!=2) $this->db->where('stavka.flagStatus',$statid);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function getIzlezniFakturiZaMinisterstvo()
+    {
+        $this->db->select('
+                    stavka.ID as fakturaid,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    stavka.arhTextBroj as arhiva,
+                    stavka.p_osnova as osnova,
+                    stavka.p_vkupno as fakturaVkupno,
+                    stavka.presmetana_participacija as fakturaVkupnoMinisterstvo,
+                    stavka.vkupno_fzom as fakturaVkupnoFzom
+                    ');
+        $this->db->from('stavka');
+        $this->db->where('stavka.tip','20');
+        $this->db->where('stavka.ministerstvo_status','0');
+        $this->db->where('stavka.participacija_id','3');
+        $this->db->where('stavka.presmetana_participacija >','0');
+        $query = $this->db->get();
+        $novresult = '';
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            foreach($result as $row){
+                $row->stavki=$this->getStavkiPoIzleznaFaktura($row->fakturaid);
+                $novresult[]=$row;
+            }
+            return $novresult;
+        }
+        else return false;
+    }
+
+    public function getIzlezniFakturiZaFzom($data)
+    {
+        $niza = array(1,2,3);
+        $this->db->select('
+                    stavka.ID as fakturaid,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    stavka.arhTextBroj as arhiva,
+                    stavka.p_osnova as osnova,
+                    stavka.p_vkupno as fakturaVkupno,
+                    stavka.vkupno_iznos_paketi as fakturaReferentnaCena,
+                    stavka.presmetana_participacija as fakturaPresmetanaP,
+                    stavka.vkupno_fzom as fakturaVkupnoFzom,
+                    stavka.lekuvanje_id as fakturaLekuvanje,
+                    bis_pacienti.*,
+                    bis_firmi.ime as oddel
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->join('bis_firmi', 'stavka.firma_id = bis_firmi.id', 'left');
+        if ($data['filter-periodod']) $this->db->where("stavka.datum >=", bis_convert_date_usa_to_mk($data['filter-periodod']));
+        if ($data['filter-perioddo']) $this->db->where("stavka.datum <=", bis_convert_date_usa_to_mk($data['filter-perioddo']));
+        $this->db->where("stavka.firma_id", $data['filter-fzom-oddel']);
+        $this->db->where('stavka.tip','20');
+        $this->db->where('stavka.fzom_status','0');
+        $this->db->where('stavka.vkupno_fzom >','0');
+        $this->db->where_in('stavka.participacija_id',$niza);
+//        $this->db->where('stavka.participacija_id !=','1');
+        $query = $this->db->get();
+
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            $new_stavki=array();
+            $vrzani_fakturi=array();
+            $vkupen_platen_iznos=0;
+
+            foreach($result as $row){
+                $vkupen_platen_iznos += $this->getPlatenIznosZaFaktura($row->fakturaid);
+                $tmpstavki= $this->getStavkiPoIzleznaFaktura($row->fakturaid);
+                if(isset($tmpstavki[0]->stavkaKolicina)) {
+                    foreach($tmpstavki as $key=>$val){
+                        $new_stavki[] = $val;
+//                        if (isset($bojan_stavki['c'.$val->stavkaCenovnik.'s'.$val->sifra])) {
+//                            $new_stavki['c'.$val->stavkaCenovnik.'s'.$val->sifra]->stavkaKolicina +=$val->stavkaKolicina;
+//                        } else {
+//                            $new_stavki['c'.$val->stavkaCenovnik.'s'.$val->sifra]= $val ;
+//                        }
+                    }
+                }
+
+                $vrzani_fakturi[] = $row;
+            }
+            $resultx['stavki'] = $new_stavki;
+            $resultx['fakturi'] = $vrzani_fakturi;
+            $resultx['naplatena_participacija'] = $vkupen_platen_iznos;
+            return $resultx;
+        }
+        else {
+            return false;
+        }
+    }
+    public function getPlatenIznosZaFaktura($fakturaid)
+    {
+        $this->db->select('SUM(z_uplata) as suma');
+        $this->db->from('stavka');
+        $this->db->where('zaDokID',$fakturaid);
+        $query = $this->db->get();
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result[0]->suma;
+        }
+        else return 0;
+    }
+    public function getStavkiPoIzleznaFaktura($fakturaid)
+    {
+        $this->db->select('
+                    stavkadetali.stavkaDetaliID as stavkaID,
+                    stavkadetali.SID as sifra,
+                    stavkadetali.Stavka as stavkaIme,
+                    stavkadetali.cena as stavkaCena,
+                    stavkadetali.kolicina as stavkaKolicina,
+                    stavkadetali.cenovnik as stavkaCenovnik,
+                    stavkadetali.iznos_participacija as stavkaIznosParticipacija,
+                    stavkadetali.sifra_paket as stavkaSifraPaket
+                    ');
+        $this->db->from('stavkadetali');
+        $this->db->where('stavkadetali.ID',$fakturaid);
+        $query = $this->db->get();
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+        else return false;
+    }
+
+    public function create_faktura_fzom()
+    {
+        $this->load->model('start/start_model');
+//        $oddel =  $this->start_model->getPodOdeli($this->session->userdata('firma_id'));
+        $oddel =  $this->session->userdata('firma_id');
+        $insert_data = array(
+            'tip' => 25,
+            'datum' => $this->input->post('datum'),
+            'datum_zapis' => $this->input->post('datum'),
+            'datetime' => time(),
+            'textBroj'=>$this->input->post('broj'),
+            'arhIntBroj'=>$this->input->post('arhivskibrojint'),
+            'arhTextBroj'=>$this->input->post('broj'),
+            'firmaID'=>202,
+            'firma_id'=> $oddel,
+            'datum_od'=>$this->input->post('filter-periodod'),
+            'datum_do'=>$this->input->post('filter-perioddo'),
+            'fzom_status'=>1,
+            'p_osnova'=>bis_number_usa($this->input->post('vkupnofzom')),
+            'p_vkupno'=>bis_number_usa($this->input->post('vkupnofzom')),
+            'vkupno_iznos_paketi'=>bis_number_usa($this->input->post('vkupnopaket')),
+            'presmetana_participacija'=>bis_number_usa($this->input->post('presmetana')),
+            'naplatena_participacija'=>bis_number_usa($this->input->post('naplatena')),
+            'vkupno_fzom'=>bis_number_usa($this->input->post('vkupnofzom')),
+            'rokDatum'=>$this->input->post('datum'),
+            'vrska_dokumenti'=>$this->input->post('vrzani_fakturi'),
+            'tipID'=>36
+        );
+        $insert = $this->db->insert('stavka', $insert_data);
+        if($insert) $id = $this->db->insert_id();
+        else $id = false;
+
+        $vrzaniFakturi = $this->input->post('vrzani_fakturi');
+        $myArray = explode(',', $vrzaniFakturi);
+        foreach ($myArray as $key => $val)
+        {
+            $faktura_data = array(
+                'zaDokID' => $id,
+                'fzom_status' => '1'
+            );
+            $this->db->where('ID', $val);
+            $this->db->update('stavka', $faktura_data);
+        }
+
+        $stavka = $this->input->post('stavka');
+        $new_stavka = $this->input->post('stavka');
+        $new_sifra = $this->input->post('sifra');
+        $new_cena = $this->input->post('cena');
+        $new_kolicina = $this->input->post('kolicina');
+        $new_cenovnik = $this->input->post('cenovnik');
+        $new_iznos_participacija = $this->input->post('iznos_participacija');
+        $new_sifra_paket = $this->input->post('sifra_paket');
+        foreach($stavka as $index => $value)
+        {
+            $detali_data = array(
+                'ID' => $id,
+                'SID' => $new_sifra[$index],
+                'Stavka' => $new_stavka[$index],
+                'cena' => bis_number_usa($new_cena[$index]),
+                'kolicina' => $new_kolicina[$index],
+                'cenovnik' => $new_cenovnik[$index],
+                'edinica_merka' => 4,
+                'iznos_participacija' => $new_iznos_participacija[$index],
+                'sifra_paket' => $new_sifra_paket[$index]
+            );
+            $detali = $this->db->insert('stavkadetali', $detali_data);
+        }
+
+        if($insert)
+        {
+            $lastbroj = $this->getLastIFBroj();
+            $newbroj = $lastbroj+1;
+            $this->incrementIFBroj($newbroj);
+        }
+        return $id;
+    }
+
+    public function create_faktura_ministerstvo()
+    {
+        $insert_data = array(
+            'tip' => 26,
+            'datum' => $this->input->post('datum'),
+            'datetime' => time(),
+            'textBroj'=>$this->input->post('broj'),
+            'arhIntBroj'=>$this->input->post('arhivskibrojint'),
+            'arhTextBroj'=>$this->input->post('broj'),
+            'firmaID'=>$this->input->post('klient'),
+            'ministerstvo_status'=>1,
+            'p_osnova'=>$this->input->post('vkupnopaket'),
+            'p_vkupno'=>$this->input->post('vkupnopaket'),
+            'presmetana_participacija'=>$this->input->post('presmetana'),
+            'vkupno_fzom'=>$this->input->post('vkupnofzom'),
+            'rokDatum'=>$this->input->post('datum'),
+            'vrska_dokumenti'=>$this->input->post('vrzani_fakturi'),
+            'tipID'=>34
+        );
+        $insert = $this->db->insert('stavka', $insert_data);
+        if($insert) $id = $this->db->insert_id();
+        else $id = false;
+
+        $vrzaniFakturi = $this->input->post('vrzani_fakturi');
+        $myArray = explode(',', $vrzaniFakturi);
+        foreach ($myArray as $key => $val)
+        {
+            $faktura_data = array(
+                'zaDokID' => $id,
+                'ministerstvo_status' => '1'
+            );
+            $this->db->where('ID', $val);
+            $this->db->update('stavka', $faktura_data);
+        }
+
+        $stavka = $this->input->post('stavka');
+        foreach($stavka as $index => $value)
+        {
+            $new_stavka = $this->input->post('stavka');
+            $new_sifra = $this->input->post('sifra');
+            $new_cena = $this->input->post('cena');
+            $new_kolicina = $this->input->post('kolicina');
+            $new_cenovnik = $this->input->post('cenovnik');
+            $detali_data = array(
+                'ID' => $id,
+                'SID' => $new_sifra[$index],
+                'Stavka' => $new_stavka[$index],
+                'cena' => $new_cena[$index],
+                'kolicina' => $new_kolicina[$index],
+                'cenovnik' => $new_cenovnik[$index]
+            );
+            $detali = $this->db->insert('stavkadetali', $detali_data);
+        }
+
+        if($insert)
+        {
+            $lastbroj = $this->getLastIFBroj();
+            $newbroj = $lastbroj+1;
+            $this->incrementIFBroj($newbroj);
+        }
+        return $id;
+    }
+
+    public function getLekuvanja()
+    {
+        $priem_niza = array(50,60);
+        $this->db->select('
+                    bis_pacienti_priem.*,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.tatkovoime as pacientTatkovoIme,
+                    bis_pacienti.prezime as pacientPrezime,
+                    ');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->join('bis_pacienti', 'bis_pacienti_priem.pacient_id = bis_pacienti.id', 'left');
+        $this->db->where('bis_pacienti_priem.priem_status',40);
+        $query = $this->db->get();
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+        else return false;
+    }
+
+    public function infoIzleznaFaktura($id)
+    {
+        $this->db->select('
+                    stavka.*,
+                    firma.ime as firmaIme,
+                    konta.sifra as konto
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('konta', 'stavka.tipID = konta.id', 'left');
+        $this->db->where('stavka.ID', $id);
+        $query = $this->db->get();
+        if($query->num_rows() == 1)
+        {
+            $result = $query->result();
+            $result[0]->stavki = $this->getInfoIzleznaDetali($id);
+            return $result;
+        }
+        else
+        {
+            $result = false;
+            return $result;
+        }
+    }
+    public function infoIzleznaFakturaPacient($id)
+    {
+        $this->db->select('
+                    stavka.*,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.prezime as pacientPrezime,
+                    konta.sifra as konto
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->join('konta', 'stavka.tipID = konta.id', 'left');
+        $this->db->where('stavka.ID', $id);
+        $query = $this->db->get();
+        if($query->num_rows() == 1)
+        {
+            $result = $query->result();
+            $result[0]->stavki = $this->getInfoIzleznaDetali($id);
+            return $result;
+        }
+        else
+        {
+            $result = false;
+            return $result;
+        }
+    }
+    public function infoIzleznaFakturaSoLekuvanje($id)
+    {
+        $this->load->model('pacienti/pacienti_pomosen_model');
+        $this->db->select('
+                    stavka.*,
+                    firma.ime as firmaIme,
+                    konta.sifra as konto
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('konta', 'stavka.tipID = konta.id', 'left');
+        $this->db->where('stavka.ID', $id);
+        $query = $this->db->get();
+        if($query->num_rows() == 1)
+        {
+            $result = $query->result();
+            $result[0]->stavki = $this->getInfoIzleznaDetali($id);
+            $result[0]->lekuvanje = $this->pacienti_pomosen_model->getFullPriem( $result[0]->lekuvanje_id );
+            $result[0]->dijagnoza = $this->getLastDijagnozaPriem($result[0]->lekuvanje_id);
+            return $result[0];
+        }
+        else
+        {
+            $result = false;
+            return $result;
+        }
+    }
+
+    public function getLastDijagnozaPriem($priem_id)
+    {
+        $this->db->select('
+                    bis_pregledi_dijagnoza.*,
+                    bis_mkb_10.*
+                    ');
+        $this->db->from('bis_pregledi_dijagnoza');
+        $this->db->join('bis_mkb_10', 'bis_pregledi_dijagnoza.dijagnoza = bis_mkb_10.id', 'left');
+        $this->db->where('bis_pregledi_dijagnoza.priem_id', $priem_id);
+        $this->db->order_by('bis_pregledi_dijagnoza.id', 'desc');
+        $query = $this->db->get();
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result[0];
+        }
+        else return false;
+    }
+
+    public function getDoktorInfoZaPriem($priem_id)
+    {
+        $this->db->select('
+                    bis_lekari_site.*
+                    ');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->join('bis_lekari_site', 'bis_pacienti_priem.za_doktor_id = bis_lekari_site.id', 'left');
+        $this->db->where('bis_pacienti_priem.id', $priem_id);
+        $query = $this->db->get();
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result[0];
+        }
+        else return false;
+    }
+
+    public function getFzomSpecifikacija($id){
+        $this->db->select('stavka.ID');
+        $this->db->from('stavka');
+        $this->db->where('stavka.zaDokID', $id);
+        $query = $this->db->get();
+        $result = $query->result();
+
+        $fzom_glavna=$this->infoIzleznaFaktura($id);
+        $fakturi=array();
+        foreach($result as $row){
+            $fakturi[]=$this->infoIzleznaFakturaSoLekuvanje($row->ID);
+        }
+
+        return array("fzom"=>$fzom_glavna,"fakturi"=>$fakturi);
+    }
+
+    public function groupPaketiZaFzomFaktura($id)
+    {
+        $this->db->select('
+                    stavkadetali.sifra_paket as paketSifra,
+                    stavkadetali.Stavka as paketNaziv,
+                    SUM(stavkadetali.kolicina) as paketKolicina,
+                    stavkadetali.cena as paketReferentnaCena,
+                    stavkadetali.iznos_participacija as paketParticipacija
+                    ');
+        $this->db->from('stavkadetali');
+        $this->db->where('stavkadetali.ID', $id);
+        $this->db->group_by(array('stavkadetali.SID', 'stavkadetali.cenovnik'));
+        $query = $this->db->get();
+
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result;
+        }
+        else {
+            $result = '';
+            return $result;
+        }
+    }
+
+    public function getInfoIzleznaDetali($id)
+    {
+        $this->db->select('
+                    stavkadetali.stavkaDetaliID as dbid,
+                    stavkadetali.SID as sifra,
+                    stavkadetali.sifra_paket as sifra_paket,
+                    stavkadetali.stavka as stavka,
+                    stavkadetali.kolicina as kolicina,
+                    stavkadetali.cena as cena,
+                    stavkadetali.iznos_participacija as iznos_participacija,
+                    stavkadetali.cenaDDV as cenaDDV,
+                    stavkadetali.DDV as ddv,
+                    stavkadetali.edinica_merka as edMerka,
+                    stavkadetali.konto as konto,
+                    stavkadetali.ddv_konto as ddvkonto,
+                    stavka.arhTextBroj as broj,
+                    s1.katBroj as katBroj,
+                    s1.sifra as sifra2,
+                    bis_edmerki.ime_dolgo as edMerkaIme,
+                    konta.sifra as kontoSifra,
+                    konta.opis as naziv,
+                    firma.ime as firma
+                    ');
+        $this->db->from('stavkadetali');
+        $this->db->join('s1', 'stavkadetali.SID = s1.SID', 'left');
+        $this->db->join('stavka', 'stavkadetali.SID = stavka.ID', 'left');
+        $this->db->join('bis_edmerki', 'stavkadetali.edinica_merka = bis_edmerki.id', 'left');
+        $this->db->join('konta', 'stavkadetali.konto = konta.id', 'left');
+        $this->db->join('firma', 'stavkadetali.firmaID = firma.firmaID', 'left');
+        $this->db->where('stavkadetali.ID',$id);
+        $this->db->where('stavkadetali.tip_stavka',1);//dodadeno
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function pacienti_dropdown()
+    {
+        $this->db->select('id, ime, tatkovoime, prezime');
+        $this->db->from('bis_pacienti');
+        $this->db->order_by('ime');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = '';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime']." ".$row['tatkovoime']." ".$row['prezime'];
+            }
+        }
+        return $dropdown;
+    }
+    public function napolniIzlezniFakturiFzom()
+    {
+        $this->db->select('stavka.*, bis_firmi.ime as oddelIme');
+        $this->db->from('stavka');
+        $this->db->join('bis_firmi', 'stavka.firma_id = bis_firmi.id', 'left');
+        $this->db->where('stavka.tip','25');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+//            foreach($result as $row){
+//            $row->dokumenti=$this->getIspratniciPoIzleznaFaktura($row->ID);
+//                $row->stavki = $this->getIzleznaDetali($row->ID);
+//            }
+            return $result;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function getPaketiZaFzomSpecifikacijaPododdel($faktura, $oddel, $pododdel)
+    {
+        $fakturi = $this->prikaziIzlezniFakturiZaFzomPoOddelPododdel($faktura, $oddel, $pododdel);
+        foreach($fakturi as $fak){
+            $tmpfakturi[] = $this->infoIzleznaFakturaSoLekuvanje($fak->ID);
+//            foreach($tmppaketi as $paket){
+//                $paketi[] = $paket;
+//            }
+        }
+        return $tmpfakturi;
+    }
+
+    public function getPaketiZaFzomFakturaPododdel($faktura, $oddel, $pododdel)
+    {
+        $fakturi = $this->prikaziIzlezniFakturiZaFzomPoOddelPododdel($faktura, $oddel, $pododdel);
+        foreach($fakturi as $key => $val){
+            $tmppaketi = $this->groupPaketiZaFzomFaktura($val->ID);
+            foreach($tmppaketi as $paket){
+                $paketi[] = $paket;
+            }
+        }
+        return $paketi;
+    }
+
+    public function prikaziIzlezniFakturiZaFzomPoOddelPododdel($faktura, $oddel, $pododdel)
+    {
+        $this->db->select('
+                    stavka.*,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.tatkovoime as pacientTatkovoIme,
+                    bis_pacienti.prezime as pacientPrezime,
+                    bis_firmi.ime as oddelIme,
+                    bis_firmi_2.ime as pododdelIme
+        ');
+        $this->db->from('stavka');
+        $this->db->join('bis_pacienti_priem', 'stavka.lekuvanje_id = bis_pacienti_priem.id', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->join('bis_firmi', 'stavka.firma_id = bis_firmi.id', 'left');
+        $this->db->join('bis_firmi as bis_firmi_2', 'bis_pacienti_priem.pod_oddel = bis_firmi_2.id', 'left');
+        $this->db->where('stavka.zaDokID', $faktura);
+        $this->db->where('bis_pacienti_priem.firma_id', $oddel);
+        $this->db->where('bis_pacienti_priem.pod_oddel', $pododdel);
+        $query = $this->db->get();
+
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public function prikaziIzlezniFakturiZaFzom($id)
+    {
+        $this->db->select('
+                    stavka.*,
+                    bis_pacienti.ime as pacientIme,
+                    bis_pacienti.tatkovoime as pacientTatkovoIme,
+                    bis_pacienti.prezime as pacientPrezime,
+                    bis_pacienti.embg as pacientEmbg,
+                    bis_pacienti.datum_na_raganje as pacientDatumRagjanje,
+                    bis_pacienti.br_zdravstvena_legitimacija as pacientBrojZL,
+                    bis_firmi.ime as oddelIme
+        ');
+        $this->db->from('stavka');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->join('bis_firmi', 'stavka.firma_id = bis_firmi.id', 'left');
+        $this->db->where('zaDokID', $id);
+        $query = $this->db->get();
+
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public function getPodatociOdIzlezniFakturiZaFzom($id)
+    {
+        $fakturi_fzom = $this->prikaziIzlezniFakturiZaFzom($id);
+        if($fakturi_fzom)
+        {
+            foreach($fakturi_fzom as $key => $val){
+                $stavki[$key] = $this->getIzleznaDetali($val->ID);
+            }
+            return array("fakturi"=>$fakturi_fzom,"stavki"=>$stavki);
+        }
+        else {
+            return false;
+        }
+    }
+
+    public function getPodatociOdIzlezniFakturiZaFzomZaSpec($id)
+    {
+        $fakturi_fzom = $this->prikaziIzlezniFakturiZaFzom($id);
+        if($fakturi_fzom)
+        {
+            foreach($fakturi_fzom as $key => $val){
+                $dijagnoza = $this->getLastDijagnozaPriem($val->lekuvanje_id);
+                $fakturi_fzom[$key]->dijagnoza = $dijagnoza->sifra;
+                $doktor_info = $this->getDoktorInfoZaPriem($val->lekuvanje_id);
+                $fakturi_fzom[$key]->faksimil = $doktor_info->faksimil;
+                $fakturi_fzom[$key]->paketi = $this->getInfoIzleznaDetali($val->ID);
+            }
+            return $fakturi_fzom;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public function napolniIzlezniFakturiMinisterstvo()
+    {
+        $this->db->where('tip','26');
+        $query = $this->db->get('stavka');
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+//            foreach($result as $row){
+//            $row->dokumenti=$this->getIspratniciPoIzleznaFaktura($row->ID);
+//                $row->stavki = $this->getIzleznaDetali($row->ID);
+//            }
+            return $result;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function getFakturiZaFzomByOddelPododdel($fzom_faktura_id)
+    {
+        $this->db->select('
+                    stavka.ID as fakturaID,
+                    SUM(stavka.vkupno_fzom) as vkupenIznos,
+                    bis_pacienti_priem.firma_id as oddelID,
+                    bis_pacienti_priem.pod_oddel as pododdelID,
+                    bis_firmi.ime as oddelIme,
+                    bis_firmi_2.ime as pododdelIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('bis_pacienti_priem', 'stavka.lekuvanje_id = bis_pacienti_priem.id', 'left');
+        $this->db->join('bis_firmi', 'bis_pacienti_priem.firma_id = bis_firmi.id', 'left');
+        $this->db->join('bis_firmi as bis_firmi_2', 'bis_pacienti_priem.pod_oddel = bis_firmi_2.id', 'left');
+        $this->db->where('stavka.zaDokID', $fzom_faktura_id);
+        $this->db->group_by(array('bis_pacienti_priem.firma_id', 'bis_pacienti_priem.pod_oddel'));
+        $query = $this->db->get();
+
+        if($query->num_rows > 0)
+        {
+            $result =  $query->result();
+        }
+        else $result = '';
+
+        return $result;
+    }
+
+    public function getBisFirmaInfo($id)
+    {
+        $this->db->select('
+                    bis_firmi.*
+                    ');
+        $this->db->from('bis_firmi');
+//        $this->db->join('bis_zirosmetki', 'bis_firmi.id = bis_zirosmetki.firma_id', 'left');
+        $this->db->where('bis_firmi.id', $id);
+        $query = $this->db->get('');
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            return $result[0];
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function getBrojLekuvanjeZaFaktura($id)
+    {
+        $this->db->where('ID', $id);
+        $query = $this->db->get('stavka');
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            return $result[0]->lekuvanje_id;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+}

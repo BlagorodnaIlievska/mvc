@@ -1,0 +1,109 @@
+<?  $d = date("d-m-Y");?>
+<div id="plata_kontrolen_list">
+    <div class="top-center">
+        <h1>ЈЗУ УК Тра, Орто, КАРИЛ, Ургентен
+            ВОДЊАНСКА БР. 17 СКОПЈЕ
+            Тел: 3211136
+            Жиро сметка : 200002215168719
+            Даночен број: 4080010514566
+            <? echo $d;?>
+        </h1><br/>
+
+    </div>
+    <div class="top-left">
+
+        Месец на обработка : <? echo $mesec;?> / <? echo $godina;?>
+        бр. на пресметка :1
+    </div>
+    <br>
+    <div class="middle-center">
+        РЕКАПИТУЛАР СО ВКАЛКУЛИРАНИ ЧАСОВИ <br>
+        <?if(!empty($ustanova)){ ?>   Клиника за <? echo $ustanova->ime;}?>
+    </div>
+    <br> <br> <br>
+    <div>
+        ВКУПНО Вработени     <?= count($vraboteni); ?> <br>
+        Вредност на бод   <? echo $vrednost_na_bod;?><br>
+        Вкупно часови      <? echo $efektivni_casovi;?><br>
+    </div>
+    <br>   <br>   <br>    <br>
+    <div>
+      Редовна работа  <?echo $casovi_redovna_rabota[0]->efektivno_rabotno_vreme.' '.' '.' '.' ';?>&nbsp;&nbsp;<?echo $bruto_slozenost[0]->slozenost+$bruto_uslovi[0]->uslovi+$bruto_rakovodenje[0]->rakovodenje;?> <br>
+      Продолжена работа 0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.00 <br>
+      Ноќна работа  <? echo $vkupno_casovi_nokna_rabota[0]->noken_trud;?>&nbsp;&nbsp;&nbsp;&nbsp;<? echo $suma_noken_trud[0]->nokna_rabota;?> <br>
+      Празник  <? echo $vkupno_casovi_praznici[0]->drzavni_praznici;?> &nbsp;&nbsp;&nbsp;&nbsp;<? echo $suma_praznici[0]->drzavni_praznici;?> <br>
+      Дежурства  <? echo $vkupno_casovi_dezurstvo[0]->dezurstvo_1;?> &nbsp;&nbsp;&nbsp;&nbsp;<? echo $suma_dezurstvo[0]->dezurstvo_1;?> <br> <br>
+      Боледување <? $vkupno_boleduvanje= $vkupno_casovi_boleduvanje_1[0]->boleduvanje_1_70 +$vkupno_casovi_boleduvanje_2[0]->boleduvanje_2_80 + $vkupno_casovi_boleduvanje_3[0]->boleduvanje_3_90 + $vkupno_casovi_boleduvanje_nad_30[0]->boleduvanje_nad_30_denovi; echo $vkupno_boleduvanje; ?>&nbsp;&nbsp;&nbsp;&nbsp;
+      <?  $vkupno_suma_boleduvanje=$suma_boleduvanje_1[0]->boleduvanje_1 + $suma_boleduvanje_2[0]->boleduvanje_2 + $suma_boleduvanje_3[0]->boleduvanje_3 + $suma_boleduvanje_nad_30[0]->boleduvanje_nad_30; echo $vkupno_suma_boleduvanje;?><br>
+      Износ минат труд <? echo $bruto_minat_trud[0]->iznos_minat_trud;?> <br>
+      ______________________________________________________________ <br>
+        ВКУПНО &nbsp;&nbsp;<? $vkupno_casovi_se=$casovi_redovna_rabota[0]->efektivno_rabotno_vreme +$vkupno_casovi_nokna_rabota[0]->noken_trud +$vkupno_casovi_praznici[0]->drzavni_praznici+ $vkupno_casovi_dezurstvo[0]->dezurstvo_1+$vkupno_boleduvanje; echo $vkupno_casovi_se; ?> &nbsp;&nbsp;
+        <? $vkupno_suma_od_se=$bruto_slozenost[0]->slozenost+$bruto_uslovi[0]->uslovi+$bruto_rakovodenje[0]->rakovodenje+$suma_noken_trud[0]->nokna_rabota+ $suma_praznici[0]->drzavni_praznici+$suma_dezurstvo[0]->dezurstvo_1+$vkupno_suma_boleduvanje +$bruto_minat_trud[0]->iznos_minat_trud; echo $vkupno_suma_od_se;?>
+        <br>
+        Просек <? echo $vkupno_suma_od_se/count($vraboteni);?> <br>  <br>
+
+        ВКУПНО БРУТО <? echo $bruto_plata[0]->bruto_plata;?> <br>
+        Просек БРУТО <?echo $bruto_plata[0]->bruto_plata/count($vraboteni); ?><br> <br>
+        ВКУПНО НЕТО    <?  $vkupno_zadrski=$mobilni_telefoni[0]->zadrska_telefon+$lekarska_komora[0]->lek_komora+$odbitok[0]->odbitok+$osiguruvanje[0]->osiguruvanje+$sindikat[0]->sindikat+$krediti[0]->iznos_rata;
+
+        $neto_1_7= $neto[0]->neto_plata+$vkupno_zadrski; echo $neto_1_7; ?>  <br>
+        Просек НЕТО <? echo $neto_1_7/count($vraboteni);?> <br><br>
+
+      Број на раб. по вкалкулиран <? echo $vkupno_casovi_se/$efektivni_casovi;?> <br>
+
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class="levo">
+    Одговорно лице :        <br>
+    ____________________________
+
+    </div>
+    <div class="desno">
+    Овластено лице :        <br>
+    _____________________________
+    </div>
+</div>
+<style type="text/css">
+    #plata_kontrolen_list .top-center {
+        width: 50%;
+        /*float: left;*/
+    }
+
+    #plata_kontrolen_list .top-left {
+        width: 100%;
+        /*float: left;*/
+    }
+    #plata_kontrolen_list .levo {
+        width: 50%;
+        float: left;
+    }
+    #plata_kontrolen_list .desno {
+        width: 50%;
+        float: right;
+    }
+    #plata_kontrolen_list .middle-center{
+        width: 100%;
+        text-align: center;
+        font-weight: bold;
+
+        /*float: left;*/
+    }
+
+    .tabela {
+        margin-top: 40px;
+    }
+
+    table thead th, table tbody td, table tfoot td {
+        overflow: hidden;
+    }
+
+    table {
+        font-size: 9px !important;
+    }
+
+    th {
+        background-color: transparent;
+    }
+</style>

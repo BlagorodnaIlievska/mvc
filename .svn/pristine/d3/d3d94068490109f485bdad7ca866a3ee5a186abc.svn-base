@@ -1,0 +1,189 @@
+<div id="nov_vlezizlez_form">
+
+    <?php
+    echo form_open('kasa/menu/createNovVlezIzlez');
+    echo form_label('Одберете каса: ', 'kasa');
+    echo form_dropdown('kasa', $kasa);  echo br();
+    ?>
+    <label>Број</label>
+    <input type="text" name="broj" class="broj1 small"> <br/>
+    <? $d=date("Y-m-d"); ?>
+    <label>Датум</label>
+    <input type="text" name="datum" class="datum1 big" value=<? echo $d;?> > <br>
+    <label>Фирма</label>
+    <input type="text" class="firma1 big" name="firma" formaction="/index.php/kasa/menu/proveri_firma">
+    <input type="hidden" class="firmaid1" name="firmaid">             <br/>   <br/>   <br/>
+ <!--   <label>Ziro smetka</label>
+    <input type="text" class="zirosmetka1 big" name="zirosmetka" readonly>
+    <input type="text" class="adresa1 big" name="adresa" readonly>
+    <br> -->
+    <label>Одлив</label>
+    <input type="text" name="odliv" class="odliv1 medium">
+    <label>Прилив</label>
+    <input type="text" name="priliv" class="priliv1 medium">
+
+  <!--  <input type="button" value="EUR" class="euro1 button"><br>
+    <div style="display:none" class="eurodata1">
+    <label>Odliv</label>
+    <input type="text" name="euroodliv" class="euroodliv1 inline">
+    <label>Priliv</label>
+    <input type="text" name="europriliv" class="europriliv1 inline">
+    <label>Kurs</label>
+    <input type="text" name="eurokurs" class="eurokurs1 inline">
+    </div>
+
+    <input type="button" value="USD" class="usd1 button"><br>
+    <div style="display:none" class="usddata1">
+    <label>Odliv</label>
+    <input type="text" name="usdodliv" class="usdodliv1 inline">
+    <label>Priliv</label>
+    <input type="text" name="usdpriliv" class="usdpriliv1 inline">
+    <label>Kurs</label>
+    <input type="text" name="usdkurs" class="usdkurs1 inline">
+    </div>     -->
+
+    <br>
+    <label>Намена</label><br>
+    <textarea name="namena" class="namena" rows="4" cols="30">
+    </textarea>    <br/>
+    <label>Забелешка</label><br>
+    <textarea name="zabeleska" class="zabeleska1" rows="4" cols="30">
+    </textarea>   <br/>
+    <?//php
+    //echo br();
+    //echo form_label('Grupa: ', 'grupa');
+    //echo form_dropdown('grupa', $grupa);
+    //echo br(2);
+    ?>
+    <input type="button" value="Сними" class="snimibutton button"><br>
+    <?php
+    echo form_close();
+    ?>
+    <br>
+
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        var data1 = {
+            data: 1
+        }
+        jQuery('.datum1').datepicker({dateFormat:'yy-mm-dd'});
+        //najdi go posledniot index broj za kasa (tip = 540 ili 550)
+        jQuery.ajax({
+            url: "/index.php/kasa/menu/getLastKasaBroj",
+            type: 'POST',
+            data: data1,
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                if(parseInt(response.intBroj) > 0)
+                {
+                    var next = parseInt(response.intBroj) + 1;
+                    jQuery('.broj1').val(next);
+                }
+                else jQuery('.broj1').val(1);
+            }
+        });
+        //jQuery('.firma1').blur(function(){
+        jQuery('.firma1').keyup(function(){
+            var formaction=jQuery('.firma1').attr('formaction');
+            //var formaction=jQuery(this).parent().attr('action');
+            if( jQuery('.firma1').val().length >= 1 ) {
+                var data = {
+                    firma: jQuery('.firma1').val()
+                }
+                jQuery.ajax({
+                    url: formaction,
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log(response);
+                        jQuery('.firmaid1').val((response[0].firmaID));
+                        jQuery('.zirosmetka1').val((response[0].ziroSka));
+                        jQuery('.adresa1').val((response[0].adresa));
+                    }
+                });
+            }
+            //return false;
+        });
+        jQuery('.euro1').live('click',function(e)
+        {
+            jQuery(".eurodata1").toggleClass("show");
+        });
+        jQuery('.usd1').live('click',function(e)
+        {
+            jQuery(".usddata1").toggleClass("show");
+        });
+
+        // odliv - priliv
+        jQuery('.odliv1').blur(function(){
+            if( jQuery('.odliv1').val().length >= 1 )
+            {
+               // if(Number(value) == value)
+                jQuery('.priliv1').val("");
+            }
+        });
+        jQuery('.priliv1').blur(function(){
+            if( jQuery('.priliv1').val().length >= 1 )
+            {
+                jQuery('.odliv1').val("");
+            }
+        });
+        jQuery('.euroodliv1').blur(function(){
+            if( jQuery('.euroodliv1').val().length >= 1 )
+            {
+                jQuery('.europriliv1').val("");
+            }
+        });
+        jQuery('#europriliv1').blur(function(){
+            if( jQuery('#europriliv1').val().length >= 1 )
+            {
+                jQuery('#euroodliv1').val("");
+            }
+        });
+        jQuery('.usdodliv1').blur(function(){
+            if( jQuery('.usdodliv1').val().length >= 1 )
+            {
+                jQuery('.usdpriliv1').val("");
+            }
+        });
+        jQuery('.usdpriliv1').blur(function(){
+            if( jQuery('.usdpriliv1').val().length >= 1 )
+            {
+                jQuery('.usdodliv1').val("");
+            }
+        });
+        jQuery('.snimibutton').live('click', function(){
+            var dialogid=jQuery(this).parent().parent().parent();
+            var formaction = jQuery(this).parent().attr('action');
+            //console.log(formaction);
+                jQuery.ajax({
+                    url: formaction,
+                    type: 'POST',
+                    data: jQuery(this).parent().serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log(response);
+                        //jQuery(".tabelavlezizlez").find("tr:gt(1)").remove();
+                        //jQuery(".tabelavlezizlez").find("tr:eq(1)");
+                        var tr = jQuery('.tabelavlezizlez tr:last');
+                       // tr.removeClass('hiderow');
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('input[name=dbid]').val(response);
+                        newrow.find('input[name=pdatum]').val(jQuery('.datum1').val());
+                        newrow.find('input[name=pbroj]').val(jQuery('.broj1').val());
+                        newrow.find('input[name=pklient]').val(jQuery('.firma1').val());
+                        //newrow.find('input[name=pgrupa]').val(jQuery('#datum').val());
+                        newrow.find('input[name=pzabeleska]').val(jQuery('.zabeleska1').val());
+                        newrow.find('input[name=podliv]').val(jQuery('.odliv1').val());
+                        newrow.find('input[name=ppriliv]').val(jQuery('.priliv1').val());
+                        //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                        //tr.addClass('hiderow');
+                        dialogid.dialog("destroy").remove();
+                    }
+                });
+        });
+    });
+</script>

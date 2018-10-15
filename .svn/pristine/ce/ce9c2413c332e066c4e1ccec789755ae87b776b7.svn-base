@@ -1,0 +1,20 @@
+<div id="edit_form">
+
+    <div class="pop-menu-tabs">
+        <ul>
+            <li><?php echo anchor('materijalno/vlez_izlez/editPovratnica?id='.$id, 'Povratnica'); ?></li>
+            <li><?php echo anchor('materijalno/vlez_izlez/editFaktura?id='.$id, 'Faktura'); ?></li>
+        </ul>
+    </div>
+
+</div>
+<!-- <li><?php //echo anchor('vlezni_fakturi/pregled_vlezni/pecati_faktura?id='.$id, 'Pecati'); ?></li> -->
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.pop-menu-tabs').tabs({
+            cache: true,
+            ajaxOptions: {
+                type: "POST"
+            }});
+    });
+</script>

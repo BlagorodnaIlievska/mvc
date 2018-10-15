@@ -1,0 +1,160 @@
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+class Pacienti extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+
+        $this->load->model('pacienti/pacienti_model');
+    }
+//    public function updatePacientPriem(){
+//        $data=$this->input->post();
+//        $this->pacienti_model->updatePacientPriem($data);
+//    }
+    function pregled(){
+        $this->load->model('korisnici/korisnici_model');
+        // $data['doktori']=$this->korisnici_model->getKorisniciPoImeNaUloga('доктор');
+        $this->load->view('pacienti/pregled');
+    }
+    function editPacient(){
+        $this->load->view("pacienti/pacient/edit");
+    }
+    function updatePacient(){
+        $data=$this->input->post();
+        $id=$data['update_id'];
+        unset($data['update_id']);
+        $this->pacienti_model->updatePacient($id,$data);
+        echo "ok";
+    }
+    public function lista()
+    {
+         
+        if (count($this->input->post()) > 0) {
+            // print_r($this->input->post());
+            $result = $this->pacienti_model->getPacienti($this->input->post());
+        } else {
+            $result = $this->pacienti_model->getPacienti();
+        }
+
+        echo json_encode($result);
+    }
+
+    public function nov()
+    {
+        $result = $this->pacienti_model->nov($this->input->post());
+        echo $result;
+    }
+
+    public function izbrisi()
+    {
+        $result = $this->pacienti_model->izbrisi($this->input->post('id'));
+        echo $result;
+    }
+
+    public function getPacient()
+    {
+        $result = $this->pacienti_model->getPacient($this->input->post('id'));
+        echo json_encode($result);
+    }
+
+    public function getPacientOsig()
+    {
+        $result = $this->pacienti_model->getPacientOsig($this->input->post('id'));
+        echo json_encode($result);
+    }
+    public function vnesiPacientOsig(){
+        $data=$this->input->post();
+        $result = $this->pacienti_model->vnesiPacientOsig($data);
+        echo json_encode($result);
+    }
+    public function updatePacientOsig(){
+        $data=$this->input->post();
+        $id=$data['update_id'];
+        unset($data['update_id']);
+        $result = $this->pacienti_model->updatePacientOsig($id, $data);
+        echo json_encode($result);
+    }
+    public function vnesiPacientPriem(){
+        $data=$this->input->post();
+        $this->pacienti_model->vnesiPacientPriem($data);
+    }
+    public function updatePacientPriem(){
+        $data=$this->input->post();
+        $this->pacienti_model->updatePacientPriem($data);
+    }
+    public function vnesiPacientPridruznik()
+    {
+        $data=$this->input->post();
+        $result = $this->pacienti_model->vnesiPacientPridruznik($data);
+        echo json_encode($result);
+    }
+    public function updatePacientPridruznik()
+    {
+        $data=$this->input->post();
+        $id=$data['update_id'];
+        unset($data['update_id']);
+        $result = $this->pacienti_model->updatePacientPridruznik($id, $data);
+        echo json_encode($result);
+    }
+
+    public function vnesiPacientKontakt(){
+        $data=$this->input->post();
+        $id=$data['id'];
+        unset($data['id']);
+         
+        $this->pacienti_model->vnesiPacientKontakt($id,$data);
+    }
+    public function updatePacientKontakt(){
+        $data=$this->input->post();
+        $id=$data['update_id'];
+        unset($data['update_id']);
+        unset($data['id']);
+
+        $this->pacienti_model->vnesiPacientKontakt($id,$data);
+    }
+    public function getPacientPriemi(){
+         
+        $result = $this->pacienti_model->getPacientPriemi($this->input->post('id'));
+        echo json_encode($result);
+    }
+    public function getPacientPriemiIstorija(){
+         
+        $result = $this->pacienti_model->getPacientPriemi($this->input->post('id'));
+        echo json_encode($result);
+    }
+    public function pacientiDropdown()
+    {
+         
+        $result = $this->pacienti_model->getPacienti();
+        echo json_encode($result);
+    }
+    public function getLastPriemBroj()
+    {
+         
+        $query = $this->pacienti_model->getLastPriemBroj();
+        echo json_encode($query);
+    }
+    function getPacientFullPoPriemId(){
+        $priem_id=$this->input->post("id");
+//        bis_debug($this->pacienti_model->getPacientFullPoPriemId($priem_id), "info");
+        echo json_encode($this->pacienti_model->getPacientFullPoPriemId($priem_id));
+    }
+
+    function getPacientFullPoPriemId_zaOtpusnaForma(){
+    $priem_id= $this->input->post("id");
+    echo json_encode($this->pacienti_model->getPacientFullPoPriemId_zaOtpusnaForma($priem_id));
+    }
+
+    function getPacientFullPoPriemId_zaZapisPriem(){
+        $priem_id= $this->input->post("id");
+        bis_debug($this->pacienti_model->getPacientFullPoPriemId_zaZapisPriem($priem_id), "info");
+        echo json_encode($this->pacienti_model->getPacientFullPoPriemId_zaZapisPriem($priem_id));
+    }
+
+    function getPacientFromPriem(){
+        $priem_id=$this->input->post("id");
+        echo json_encode($this->pacienti_model->getPacientZaPriem($priem_id));
+    }
+}

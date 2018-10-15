@@ -1,0 +1,116 @@
+.header-container {
+    width: 100%;
+    background: url("../images/u2_normal.png") no-repeat scroll 0 0 transparent;
+    height: 130px;
+    position: relative;
+    background-size: 100% 130px;
+    border-bottom: 2px solid white;
+}
+
+.nav-bar {
+    width: 100%;
+    height: 33px;
+    float: left;
+    background: #1a4775;
+}
+
+.nav-bar .left {
+    float: left;
+    margin: 0;
+    padding-left: 25px;
+}
+
+.nav-bar .right {
+    float: right;
+    margin: 0;
+}
+
+.nav-bar li {
+    display: inline;
+}
+
+li.izlez {
+    text-align: center;
+}
+
+.right-sidebar {
+    float: right;
+    width: 232px;
+    border: 1px solid #000000;
+    height: 300px;
+}
+
+.header .titles {
+    padding: 25px;
+    position: relative;
+    padding-bottom: 0px;
+    height: 60px;
+}
+
+.header .titles h1 {
+    color: #FFFFFF;
+    font: 36px arial;
+    margin-bottom: 15px;
+    white-space: nowrap;
+}
+
+.header .titles h2 {
+    color: #FFFFFF;
+    font: 12px arial;
+
+    white-space: nowrap;
+    position: absolute;
+    bottom: 0;
+}
+
+.header {
+    float: left;
+    height: 100px;
+}
+
+.nav-bar .right li {
+    margin-left: 30px;
+}
+
+.nav-bar .right li a {
+    line-height: 33px;
+}
+
+.nav-bar .left li a {
+    line-height: 33px;
+}
+
+.nav-bar .left li.first {
+    margin-right: 10px;
+}
+
+.nav-bar .left li.first span {
+    font-size: 30px;
+}
+
+.nav-bar .left li.second {
+    margin-right: 40px;
+}
+
+.nav-bar .left li.second span {
+    vertical-align: super;
+}
+
+.nav-bar .left li.user-profile {
+    margin-right: 30px;
+}
+
+.nav-bar .left li a {
+    vertical-align: super;
+}
+
+.nav-bar a {
+    text-decoration: none;
+}
+
+.nav-bar a:hover {
+    text-decoration: underline;
+}
+.nav-bar .sub-navbar .left .second {
+    font-size: 20px;
+}

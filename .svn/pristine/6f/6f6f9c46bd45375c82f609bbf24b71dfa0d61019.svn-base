@@ -1,0 +1,59 @@
+<div class="editklasa">
+    <form method="post" action="/index.php/konta/konta/povrzi_konta">
+        <input type="hidden" name="id" value="<?php echo $id ?>" />
+        <?php echo $test; ?>
+        <?php if ($tip=='klasa') {  ?>
+                          <?php if ($test=='12') {  ?>
+        Конто:<br />
+        <input type="text" value="<?php echo $sifranaklasa ?>" name="sifra"><br /><br/>
+        Опис на конто:<br />
+        <input type="text" value="<?php echo $opisnaklasa ?>" name="opis"><br />
+        Внесете соодветно  298* конто :<br />
+        <input type="text" value="<?php echo $trosok_konto; ?>" name="trosok_konto"><br />
+       Внесете  соодветно приход конто:<br />
+        <input type="text" value="<?php echo $materijalno_konto; ?>" name="materijalno_konto"><br />
+
+            <?php } else if($test=='198') {?>
+            Конто:<br />
+            <input type="text" value="<?php echo $sifranaklasa ?>" name="sifra"><br /><br/>
+            Опис на конто:<br />
+            <input type="text" value="<?php echo $opisnaklasa ?>" name="opis"><br />
+            Внесете соодветно  трошок конто :<br />
+            <input type="text" value="<?php echo $trosok_konto; ?>" name="trosok_konto"><br />
+            Внесете  соодветно 198*(за услуга) или 310*(за артикл) конто:<br />
+            <input type="text" value="<?php echo $materijalno_konto; ?>" name="materijalno_konto"><br />
+
+            <?php } else if($test=='310'){?>
+
+            Конто:<br />
+            <input type="text" value="<?php echo $sifranaklasa ?>" name="sifra"><br /><br/>
+            Опис на конто:<br />
+            <input type="text" value="<?php echo $opisnaklasa ?>" name="opis"><br />
+            Внесете соодветно  трошок конто :<br />
+            <input type="text" value="<?php echo $trosok_konto; ?>" name="trosok_konto"><br />
+            Внесете  соодветно 198* конто:<br />
+            <input type="text" value="<?php echo $materijalno_konto; ?>" name="materijalno_konto"><br />
+            Внесете конто за материјално затворање :<br />
+            <input type="text" value="<?php echo $materijalno_zatvoranje; ?>" name="materijalno_zatvoranje"><br />
+            <?php } else if($test=='0') { ?>
+
+            Конто:<br />
+            <input type="text" value="<?php echo $sifranaklasa ?>" name="sifra"><br /><br/>
+            Опис на конто:<br />
+            <input type="text" value="<?php echo $opisnaklasa ?>" name="opis"><br />
+            Поврзи конто 1:<br />
+            <input type="text" value="<?php echo $trosok_konto; ?>" name="trosok_konto"><br />
+            Поврзи конто 2:<br />
+            <input type="text" value="<?php echo $materijalno_konto; ?>" name="materijalno_konto"><br />
+            Поврзи конто 3 :<br />
+            <input type="text" value="<?php echo $materijalno_zatvoranje; ?>" name="materijalno_zatvoranje"><br />
+
+
+            <?php } ?>
+        <?php } ?>
+
+
+
+        <input type="button" class="ajaxklasipovrzi button" value="Поврзи"><br/>
+    </form>
+</div>

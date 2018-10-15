@@ -1,0 +1,109 @@
+<?php  if (!defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
+
+class Katalog extends CI_Controller
+{
+
+	function __construct()
+	{
+		parent::__construct();
+		//$this->is_logged_in();
+	}
+
+	public function nov()
+	{
+		$data['tip']          = 'katalog';
+		$this->load->view('podatoci/katalog/nov', $data);
+	}
+
+	public function novpodkatalog()
+	{
+		$this->load->model('podatoci/katalog_model');
+		$data['glavenkatalog'] = $this->katalog_model->getKatalog($this->input->get("id"));
+		$data['tip']           = 'podkatalog';
+		$this->load->view('podatoci/katalog/nov', $data);
+	}
+
+	public function izmeni()
+	{
+		$this->load->model('podatoci/katalog_model');
+		$data['katalog']      = $this->katalog_model->getKatalog($this->input->get("id"));
+		$data['tip']          = 'katalog';
+		$this->load->view('podatoci/katalog/izmeni', $data);
+	}
+
+	public function izmenipodkatalog()
+	{
+		$this->load->model('podatoci/katalog_model');
+		$katalog               = $this->katalog_model->getKatalog($this->input->get("id"));
+		$glavenkatalog         = $this->katalog_model->getKatalog($katalog->parent_id);
+		$data['katalog']       = $katalog;
+		$data['glavenkatalog'] = $glavenkatalog;
+		$data['tip']           = 'podkatalog';
+		$this->load->view('podatoci/katalog/izmeni', $data);
+	}
+
+	public function lista()
+	{
+		$this->load->view('podatoci/katalog/lista');
+	}
+
+	public function popolnilista()
+	{
+
+		//$data['main_content'] = 'podatoci/katalog/popolnilista';
+		$this->load->model('podatoci/katalog_model');
+		$return = $this->katalog_model->getGlavniKatalozi();
+		echo json_encode($return);
+	}
+
+	public function popolnipodlista()
+	{
+
+		//$data['main_content'] = 'podatoci/katalog/popolnilista';
+		$id = $this->input->get("id");
+		$this->load->model('podatoci/katalog_model');
+		$return = $this->katalog_model->getPodKatalozi($id);
+		echo json_encode($return);
+	}
+
+	public function popolnikartiklilista()
+	{
+
+		//$data['main_content'] = 'podatoci/katalog/popolnilista';
+		$id = $this->input->get("id");
+		$this->load->model('podatoci/katalog_model');
+		$return = $this->katalog_model->getKatalogArtikli($id);
+		echo json_encode($return);
+	}
+
+	public function create_katalog()
+	{
+		$this->load->model('podatoci/katalog_model');
+		$this->katalog_model->create_katalog();
+		echo "ok";
+	}
+
+	public function create_podkatalog()
+	{
+		$this->load->model('podatoci/katalog_model');
+		$this->katalog_model->create_podkatalog();
+		echo "ok";
+	}
+
+	public function update_katalog()
+	{
+		$this->load->model('podatoci/katalog_model');
+		$this->katalog_model->update_katalog();
+		echo "ok";
+	}
+
+	public function delete_katalog()
+	{
+		$id = $this->input->get("id");
+		$this->load->model('podatoci/katalog_model');
+		$this->katalog_model->delete_katalog($id);
+		echo "ok";
+	}
+}

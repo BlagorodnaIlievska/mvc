@@ -1,0 +1,23 @@
+<div class="novodel">
+    <fieldset>
+        <legend>Нова група</legend>
+        <form accept-charset="utf-8" method="post" action="/index.php/konta/konta/create_grupa">
+            <input type="hidden" name="parent_klasa" value="<?php echo $idnaklasa ?>" />
+            Опис на класа: <?php echo $opisnaklasa ?><br />
+            Класа: <?php echo $sifranaklasa ?><br /><br />
+
+            Група:<br />
+            <input type="text" value="" name="sifra"><br />
+            Опис на група:<br />
+            <input type="text" value="" name="opis"><br />
+
+            <!--   Адреса:<br />
+               <input type="text" value="" name="adresa"><br />
+               Даночен број:<br />
+               <input type="text" value="" name="danocenbroj"><br />-->
+
+            <br/>
+            <input type="button" class="ajaxgrupacreateform button" value="Додади"><br/>
+        </form>
+    </fieldset>
+</div>

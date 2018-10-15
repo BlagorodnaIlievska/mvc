@@ -1,0 +1,38 @@
+<div class="pecatenje" xmlns="http://www.w3.org/1999/html">
+    <fieldset style="margin: 20px;">
+        <legend>Одлив/прилив на каса</legend>
+
+        <br/><br/><br/>
+        <table style="margin-left: 15px;">
+
+            <tr><td>Каса : </td><td><? echo $kasa[0]->kasaIme;?></td></tr>
+            <tr><td>Број на каса : </td><td><? echo $kasa[0]->textBroj;?></td></tr>
+            <tr><td>Датум : </td><td><? echo $kasa[0]->datum;?></td></tr>
+            <?php
+            if($kasa[0]->firmaID > 0){ $klientIme = $kasa[0]->firmaIme; }else {
+                if($kasa[0]->pacientID > 0){ $klientIme = $kasa[0]->pacientIme . " " . $kasa[0]->pacientTatkovoIme . " " . $kasa[0]->pacientPrezime; }
+
+            }
+            ?>
+
+         <tr><td>Клиент : </td><td><? echo $klientIme ?></td></tr>
+
+
+<?php if($kasa[0]->tip == 550) { ?>
+    <tr><td>Прилив : </td><td><? echo $kasa[0]->suma ?></td></tr>
+    <?php }else
+    if($kasa[0]->tip == 540){ ?>
+        <tr><td>Одлив : </td><td><? echo $kasa[0]->suma ?></td></tr>
+        <?php } ?>
+<?php if($kasa_ID){ ?>
+    <tr><td>Состојба : </td><td><? echo $kasa[0]->sostojba;?></td></tr>
+            <?php } ?>
+            <tr><td>Повикувачки број : </td><td><? echo $kasa[0]->zaPovikBroj;?></td></tr>
+            <tr><td>Конто : </td><td><? echo $kasa[0]->konto;?></td></tr>
+            <tr><td>Намена : </td><td><? echo $kasa[0]->namena;?></td></tr>
+            <tr><td>Забелешка : </td><td><? echo $kasa[0]->zabeleska;?></td></tr>
+        </table><br/><br/>
+
+    </fieldset>
+
+</div>

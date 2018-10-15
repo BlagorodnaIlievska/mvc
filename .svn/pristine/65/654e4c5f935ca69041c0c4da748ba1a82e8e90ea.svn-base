@@ -1,0 +1,267 @@
+function  vraboteni_mp_polnilista(mesec, godina)
+{
+    var formurl = "/index.php/plati/vraboten_mesecni_promeni/polnilista";
+    var data = {
+        mesec: mesec,
+        godina: godina
+    }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        dataType:'json',
+        success:function (response) {
+//            console.log(response[0].parametri);
+            var redenbroj = 1;
+           //console.log(response);
+            jQuery(".tabela-vraboteni-mp tbody").html('');
+            jQuery.each(response, function (index, item) {
+                var vrabotenFullName = item.vrabotenIme+" "+item.vrabotenPrezime;
+
+                if(item.parametri)
+                {
+                    console.log(item.godina);
+                    jQuery(".tabela-vraboteni-mp tbody").append(('<tr vraboten_zapis_id="' + item.parametri.id + '" vraboten_id="' + item.vrabotenID + '" mesec_id="' + item.mesec.id + '" godina_id="' + item.godina + '">' +
+                        '<td>' +
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                        '</td>' +
+                        '<td class="id text-right">' + redenbroj + '</td>' +
+                        '<td class="vraboten">' + vrabotenFullName + '</td>' +
+                        '<td class="mesec">' + item.mesec.ime + '</td>' +
+                        '<td class="godina">' + godina + '</td>' +
+                        '<td class="bodovi text-right">' + item.parametri.bodovi + '</td>' +
+                        '<td class="vkupno_casovi text-right">' + item.parametri.vkupno_casovi + '</td>' +
+                        '</tr>'
+                        ));
+                }
+                else
+                {
+                    jQuery(".tabela-vraboteni-mp tbody").append(('<tr vraboten_zapis_id="0" vraboten_id="' + item.vrabotenID + '" mesec_id="' + item.mesec.id + '">' +
+                        '<td>' +
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                        '</td>' +
+                        '<td class="id text-right">' + redenbroj + '</td>' +
+                        '<td class="vraboten">' + vrabotenFullName + '</td>' +
+                        '<td class="mesec">' + item.mesec.ime + '</td>' +
+                        '<td class="godina">' + godina + '</td>' +
+                        '<td class="bodovi text-right">' + '</td>' +
+                        '<td class="vkupno_casovi text-right">' + '</td>' +
+                        '</tr>'
+                        ));
+                }
+                redenbroj = 1*redenbroj + 1*1;
+            });
+            jQuery(".tabela-vraboteni-mp").trigger("update");
+            jQuery(".naslovmesecnipromeni .vkupnostavki").html(response.length);
+        }
+    });
+}
+function vraboteni_mp_nov(vraboten_id) {
+    var data = {
+        vraboten_id: vraboten_id
+    }
+    var formurl = "/index.php/plati/vraboten_mesecni_promeni/nov_vraboten_zapis";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нов запис",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function vraboteni_mp_izmeni(vraboten_zapis_id, vraboten_id, mesec, godina) {
+    var formurl = "/index.php/plati/vraboten_mesecni_promeni/izmeni";
+    var data = {
+        id: vraboten_zapis_id,
+        vraboten_id: vraboten_id,
+        mesec_id: mesec,
+        godina: godina
+    }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени запис",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function vraboteni_mp_delete(kredit_id){
+    var r=confirm("Избриши запис");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/plati/vraboten_mesecni_promeni/delete_vraboten_zapis";
+            var data = {  id: kredit_id  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    vraboteni_mp_polnilista();
+                }
+            });
+        }
+    }
+}
+function  getVraboteniZapisi(mesec, godina)
+{
+    var formurl = "/index.php/plati/vraboten_mesecni_promeni/getVraboteniZapisi";
+    var data = {
+        mesec: mesec,
+        godina: godina
+    }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            var redenbroj = 1;
+            jQuery(".tabela-vraboteni-mp tbody").html('');
+            jQuery.each(response, function (index, item) {
+
+                var vrabotenFullName = item.vrabotenIme+" "+item.vrabotenPrezime;
+                if(item.parametri)
+                {
+                    jQuery(".tabela-vraboteni-mp tbody").append(('<tr vraboten_zapis_id="' + item.parametri.id + '" vraboten_id="' + item.vrabotenID + '" mesec_id="' + item.mesec.id + '">' +
+                        '<td>' +
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                        '</td>' +
+                        '<td class="id">' + redenbroj + '</td>' +
+                        '<td class="vraboten">' + vrabotenFullName + '</td>' +
+                        '<td class="mesec">' + item.mesec.ime + '</td>' +
+                        '<td class="godina">' + godina + '</td>' +
+                        '<td class="bodovi">' + item.parametri.bodovi + '</td>' +
+                        '<td class="vkupno_casovi">' + item.parametri.vkupno_casovi + '</td>' +
+                        '</tr>'
+                        ));
+                }
+                else
+                {
+                    jQuery(".tabela-vraboteni-mp tbody").append(('<tr vraboten_zapis_id="0" vraboten_id="' + item.vrabotenID + '" mesec_id="' + item.mesec.id + '">' +
+                        '<td>' +
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                        '</td>' +
+                        '<td class="id">' + redenbroj + '</td>' +
+                        '<td class="vraboten">' + vrabotenFullName + '</td>' +
+                        '<td class="mesec">' + item.mesec.ime + '</td>' +
+                        '<td class="godina">' + godina + '</td>' +
+                        '<td class="bodovi">' + '</td>' +
+                        '<td class="vkupno_casovi">' + '</td>' +
+                        '</tr>'
+                        ));
+                }
+                redenbroj = 1*redenbroj + 1*1;
+            });
+            jQuery(".tabela-vraboteni-mp").trigger("update");
+        }
+    });
+}
+function  getMesecniPromeni(mesec, godina, ime, prezime, oddel)
+{
+
+    var formurl = "/index.php/plati/vraboten_mesecni_promeni/getMesecniPromeni";
+    var data = {
+        mesec: mesec,
+        godina: godina,
+        ime: ime,
+        prezime: prezime,
+        oddel: oddel
+    }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        dataType:'json',
+        success:function (response) {
+//      console.log(response);
+//         console.log(response[0].parametri);
+            var redenbroj = 1;
+            var vkupnostavki = response.length;
+            jQuery(".tabela-vraboteni-mp tbody").html('');
+            jQuery.each(response, function (index, item) {
+                var vrabotenFullName = item.vrabotenIme+" "+item.vrabotenPrezime;
+                //console.log(item.godina);
+                jQuery(".tabela-vraboteni-mp tbody").append(('<tr vraboten_zapis_id="' + item.id + '" vraboten_id="' + item.vrabotenID + '" mesec_id="' + item.mesecID + '" godina_id="' + item.godina + '" >' +
+                    '<td>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                    '</td>' +
+                    '<td class="id">' + redenbroj + '</td>' +
+                    '<td class="vraboten">' + vrabotenFullName + '</td>' +
+                    '<td class="mesec">' + item.mesecIme + '</td>' +
+                    '<td class="godina">' + godina + '</td>' +
+                    '<td class="bodovi">' + item.bodovi + '</td>' +
+                    '<td class="vkupno_casovi">' + item.vkupno_casovi + '</td>' +
+                '</tr>'
+                ));
+                redenbroj = 1*redenbroj + 1*1;
+            });
+            jQuery(".naslovmesecnipromeni .vkupnostavki").html(vkupnostavki);
+            jQuery(".tabela-vraboteni-mp").trigger("update");
+        }
+    });
+}
+function proveriMesecnaPresmetka(mesec, godina) {
+    var data = {
+        mesec: mesec,
+        godina: godina
+    }
+    var formurl = "/index.php/plati/vraboten_mesecni_promeni/proveri_mesecna_presmetka";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+//            console.log(response);
+            if(response == 1)  alert("Веќе има направено пресметка за овој месец !!!");
+            else  kreirajNovaMesecnaPresmetka(mesec, godina);
+        }
+    });
+}
+function kreirajNovaMesecnaPresmetka(mesec, godina) {
+    var data = {
+        mesec: mesec,
+        godina: godina
+    }
+    var formurl = "/index.php/plati/vraboten_mesecni_promeni/nova_mesecna_presmetka";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+//            console.log(response);
+            getVraboteniZapisi(mesec, godina);
+            jQuery(this).dialog("destroy");
+        }
+    });
+    alert('Пресметката е успешно направена');
+}

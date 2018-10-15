@@ -1,0 +1,26 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Specifikacija extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+    public function index()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $this->load->model('start/start_model');
+         $data['magacini'] = $this->start_model->getMagacini();
+         $data['artikli']=$this->artikl_model->getAll();
+        $this->load->view('materijalno/specifikacija/index',$data);
+    }
+    public function polnilista(){
+        $this->load->model('materijalno/materijalno_model');
+       // $this->materiajlno_model->getVlezniIzlezniKolicini();
+        $return = $this->materijalno_model->getVlezniIzlezniKolicini();
+      //  print_r($return); die();
+        echo json_encode($return);
+    }
+}

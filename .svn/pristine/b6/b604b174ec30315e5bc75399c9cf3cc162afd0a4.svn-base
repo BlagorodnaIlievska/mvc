@@ -1,0 +1,86 @@
+<?php
+
+class Klienti_model extends CI_Model
+{
+
+    public function getKlienti()
+    {
+        $this->db->select('firma.*') ;
+        $this->db->from('firma');
+       // $this->db->join('bis_gradovi','bis_gradovi.id=firma.gradID');
+       // $this->db->join('bis_banki','bis_banki.id=firma.bankaDBroj');
+        $q=$this->db->get();
+        if ($q->num_rows > 0) {
+            return $q->result();
+        }
+    }
+    public function getSliki($id)
+    {
+        $sliki        = array();
+        $datadir      = "data/klienti/$id";
+        $datadirsliki = $datadir . "/sliki/";
+        if (is_dir($datadirsliki)) {
+            if ($handle = opendir($datadirsliki)) {
+                while (false !== ($entry = readdir($handle))) {
+                    if ($entry == "." || $entry == "..") {
+                        continue;
+                    }
+                    $sliki[] = array("ime" => $entry, "link" => "/" . $datadirsliki . $entry);
+                }
+            }
+        }
+
+        return $sliki;
+    }
+
+    public function getKlient($id)
+    {
+        $this->db->select('firma.*');
+        $this->db->from('firma');
+        $this->db->where("firma.firmaID", $id);
+      //  $this->db->join('bis_gradovi','bis_gradovi.id=firma.gradID');
+        $query = $this->db->get();
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_klient()
+    {
+        $insert_data = $this->input->post();
+        $insert      = $this->db->insert('firma', $insert_data);
+
+
+        return $insert;
+    }
+
+
+    public function delete_klient($id)
+    {
+
+        $this->db->where('firmaID', $id);
+        $this->db->delete('firma');
+
+
+    }
+
+    public function update_klient()
+    {
+        $field_update_data =	$this->input->post();
+
+        $this->db->where('firmaID',$field_update_data['firmaID']);
+        unset($field_update_data['firmaID']);
+        $this->db->update('firma', $field_update_data);
+    }
+
+    public function filtriraj_po_klient($klient){
+        $this->db->select('firma.*');
+        $this->db->from('firma');
+       if($klient!=0) $this->db->where('firma.firmaID',$klient);
+        $q=$this->db->get();
+        if ($q->num_rows > 0) {
+            return $q->result();
+        }
+    }
+
+}

@@ -1,0 +1,199 @@
+<div class="informacii-fakturiranje">
+    <input type="hidden" class="priem_id" name="priem_id" value="<?php echo $priem_id ?>"/>
+
+    <div class="priem-pacient-info">
+        <fieldset class="faktura-do">
+            <?php if($participacija == 6): ?>
+            <span class="faktura-do-span">Фактура до: </span>
+            <select name="fakturirano_do" class="fakturirano_do" >
+                <option value=""> </option>
+                <?php foreach($komintenti as $komintent) { ?>
+                    <option value="<?php echo $komintent->firmaID ?>"><?php echo $komintent->ime; ?></option>
+                <?php }  ?>
+            </select><br />
+            <?php else: ?>  Фактура до: <span class="ime"></span> <span class="prezime"></span><br />
+            <?php endif; ?>
+        </fieldset>
+        <fieldset>
+        <legend>Податоци за пациент:</legend>
+        <input type="hidden" name="participacija" class="participacija" value="<?= $data_priem->participacija_id; ?>"/>
+        Име и презиме: <span class="ime"></span> <span class="prezime"></span><br />
+        ЕМБГ: <span class="embg"></span><br />
+        Број на здрав. лег: <span class="broj-zdr-legitimacija"></span><br />
+        ЕЗБО: <span class="ezbo"></span><br />
+        Опис на дијагнозата: <span class="opis-dijagnoza">( <?if(isset($dijagnoza) && !empty($dijagnoza)) echo $dijagnoza->sifra ?> ) <?if(isset($dijagnoza) && !empty($dijagnoza)) echo $dijagnoza->opis ?></span><br />
+        </fieldset>
+    </div>
+    <div class="pregled-paketi">
+        <fieldset>
+        <legend>Здравствени услуги:</legend>
+        Основ на осигурување: <span class="osnov_osiguruvanje"><?= $osnov_osiguruvanje; ?></span><br />
+        <p class="paketi" > ( <span class="vkupnostavki">0</span> ) <span class="status">Здравствени услуги</span></p>
+        <table class="paketi-tabela">
+            <thead>
+                <th>Шифра</th>
+                <th class="nazivsal">Назив</th>
+                <th>Количина</th>
+                <th>Партиципација</th>
+                <th>Цена</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        </fieldset>
+    </div>
+    <div class="ceni-paketi ceni">
+        <fieldset class="vkupno-novafak">
+            <legend>Вкупно здравствени услуги</legend>
+            <div class="presmetki-participacija"><!-- ДА СЕ НАПРАВИ  -->
+                <table class="presmetki-participacija-priem">
+                    <tbody>
+                    <tr>
+                        <td>Пресметана партиципација</td>
+                        <td class="presmetana ceni text-right"></td>
+                        <td>ден.</td>
+                    </tr>
+                    <tr>
+                        <td>Основ на ослободување</td>
+                        <td class="osnov-osloboduvanje ceni text-right"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Износ на парт. која не е на товар на ФЗОМ</td>
+                        <td class="iznos-ne-na-tovar-fzom ceni text-right"></td>
+                        <td>ден.</td>
+                    </tr>
+                    <tr>
+                        <td>Вкупен износ за наплата од ФЗОМ</td>
+                        <td class="vkupno-naplata-fzom ceni text-right"></td>
+                        <td>ден.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+    </div>
+    <div class="sostav-paketi hide">
+        <p class="sostav-paketi" > ( <span class="vkupnostavki">0</span> ) <span class="status">Состав на пакет</span></p>
+        <table class="sostav-paketi-tabela">
+            <thead>
+            <th>Шифра</th>
+            <th class="nazivsal">Назив</th>
+            <th>Цена</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="pregled-materijali">
+        <p class="materijali" > ( <span class="vkupnostavki">0</span> ) <span class="status">Потрошени материјали</span></p>
+        <table class="materijali-tabela">
+            <thead>
+            <th>Шифра</th>
+            <th class="nazivsal">Назив</th>
+            <th>Количина</th>
+            <th>Ед. мерка</th>
+            <th>Магацин</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="pregled-paketi-dopolnitelni">
+        <p class="paketi-dopolnitelni" > ( <span class="vkupnostavki">0</span> ) <span class="status">Дополнителни здравствени услуги</span></p>
+        <table class="paketi-tabela-dopolnitelni">
+            <thead>
+            <th>Шифра</th>
+            <th class="nazivsal">Назив</th>
+            <th>Количина</th>
+            <th>Ед. Цена</th>
+            <th>Вкупно</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <?php if(isset($bolnicki_denovi)) { ?>
+        <div class="pregled-bolnicki-denovi">
+            <p class="naslov-bolnicki-denovi" > ( <span class="vkupnostavki">0</span> ) <span class="status">Болнички денови</span></p>
+            <table class="tabela-bolnicki-denovi">
+                <thead>
+                <th>Болнички денови</th>
+                <th>Датум од</th>
+                <th>Датум до</th>
+                <th>Денови</th>
+                <th>Цена</th>
+                <th>Износ</th>
+                </thead>
+                <tbody>
+                <?php
+                if(is_array($bolnicki_denovi)) {
+                    foreach($bolnicki_denovi as $den) { ?>
+                    <tr>
+                        <td><?= $den->naziv; ?></td>
+                        <td><?= $den->datum_od; ?></td>
+                        <td><?= $den->datum_do; ?></td>
+                        <td><?= $den->kolicina; ?></td>
+                        <td><?= $den->cena; ?></td>
+                        <td><?= $den->kolicina*$den->cena; ?></td>
+                    </tr>
+                    <?php }
+                } ?>
+                </tbody>
+            </table>
+        </div>
+    <?php } ?>
+    <div class="ceni-vkupno ceni">
+        <input class="vkupna_cena_paketi" name="vkupna_cena_paketi" type="hidden"/>
+        <input class="vkupna_cena_sam" name="vkupna_cena_sam" type="hidden"/>
+        <input class="vkupna_cena_fzom" name="vkupna_cena_fzom" type="hidden"/>
+        <input class="firma_id oddel" name="firma_id" type="hidden" value="<?= $oddel ?>" />
+        <input class="vkupna_cena_paketi_dopolnitelni" name="vkupna_cena_paketi_dopolnitelni" type="hidden"/>
+        <fieldset class="vkupno-dopolnitelni-ceni">
+            <legend>Вкупно</legend>
+                <table class="presmetki-dopolnitelni-uslugi">
+                    <tbody>
+                    <tr>
+                        <td>Вкупно за наплата на дополнителни услуги</td>
+                        <td class="vkupno-dopolnitelno-suma ceni text-right">0,00</td>
+                        <td>ден.</td>
+                    </tr>
+                    <tr>
+                        <td>Севкупно за наплата за пациент</td>
+                        <td class="sevkupno-suma ceni text-right"></td>
+                        <td>ден.</td>
+                    </tr>
+                    </tbody>
+                </table>
+        </fieldset>
+    </div>
+    <div class="buttoncontainer">
+        <br />
+        <button class="button zatvoripriembutton" type="button"><span>Затвори</span></button>
+        <button class="button fakturirajpriembutton" type="button"><span>Фактурирај Лекување</span></button>
+
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".fakturirano_do").combobox();
+        var priem = jQuery(".priem_id").val();
+        zemiPacientPriemInfo(priem);
+        zemiPaketiZaPriem(priem);
+        zemiMaterijaliZaPriem2(priem);
+        zemiDopolnitelniPaketiZaPriem(priem);
+
+        jQuery(".fakturirajpriembutton").click(function(){
+            var ovakopce = jQuery(this);
+            var ask = confirm("Дали сте сигурни да фактурирате:\n" );
+            if ( ask == true) {
+                ovakopce.attr("disabled", "disabled");
+                lekuvanja_shalter_fakturapriem2(priem);
+            }
+        });
+        jQuery(".zatvoripriembutton").click(function(){
+            var elem = jQuery(this);
+            destroyparentdialog(elem);
+        });
+    });
+</script>

@@ -1,0 +1,36 @@
+<div class="pacienti-pacient-dokument">
+    <form class="pacienti-pacient-dokument-forma" method="post">
+        <ul class="edit-pacientinfo">
+        <li>Име:<input name="ime" class="ime"/></li>
+            <li>Татково Име:<input name="tatkovoime" class="tatkovoime"/></li>
+            <li>Презиме:<input name="prezime" class="prezime"/></li>
+            <li>Бр.Здр.Лег.:<input name="br_zdravstvena_legitimacija" class="br_zdravstvena_legitimacija"/></li>
+            <li>Пол:<select name="pol" class="pol">
+            <option>Машки</option>
+            <option>Женски</option>
+        </select></li>
+            <li>Роден/а:<input name="datum_na_raganje" class="datum_na_raganje"/></li>
+            <li>ЕМБГ:<input name="embg" class="embg"/></li>
+            <li>ЕЗБО:<input name="ezbo" class="ezbo"/></li>
+            <li>Адреса:<input name="ulica" class="ulica"/></li>
+            <li>Град:<input name="grad" class="grad"/></li>
+            <li>Општина:<input name="opstina" class="opstina"/></li>
+            <li>Држава:<input name="drzava" class="drzava"/></li>
+            <li>Националност:<input name="nacionalnost" class="nacionalnost"/></li>
+            <li>Работодавач:<input name="rabotodavac" class="rabotodavac"/></li>
+            <li>Работодавач Град:<input name="rabotodavac_grad" class="rabotodavac_grad"/></li>
+            <li>Работодавач Шифра на Дејност:<input name="rabotodavac_sifra_na_dejnost" class="rabotodavac_sifra_na_dejnost"/></li>
+            <li>Работодавач рег.бр.:<input name="rabotodavac_registarski_broj" class="rabotodavac_registarski_broj"/></li>
+            <li>Работодавач работно место:<input name="rabotodavac_rabotnomesto" class="rabotodavac_rabotnomesto"/></li>
+            <li>Телефон:<input name="kontakt_telefon" class="kontakt_telefon"/></li>
+            <li>Мобилен:<input name="kontakt_mobilen" class="kontakt_mobilen"/></li>
+            <li>Мобилен2:<input name="kontakt_mobilen2" class="kontakt_mobilen2"/></li>
+            <li>Близок контакт:<textarea name="konatakt_blizok" class="konatakt_blizok"></textarea></li>
+        </ul>
+        <div class="buttoncontainer">
+            <button type="button" class="button snimi-forma" poraka_uspesno="Промените се снимени."
+                    izvrsi="pacienti_popolnilista()"><span>Сними</span></button>
+        </div>
+    </form>
+
+</div>

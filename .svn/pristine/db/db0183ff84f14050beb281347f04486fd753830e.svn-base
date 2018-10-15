@@ -1,0 +1,445 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Vlez_izlez extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function menu()
+    {
+        $this->load->view('materijalno/vlez_izlez/menu_form');
+    }
+
+    public function vlez()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/klienti_model');
+        $this->load->model('start/start_model');
+        $dozvoleni_magacini = $this->start_model->getDozvoleniMagacini();
+       // $data['magacini'] =$this->start_model->getMagacini();
+        $data['magacini'] =$dozvoleni_magacini;
+        $data['klienti'] = $this->klienti_model->getKlienti();
+        //$data['klient'] = $this->materijalno_model->klient_site_dropdown();
+
+        $this->load->view('materijalno/vlez_izlez/vlez/vlez_form', $data);
+    }
+
+    public function izlez()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/klienti_model');
+        $this->load->model('start/start_model');
+        $dozvoleni_magacini = $this->start_model->getDozvoleniMagacini();
+        //$data['magacini'] = $this->start_model->getMagacini();
+        $data['magacini']=$dozvoleni_magacini; //smeneto za magacinite
+        $data['klienti'] = $this->klienti_model->getKlienti();
+        $this->load->view('materijalno/vlez_izlez/izlez/izlez_form', $data);
+    }
+    public function otpis_na_materijali()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/klienti_model');
+        $this->load->model('start/start_model');
+        $data['magacini'] = $this->start_model->getDozvoleniMagacini();
+        $data['klienti'] = $this->klienti_model->getKlienti();
+        $this->load->view('materijalno/vlez_izlez/otpis_na_materijali/otpis_na_materijali_form', $data);
+    }
+
+    public function povratnici()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['magacin'] = $this->materijalno_model->magacin_dropdown();
+        $data['klient'] = $this->materijalno_model->klient_site_dropdown();
+        $this->load->view('materijalno/vlez_izlez/povratnica/povratnici_form', $data);
+    }
+
+    public function interni()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/klienti_model');
+        $this->load->model('start/start_model');
+        $data['magacini'] = $this->start_model->getMagacini();
+        $data['magacini_dozvoleni'] = $this->start_model->getDozvoleniMagacini();
+        $data['klienti'] = $this->klienti_model->getKlienti();
+        $data['magacin'] = $this->materijalno_model->magacin_dropdown();
+        $this->load->view('materijalno/vlez_izlez/interni/interni_form', $data);
+    }
+
+    public function proizvodstvo()
+    {
+        $this->load->view('materijalno/vlez_izlez/proizvodstvo_form');
+    }
+
+    public function kartici()
+    {
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('start/start_model');
+        //$this->load->model('materijalno/materijalno_model');
+      //  $this->artikl_model->generateSrednaCenaArtikli();       //bez ova vo klinicki rabotat kartici
+        $zabranetimagacini=$this->session->userdata('magacini');
+        $data['magacini'] = $this->start_model->getDozvoleniMagacini();
+        $data['artikli'] = $this->artikl_model->getAll_limitirano($zabranetimagacini);
+        $this->load->view('materijalno/vlez_izlez/kartici_form', $data);
+    }
+
+    public function nova_roba()
+    {
+        $this->load->view('materijalno/vlez_izlez/vlez/vnesi_roba_form');
+    }
+
+    public function nova_izlez_roba()
+    {
+        $this->load->view('materijalno/vlez_izlez/izlez/izlez_roba_form');
+    }
+
+    public function getAllVleznaRoba()
+    {
+        $klientid = $this->input->post('klientid');
+        $pogledid = $this->input->post('pogledid');
+        $this->load->model('materijalno/materijalno_model');
+        $query =  $this->materijalno_model->getAllVleznaRoba($klientid, $pogledid);
+        echo json_encode($query);
+    }
+    public function getPriemniciB()
+    {
+        $klientid = $this->input->get('klientid');
+        $pogledid = $this->input->get('pogledid');
+        $magacinid = $this->input->get('magacinid');
+        $this->load->model('materijalno/materijalno_model');
+        $query =  $this->materijalno_model->getPriemniciB($klientid, $pogledid, $magacinid);
+        echo json_encode($query);
+    }
+
+    public function getFreeVleznaRoba()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $query =  $this->materijalno_model->getFreeVleznaRoba($this->input->post());
+        echo json_encode($query);
+    }
+
+    public function getFreeIzleznaRoba()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $query =  $this->materijalno_model->getFreeIzleznaRoba($this->input->post());
+        echo json_encode($query);
+    }
+
+    public function getVleznaRobaDetali()
+    {
+        $id = $this->input->post('dbid');
+        $this->load->model('materijalno/materijalno_model');
+        $query =  $this->materijalno_model->getVleznaRobaDetali($id);
+        echo json_encode($query);
+    }
+
+    public function getStavkiInPriemnica(){
+        $id = $this->input->get('id');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getStavkiByPriemnica($id);
+        echo json_encode($query);
+    }
+    public function editVleznaRobaMenu()
+    {
+        $data['id'] = $this->input->get('id');
+        $this->load->view('materijalno/vlez_izlez/vlez/edit_vlezna_roba_menu', $data);
+    }
+
+    public function editIzleznaRobaMenu()
+    {
+        $data['id'] = $this->input->get('id');
+        $this->load->view('materijalno/vlez_izlez/izlez/edit_izlezna_roba_menu', $data);
+    }
+
+
+    public function editOtpisnaMaterijaliRobaMenu()
+    {
+        $data['id'] = $this->input->get('id');
+        $this->load->view('materijalno/vlez_izlez/otpis_na_materijali/edit_otpisnaMaterijali_menu', $data);
+    }
+
+    public function editFaktura()
+    {
+        $id = $this->input->get('id');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getFakturaByPriemnica($id);
+        $data['id'] = $id;
+
+        if($query)
+        {
+            $data['query'] = $query;
+            $this->load->view('materijalno/vlez_izlez/vlez/edit_faktura_form', $data);
+        }
+        else  $this->load->view('materijalno/vlez_izlez/vlez/faktura_form', $data);
+
+    }
+
+    public function editPriemnica()
+    {
+        $id = $this->input->get('id');
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('podatoci/artikl_model');
+        $query = $this->materijalno_model->getVleznaRoba($id);
+        $data['id'] = $id;
+        $data['query'] = $query;
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['katbroj']=$this->artikl_model->getAllKatBroj();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['magacini'] = $this->materijalno_model->magacinJquery();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('materijalno/vlez_izlez/vlez/edit_vlezna_roba_form', $data);
+    }
+
+    public function editIspratnica()
+    {
+        $id = $this->input->get('id');
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/edmerki_model');
+        $this->load->model('podatoci/artikl_model');
+        $query = $this->materijalno_model->getVleznaRoba($id);
+        $data['id'] = $id;
+        $data['query'] = $query;
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['katbroj']=$this->artikl_model->getAllKatBroj();
+        $data['edinicamerka'] = $this->edmerki_model->bis_edmerki_dropdown();
+        $data['magacini'] = $this->materijalno_model->magacinJquery();
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('materijalno/vlez_izlez/izlez/edit_izlezna_roba_form', $data);
+    }
+
+
+    public function editOtpisnica()
+    {
+        $id = $this->input->get('id');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getVleznaRoba($id);
+        $data['id'] = $id;
+        $data['query'] = $query;
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('materijalno/vlez_izlez/otpis_na_materijali/edit_otpisnaMaterijali_form', $data);
+    }
+
+
+    public function editPovratnicaMenu()
+    {
+        $data['id'] = $this->input->get('id');
+        $this->load->view('materijalno/vlez_izlez/povratnica/edit_povratnica_menu', $data);
+    }
+    public function getLastPriemnicaBroj()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getLastPriemnicaBroj();
+        echo json_encode($query);
+    }
+
+    public function getLastIspratnicaBroj()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getLastIspratnicaBroj();
+        echo json_encode($query);
+    }
+
+    public function getLastOtpisnicaMatBroj()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getLastOtpisnicaMatBroj();
+        echo json_encode($query);
+    }
+
+
+
+    public function editPovratnica()
+    {
+        $id = $this->input->get('id');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getVleznaRoba($id);
+        $data['id'] = $id;
+        $data['query'] = $query;
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('materijalno/vlez_izlez/povratnica/edit_povratnica_form', $data);
+    }
+
+    public function getAllIzleznaRoba()
+    {
+        $klientid = $this->input->post('klientid');
+        $pogledid = $this->input->post('pogledid');
+        $this->load->model('materijalno/materijalno_model');
+        $query =  $this->materijalno_model->getAllIzleznaRoba($klientid, $pogledid);
+        echo json_encode($query);
+    }
+
+    public function getIzleznaRobaDetali()
+    {
+        $id = $this->input->post('dbid');
+        $this->load->model('materijalno/materijalno_model');
+        $query =  $this->materijalno_model->getIzleznaRobaDetali($id);
+        echo json_encode($query);
+    }
+
+    public function getAllPovratnici()
+    {
+        $klientid = $this->input->post('klientid');
+        $pogledid = $this->input->post('pogledid');
+        $this->load->model('materijalno/materijalno_model');
+        $query =  $this->materijalno_model->getAllPovratnici($klientid, $pogledid);
+        echo json_encode($query);
+    }
+
+    public function getPovratnicaDetali()
+    {
+        $id = $this->input->post('dbid');
+        $this->load->model('materijalno/materijalno_model');
+        $query =  $this->materijalno_model->getPovratnicaDetali($id);
+        echo json_encode($query);
+    }
+    public function pecati_vlezna_roba(){
+        $this->load->helper('to_pdf');
+        $this->load->model('materijalno/materijalno_model');
+        $klientid=$this->input->post('pdfklientid');
+        $pogledid=$this->input->post('pdfpogledid');
+
+        $q = $this->materijalno_model->getAllVleznaRoba($klientid, $pogledid);
+        //print_r($q); die();
+        $data['q']=$q;
+        $html = $this->load->view('materijalno/pecatenje/pecati_vlezna_roba', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+    }
+    public function pecati_izlezna_roba(){
+        $this->load->helper('to_pdf');
+        $this->load->model('materijalno/materijalno_model');
+        $klientid=$this->input->post('pdfklientid');
+        $pogledid=$this->input->post('pdfpogledid');
+
+        $q = $this->materijalno_model->getAllIzleznaRoba($klientid, $pogledid);
+        // print_r($q); die();
+        $data['q']=$q;
+        $html = $this->load->view('materijalno/pecatenje/pecati_izlezna_roba', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+    }
+    public function pecati_vlezna_detali(){
+        $this->load->helper('to_pdf');
+        $this->load->model('materijalno/materijalno_model');
+        $pdfid=$this->input->post('pdfid');
+
+
+        $q = $this->materijalno_model->getVleznaRobaDetali($pdfid);
+        // print_r($q); die();
+        $data['q']=$q;
+        $html = $this->load->view('materijalno/pecatenje/pecati_vlezna_detali', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+    }
+    public function pecati_izlezna_detali(){
+        $this->load->helper('to_pdf');
+        $this->load->model('materijalno/materijalno_model');
+        $pdfid=$this->input->post('pdfid');
+
+
+        $q = $this->materijalno_model->getIzleznaRobaDetali($pdfid);
+        // print_r($q); die();
+        $data['q']=$q;
+        $html = $this->load->view('materijalno/pecatenje/pecati_izlezna_detali', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+    }
+    public function pecati_site_povratnici(){
+        $this->load->helper('to_pdf');
+        $this->load->model('materijalno/materijalno_model');
+        $klientid=$this->input->post('pdfklientid');
+        $pogledid=$this->input->post('pdfpogledid');
+
+        $q = $this->materijalno_model->getAllPovratnici($klientid, $pogledid);
+        //print_r($q); die();
+        $data['q']=$q;
+        $html = $this->load->view('materijalno/pecatenje/pecati_site_povratnici', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+    }
+    public function pecati_site_priemnici(){
+
+        $klientid = $this->input->get('klientid');
+        $pogledid = $this->input->get('pogledid');
+        $magacinid = $this->input->get('magacinid');
+        $this->load->model('materijalno/materijalno_model');
+        $query =  $this->materijalno_model->getPriemniciB($klientid, $pogledid, $magacinid);
+
+
+        $data['priemnici'] = $query;
+        $data['magacinIme'] = $this->materijalno_model->getMagacinIme($magacinid);
+
+        $data['main_content'] = 'materijalno/pecatenje/pecati_site_priemnici';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+
+
+    public function print_stavkiInPriemnica(){
+
+
+        $magacinid = $this->input->get('magacinid');
+        $id = $this->input->get('id');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->info_priemnica($id);
+      //  $klientK = $this->materijalno_model->
+        $data['stavkiP'] = $query;
+        $data['magacinIme'] = $this->materijalno_model->getMagacinIme($magacinid);
+         $data['main_content'] = 'materijalno/pecatenje/pecati_stavki_priemnica';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+
+    public function print_stavkiInIspratnica(){
+        $magacinid = $this->input->get('magacinid');
+        $id = $this->input->get('id');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->info_ispratnica($id);
+        //  $klientK = $this->materijalno_model->
+        $data['stavkiI'] = $query;
+        $data['magacinIme'] = $this->materijalno_model->getMagacinIme($magacinid);
+        $data['main_content'] = 'materijalno/pecatenje/pecati_stavki_ispratnica';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+
+
+    public function pecati_povratnica_detali(){
+        $this->load->helper('to_pdf');
+        $this->load->model('materijalno/materijalno_model');
+        $pdfid=$this->input->post('pdfid');
+
+
+        $q = $this->materijalno_model->getPovratnicaDetali($pdfid);
+        // print_r($q); die();
+        $data['q']=$q;
+        $html = $this->load->view('materijalno/pecatenje/pecati_povratnica_detali', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+    }
+
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+}

@@ -1,0 +1,7 @@
+<div id="smensko-planiranje-index" class="sub-menu-tabs">
+    <ul>
+        <li><a href="/index.php/planiranje/nov_plan/planiranje">Планирање</a></li>
+        <li><a href="/index.php/planiranje/nov_plan/raspored_vraboteni">Распоред</a></li>
+        <li><a href="/index.php/planiranje/nov_plan/raspored_denovi">Распоред по денови</a></li>
+    </ul>
+</div>

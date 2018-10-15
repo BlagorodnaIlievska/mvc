@@ -1,0 +1,175 @@
+<div id="edit_faktura_form">
+<?php
+$delete = img(array(
+    'src' => 'images/delete.png',
+    'width' => '15',
+    'height' => '15',
+    'class' => 'delete'
+));
+?>
+<?php echo form_open('izlezni_fakturi/faktura/updateFaktura'); ?>
+<fieldset>
+    <legend>Излезна фактура</legend>
+    <div class="faktura-od-dobavuvac">
+        <div class="f-od-dobavuvac broj">
+            <input type="hidden" class="fakturaid" name="fakturaid" value="<?= $id; ?>">
+            <input type="hidden" class="thisfakturabroj" name="thisfakturabroj" value="<?= $query[0]->broj; ?>">
+            <label>Број :</label><span class="arhivskibroj"><?= $query[0]->broj; ?></span>
+            <label class="broj_lekuvanje">Број на лекување :</label><span class="broj_lekuvanje"><?= $query[0]->broj_lekuvanje; ?></span>
+        </div>
+        <div class="f-od-dobavuvac klient">
+            <label>Пациент:</label>
+            <span class="klient"><?= $query[0]->pacientIme." ".$query[0]->pacientPrezime; ?></span>
+        </div>
+        <div class="f-od-dobavuvac1 datum">
+            <label>Датум :</label>
+            <input type="text" name="datum" class="fakturadatum" value="<?= $query[0]->datum; ?>">
+            <input type="hidden" name="datum-ts" class="fdatum" value="<?= $query[0]->datum; ?>">
+        </div>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>Врска со документи</legend>
+    <div class="vrska-so-dokumenti clearboth">
+        <div class="dodadeni-ispratnici">
+            <?php if(isset($query[0]->vrskadokumenti)): ?>  <span class="dodadeniispratnici"><?= $query[0]->vrskadokumenti; ?></span>
+            <?php else: ?> <span class="dodadeniispratnici"></span>
+            <?php endif; ?>
+            <input type="hidden" class="vrskadokumenti" name="vrskadokumenti" value="<?= $query[0]->vrskadokumenti; ?>">
+            <input type="hidden" class="ispratnici_id" name="ispratnici_id">
+        </div>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>Ставки во документот - детално</legend>
+    <table class="tstavki" border="1" cellspacing="2" cellpadding="2" id="faktura">
+        <thead>
+        <tr>
+            <th>РБ</th>
+            <th>Шифра</th>
+            <th>Ставка</th>
+            <th class='kontodetali hide'>Конто</th>
+            <th>Кол</th>
+            <th>ЕМ</th>
+            <th>Цена</th>
+            <?php if($this->input->get('faktura_za') != 2) { ?><th>Партиципација</th> <?php } ?>
+            <th>Вкупно</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php if(is_array($querydetails)){ ?>
+            <?php $i=1; foreach($querydetails as $detali): ?>
+                <tr class="detali trow">
+                    <td class="number"><?= $i; ?></td>
+                    <td><input type="text" value="<?= $detali->sifra_paket; ?>" class="katbroj" /></td>
+                    <td><input type="text" value="<?= $detali->stavka; ?>" class="stavka" /></td>
+                    <td><input type="text" value="<?= $detali->kolicina; ?>" class="kolicina" /></td>
+                    <td><?= $detali->edMerkaIme; ?></td>
+                    <td><input type="text" value="<?= $detali->cena; ?>" class="bezddv" /></td>
+                <?php if($this->input->get('faktura_za') != 2) { ?><td><input type="text" value="<?= $detali->iznos_participacija; ?>" class="participacija" /></td><?php } ?>
+                    <td><input type="text" value="<?= $detali->cena*$detali->kolicina; ?>" class="vkupno1" /></td>
+                </tr>
+                <?php $i++; ?>
+            <?php endforeach; ?>
+        <?php }; ?>
+        </tbody>
+    </table>
+</fieldset>
+<fieldset class="rok-na-plakanje-novafak">
+    <legend>Информации за плаќање</legend>
+    <div class="roknaplakanje-novafak">
+        <div class="rok-za-plakanje floatleft"><!-- ДА СЕ НАПРАВИ  -->
+            <label>Рок на плаќање</label>
+            <input width="30" type="text" class="rokdenovi" name="rokdenovi" value="<?= $query[0]->rokdenovi; ?>"/>
+            <span>Дена</span>
+        </div>
+        <div class="kraen-datum-novafak floatleft">
+            <label>Краен датум</label>
+            <input width="120" type="text" name="rok" class="rok" value="<?= $query[0]->rok; ?>"  readonly="readonly" disabled="disabled" />
+        </div>
+        <div class="zabeleska-novafak floatleft">
+            <label>Забелешка</label>
+            <textarea  style="overflow-y:scroll;resize: none;" class="zabeleska" name="zabeleska"><?= $query[0]->zabeleska; ?></textarea>
+        </div>
+    </div>
+</fieldset>
+<fieldset class="vkupno-novafak">
+    <legend>Вкупно</legend>
+    <div class="vkupen-iznos-novafak">
+        <table class="tvkupen-iznos-novafak">
+            <tr class="vkupen-iznos">
+                <td class="konto1p hide"></td>
+                <td class="konto2p hide"></td>
+                <td>Вкупен износ на пакети</td>
+                <td class="vkupno-paketi"></td>
+                <td>Ден.</td>
+            </tr>
+            <tr class="presmetana-participacija">
+                <td class="konto1p hide"></td>
+                <td class="konto2p hide"></td>
+                <td>Вкупен износ на пресметана партиципација</td>
+                <td class="vkupno-presmetana-participacija"><?= $query[0]->iznos; ?></td>
+                <td>Ден.</td>
+            </tr>
+            <tr class="naplatena-participacija">
+                <td class="konto1p hide"></td>
+                <td class="konto2p hide"></td>
+                <td>Вкупен износ на наплатена партиципација</td>
+                <td class="vkupno-naplatena-participacija"><?= $query[0]->iznos; ?></td>
+                <td>Ден.</td>
+            </tr>
+            <tr class="vkupno-fzom">
+                <td class="konto1p hide"></td>
+                <td class="konto2p hide"></td>
+                <td>Вкупно за наплата од ФЗОМ</td>
+                <td class="vkupno-naplata-fzom"></td>
+                <td>Ден.</td>
+            </tr>
+        </table>
+    </div>
+    <input type="hidden" class="vkupnose" name="vkupnose" value="<?= $query[0]->vkupno; ?>">
+</fieldset>
+<?php echo form_close(); ?>
+</div>
+
+<div class="if-priem-buttons">
+    <a href="/index.php/print/pdf?view=<?=$print?>" target="_blank">
+        <div class="print"><span>Печати</span></div>
+    </a>
+    <div class="kasa-faktura hide">
+        <button type="button" class="kreirajkasa button"><span>Каса</span></button>
+    </div>
+    <a href="/index.php/print/pdf?view=<?=$print_kasa?>" target="_blank">
+        <div class="hide print printkasa"><span>Печати Каса</span></div>
+    </a>
+</div>
+</div>
+
+<script>
+jQuery(document).ready(function() {
+    var vkupno = 0, cena_stavka = 0, cena=0;
+    jQuery(".tstavki tbody tr").each(function(){
+        cena = jQuery(this).find("input.bezddv").val();
+        cena_stavka = jQuery(this).find("input.vkupno1").val();
+        vkupno = vkupno + 1*cena_stavka;
+        jQuery(this).find("input.bezddv").val(formatnumbermkd(cena));
+        jQuery(this).find("input.vkupno1").val(formatnumbermkd(cena_stavka));
+    });
+    jQuery(".tvkupen-iznos-novafak .vkupno-paketi").html(formatnumbermkd(vkupno));
+    var pres_part = jQuery(".tvkupen-iznos-novafak .vkupno-presmetana-participacija").html();
+    var naplatena_part = jQuery(".tvkupen-iznos-novafak .vkupno-naplatena-participacija").html();
+    jQuery(".tvkupen-iznos-novafak .vkupno-presmetana-participacija").html(formatnumbermkd(pres_part));
+    jQuery(".tvkupen-iznos-novafak .vkupno-naplatena-participacija").html(formatnumbermkd(naplatena_part));
+    jQuery(".tvkupen-iznos-novafak .vkupno-naplata-fzom").html(formatnumbermkd(vkupno-1*pres_part));
+    jQuery(".delete").live("click", function() {
+        var trow = jQuery(this).closest('tr');
+        trow.find("input.brisistavka").val(1);
+        trow.addClass('hiderow');
+    });
+    jQuery('.kreirajkasa').click( function () {
+        var faktura_id = jQuery(".fakturaid").val();
+        destroyparentdialog(jQuery(this));
+        kreirajKasaForma(faktura_id);
+    });
+});
+</script>

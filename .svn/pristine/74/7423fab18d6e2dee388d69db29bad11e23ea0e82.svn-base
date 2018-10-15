@@ -1,0 +1,85 @@
+function nov_dogovor(){
+    var formaction = '/index.php/javni_nabavki/javni_nabavki/nov_dogovor';
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery.ajax({
+        url:formaction,
+        success:function (response) {
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery("." + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+//                width:"auto",
+                width:1024,
+                position:[00, 00],
+                modal:true,
+                dialogClass: 'dialogsotabovi',
+                title:"Нов договор",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/javni_nabavki/javni_nabavki/dogovor_index',
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #dogovor").html(response);
+                }
+            });
+            jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                cache:true,
+                ajaxOptions:{
+                    type:"POST"
+                }
+            });
+        }
+    });
+}
+function dogovori_napolnilista(){
+
+    jQuery.ajax({
+        url:"/index.php/javni_nabavki/javni_nabavki/getDogovori",
+        type:'POST',
+
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            jQuery(".tdogovori tbody tr").removeClass("active");
+            jQuery(".tdogovori tbody").find("tr:gt(1)").remove();
+            var tr = jQuery('.tdogovori tr:last');
+            tr.removeClass('hiderow');
+            var vkupnostavki = response.length;
+            for (var i = 0; i < response.length; i++) {
+
+                var newrow = jQuery(tr).clone().insertAfter(tr);
+                newrow.attr("dogovorid", response[i].id);
+                newrow.find('.brojt').html(response[i].broj_tender);
+                newrow.find('.datumt').html(response[i].datum_tender);
+                newrow.find('.vid').html(response[i].vid_postapka);
+                newrow.find('.brojd').html(response[i].broj_dogovor);
+                newrow.find('.datums').html(response[i].datum_sklucuvanje_dogovor);
+                newrow.find('.datumi').html(response[i].datum_istekuvanje_dogovor);
+                newrow.find('.kl').html(response[i].klient);
+                newrow.find('.zab').html(response[i].zabeleska);
+
+
+
+            }
+            tr.addClass('hiderow');
+
+            jQuery(".tdogovori .vkupnostavki").html(vkupnostavki + " во листа");
+            jQuery(".naslovvleznifakturi .vkupnostavki").html(vkupnostavki);
+            jQuery(".tvleznifakturi").trigger("update");
+            //bind the delete event
+            jQuery('.tdogovori tbody .deletefaktura').click(function() {
+                var trow = jQuery(this).closest('tr');
+                var fakturaid = trow.attr('dogovorid');
+               // delete_vf(fakturaid);
+            });
+            jQuery(".tdogovori tbody .editfaktura").click(function () {
+              //  editfaktura(jQuery(this).parent());
+            });
+
+        }
+    });
+}

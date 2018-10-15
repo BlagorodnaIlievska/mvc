@@ -1,0 +1,230 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Menu extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function index()
+    {
+        $data['main_content'] = 'raporti/index_form';
+        $this->load->view('includes/template', $data);
+    }
+
+    public function pregled()
+    {
+        $this->load->view('raporti/pregled_form');
+    }
+
+    public function analiza_pari()
+    {
+        $this->load->view('raporti/analiza_pari_form');
+    }
+
+    public function analiza_fakturi()
+    {
+        $this->load->view('raporti/analiza_fakturi_form');
+    }
+
+    public function lista_klienti()
+    {
+        $this->load->view('raporti/lista_klienti_form');
+    }
+
+    public function presmetka_ddv()
+    {
+        $this->load->view('raporti/presmetka_ddv_form');
+    }
+
+    public function izberi_klient()
+    {
+        $this->load->view('raporti/izberi_klient_form');
+    }
+
+    public function getKlientData()
+    {
+        $klient = $this->input->post('klient');
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->getKlientData($klient);
+        echo json_encode($query);
+    }
+
+    public function get_sostojba_zirosmetki()
+    {
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->get_sostojba_zirosmetki();
+
+        echo json_encode($query);
+    }
+
+    public function getSostojbaKasa()
+    {
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->getSostojbaKasa();
+        // print_r($query); die();
+        echo json_encode($query);
+    }
+    public function getSostojbaKasi()
+    {
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->getSostojbaKasi();
+       // print_r($query); die();
+        echo json_encode($query);
+    }
+
+    public function getTopKlienti()
+    {
+        $tipid = $this->input->post('tipid');
+        $zsid = $this->input->post('zsid');
+        $konto = $this->input->post('konto');
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->getTopKlienti($tipid, $zsid, $konto);
+        echo json_encode($query);
+    }
+
+    public function get_analiza_grupi()
+    {
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->get_analiza_grupi();
+        echo json_encode($query);
+    }
+
+    public function getAnalizaGrupi()
+    {
+        $zsid = $this->input->post('zsid');
+        $klientid = $this->input->post('klientid');
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->getAnalizaGrupi($zsid, $klientid);
+        echo json_encode($query);
+    }
+
+    public function get_analiza_fakturi()
+    {
+        $klientid = $this->input->post('klient');
+        $pogled = $this->input->post('pogled');
+        $fakturi = $this->input->post('fakturi');
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->get_analiza_fakturi($klientid, $pogled, $fakturi);
+        echo json_encode($query);
+    }
+
+    public function get_analiza_fakturi2()
+    {
+        $klientid = $this->input->post('klient');
+        $pogled = $this->input->post('pogled');
+        $fakturi = $this->input->post('fakturi');
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->get_analiza_fakturi2($klientid, $pogled, $fakturi);
+        echo json_encode($query);
+    }
+
+    public function getStavkaByTipID()
+    {
+        $zsid = $this->input->post('zsid');
+        $klientid = $this->input->post('klientid');
+        $tipID = $this->input->post('tipID');
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->getStavkaByTipID($tipID, $zsid, $klientid);
+        echo json_encode($query);
+    }
+
+    public function getStavkaByKlientID()
+    {
+        $klientID = $this->input->post('klientID');
+        $tipid = $this->input->post('tipid');
+        $zsid = $this->input->post('zsid');
+        $konto = $this->input->post('konto');
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->getStavkaByKlientID($klientID, $tipid, $zsid, $konto);
+        echo json_encode($query);
+    }
+
+    public function getPresmetkaDDV()
+    {
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->getPresmetkaDDV();
+        echo json_encode($query);
+    }
+    public function pecati_lista(){
+        $this->load->helper('to_pdf');
+        $pogled1=$this->input->post('pdfpogled1id');
+        $pogled2=$this->input->post('pdfpogled2id');
+        $tip=$this->input->post('pdftipid');
+
+        $this->load->model('raporti/raporti_model');
+        $q = $this->raporti_model->getTopKlienti($pogled1,$pogled2,$tip);
+
+        $data['q']=$q;
+        // print_r($q); die();
+        $html = $this->load->view('raporti/pecatenje/pecati_top_klienti', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+    }
+    public function pecati_lista_uplati_isplati(){
+        $this->load->helper('to_pdf');
+        $klientid=$this->input->post('pdfklientid');
+        $prihodrashod=$this->input->post('pdfprihodrashodid');
+        $smetkakasa=$this->input->post('pdfsmetkakasaid');
+        $tip=$this->input->post('pdftipid');
+
+        $this->load->model('raporti/raporti_model');
+        $q = $this->raporti_model->getStavkaByKlientID($klientid, $prihodrashod, $smetkakasa, $tip);
+
+        $data['q']=$q;
+        // print_r($q); die();
+        $html = $this->load->view('raporti/pecatenje/pecati_lista_uplati_isplati', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+    }
+    public function izvestaiNasDolg()
+    {
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->izvestaiNasDolg();
+        echo json_encode($query);
+    }
+    public function izvestaiDolznici()
+    {
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->izvestaiDolznici();
+        echo json_encode($query);
+    }
+    public function pecati_site_zirosmetki(){
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->get_sostojba_zirosmetki();
+        $data['zirosmetki'] = $query;
+        $data['main_content'] = 'raporti/pecatenje/pecati_sostojba_zirosmetki';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+}
+    public function pecati_site_dolznici(){
+$this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->izvestaiDolznici();
+        $data['dolz'] = $query;
+        $data['main_content'] = 'raporti/pecatenje/pecati_sostojba_dolznici';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+
+    }
+    public function pecati_site_gotovini(){
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->getSostojbaKasi();
+        $data['gotovini'] = $query;
+        $data['main_content'] = 'raporti/pecatenje/pecati_sostojba_gotovina';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+    public function pecati_site_nasidolgovi(){
+        $this->load->model('raporti/raporti_model');
+        $query = $this->raporti_model->izvestaiNasDolg();
+        $data['nasidolgovi'] = $query;
+        $data['main_content'] = 'raporti/pecatenje/pecati_sostojba_nasdolg';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+}

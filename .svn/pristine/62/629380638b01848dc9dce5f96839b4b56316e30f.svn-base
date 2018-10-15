@@ -1,0 +1,167 @@
+<div class="izmeni-popis-form">
+    <form action="/index.php/materijalno/popis/update_popis" method="post">
+        <fieldset>
+        <legend>Нов попис</legend>
+        <div class="izmenipopisform">
+            <input type="hidden" class="popis_id" name="id" value="<?php echo $popis->id  ?>"/>
+            <span>Датум на попис: </span><input type="text" class="datumpopis" name="datum_popis" value="<?= $popis->datum_popis ?>" /><br/>
+<!--            <span>тест: </span><input type="text" class="test" name="test" value="--><?//= $popis->datum_popis ?><!--" /><br/>-->
+            <div class="magacin-pretsedatel">
+            <span class="spanmagacin">Магацин: </span>
+            <?= form_dropdown('magacin_id', $magacini, $popis->magacin_id, 'class="magacin_id"'); ?>
+            <span class="spanpretsedatel">Претседател на комисија: </span>
+            <?= form_dropdown('pretsedatel_komisija', $vraboteni, $popis->pretsedatel_komisija, 'class="pretsedatel_komisija"'); ?>
+            </div>
+            <div class="clenovipopis">
+<!--               --><?//= print_r($stavki); ?>
+                <p class="naslovclenovipopis" > ( <span class="vkupnostavki">0</span> ) <span class="status">Членови на попис</span></p>
+                <div class="predtabela">
+                    <table class="tabela-clenovi-popis" border="1" cellspacing="2" cellpadding="2">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>РБ</th>
+                            <th>Име и презиме</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php if(is_array($clenovi)){ ?>
+                        <?php $i=1; foreach($clenovi as $clen): ?>
+                        <tr>
+                            <td class="deleteclen"><a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a></td>
+                            <td class="redenbroj"><?= $i; ?></td>
+                            <td class="clenovi">
+                                <select class="clenovi-dropdown" name="clenovi_popis[<?= $i; ?>][vraboten_id]">
+                                    <option value="<?= $clen->vrabotenID ?>"><?= $clen->vrabotenIme." ".$clen->vrabotenPrezime; ?></option>
+                                </select>
+                            </td>
+                            <td class="dbid hide"><input type="hidden" value="<?= $clen->id; ?>" class="dbid" name="clenovi_popis[<?= $i; ?>][id]" /></td>
+                        </tr>
+                        <?php $i++; ?>
+                        <?php endforeach; ?>
+                        <?php }; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="button dodadi-clen-popis"><span>Додади член</span></button>
+            </div>
+        </div>
+            <div class="stavkipopistabeladiv">
+                <p class="naslovstavkipopis" > ( <span class="vkupnostavki">0</span> ) Ставки за попис</p>
+                <div class="predtabela">
+                    <table class="tabela-stavki-popis" border="1" cellspacing="2" cellpadding="2">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>РБ</th>
+                            <th>Шифра</th>
+                            <th>Артикл</th>
+                            <th>Ед. мерка</th>
+                            <th>Кол.</th>
+                            <th>Средна цена</th>
+                            <th>Забелешка</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php if(is_array($stavki)){ ?>
+                        <?php $i=1; foreach($stavki as $stavka): ?>
+                            <tr>
+                                <td>
+                                    <a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>
+                                    <a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>
+                                </td>
+                                <td class="redenbr"><?= $i; ?></td>
+                                <td class="sifra">
+                                    <select class="sifra-dropdown">
+                                    <?php foreach($sifri as $sifra): ?>
+                                        <option value="<?= $sifra->sifra ?>" <?= ( $sifra->SID == $stavka->artikl_id ? "selected" : "" )?>><?= $sifra->sifra; ?></option>
+                                    <?php endforeach; ?>
+                                    </select>
+                                </td>
+                                <td class="artikli">
+                                    <select class="artikli-dropdown">
+                                    <?php foreach($artikli as $artikal): ?>
+                                        <option value="<?= $artikal->SID ?>" <?= ( $artikal->SID == $stavka->artikl_id ? "selected" : "" )?>><?= $artikal->S1Ime; ?></option>
+                                    <?php endforeach; ?>
+                                    </select>
+                                </td>
+                                <td class="mera"><?= $stavka->edMerkaIme; ?></td>
+                                <td class="kolicina"><input type="text" value="<?= $stavka->kolicina; ?>" class="kolicina" name="stavka_popis[<?= $i; ?>][kolicina]" /></td>
+                                <td class="sredna_cena"><input type="text" value="<?= $stavka->sredna_cena; ?>" class="sredna_cena" name="stavka_popis[<?= $i; ?>][sredna_cena]" /></td>
+                                <td class="zabeleska"><input type="text" value="<?= $stavka->zabeleska; ?>" class="zabeleska" name="stavka_popis[<?= $i; ?>][zabeleska]" /></td>
+                                <td class="artikl_id hide"><input type="hidden" value="<?= $stavka->artikl_id; ?>" class="artikl_id" name="stavka_popis[<?= $i; ?>][artikl_id]" /></td>
+                                <td class="edmerka_id hide"><input type="hidden" value="<?= $stavka->mera; ?>" class="edmerka_id" name="stavka_popis[<?= $i; ?>][mera]" /></td>
+                                <td class="dbid hide"><input type="hidden" value="<?= $stavka->id; ?>" class="dbid" name="stavka_popis[<?= $i; ?>][id]" /></td>
+                            </tr>
+                            <?php $i++; ?>
+                        <?php endforeach; ?>
+                        <?php }; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="popis-novastavkab">
+                <button type="button" class="button novastavkapopisbutton" onclick="nova_stavka_popis()"><span>Нова ставка</span></button>
+            </div>
+        </fieldset>
+        <div class="kreirajnovpopis floatright">
+        <button type="button" class="button snimi-forma" izvrsi="popis_polnilista()" poraka_uspesno="Пописот е успешно изменет"
+                poraka_neuspesno="Грешка при измена на попис">
+                <span>Сними</span></button>
+        </div>
+    </form>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery('.magacin_id, .pretsedatel_komisija').combobox();
+        jQuery('.artikli-dropdown').combobox();
+        jQuery('.sifra-dropdown').combobox();
+        jQuery('.clenovi-dropdown').combobox();
+        jQuery('.datumpopis').datepicker();
+//        jQuery(".test").focus();
+//        edit_clenovi_popis(jQuery(".popis_id").val());
+//        edit_stavki_popis(jQuery(".popis_id").val());
+
+        jQuery(".dodadi-clen-popis").click(function () {
+            var redovi = jQuery(".tabela-clenovi-popis tbody tr").length;
+            redovi = 1 * redovi + 1;
+            jQuery(".tabela-clenovi-popis tbody").append('<tr>' +
+                '<td class="deleteclen">' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' + '</td>' +
+                '<td class="redenbroj">' + redovi + '</td>' +
+                '<td class="clenovi"><select class="clenovi-dropdown" name="clenovi_popis[' + redovi + '][vraboten_id]"></select></td>' +
+                '</tr>');
+            jQuery.ajax({
+                url:  "/index.php/materijalno/popis/vraboteni_dropdown",
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    for(var i = 0; i < response.length;i++)
+                    {
+                        jQuery('.tabela-clenovi-popis tr:last .clenovi-dropdown').append('<option value="'+response[i].id+'">'+response[i].ime+" "+response[i].prezime+'</option>')
+                    }
+                    jQuery('.tabela-clenovi-popis tr:last .clenovi-dropdown').val();
+                }
+            });
+            jQuery('.clenovi-dropdown').combobox();
+        });
+        jQuery('.tabela-clenovi-popis tbody tr .deletedijagnoza').live("click", function () {
+            var trow = jQuery(this).closest('tr');
+            trow.remove();
+            var i = 1;
+            jQuery('.tabela-clenovi-popis tbody tr').each(function () {
+                jQuery(this).find('.redenbroj').html(i);
+                i = 1 * i + 1;
+            });
+        });
+        jQuery(".tabela-stavki-popis tbody .artikli-dropdown").live("change", function(){
+            var elem = jQuery(this);
+            var stavka = jQuery(this).val();
+            popis_getPodatociArtiklByStavka(stavka, elem);
+        });
+        jQuery(".tabela-stavki-popis tbody .sifra-dropdown").live("change", function(){
+            var elem = jQuery(this);
+            var sifra = jQuery(this).val();
+            popis_getPodatociArtiklBySifra(sifra, elem);
+        });
+    });
+</script >

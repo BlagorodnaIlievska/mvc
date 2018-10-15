@@ -1,0 +1,195 @@
+<?php
+?>
+<div class="povrzi-dogovor">
+
+
+<fieldset>
+    <legend>Договори</legend>
+    <div class="tabela">
+        <table class="vnesenidogovori" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th></th>
+
+                <th>Број на тендер</th>
+                <th>Датум на тендер</th>
+                <th>Вид постапка</th>
+                <th>Број на дог.</th>
+                <th>Датум на скл. на дог.</th>
+                <th>Датум на ист. на дог.</th>
+                <th>Клиент</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='hiderow trow'>
+                <td> <input type='checkbox' class='povrzidog' name='povrzi' /></td>
+
+                <td class="brojt"></td>
+                <td class="datumt"></td>
+                <td class="vid"></td>
+                <td class="brojd"></td>
+                <td class="datumd"></td>
+                <td class="datumi"></td>
+                <td class="klient"></td>
+                <td class="id hide"></td>
+            </tr>
+            </tbody>
+        </table>
+        <button class="dodadidogovor button" ><span>Копирај и поврзи</span></button>
+        <input type="hidden" class="klientdogovor" value="<?php echo $klient;?>">
+        <input type="hidden" class="dogovorid" value="<?php echo $dogovorid;?>">
+    </div>
+
+</fieldset>
+    <fieldset>
+        <legend>Ставки во договорот - детално</legend>
+        <div class="stavkadetail">
+            <table class="tbaranjedetail" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th>РБ</th>
+                    <th>Шифра</th>
+                    <th>Ставка</th>
+                    <th>Кол.</th>
+                    <th>Цена</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr class='hiderow'>
+                    <td class='number'></td>
+                    <td class='sifra'></td>
+                    <td class='stavka'></td>
+                    <td class='kolicina'></td>
+                    <td class='cena'></td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+</div>
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.tbaranjedetail').tablesorter();
+        jQuery('.vnesenidogovori').tablesorter();
+        var klient=jQuery('.klientdogovor').val();
+        var dogovorid=jQuery('.dogovorid').val();
+        var data={klient:klient, dogovorid:dogovorid}
+        jQuery.ajax({
+            url: "/index.php/javni_nabavki/javni_nabavki/getDogovori",
+            type: 'POST',
+            data:data,
+            dataType: 'json',
+            success: function(response) {
+                //console.log(response);
+                if(response)
+                {
+                    jQuery(".vnesenidogovori").find("tr:gt(1)").remove();
+                    var tr = jQuery('.vnesenidogovori tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('.id').text(response[i].id);
+                        newrow.find('.brojt').text(response[i].broj_tender);
+                        newrow.find('.datumt').text(response[i].datum_tender);
+                        newrow.find('.vid').text(response[i].vid_postapka);
+                        newrow.find('.brojd').text(response[i].broj_dogovor);
+                        newrow.find('.datums').text(response[i].datum_sklucuvanje_dogovor);
+                        newrow.find('.datumi').text(response[i].datum_istekuvanje_dogovor);
+                        newrow.find('.klient').text(response[i].klient);
+
+                    }
+
+                    tr.addClass('hiderow');
+                    jQuery(".vnesenidogovori").trigger("update");
+                }
+            }
+        });
+        jQuery(".vnesenidogovori").delegate("tr.trow", "click", function(){
+            jQuery(".vnesenidogovori .trow").removeClass("active");
+            jQuery(this).addClass('active');
+            var id = jQuery(this).find('.id').text();
+            //jQuery('.pdfid').val(dbid);
+            var data = {
+                id: id
+            }
+           /// console.log(data);
+            jQuery.ajax({
+                url: "/index.php/javni_nabavki/javni_nabavki/getDogovorDetali",
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+
+                    jQuery(".tbaranjedetail").find("tr:gt(1)").remove();
+                    var tr = jQuery('.tbaranjedetail tr:last');
+                    tr.removeClass('hiderow');
+                    var num = response.length;
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+
+                        newrow.find('.number').text("." + num);
+                        newrow.find('.sifra').text(response[i].artikl_id);
+
+                        newrow.find('.stavka').text(response[i].stavka);
+                        newrow.find('.kolicina').text(response[i].kolicina);
+                        newrow.find('.cena').text(response[i].cena_ddv/response[i].kolicina);
+
+                        num--;
+                    }
+                    tr.addClass('hiderow');
+                    jQuery(".tbaranjedetail").trigger("update");
+                }
+            });
+        });
+        jQuery(".dodadidogovor").live("click", function(){
+            var ovakopce = jQuery(this);
+
+
+            jQuery(".vnesenidogovori tr").each(function() {
+                var checked = jQuery(this).find("input.povrzidog").is(':checked');
+                if(checked)
+                {
+
+                    var id = jQuery(this).find('.id').text();
+                    var data = {
+                        id: id
+                    }
+                    jQuery.ajax({
+                        url: "/index.php/javni_nabavki/javni_nabavki/getDogovorDetali",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        success: function(response) {
+                            var num=1;
+                            for ( var i = 0; i < response.length; i++ ) {
+                                jQuery(".stavki-baranje tbody").append(('<tr class="detali" id="' + response[i].id + '">' +
+
+                                        '<td><input type="text" style="width: 30px;" name="rb" value=" '+num+' " ></td>' +
+                                        '<td><input type="text" name="sifra" value="'+response[i].artikl_id+'" ></td>' +
+                                        '<td><input type="text" name="stavka" value="'+response[i].stavka+'" ></td>' +
+
+
+                                        '<td><input type="text" name="kolicinad"  class="kolicinad" style="width: 80px" value=" '+response[i].kolicina+' "></td>' +
+                                        '<td><input type="text" name="kolicinap"  class="kolicinap" style="width: 80px" value=""></td>' +
+                                        '<td><input type="text" name="kolicinao" class="kolicinao" style="width: 80px" value=""></td>' +
+                                        '<td><input type="text" name="artikl_id" class="hideartikl hide" style="width: 80px" value="'+response[i].SID+'"></td>' +
+                                        '</tr>'
+                                        ));
+                                num++;
+
+                            }
+                        }
+                    });
+                    jQuery(this).remove();
+                    jQuery(".tstavkadetail").find("tr:gt(1)").remove();
+                }
+            });
+
+            destroyparentdialog(ovakopce);
+        });
+    });
+
+</script>

@@ -1,0 +1,144 @@
+
+function klient_nov() {
+
+    formurl = "/index.php/podatoci/klienti/nov";
+    title = "Нов клиент";
+    nov(formurl,title)
+
+}
+
+
+function klient_popolnilista() {
+    var formurl = "/index.php/podatoci/klienti/popolnilista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            jQuery(".tabela-klientlista tbody").html('');
+
+            jQuery.each(response, function (index, item) {
+                //  console.log(item);
+
+                jQuery(".tabela-klientlista tbody").append(('<tr firmaID="' + item.firmaID + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '</td>' +
+                    '<td>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                    '</td>' +
+                    '<td>' + item.ime + '</td>' +
+                    '<td class="text-right">' + item.sifra + '</td>' +
+                    '<td>' + item.adresa + '</td>' +
+                    '<td>' + item.gradID + '</td>' +
+                    '<td>' + item.phone1 + '</td>' +
+                    '<td>' + item.fax + '</td>' +
+                    '<td>' + item.email + '</td>' +
+                    '<td>' + item.kontakt + '</td>' +
+                    '</tr>'
+                    ));
+            });
+            jQuery(".tabela-klientlista").trigger("update");
+
+
+        }
+    });
+}
+
+
+function klient_izmeni(klientid) {
+    var formurl = "/index.php/podatoci/klienti/izmeni";
+    var data = {  firmaID:klientid  }
+    jQuery.ajax({
+        url:formurl,
+        type:'POST',
+        data:data,
+        success:function (response) {
+
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени клиент",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+
+}
+function filtriraj_po_klient(klient){
+
+    var formurl = "/index.php/podatoci/klienti/filtriraj_po_klient";
+    var data= { klient:klient}
+
+    jQuery.ajax({
+        url:formurl,
+        type:'POST',
+        data:data,
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            jQuery(".tabela-klientlista tbody").html('');
+
+            jQuery.each(response, function (index, item) {
+                //  console.log(item);
+
+                jQuery(".tabela-klientlista tbody").append(('<tr firmaID="' + item.firmaID + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '</td>' +
+                    '<td>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                    '</td>' +
+                    '<td>' + item.ime + '</td>' +
+                    '<td class="text-right">' + item.sifra + '</td>' +
+                    '<td>' + item.adresa + '</td>' +
+                    '<td>' + item.gradID + '</td>' +
+                    '<td>' + item.phone1 + '</td>' +
+                    '<td>' + item.fax + '</td>' +
+                    '<td>' + item.email + '</td>' +
+                    '<td>' + item.kontakt + '</td>' +
+                    '</tr>'
+                    ));
+            });
+            jQuery(".tabela-klientlista").trigger("update");
+        }
+    });
+}
+
+
+function klient_delete(klientid){
+    var r=confirm("Избриши клиент");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/podatoci/klienti/delete_klient";
+            var data = {  firmaID:klientid  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    klient_popolnilista();
+                }
+            });
+
+        }
+    }
+
+}
+

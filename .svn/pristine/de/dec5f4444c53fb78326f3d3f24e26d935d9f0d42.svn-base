@@ -1,0 +1,545 @@
+<?php  if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class Upati extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('upati/upati_model');
+        $this->load->model('pacienti/pacienti_pomosen_model');
+    }
+
+    public function lista()
+    {
+        $this->load->view('upati/lista');
+    }
+    public function novo_konz_mislenje(){
+        $data['tip'] = 'konzolijarno_mislenje';
+        $data['priem_id'] = $this->input->post('priem_id');
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/novo_konz_mislenje', $data);
+    }
+
+    public function nov_interklinicki()
+    {
+        $data['tip'] = 'interklinicki';
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nov_interklinicki', $data);
+    }
+
+    public function nov_inter_bolnicki(){
+        //$data['main_content'] = 'kartici/nov_inter_bolnickiu';
+        $data['tip'] = 'interbolnicki';
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nov_interbolnickiu', $data);
+    }
+
+    public function nov_inter_oddelenski_upat(){
+        //$data['main_content'] = 'kartici/nov_inter_oddelenski';
+        $data['tip'] = 'interoddelenski';
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nov_interoddelenski', $data);
+    }
+
+    public function print_interklinicki_upat()
+    {
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getUpatVrednosti($id);
+
+        $data['main_content'] = 'upati/nov_interklinicki';
+        $data['priem_id'] = $values_data['priem_id'];
+        $data['print'] = 1;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+
+    public function print_interbolnicki_upat()
+    {
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getUpatVrednosti($id);
+
+        $data['main_content'] = 'upati/print_interbolnicki';
+        $data['priem_id'] = $values_data['priem_id'];
+        $data['print'] = 1;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+    public function print_interoddelenski_upat()
+    {
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getUpatVrednosti($id);
+
+        $data['main_content'] = 'upati/print_interoddelenski';
+        $data['priem_id'] = $values_data['priem_id'];
+        $data['print'] = 1;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+    public function getUpati() {
+        $priem_id=$this->input->post("id");
+        $upati=$this->upati_model->getUpati($priem_id);
+        echo json_encode($upati);
+
+    }
+    public function getRecepti() {
+        $priem_id=$this->input->post("id");
+        $recepti=$this->upati_model->getRecepti($priem_id);
+        echo json_encode($recepti);
+
+    }
+    public function getIzjavi() {
+        $priem_id=$this->input->post("id");
+        $izjavi=$this->upati_model->getIzjavi($priem_id);
+        echo json_encode($izjavi);
+
+    }
+    public function getObrasci() {
+        $priem_id=$this->input->post("id");
+        $obrasci=$this->upati_model->getObrasci($priem_id);
+        echo json_encode($obrasci);
+
+    }
+    public function create_obrazec(){
+        $data = $this->input->post();
+        $query = $this->upati_model->create_obrazec($data);
+        echo $query;
+    }
+    public function create_upat()
+    {
+        $data = $this->input->post();
+        $query = $this->upati_model->create_upat($data);
+        echo $query;
+    }
+    public function nov_radiodijagnosticki()
+    {
+        $data['tip'] = 'interklinicki';
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nov_radiodijagnostika', $data);
+    }
+
+    public function print_radiodijagnosticki_naod()
+    {
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getUpatVrednosti($id);
+
+        $data['main_content'] = 'upati/nov_radiodijagnosticki_naod';
+        $data['priem_id'] = $values_data['priem_id'];
+        $data['print'] = 1;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+    public function print_radiodijagnostika_upat()
+    {
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getUpatVrednosti($id);
+
+        $data['main_content'] = 'upati/nov_radiodijagnostika';
+        $data['priem_id'] = $values_data['priem_id'];
+        $data['print'] = 1;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+    public function nov_radiodijagnosticki_naod()
+    {
+        $data['tip'] = 'interklinicki';
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nov_radiodijagnosticki_naod', $data);
+    }
+
+    public function nov_laboratoriski_upat()
+    {
+        $data['tip'] = 'interklinicki';
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nov_laboratoriski_upat', $data);
+    }
+
+    public function print_konzilijarnomislenje_upat()
+    {
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getUpatVrednosti($id);
+
+        $data['main_content'] = 'upati/print_konz_mislenje';
+        $data['priem_id'] = $values_data['priem_id'];
+        $data['print'] = 1;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+    public function print_laboratoriski_upat()
+    {
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getUpatVrednosti($id);
+
+        $data['main_content'] = 'upati/nov_laboratoriski_upat';
+        $data['priem_id'] = $values_data['priem_id'];
+        $data['print'] = 1;
+        $html=$this->load->view('includes/print_template', $data,true);
+         echo bis_fill_input_values($html,$values_data);
+    }
+
+    public function nov_laboratoriski_naod()
+    {
+        $data['tip'] = 'interklinicki';
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nov_laboratoriski_naod', $data);
+    }
+
+    public function print_laboratoriski_naod()
+    {
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getUpatVrednosti($id);
+
+        $data['main_content'] = 'upati/nov_laboratoriski_naod';
+        $data['priem_id'] = $values_data['priem_id'];
+        $data['print'] = 1;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+
+    public function nov_rezultat_biohemija()
+    {
+        $data['tip'] = 'interklinicki';
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nov_rezultat_biohemija', $data);
+    }
+
+    public function print_rezultat_biohemija()
+    {
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getBiohemiskaAnalizaVrednosti($id);
+
+        $data['main_content'] = 'upati/nov_rezultat_biohemija';
+        $data['priem_id'] = $values_data['priem_id'];
+        $data['print'] = 1;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+
+    public function nov_bolnicki_upat()
+    {
+        $data['tip'] = 'interklinicki';
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nov_bolnicki_upat', $data);
+    }
+
+    public function nov_obrazecc(){
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nov_obrazecc', $data);
+    }
+
+    public function print_bolnicki_upat()
+    {
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getUpatVrednosti($id);
+
+        $data['main_content'] = 'upati/nov_bolnicki_upat';
+        $data['priem_id'] = $values_data['priem_id'];
+        $data['print'] = 1;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+
+    public function print_potvrda_za_smrt()
+    {
+        $id=$this->input->get("id");
+        $values_data=(array)$this->upati_model->getPotvrdaZaSmrtVrednosti($id);
+//        bis_debug($values_data, "data");
+
+        $data['main_content'] = 'upati/print_potvrda_za_smrt';
+        $data['priem_id'] = $values_data['priem_id'];
+        $data['print'] = 1;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+
+    public function nova_potvrda_za_smrt()
+    {
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nova_potvrda_za_smrt', $data);
+    }
+
+    public function create_potvrda_za_smrt()
+    {
+        $data = $this->input->post();
+        $query = $this->upati_model->create_potvrda_za_smrt($data);
+        echo $query;
+    }
+
+    public function getPotvrdaZaSmrt() {
+        $priem_id=$this->input->post("id");
+        $upati=$this->upati_model->getPotvrdaZaSmrt($priem_id);
+        echo json_encode($upati);
+    }
+
+    public function getBiohemiskiAnalizi() {
+        $priem_id=$this->input->post("id");
+        $upati=$this->upati_model->getBiohemiskiAnalizi($priem_id);
+        echo json_encode($upati);
+    }
+
+    public function novo_trebuvanje_za_krv()
+    {
+        $data['priem_id'] = $this->input->post("priem_id");
+        $this->load->view('upati/novo_trebuvanje_za_krv', $data);
+    }
+
+    public function create_trebuvanje_za_krv()
+    {
+        $data = $this->input->post();
+        $this->upati_model->create_trebuvanje_za_krv($data);
+        echo "ok";
+    }
+    public function create_biohemiska_analiza()
+    {
+        $data = $this->input->post();
+        $query = $this->upati_model->create_biohemiska_analiza($data);
+        echo $query;
+    }
+    public function print_otpusna_lista()
+    {
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getOtpusnaListaVrednosti($id);
+//        bis_debug($values_data, "data");
+
+        $data['main_content'] = 'upati/nova_otpusna_lista';
+        $data['priem_id'] = $values_data['priem_id'];
+        $data['print'] = 1;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+    public function nova_otpusna_lista()
+    {
+        $data['tip'] = 'interklinicki';
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nova_otpusna_lista', $data);
+    }
+
+    public function create_otpusna_lista()
+    {
+        $data = $this->input->post();
+        $query = $this->upati_model->create_otpusna_lista($data);
+        echo $query;
+    }
+    public function getOtpusnaLista() {
+        $priem_id=$this->input->post("id");
+        $upati=$this->upati_model->getOtpusnaLista($priem_id);
+        echo json_encode($upati);
+    }
+    public function getZapisZapriem() {
+        $priem_id=$this->input->post("id");
+        $upati=$this->upati_model->getZapisZapriem($priem_id);
+        echo json_encode($upati);
+    }
+    public function nova_mrtovecka_pridruznica()
+    {
+        $data['priem_id'] = $this->input->post("priem_id");
+        $this->load->view('upati/nova_mrtovecka_pridruznica', $data);
+    }
+
+    public function create_mrtovecka_pridruznica()
+    {
+        $data = $this->input->post();
+        $this->upati_model->create_mrtovecka_pridruznica($data);
+        echo "ok";
+    }
+
+    public function nova_pokana_za_konzilijaren_pregled()
+    {
+        $data['priem_id'] = $this->input->post("priem_id");
+        $this->load->view('upati/nova_pokana_za_konzilijaren_pregled', $data);
+    }
+
+    public function create_pokana_za_konzilijaren_pregled()
+    {
+        $data = $this->input->post();
+        $query = $this->upati_model->create_pokana_za_konzilijaren_pregled($data);
+        echo $query;
+    }
+
+    public function nov_zapis_za_priem(){
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nov_zapis_za_priem', $data);
+    }
+    public function print_zapis_za_priem(){
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getZapisZaPriemVrednosti($id);
+        $data['main_content'] = 'upati/nov_zapis_za_priem';
+        $data['print'] = 1;
+        if($values_data['priem_id'] != false){
+            $data['priem_id'] = $values_data['priem_id'];
+        }else
+            $data['priem_id'] = 0;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+
+    public function nova_izjava(){
+        $this->load->model('pacienti/pacienti_pomosen_model');
+        $dok_id = $this->input->post("dok_id");
+        $izjava = $this->pacienti_pomosen_model->getIzjavaDetali($dok_id);
+        bis_debug($izjava, "izjava");
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $data['izjava'] = $izjava;
+        $this->load->view('upati/nova_izjava', $data);
+    }
+
+    public function nova_izjava_soglasnost(){
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nova_izjava_soglasnost', $data);
+    }
+
+    public function create_izjava(){
+        $data = $this->input->post();
+        $query = $this->upati_model->create_izjava($data);
+        echo $query;
+    }
+
+    public function create_izjava_soglasnost(){
+        $data = $this->input->post();
+        $query = $this->upati_model->create_izjava_soglasnost($data);
+        echo $query;
+    }
+
+    public function nova_recepta_stranski_osiguranik(){
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nova_recepta', $data);
+    }
+
+    public function nova_recepta_obicna(){
+        $data['priem_id'] = $this->input->post("priem_id");
+        $data['print'] = $this->input->post("print");
+        $this->load->view('upati/nova_recepta_obicna', $data);
+    }
+
+    public function create_recepta_stranski_osig(){
+        $data = $this->input->post();
+        $query = $this->upati_model->create_recepta_stranski_osig($data);
+        echo $query;
+    }
+
+    public function create_recepta_obicna(){
+    $data = $this->input->post();
+        $query = $this->upati_model->create_recepta_obicna($data);
+        echo $query;
+    }
+
+    public function create_zapis_za_priem()
+    {
+        $data = $this->input->post();
+//        bis_debug($data, "zapis");
+        $query = $this->upati_model->create_zapis_za_priem($data);
+        echo $query;
+    }
+
+    public function print_obrazec_c()
+    {
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getObrazecVrednosti($id);
+
+        $data['main_content'] = 'upati/print_obrazec_s';
+        $data['priem_id'] = $values_data['priem_id'];
+        $data['print'] = 1;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+    public function print_izjava(){
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getIzjaviVrednosti($id);
+        $data['main_content'] = 'upati/nova_izjava';
+        $data['print'] = 1;
+        if($values_data['priem_id'] != false){
+            $data['priem_id'] = $values_data['priem_id'];
+        }else
+            $data['priem_id'] = 0;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+    public function print_izjava_soglasnost(){
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getIzjaviVrednosti($id);
+        $data['main_content'] = 'upati/nova_izjava_soglasnost';
+        $data['print'] = 1;
+        if($values_data['priem_id'] != false){
+            $data['priem_id'] = $values_data['priem_id'];
+        }else
+            $data['priem_id'] = 0;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+    public function print_recepta_stranski()
+    {
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getReceptiVrednosti($id);
+
+        $data['main_content'] = 'upati/print_nova_recepta';
+        $data['priem_id'] = $values_data['priem_id'];
+        $data['print'] = 1;
+        $html=$this->load->view('includes/print_template_recepta', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+    public function print_recepta_obicna()
+    {
+        $id=$this->input->get("id");
+        $values_data=(array)$this->pacienti_pomosen_model->getReceptiVrednosti($id);
+
+        $data['main_content'] = 'upati/print_recepta_obicna';
+        $data['priem_id'] = $values_data['priem_id'];
+        $data['print'] = 1;
+        $html=$this->load->view('includes/print_template_recepta', $data,true);
+        echo bis_fill_input_values($html,$values_data);
+    }
+    public function delete_upat() {
+        $id = $this->input->post("id");
+        $query = $this->upati_model->delete_upat($id);
+        echo json_encode($query);
+    }
+    public function delete_potvrda_za_smrt() {
+        $id = $this->input->post("id");
+        $query = $this->upati_model->delete_potvrda_za_smrt($id);
+        echo json_encode($query);
+    }
+    public function delete_otpusna_lista() {
+        $id = $this->input->post("id");
+        $query = $this->upati_model->delete_otpusna_lista($id);
+        echo json_encode($query);
+    }
+    public function delete_rezultat_biohemija() {
+        $id = $this->input->post("id");
+        $query = $this->upati_model->delete_rezultat_biohemija($id);
+        echo json_encode($query);
+    }
+    public function delete_izjava() {
+        $id = $this->input->post("id");
+        $query = $this->upati_model->delete_izjava($id);
+        echo json_encode($query);
+    }
+    public function delete_recepta() {
+        $id = $this->input->post("id");
+        $query = $this->upati_model->delete_recepta($id);
+        echo json_encode($query);
+    }
+    public function delete_obrazec() {
+        $id = $this->input->post("id");
+        $query = $this->upati_model->delete_obrazec($id);
+        echo json_encode($query);
+    }
+}
+

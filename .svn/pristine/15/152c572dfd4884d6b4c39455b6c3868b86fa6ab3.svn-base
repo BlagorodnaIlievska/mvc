@@ -1,0 +1,62 @@
+function vraboteni_popolnilista() {
+
+    formurl="/index.php/vraboteni/vraboteni/popolnilista";
+    table_class= [".vraboteni-tabela"];
+    items=["ime","prezime","adresa","embg"] ;
+
+    popolni_lista(formurl,table_class,items)
+}
+
+function vraboteni_nov() {
+    formurl = "/index.php/vraboteni/vraboteni/new_vraboten";
+    title = "Нов вработен";
+    nov(formurl, title)
+}
+
+function vraboteni_izmeni(id) {
+
+    formurl="/index.php/vraboteni/vraboteni/edit_vraboten";
+    title="Измени вработен";
+
+    izmeni(id,formurl,title)
+}
+
+function vraboteni_delete(id){
+
+    title="Избриши вработен";
+    formurl="/index.php/vraboteni/vraboteni/delete_vraboten";
+    lista_na="vraboteni";
+
+    brisi(id,title,formurl,lista_na);
+}
+function nov_vraboten(){
+    var formurl = "/index.php/covecki_resursi/covecki/nov";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нов вработен",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+
+
+        }
+    });
+}
+
+

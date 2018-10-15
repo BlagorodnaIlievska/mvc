@@ -1,0 +1,314 @@
+
+function katalog_nov() {
+
+    var formurl = "/index.php/podatoci/katalog/nov";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нов Каталог",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            jQuery(".korisnici-korisnikpostoi").change(function () {
+                korisnici_proveridalipostoi(jQuery(this));
+            });
+            jQuery(".korisnici-korisnikpostoi").keyup(function () {
+                korisnici_proveridalipostoi(jQuery(this));
+            });
+            jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+function katalog_novpodkatalog() {
+
+    if ( jQuery('.tabela-kataloglista tr.active').length ==0 ){
+        alert("Ве молиме одберете каталог");
+        return;
+    } else {
+        var id=jQuery('.tabela-kataloglista tbody tr.active').attr("katalog_id");
+    }
+    var formurl = "/index.php/podatoci/katalog/novpodkatalog";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{id:id},
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нов ПодКаталог",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            jQuery(".korisnici-korisnikpostoi").change(function () {
+                korisnici_proveridalipostoi(jQuery(this));
+            });
+            jQuery(".korisnici-korisnikpostoi").keyup(function () {
+                korisnici_proveridalipostoi(jQuery(this));
+            });
+            jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+
+
+function katalog_popolnilista() {
+    var formurl = "/index.php/podatoci/katalog/popolnilista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            jQuery(".tabela-kataloglista tbody").html('');
+            jQuery(".tabela-podkataloglista tbody").html('');
+            jQuery.each(response, function (index, item) {
+              //  console.log(item);
+
+                jQuery(".tabela-kataloglista tbody").append(('<tr katalog_id="' + item.id + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+
+                    '</td>' +
+                    '<td>' + item.ime + '</td>' +
+                    '<td>' + item.sifra + '</td>' +
+                    '</tr>'
+                    ));
+            });
+            jQuery(".tabela-kataloglista").trigger("update");
+
+
+        }
+    });
+}
+function katalog_popolnipodlista(id) {
+    var formurl = "/index.php/podatoci/katalog/popolnipodlista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{id:id},
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            jQuery(".tabela-podkataloglista tbody").html('');
+            jQuery.each(response, function (index, item) {
+               // console.log(item);
+
+                jQuery(".tabela-podkataloglista tbody").append(('<tr katalog_id="' + item.id + '" parent_id="' + item.parent_id + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+
+                    '</td>' +
+                    '<td>' + item.ime + '</td>' +
+                    '<td>' + item.sifra + '</td>' +
+                    '</tr>'
+                    ));
+            });
+            jQuery(".tabela-kataloglista").trigger("update");
+
+
+        }
+    });
+}
+function katalog_popolnikartiklilista(id) {
+    var formurl = "/index.php/podatoci/katalog/popolnikartiklilista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{id:id},
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            jQuery(".tabela-katalogartiklilista tbody").html('');
+            jQuery.each(response, function (index, item) {
+                // console.log(item);
+
+                jQuery(".tabela-katalogartiklilista tbody").append(('<tr artikal_id="' + item.SID + '" katalog_id="' + id + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                    '<a class="info-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/information.png"></a>' +
+                    '</td>' +
+                    '<td>' + item.sifra + '</td>' +
+                    '<td>' + item.S1Ime + '</td>' +
+                    '<td>' + item.opis_artikl + '</td>' +
+                    '<td>' + item.Cen0 + '</td>' +
+                    '</tr>'
+                    ));
+            });
+            jQuery(".tabela-katalogartiklilista").trigger("update");
+
+
+        }
+    });
+}
+function katalog_izmeni(katalogid) {
+    var formurl = "/index.php/podatoci/katalog/izmeni";
+    var data = {  id:katalogid  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени Каталог",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+
+}
+function katalog_izmenipodkatalog(katalogid) {
+    var formurl = "/index.php/podatoci/katalog/izmenipodkatalog";
+    var data = {  id:katalogid  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени ПодКаталог",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+
+}
+function katalog_delete(katalogid){
+    var r=confirm("Избриши Каталог");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/podatoci/katalog/delete_katalog";
+            var data = {  id:katalogid  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    katalog_popolnilista();
+                }
+            });
+
+        }
+    }
+
+}
+function katalog_deletepodkatalog(katalogid){
+    var r=confirm("Избриши ПодКаталог");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/podatoci/katalog/delete_katalog";
+            var data = {  id:katalogid  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+
+                    katalog_popolnipodlista(jQuery('.tabela-kataloglista tr.active').attr("katalog_id"));
+                    katalog_popolnikartiklilista(jQuery('.tabela-kataloglista tr.active').attr("katalog_id"));
+                }
+            });
+
+        }
+    }
+
+}
+
+function katalog_prikaziartikl(artikalid){
+    var formurl = "/index.php/podatoci/artikl/artikli_prikaziartikl";
+    var data = {  id:artikalid  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Преглед Артикал",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+            jQuery(".iskluci-izmeni input, .iskluci-izmeni textarea, .iskluci-izmeni select").attr('disabled','disabled');
+        }
+
+    });
+
+}

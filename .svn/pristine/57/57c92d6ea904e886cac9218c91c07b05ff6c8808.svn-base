@@ -1,0 +1,174 @@
+<div class="povrzi_lekuvanje">
+    <fieldset>
+        <legend>Лекувања</legend>
+    <div class="izborpaketi">
+        <label>Избери услуги: </label>
+        <select name="izberipaket" class="izborpaketi-dropdown">
+            <option value="1">Стандардни</option>
+            <option value="2">Дополнителни</option>
+        </select>
+<!--        <label>Број: </label>-->
+<!--        <input class="brojpaket" type="text" value="" onkeyup="getFreeLekuvanjaByBroj()" />-->
+    </div>
+    <div class="tabela">
+        <div class="predtabela">
+        <table class="lekuvanje" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th>Избери</th>
+                <th>Бр. лекување</th>
+                <th>Датум</th>
+                <th>Пациент</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        </div>
+        <button class="dodadilekuvanje button" ><span>Копирај и поврзи</span></button>
+        <button class="povrzilekuvanje button"><span>Поврзи</span></button>
+    </div>
+    </fieldset>
+    <fieldset>
+        <legend>Пакети за лекувањето</legend>
+    <div class="lekuvanjedetali">
+        <table class="lekuvanjedetali-tabela" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th>РБ</th>
+                <th>Шифра</th>
+                <th>Назив</th>
+                <th>Кол.</th>
+                <th>Цена</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    </fieldset>
+</div>
+
+
+<script>
+    function lekuvanje_edmerka_option_values(){
+        return '' + '<option value=""></option>'+
+            '<?php foreach($edinicamerka as $edmerka) { echo '<option value="'.$edmerka->id.'">'.$edmerka->ime_skrateno.'</option>'; } ?>';
+    }
+    function lekuvanje_konto_option_values(){
+        return '' + '<option value=""></option>'+
+            '<?php foreach($konto as $k) { echo '<option value="'.$k->id.'">'.$k->sifra.'</option>'; } ?>';
+    }
+    function proveri_lekuvanje(){
+        var lekuvanje = jQuery(".faktura-form .lekuvanje_id").val();
+        if(lekuvanje)
+        {
+            jQuery(".tstavki tbody tr").each(function() {
+                var trow = jQuery(this);
+                var lek_id = jQuery(this).attr("lekuvanje_id");
+                if(lek_id == lekuvanje) trow.remove();
+            });
+        }
+    }
+    function if_povrziPaketiLekuvanje(priem, pacient) {
+        var formurl = "/index.php/pacienti/lekuvanja/zemiPaketiZaPriem";
+        jQuery.ajax({
+            url: formurl,
+            type: 'GET',
+            data: {id: priem},
+            dataType: 'json',
+            success: function (response) {
+//            console.log(response);
+                var redovi = jQuery('.tstavki tbody tr:last').find('.number').text();
+                if(!redovi) redovi = 1;
+                var vkupnostavki = response.length;
+                if (response != null) {
+                    if(jQuery('.checkkonto').is(':checked')) var status='';
+                    else var status='hide';
+//                    jQuery('.tstavki tbody').find("tr:last").remove();
+                    jQuery.each(response, function (index, item) {
+                        var vkupnacena = 0;
+                        vkupnacena = 1 * vkupnacena + 1 * item.kolicina * item.paket.cena;
+                        jQuery('.tstavki tbody').append(
+                            '<tr class="detali" lekuvanje_id="' + priem + '">' +
+                                '<td>' + '<img class="delete" width="15" height="15" alt="" src="/images/delete.png">' +'</td>' +
+                                '<td class="number">' + redovi +  '</td>' +
+                                '<td>' + '<input type="text" class="katbroj" name="katbroj" readonly  value="' + item.paket.sifra +'" />' + '</td>' +
+                                '<td>' + '<input type="text" class="artikli" name="artikli" readonly  value="' + item.paket.naziv +'" />' + '</td>' +
+                                '<td class="kontodetali ' + status + '"><select class="kontostavka" name="kontostavka">'+if_konto_option_values()+'</select></td>' +
+                                '<td>' + '<input type="text" class="kolicina" name="kolicina" readonly  value="' + item.kolicina +'" />' + '</td>' +
+                                '<td class="edmerka"><select class="edmerka-dropdown" name="edmerka">'+lekuvanje_edmerka_option_values()+'</select></td>' +
+                                '<td>' + '<input type="text" class="bezddv" name="bezddv" readonly  value="' + item.paket.cena +'" />' + '</td>' +
+                                '<td>' + '<input type="text" class="vkupno1" name="vkupno1" readonly  value="' + formatnumbermkd(vkupnacena) +'" />' + '</td>' +
+                                '<td class="hide">' + '<input type="hidden" class="sifra" name="sifra" readonly  value="' + item.paket.sifra +'" />' + '</td>' +
+                                '<td class="hide">' + '<input type="hidden" class="stavka" name="stavka" readonly  value="' + item.paket.naziv +'" />' + '</td>' +
+                                '<td class="hide">' + '<input type="hidden" class="edmerkaid" name="edmerkaid" readonly  value="4" />' + '</td>' +
+                                '<td class="hide">' + '<input type="hidden" class="tipstavka" name="tipstavka" value="1" />' + '</td>' +
+                                '</tr>'
+                        );
+                        redovi = 1*redovi + 1;
+                        jQuery('.edmerka-dropdown').combobox();
+                        jQuery('.kontostavka').combobox();
+                        var lastrow = jQuery('.tstavki tbody tr:last');
+                        lastrow.find("td.edmerka .ui-combobox-input").val('парче');
+                        lastrow.find(".edmerkaid").val(4);
+                    });
+                    jQuery("span.povrzanolekuvanje_id").html("Број на лекување: " + priem);
+                    jQuery("span.pacient-povrzanolekuvanje").html("Пациент: " + pacient);
+                    jQuery(".lekuvanje_id").val(priem);
+                    presmetajSumaStavkiIzleznaFaktura();
+                }
+            }
+        });
+    }
+    jQuery(document).ready(function() {
+        jQuery(".lekuvanje").tablesorter();
+//        jQuery(".tstavkadetail").tablesorter();
+        get_free_lekuvanja();
+        jQuery(".povrziispratnici").click(function(){
+            var ovakopce = jQuery(this);
+            var vrskadokumenti = jQuery('input.vrskadokumenti').val();
+            var priemnici = [];
+            if(vrskadokumenti.length > 0) var dodadenipriemnici = vrskadokumenti;
+            else var dodadenipriemnici ="Додадени испратници: ";
+            var listapriemnici ="", novapriemnica="";
+            jQuery(".izleznaroba tr").each(function() {
+                var brisired = jQuery(this);
+                var checked = jQuery(this).find("input.povrzi").is(':checked');
+                if(checked)
+                {
+                    var priemnicabroj = jQuery(this).find('.number').text();
+                    var priemnicaid = jQuery(this).find('.dbid').text();
+                    priemnici.push(priemnicaid);
+                    novapriemnica = priemnicabroj + ", ";
+                    listapriemnici = listapriemnici + novapriemnica;
+                    var dbid = jQuery(this).find('.dbid').text();
+                    brisired.remove();
+                    jQuery(".tstavkadetail").find("tr:gt(1)").remove();
+                }
+            });
+            jQuery('.ispratnica_id').val(priemnici);
+            jQuery('.dodadeniispratnica').text(dodadenipriemnici + listapriemnici);
+            jQuery('.vrskadokumenti').val(dodadenipriemnici + listapriemnici);
+            destroyparentdialog(ovakopce);
+        });
+        jQuery(".dodadilekuvanje").click(function(){
+            proveri_lekuvanje();
+            var ovakopce = jQuery(this);
+            var vrskadokumenti = jQuery('input.vrskadokumenti').val();
+            var lekuvanje = '';
+            if(vrskadokumenti.length > 0) var dodadenipriemnici = vrskadokumenti;
+            else var dodadenipriemnici ="Додадено лекување: ";
+            jQuery(".lekuvanje tbody tr").each(function() {
+                var checked = jQuery(this).find("input.povrzi").is(':checked');
+                if(checked)
+                {
+                    var lekuvanje_id = jQuery(this).attr("lekuvanje_id");
+                    var pacient = jQuery(this).find("td.pacient").html();
+                    if_povrziPaketiLekuvanje(lekuvanje_id, pacient);
+                }
+            });
+            destroyparentdialog(ovakopce);
+        });
+    });
+</script>

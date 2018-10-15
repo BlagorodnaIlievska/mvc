@@ -1,0 +1,148 @@
+<div id="promet_menu_form">
+<div class="promet-filter">
+    <?php
+    echo form_open('materijalno/promet/search');
+
+    echo form_label('Магацин: ', 'magacin');
+    echo form_dropdown('magacin', $magacin );
+    ?>
+<!--    <input type="button" value="Дефинирај нов магацин" class="magacinbutton button" formaction="/index.php/materijalno/lager_lista/new_magacin">-->
+    <?php
+    echo form_label('Клиент: ', 'klient');
+    echo form_dropdown('klient', $klient, '', 'class="klientpromet searchpromet"');
+    $options = array(
+        '0' => 'Сите',
+        '1' => 'Промена'
+    );
+    $data = 'id="pogled"';
+
+    echo form_label('Поглед: ', 'pogled');
+    echo form_dropdown('pogled', $options, 0, $data);
+
+    echo form_close();
+    ?>
+</div>
+    <div class="prikaz">
+        <p class="naslovpromet" > ( <span class="vkupnostavki">0</span> )  Картици</p>
+        <div class="predtabela">
+        <table class="promet" border="1" cellspacing="2" cellpadding="2">
+        <thead>
+            <tr>
+                <th>Sifra</th>
+                <th>Sifra 2</th>
+                <th>Kat. Broj</th>
+                <th>Stavka</th>
+                <th>Prethodna</th>
+                <th>Vlez</th>
+                <th>Izlez</th>
+                <th>Krajna</th>
+                <th>Vlez</th>
+                <th>Izlez</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class='hiderow'>
+            <td class="sifra"></td>
+            <td class="sifra2"></td>
+            <td class="katbroj"></td>
+            <td class="stavka"></td>
+            <td class="prethodna"></td>
+            <td class="kolvlez"></td>
+            <td class="kolizlez"></td>
+            <td class="krajna"></td>
+            <td class="vrednostvlez"></td>
+            <td class="vrednostizlez"></td>
+            </tr>
+        </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery("table.promet").tablesorter();
+        var data = {
+            klientid: 0
+        }
+        jQuery.ajax({
+            url: "/index.php/materijalno/lager_lista/getPromet",
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+                //console.log(response);
+                jQuery(".promet").find("tr:gt(1)").remove();
+                var tr = jQuery('.promet tr:last');
+                tr.removeClass('hiderow');
+                var vleznakolicina = 0;
+                var izleznakolicina = 0;
+                for ( var i = 0; i < response.length; i++ ) {
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.find('.sifra').html(response[i].sifra);
+                    newrow.find('.sifra2').html(response[i].sifra2);
+                    newrow.find('.katbroj').html(response[i].katBroj);
+                    newrow.find('.stavka').html(response[i].stavka);
+                    if(response[i].kolicina) vleznakolicina = response[i].kolicina;
+                    if(response[i].kolicina2) izleznakolicina = response[i].kolicina2;
+                    newrow.find('.kolvlez').html(response[i].kolicina);
+                    newrow.find('.kolizlez').html(response[i].kolicina2);
+                    newrow.find('.krajna').html(parseInt(vleznakolicina) - parseInt(izleznakolicina));
+                    newrow.find('.vrednostvlez').html(response[i].vrednostvlez);
+                    newrow.find('.vrednostizlez').html(response[i].vrednostizlez);
+                    vleznakolicina = 0;
+                    izleznakolicina = 0;
+                }
+                tr.addClass('hiderow');
+                jQuery(".naslovpromet .vkupnostavki").html(response.length);
+                jQuery(".promet").trigger("update");
+            }
+        });
+        jQuery('.searchpromet').live('change',function(){
+            var klientid = jQuery('.klientpromet option:selected').val();
+            var data = {
+                klientid: klientid
+            }
+            jQuery.ajax({
+                url: "/index.php/materijalno/lager_lista/getPromet",
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery(".promet").find("tr:gt(1)").remove();
+                    var tr = jQuery('.promet tr:last');
+                    tr.removeClass('hiderow');
+                    var vleznakolicina = 0;
+                    var izleznakolicina = 0;
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('.sifra').html(response[i].sifra);
+                        newrow.find('.sifra2').html(response[i].sifra2);
+                        newrow.find('.katbroj').html(response[i].katBroj);
+                        newrow.find('.stavka').html(response[i].stavka);
+                        if(response[i].kolicina) vleznakolicina = response[i].kolicina;
+                        if(response[i].kolicina2) izleznakolicina = response[i].kolicina2;
+                        newrow.find('.kolvlez').html(response[i].kolicina);
+                        newrow.find('.kolizlez').html(response[i].kolicina2);
+                        newrow.find('.krajna').html(parseInt(vleznakolicina) - parseInt(izleznakolicina));
+                        newrow.find('.vrednostvlez').html(response[i].vrednostvlez);
+                        newrow.find('.vrednostizlez').html(response[i].vrednostizlez);
+                        vleznakolicina = 0;
+                        izleznakolicina = 0;
+                    }
+                    tr.addClass('hiderow');
+                    jQuery(".naslovpromet .vkupnostavki").html(response.length);
+                    jQuery(".promet").trigger("update");
+                }
+            });
+        });
+        jQuery('.magacinbutton').click(function()
+        {
+            var formaction=jQuery(this).attr('formaction');
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({ autoOpen: true }).load(formaction);
+        });
+    });
+</script>

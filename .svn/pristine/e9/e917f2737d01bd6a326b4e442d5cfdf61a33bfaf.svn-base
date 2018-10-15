@@ -1,0 +1,136 @@
+<div class="prebaruvanje_izvodi_form">
+    <?php
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $options = array(
+        '0' => 'Сите',
+        '40' => 'Одлив',
+        '50' => 'Прилив'
+    ); ?>
+
+    <?php echo form_open('izvodi/menu/prebarajIzvodi'); ?>
+    <div class="smetka">
+        <div class="parametar-izvod">
+            <label class="labelklient">Комитент: </label>
+            <?php
+            echo form_dropdown('klient', $klient, 0, 'class="klient prebarajizvod" formaction="/index.php/izvodi/menu/baraj_izvod_klient"');
+            ?>
+        </div>
+        <div class="parametar-izvod smetka-ui">
+            <label class="smetkalabel">Сметка: </label>
+            <?php
+            echo form_dropdown('smetka', $smetka, 0, 'class="smetka1 prebarajizvod" formaction="/index.php/izvodi/menu/baraj_izvod_smetka"');
+            ?>
+        </div>
+        <div class="parametar-izvod">
+            <label>Поглед: </label>
+            <?php
+            echo form_dropdown('pogled', $options, 0, 'class="pogled prebarajizvod" formaction="/index.php/izvodi/menu/baraj_izvod_pogled"');
+            ?>
+        </div>
+    </div>
+    <?php echo form_close(); ?>
+
+    <div class="izvod-search">
+        <p class="naslovsearch" > ( <span class="vkupnostavki">0</span> ) Изводи:</p>
+        <div class="predtabela">
+            <table class="tabelasmetka" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th class="smetka">Сметка</th>
+                    <th>Датум</th>
+                    <th>Број</th>
+                    <th>Коминтент</th>
+                    <th>Одлив</th>
+                    <th>Прилив</th>
+                    <th>Повик. број</th>
+                    <th>Конто</th>
+                    <th>Забелешка</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class='hiderow'>
+                    <td class="dbid hide"></td>
+                    <td class="smetka"></td>
+                    <td class="datum"></td>
+                    <td class="broj"></td>
+                    <td class="naziv"></td>
+                    <td class="odliv"></td>
+                    <td class="priliv"></td>
+                    <td class="povikuvackibroj"></td>
+                    <td class="konto"></td>
+                    <td class="zabeleska"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.prebaruvanje_izvodi_form .klient').combobox();
+        jQuery(".prebaruvanje_izvodi_form .smetka1").combobox();
+        jQuery(".tabelasmetka").tablesorter();
+        izvodiPrebaruvanje();
+        jQuery('.prebarajizvod').live('change',function(){
+            var klient = jQuery('.klient option:selected').val();
+            var smetka = jQuery('.smetka1 option:selected').val();
+            var pogled = jQuery('.pogled option:selected').val();
+            var formaction = jQuery(this).closest("form").attr('action');
+            var data = {
+                klientid: klient,
+                smetkaid: smetka,
+                pogledid: pogled
+            }
+            jQuery.ajax({
+                url: formaction,
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+//                        console.log(response);
+                    var vkupnostavki = response.length;
+                    jQuery(".tabelasmetka").find("tr:gt(1)").remove();
+                    var tr = jQuery('.tabelasmetka tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('.dbid').html(response[i].dbid);
+                        newrow.find('.smetka').html(response[i].zirosmetka);
+                        newrow.find('.datum').html(response[i].datum);
+                        newrow.find('.broj').html(response[i].textBroj);
+                        newrow.find('.naziv').html(response[i].firmaIme + " : " + response[i].firmaZiro);
+                        newrow.find('.povikuvackibroj').html(response[i].povikBroj);
+                        newrow.find('.konto').html(response[i].konto);
+                        newrow.find('.zabeleska').html(response[i].zabeleska);
+                        if(response[i].tip == 40)
+                        {
+                            newrow.find('.odliv').html(formatnumbermkd(response[i].suma));
+                            newrow.find('.priliv').html('');
+                        }
+                        if(response[i].tip == 50)
+                        {
+                            newrow.find('.priliv').html(formatnumbermkd(response[i].suma));
+                            newrow.find('.odliv').html('');
+                        }
+                    }
+                    jQuery(".naslovsearch .vkupnostavki").html(vkupnostavki + " во листа");
+                    tr.addClass('hiderow');
+                    jQuery(".tabelasmetka").trigger("update");
+                }
+            });
+            //}
+        });
+//        jQuery('.tabelasmetka tr:gt(1)').live("dblclick", function(){
+//            var id = jQuery(this).find('input[name=dbid]').val();
+//            var formaction= "/index.php/izvodi/menu/editStavkaIzvod?id=" + id;
+//            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+//            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+//            jQuery('div.'+tempdialog).dialog({ autoOpen: true, width: 800 }).load(formaction);
+//        });
+    });
+</script>

@@ -1,0 +1,16 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Uplata extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+    public function index()
+    {
+        // $this->load->model('materijalno/materijalno_model');
+        // $data['klient'] = $this->materijalno_model->klient_dropdown();
+        //  $data['grupa'] = $this->materijalno_model->grupa_dropdown();
+        $this->load->view('izlezni_fakturi/uplata/uplata_form');
+    }
+}

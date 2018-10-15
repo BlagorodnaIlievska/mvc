@@ -1,0 +1,658 @@
+<?php
+
+class Start_model extends CI_Model
+{
+
+
+    public function create_firma()
+    {
+
+        $insert = $this->db->insert('bis_firmi', $this->input->post());
+
+        return $insert;
+    }
+
+    public function create_odel()
+    {
+        $new_field_increate_magacinsert_data = $this->input->post();
+        $insert = $this->db->insert('bis_firmi', $new_field_increate_magacinsert_data);
+
+        return $insert;
+    }
+
+    public function create_pododel()
+    {
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('bis_firmi', $new_field_insert_data);
+
+        return $insert;
+    }
+
+    public function delete_firma($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_firmi');
+    }
+
+    public function update_firma()
+    {
+        $field_update_data = $this->input->post();
+        $this->db->where('id', $this->input->post('id'));
+        $update = $this->db->update('bis_firmi', $field_update_data);
+
+        return $update;
+    }
+
+    public function getSiteFirmi()
+    {
+        $this->db->select('*');
+        $this->db->from('bis_firmi');
+
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function getAll_firma()
+    {
+        $this->db->select('*');
+        $this->db->from('bis_firmi');
+        $this->db->where("parent_id", 0);
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function getAll_odel()
+    {
+        $this->db->select('*');
+        $this->db->from('bis_firmi');
+        $this->db->where("parent_odel_id", 0);
+        $this->db->where("parent_id !=", 0);
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function getAll_pododel()
+    {
+        $this->db->select('*');
+        $this->db->from('bis_firmi');
+
+        $this->db->where("parent_odel_id !=", 0);
+        $this->db->where("parent_id !=", 0);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function getOdeli($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('bis_firmi');
+        $this->db->where("parent_id", $id);
+        $this->db->where("parent_odel_id", 0);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function getOdel($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('bis_firmi');
+        $this->db->where("id", $id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+    public function getDozvoleniPodOdeli($id){
+
+        $this->db->select('*');
+        $this->db->from('bis_firmi');
+
+        $this->db->where("parent_odel_id", $id);
+        $this->db->where_in("id", $this->session->userdata('firmi') );
+
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+    public function getPodOdeli($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('bis_firmi');
+
+        $this->db->where("parent_odel_id", $id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function getPodOdeliSoOddeli()
+    {
+
+        $this->db->select('bis_firmi.*, bis_firmi_2.ime as parentIme');
+        $this->db->from('bis_firmi');
+        $this->db->join('bis_firmi as bis_firmi_2', 'bis_firmi_2.id=bis_firmi.parent_odel_id', 'left');
+        $this->db->where("bis_firmi.parent_odel_id !=", 0);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function getFirma($id)
+    {
+        $this->db->select("*");
+        $this->db->where('id', $id);
+
+        $query = $this->db->get('bis_firmi');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+
+    public function getFirmaType($id)
+    {
+        //$this->db->select("*");
+        //  $this->db->from("");
+        $this->db->where('bis_firmi.id', $id);
+
+        $query = $this->db->get('bis_firmi');
+        $result = $query->result_array();
+        if ($result[0]['parent_id'] == 0 && $result[0]['parent_odel_id'] == 0) {
+            //bis_debug('glaven_odel', 'getFirmaType');
+            return 'glaven_odel';
+        } elseif ($result[0]['parent_id'] > 0 && $result[0]['parent_odel_id'] == 0) {
+            //bis_debug('odel', 'getFirmaType');
+            return 'odel';
+        } elseif ($result[0]['parent_id'] > 0 && $result[0]['parent_odel_id'] > 0) {
+            //bis_debug('pododel', 'getFirmaType');
+            return 'pododel';
+        }
+    }
+
+    public function getFirmaPodFirmi($id, $select = '*')
+    {
+
+        if ($this->getFirmaType($id) == 'glaven_odel') {
+            $this->db->select($select);
+            $this->db->from('bis_firmi');
+            $this->db->where("parent_id ='$id' OR id = '$id'");
+
+        } elseif ($this->getFirmaType($id) == 'odel') {
+            $this->db->select($select);
+            $this->db->from('bis_firmi');
+            $this->db->where("parent_odel_id ='$id' OR id = '$id'");
+
+        } elseif ($this->getFirmaType($id) == 'pododel') {
+            $this->db->select($select);
+            $this->db->from('bis_firmi');
+            $this->db->where('id', $id);
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+        //bis_debug($result, 'getFirmaPodFirmi');
+        return $result;
+
+    }
+
+    public function getFirmaPodFirmiIds($id)
+    {
+
+        if ($this->getFirmaType($id) == 'glaven_odel') {
+            $this->db->select('id');
+            $this->db->from('bis_firmi');
+            $this->db->where("parent_id ='$id' OR id = '$id'");
+
+        } elseif ($this->getFirmaType($id) == 'odel') {
+            $this->db->select('id');
+            $this->db->from('bis_firmi');
+            $this->db->where("parent_odel_id ='$id' OR id = '$id'");
+
+        } elseif ($this->getFirmaType($id) == 'pododel') {
+            $this->db->select('id');
+            $this->db->from('bis_firmi');
+            $this->db->where('id', $id);
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $newReturn = array();
+        foreach ($result as $row) {
+            $newReturn[] = $row['id'];
+        }
+        //bis_debug($newReturn, 'getFirmaPodFirmiIds');
+        return $newReturn;
+
+    }
+
+    public function getFirmaIme($id)
+    {
+        $this->db->select("*");
+        $this->db->where('id', $id);
+
+        $query = $this->db->get('bis_firmi');
+
+        if ($query->num_rows > 0) {
+            $result = $query->result();
+
+            return $result[0]->ime;
+        } else {
+            return '';
+        }
+
+    }
+
+    public function getFirmi()
+    {
+        $this->db->select("*");
+        $this->db->where('parent_id', 0);
+        $query = $this->db->get('bis_firmi');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+
+    public function getFirmiDozvoleni($covecki_resursi_id)
+    {
+        $this->load->model("covecki_resursi/covecki_resursi_model");
+        $vraboten = $this->covecki_resursi_model->getVraboten($covecki_resursi_id);
+        $vraboten = $vraboten[0];
+        //print_r($vraboten);
+        $firma = $vraboten->firma;
+        //echo "bbb $firma";
+
+        $this->db->select("*");
+        $this->db->from("bis_firmi");
+
+        $this->db->where('parent_id', 0);
+        $this->db->where('parent_odel_id', 0);
+        $return = array();
+        if ($firma > 0) {
+            $this->db->where('id', $firma);
+        }
+        $query = $this->db->get();
+
+        foreach ($query->result() as $row) {
+            $return[] = $row->id;
+        }
+        if ($firma == "-1") {
+            $returnb[] = 0;
+            return $returnb;
+        } else {
+            return $return;
+        }
+
+
+    }
+
+    public function getOdeliDozvoleni($covecki_resursi_id)
+    {
+        $this->load->model("covecki_resursi/covecki_resursi_model");
+        $vraboten = $this->covecki_resursi_model->getVraboten($covecki_resursi_id);
+        $vraboten = $vraboten[0];
+        $oddel = $vraboten->oddel;
+
+        $this->db->select('*');
+        $this->db->from('bis_firmi');
+        $this->db->where("parent_id !=", 0);
+        $this->db->where("parent_odel_id", 0);
+
+        if ($oddel > 0) {
+            $this->db->where('id', $oddel);
+        }
+        $query = $this->db->get();
+        $return = array();
+        foreach ($query->result() as $row) {
+            $return[] = $row->id;
+        }
+        if ($oddel == "-1") {
+            $returnb[] = 0;
+            return $returnb;
+        } else {
+            return $return;
+        }
+    }
+
+    public function getPodOdeliDozvoleni($covecki_resursi_id)
+    {
+        $this->load->model("covecki_resursi/covecki_resursi_model");
+        $vraboten = $this->covecki_resursi_model->getVraboten($covecki_resursi_id);
+        $vraboten = $vraboten[0];
+        $pododdel = $vraboten->pododdel;
+
+        $this->db->select('*');
+        $this->db->from('bis_firmi');
+        $this->db->where("parent_id !=", 0);
+        $this->db->where("parent_odel_id !=", 0);
+        if ($pododdel > 0) {
+            $this->db->where('id', $pododdel);
+        }
+        $query = $this->db->get();
+        $return = array();
+        foreach ($query->result() as $row) {
+            $return[] = $row->id;
+        }
+        if ($pododdel == "-1") {
+            $returnb[] = 0;
+            return $returnb;
+        } else {
+            return $return;
+        }
+    }
+
+    public function getBanki()
+    {
+        $this->db->select("*");
+        $query = $this->db->get('bis_banki');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+
+    public function getZirosmetki()
+    {
+        $this->db->select("bis_zirosmetki.*,bis_banki.ime as banka,bis_firmi.ime as firma");
+        $this->db->from('bis_zirosmetki');
+        $this->db->join('bis_banki', 'bis_zirosmetki.banka_id=bis_banki.id', 'left');
+        $this->db->join('bis_firmi', 'bis_zirosmetki.firma_id=bis_firmi.id', 'left');
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+
+
+    public function create_zirosmetka()
+    {
+        $new_field_insert_data = $this->input->post();
+
+        $insert = $this->db->insert('bis_zirosmetki', $new_field_insert_data);
+
+        return $insert;
+    }
+
+    public function create_kasa()
+    {
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('bis_kasi', $new_field_insert_data);
+        return $insert;
+    }
+
+    public function getKasi()
+    {
+        $this->db->select('bis_kasi.*, bis_firmi.ime as firma');
+        $this->db->from('bis_kasi');
+        $this->db->join('bis_firmi', 'bis_kasi.firma_id = bis_firmi.id', 'left');
+
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getKasa($id)
+    {
+        $this->db->select('*');
+        $this->db->from('bis_kasi');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result[0];
+    }
+
+    public function create_magacin()
+    {
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('bis_magacin', $new_field_insert_data);
+
+        return $insert;
+    }
+
+    public function getMagacini()
+    {
+        $this->db->select('bis_magacin.*, bis_firmi.ime as firma, bis_magacin_tip.ime as tipime');
+        $this->db->from('bis_magacin');
+        $this->db->join('bis_firmi', 'bis_magacin.firma_id = bis_firmi.id', 'left');
+        $this->db->join('bis_magacin_tip', 'bis_magacin.tip = bis_magacin_tip.id', 'left');
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+    public function getDozvoleniMagacini()
+    {
+        $this->db->select('bis_magacin.*, bis_firmi.ime as firma, bis_magacin_tip.ime as tipime');
+        $this->db->from('bis_magacin');
+        $this->db->join('bis_firmi', 'bis_magacin.firma_id = bis_firmi.id', 'left');
+        $this->db->join('bis_magacin_tip', 'bis_magacin.tip = bis_magacin_tip.id', 'left');
+
+        $zabranetimagacini=$this->session->userdata('magacini');
+        bis_debug($zabranetimagacini);
+        if (is_array($zabranetimagacini)){
+           // $zabranetimagacini=implode(",",$zabranetimagacini);
+            $this->db->where_in('bis_magacin.id',$zabranetimagacini);
+        }
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+    public function getDozvoleniKasi()
+    {
+        $this->db->select('bis_kasi.*, bis_firmi.ime as firma');
+        $this->db->from('bis_kasi');
+        $this->db->join('bis_firmi', 'bis_kasi.firma_id = bis_firmi.id', 'left');
+
+
+        $zabranetikasi=$this->session->userdata('kasi');
+        bis_debug($zabranetikasi);
+        if (is_array($zabranetikasi)){
+            // $zabranetimagacini=implode(",",$zabranetimagacini);
+            $this->db->where_in('bis_kasi.id',$zabranetikasi);
+        }
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+    public function getMagacinTipovi()
+    {
+        $this->db->select('*');
+        $this->db->from('bis_magacin_tip');
+
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getMagacinTip($id)
+    {
+        $this->db->select('*');
+        $this->db->from('bis_magacin_tip');
+        $this->db->where('id', $id);
+
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function delete_magacin($id)
+    {
+
+        $this->db->where('id', $id);
+        $this->db->delete('bis_magacin');
+    }
+
+    public function delete_kasa($id)
+    {
+
+        $this->db->where('id', $id);
+        $this->db->delete('bis_kasi');
+    }
+
+    public function delete_smetka($id)
+    {
+
+        $this->db->where('id', $id);
+        $this->db->delete('bis_zirosmetki');
+    }
+
+    public function getMagacin($id)
+    {
+
+        $this->db->where('id', $id);
+        $query = $this->db->get('bis_magacin');
+        $return = $query->result();
+        if ($query->num_rows > 0) {
+            return $return[0];
+        }
+
+    }
+
+    public function update_magacin()
+    {
+        $field_update_data = $this->input->post();
+        $this->db->where('id', $field_update_data['id']);
+        unset($field_update_data['id']);
+        $update = $this->db->update('bis_magacin', $field_update_data);
+        return $update;
+    }
+
+    public function update_kasa()
+    {
+        $field_update_data = $this->input->post();
+        $this->db->where('id', $field_update_data['id']);
+        unset($field_update_data['id']);
+        $update = $this->db->update('bis_kasi', $field_update_data);
+        return $update;
+    }
+
+    public function getGradovi()
+    {
+        $query = $this->db->get('bis_gradovi');
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+    }
+
+    public function getSmetka($id)
+    {
+        $this->db->where('id', $id);
+        $query = $this->db->get(('bis_zirosmetki'));
+        $return = $query->result();
+        if ($query->num_rows > 0) {
+            return $return[0];
+        }
+    }
+
+    public function update_smetka()
+    {
+        $field_update_data = $this->input->post();
+        $this->db->where('id', $field_update_data['id']);
+        unset($field_update_data['id']);
+        $update = $this->db->update('bis_zirosmetki', $field_update_data);
+        return $update;
+    }
+
+
+}

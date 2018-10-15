@@ -1,0 +1,20 @@
+<div class="novatiposiguruvanje">
+    <form action="/index.php/bolnicko_rabotenje_podatoci/tip_osiguruvanje/update_tiposiguruvanje" method="post">
+        <fieldset>
+            <input type="hidden" name="id" value="<?php echo $tiposiguruvanje->id  ?>"/>
+            <legend>Измени тип на осигурување</legend>
+            <ul>
+                <li><label class="tip-osiguruvanje-izmeni">Тип на осигурување:</label>
+                <input type="text" name="ime" value="<?php echo $tiposiguruvanje->ime ?>"/></li>
+                <li class="konto-osiguruvanje-izmeni"><label>Конто:</label>
+                <?php echo form_dropdown('konto_id', $konto, $tiposiguruvanje->konto_id, 'class="konto"'); ?></li>
+            </ul>
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="tiposiguruvanje_polnilista()" poraka_uspesno=" успешно изменетo"
+                poraka_neuspesno="Грешка при снимање"
+                ><span>Сними</span></button>
+        <br/>
+    </form>
+</div>

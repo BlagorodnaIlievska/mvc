@@ -1,0 +1,418 @@
+function trezor_aktivnapratka(){
+    if (jQuery(".trezorskorabotenje-pratki-tabela tbody tr.active").attr('pratka_id') > 0) {
+        return jQuery(".trezorskorabotenje-pratki-tabela tbody tr.active").attr('pratka_id');
+
+    } else {
+
+        return 0;
+    }
+}
+
+function trezor_novapratkapodatoci(pratka_id){
+    if (jQuery(".trezorskorabotenje-pratki-tabela tbody tr.active").length == 0) {
+        alert("Ве молиме одберете пратка");
+        return false;
+    }
+    var formurl = "/index.php/trezor/trezor/newPratkaPodatokView";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {pratka_id: pratka_id},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                modal: true,
+                title: "Нов Податок",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function trezor_updatepratka(id){
+    var formurl = "/index.php/trezor/trezor/updatePratkaView/"+id;
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+//        data: {id: id},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                modal: true,
+                title: "Измени Пратка",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function generatevleznifakturiklikbutton(){
+    jQuery(".trezor-neplateni-vleznifakturi-tabela tbody tr").unbind('click');
+    jQuery(".trezor-neplateni-vleznifakturi-tabela tbody tr").click(function () {
+        jQuery(".trezor-neplateni-vleznifakturi-tabela tbody tr").removeClass("active");
+        jQuery(this).addClass("active");
+        jQuery('.trezor-novapratkapodatok-form .tablekonto tbody').html('');
+        var kontotest;
+        jQuery(this).find("td").each(function () {
+            if (jQuery(this).attr('imenapole') != 'konto') {
+                jQuery('.trezor-novapratkapodatok-form input[name="' + jQuery(this).attr('imenapole') + '"]').val(jQuery(this).html());
+            } else {
+                var kontox = jQuery(this).html().replace(/ /g, "");
+                kontox = kontox.split(":");
+               // console.dir(kontox);
+               // console.log(kontox[0]);
+
+               // for(var i=0; i<5; i++){
+
+                     kontox[0]=kontox[0][0].concat(kontox[0][1],kontox[0][2],kontox[0][3],kontox[0][4],0);
+                //}
+                   //console.log(res);
+                jQuery('.trezor-novapratkapodatok-form .tablekonto tbody').append('<tr><td><input type="text" value="'+ kontox[0]+'"></td><td class="input"><input type="text" name="konto[' + kontox[0] + ']" value="' + kontox[1] + '"></td><td>' + kontox[2] + '</td><tr>');
+//                jQuery('.trezor-novapratkapodatok-form .tablekonto').trigger("update");
+            }
+
+        });
+
+    });
+}
+function  trezor_popolnineplatenifakturi(filter){
+    jQuery('.trezor-neplateni-vleznifakturi-tabela tbody').html('');
+    var formurl = "/index.php/trezor/trezor/newPratkaPodatokViewAjax";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: filter,
+        dataType: 'html',
+        success: function (response) {
+            jQuery('.trezor-neplateni-vleznifakturi-tabela tbody').html(response);
+            generatevleznifakturiklikbutton();
+        }
+    });
+}
+function trezor_render_fields(){
+    var obrazec=jQuery(".obrazecbox").val();
+    jQuery(".trezor-novapratkapodatok-form input").removeAttr("readonly");
+    jQuery('.trezor-novapratkapodatok-form .tablekonto tbody').html('');
+    jQuery('.button.cmd-step1').hide();
+    jQuery('.neplatenifakturifilter').hide();
+    if (obrazec==90) {
+        jQuery('.step2').hide();
+        jQuery('.step1').show(50);
+        jQuery('.neplatenifakturifilter').show(50);
+        jQuery(".trezor-novapratkapodatok-form input[name='vidobrazec']").val('90').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='smetkanazadolzuvanje']").val('100000000066005').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='nazivnaprimacot']").attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='smetkanaprimacot']").attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='podsmetkanaprimacot']").val('').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='kontonaprimacot']").val('').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='programanaprimacot']").val('').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='povikuvanjenabrojnaprimacot']").attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='edb']").val(jQuery(".trezor-novapratkapodatok-form input[name='edb']").attr('default_val')).attr("readonly",'readonly');
+        jQuery('.button.cmd-step1').show();
+    } else if (obrazec==91) {
+        jQuery('.step2').hide();
+        jQuery('.step1').show(50);
+        jQuery('.neplatenifakturifilter').show(50);
+        jQuery(".trezor-novapratkapodatok-form input[name='vidobrazec']").val('91').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='smetkanazadolzuvanje']").val('100000000066005').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='nazivnaprimacot']").attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='smetkanaprimacot']").val('100000000066005').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='podsmetkanaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='kontonaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='programanaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='povikuvanjenabrojnaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='edb']").val(jQuery(".trezor-novapratkapodatok-form input[name='edb']").attr('default_val')).attr("readonly",'readonly');
+        jQuery('.button.cmd-step1').show();
+    } else if (obrazec==92) {
+        jQuery('.step1').hide();
+        jQuery('.step2').show();
+
+        jQuery(".trezor-novapratkapodatok-form input[name='vidobrazec']").val('92').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='smetkanazadolzuvanje']").val('100000000066005').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='nazivnaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='smetkanaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='podsmetkanaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='kontonaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='programanaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='povikuvanjenabrojnaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='edb']").val(jQuery(".trezor-novapratkapodatok-form input[name='edb']").attr('default_val')).attr("readonly",'readonly');
+
+        jQuery('.trezor-novapratkapodatok-form .tablekonto tbody').append('<tr><td class="input"><input type="text" name="konto" value=""></td><td class="input"><input type="text" name="iznos" value=""></td><td class="treto">n/a</td><tr>');
+        jQuery('.tablekonto .treto').hide();
+    } else if (obrazec==93) {
+        jQuery('.step1').hide();
+        jQuery('.step2').show();
+
+        jQuery(".trezor-novapratkapodatok-form input[name='vidobrazec']").val('93').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='smetkanazadolzuvanje']").val('100000000066005').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='nazivnaprimacot']").attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='smetkanaprimacot']").val('100000000066005').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='podsmetkanaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='kontonaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='programanaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='povikuvanjenabrojnaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='edb']").val(jQuery(".trezor-novapratkapodatok-form input[name='edb']").attr('default_val')).attr("readonly",'readonly');
+
+        jQuery('.trezor-novapratkapodatok-form .tablekonto tbody').append('<tr><td class="input"><input type="text" name="konto" value=""></td><td class="input"><input type="text" name="iznos" value=""></td><td class="treto">n/a</td><tr>');
+        jQuery('.tablekonto .treto').hide();
+
+    } else if (obrazec==94) {
+        jQuery('.step1').hide();
+        jQuery('.step2').show();
+
+        jQuery(".trezor-novapratkapodatok-form input[name='vidobrazec']").val('94').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='smetkanazadolzuvanje']").val('100000000066005').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='nazivnaprimacot']").attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='smetkanaprimacot']").val('100000000066005').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='podsmetkanaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='kontonaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='programanaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='povikuvanjenabrojnaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='edb']").val('');
+
+        jQuery('.trezor-novapratkapodatok-form .tablekonto tbody').append('<tr><td class="input"><input type="text" name="konto" value=""></td><td class="input"><input type="text" name="iznos" value=""></td><td class="treto">n/a</td><tr>');
+        jQuery('.tablekonto .treto').hide();
+    } else if (obrazec==76) {
+        jQuery('.step1').hide();
+        jQuery('.step2').show();
+
+        jQuery(".trezor-novapratkapodatok-form input[name='vidobrazec']").val('76').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='smetkanazadolzuvanje']").val('100000000066005').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='nazivnaprimacot']").attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='smetkanaprimacot']").val('100000000066005').attr('readonly','readonly');
+        jQuery(".trezor-novapratkapodatok-form input[name='podsmetkanaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='kontonaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='programanaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='povikuvanjenabrojnaprimacot']").val('');
+        jQuery(".trezor-novapratkapodatok-form input[name='edb']").val(jQuery(".trezor-novapratkapodatok-form input[name='edb']").attr('default_val')).attr("readonly",'readonly');
+
+        jQuery('.trezor-novapratkapodatok-form .tablekonto tbody').append('<tr><td class="input"><input type="text" name="konto" value=""></td><td class="input"><input type="text" name="iznos" value=""></td><td class="treto">n/a</td><tr>');
+        jQuery('.tablekonto .treto').hide();
+    } else if (obrazec==0) {
+        jQuery('.step1').hide();
+        jQuery('.step2').show();
+        jQuery(".trezor-novapratkapodatok-form input").val("");
+        jQuery('.trezor-novapratkapodatok-form .tablekonto tbody').append('<tr><td class="input"><input type="text" name="konto" value=""></td><td class="input"><input type="text" name="iznos" value=""></td><td class="treto">n/a</td><tr>');
+        jQuery('.tablekonto .treto').hide();
+    }
+    jQuery(".trezor-novapratkapodatok-form input").removeAttr("readonly");
+
+}
+function trezor_novapratka() {
+//    var id = trezor_aktivnapratka()
+//    if (trezor_aktivnapratka()==0) {
+//        alert("Ве молиме одберете пратка");
+//        return false;
+//    }
+
+    var formurl = "/index.php/trezor/trezor/newPratkaView";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+//        data: {id: id},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                modal: true,
+                title: "Нова Пратка",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function trezor_pratkilista(filterdata) {
+
+    if (typeof filterdata != "undefined") {
+        var data = filterdata;
+    } else {
+        var data = {};
+    }
+    var formurl = "/index.php/trezor/trezor/popolni_pratki";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+            //  console.log(response);
+            jQuery(".trezorskorabotenje-pratki-tabela tbody").html('');
+            if (response != null) {
+                jQuery(".trezorskorabotenje-vkupnopratki").html(response.length);
+                jQuery.each(response, function (index, item) {
+                    //console.log(item);
+                    jQuery(".trezorskorabotenje-pratki-tabela tbody").append(('<tr pratka_id="' + item.id + '">' +
+                        '<td>' +
+                        '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                        '<a class="info-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/information.png"></a>' +
+                        '</td>' +
+                        '<td><a class="info-tr" href="/index.php/trezor/trezor/downloadkuc/'+ item.id +'"><img width="15" height="15" alt="" src="/images/ppoveke.png"></a> </td>' +
+                        '<td>' + item.brojnaciklusi + '</td>' +
+
+                        '<td>' + item.datum + '</td>' +
+
+                        '<td>' + item.brojnapodatoci + '</td>' +
+                        '<td>' + item.kontrolenzbir + '</td>' +
+                        '<td>' + item.zabeleska + '</td>' +
+                        '</tr>'
+                        ));
+                });
+            }
+            jQuery(".trezorskorabotenje-pratki-tabela").trigger("update");
+        }
+    });
+}
+function trezor_pratkilista_podatoci(filterdata) {
+
+    if (typeof filterdata != "undefined") {
+        var data = filterdata;
+    } else {
+        var data = {};
+    }
+    var formurl = "/index.php/trezor/trezor/popolni_pratki_podatoci";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+
+            //  console.log(response);
+            jQuery(".trezorskorabotenje-pratki-podatoci-tabela tbody").html('');
+            if (response != null) {
+                jQuery(".trezorskorabotenje-pratkipodatoci-vkupnopratki").html(response.length);
+                jQuery.each(response, function (index, item) {
+                    //console.log(item);
+                    jQuery(".trezorskorabotenje-pratki-podatoci-tabela tbody").append(('<tr pratka_id="' + item.pratka_id + '"  item_id="' + item.id + '">' +
+                        '<td>' +
+                        '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                        '<a class="info-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/information.png"></a>' +
+                        '</td>' +
+                        '<td>' + item.smetkanazadolzuvanje + '</td>' +
+                        '<td>' + item.podsmetkanazadolzuvanje + '</td>' +
+                        '<td>' + item.konto + '</td>' +
+                        '<td>' + item.prognazadolzuvanje + '</td>' +
+                        '<td>' + item.cel + '</td>' +
+                        '<td>' + item.sifra + '</td>' +
+                        '<td>' + item.iznos + '</td>' +
+
+                        '<td>' + item.nazivnaprimacot + '</td>' +
+                        '<td>' + item.smetkanaprimacot + '</td>' +
+                        '<td>' + item.podsmetkanaprimacot + '</td>' +
+//                        '<td>' + item.kontonaprimacot + '</td>' +
+//                        '<td>' + item.programanaprimacot + '</td>' +
+                        '<td>' + item.povikuvanjenabrojnaprimacot + '</td>' +
+                        '<td>' + item.vidobrazec + '</td>' +
+                        '<td>' + item.nacin + '</td>' +
+//                        '<td>' + item.edb + '</td>' +
+                        '</tr>'
+                        ));
+                });
+            }
+            jQuery(".trezorskorabotenje-pratki-podatoci-tabela").trigger("update");
+        }
+    });
+}
+function trezor_editpratkapodatoci(id){
+    var formurl = "/index.php/trezor/trezor/editPratkaPodatokView/"+id;
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+//        data: {id: id},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: [20, 20],
+                modal: true,
+                title: "Измени Податок за Пратка",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function trezor_deletepratkapodatoci(id, pratka_id){
+    var formurl = "/index.php/trezor/trezor/deletePratkaPodatok/"+id;
+    jQuery.ajax({
+        url: formurl,
+        dataType: "json",
+        success: function (response) {
+            if(response) {
+                popupmessage("Документот е успешно избришан!!!");
+                trezor_pratkilista_podatoci({id: pratka_id})
+            }
+            else popupmessage("Грешка при бришење на документот !!!");
+        }
+    });
+}
+function trezor_infopratkapodatoci(id) {
+    console.log("info");
+    jQuery.when(trezor_popolnipratkapodatoci(id)).done(function(msg){
+
+        var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+        jQuery("body").append('<div class="' + tempdialog + '"></div>');
+        jQuery('div.' + tempdialog).html(msg);
+        jQuery('div.' + tempdialog).dialog({
+            autoOpen: true,
+            width: "auto",
+            position: [20, 20],
+            modal: true,
+            title: "Информација Податок за Пратка",
+            close: function (event, ui) {
+                jQuery(this).dialog("destroy");
+                jQuery(this).remove();
+            }
+        });
+
+        jQuery('div.edit-trezor-novapratka-podatok').find(".button.snimi-forma").remove();
+        jQuery('div.edit-trezor-novapratka-podatok').find("input").attr('disabled', 'disabled');
+        return 0;
+    });
+}
+function trezor_popolnipratkapodatoci(id){
+    var formurl = "/index.php/trezor/trezor/editPratkaPodatokView/"+id;
+    return jQuery.ajax({
+        url: formurl
+    });
+}

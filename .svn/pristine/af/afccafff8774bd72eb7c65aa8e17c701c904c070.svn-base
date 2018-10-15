@@ -1,0 +1,389 @@
+function  sindikat_polnilista()
+{
+    var formurl = "/index.php/plata_podatoci/sindikat/polnilista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+//                console.log(response);
+            var redenbroj = 1;
+            jQuery(".tabela-sindikati tbody").html('');
+            jQuery.each(response, function (index, item) {
+                jQuery(".tabela-sindikati tbody").append(('<tr sindikat_id="' + item.id + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                    '</td>' +
+                    '<td class="id">' + redenbroj + '</td>' +
+                    '<td class="naziv">' + item.naziv + '</td>' +
+                    '<td class="procent">' + item.procent + '</td>' +
+                    '<td class="zirosmetka">' + item.zirosmetka + '</td>' +
+                    '<td class="podmestka">' + item.podsmetka + '</td>' +
+                    '<td class="konto">' + item.konto + '</td>' +
+                    '</tr>'
+                    ));
+                redenbroj = 1*redenbroj + 1*1;
+            });
+            jQuery(".tabela-sindikati").trigger("update");
+        }
+    });
+}
+function sindikat_nov() {
+    var formurl = "/index.php/plata_podatoci/sindikat/nov_sindikat";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нов синдикат",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function sindikat_izmeni(sindikat_id) {
+    var formurl = "/index.php/plata_podatoci/sindikat/izmeni";
+    var data = {  id: sindikat_id  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени синдикат",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function sindikat_delete(sindikat_id){
+    var r=confirm("Избриши синдикат");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/plata_podatoci/sindikat/delete_sindikat";
+            var data = {  id: sindikat_id  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    sindikat_polnilista();
+                }
+            });
+        }
+    }
+}
+function  pridonesi_polnilista()
+{
+    var formurl = "/index.php/plata_podatoci/pridonesi/polnilista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+            var redenbroj = 1;
+            jQuery(".tabela-pridonesi tbody").html('');
+            jQuery.each(response, function (index, item) {
+                jQuery(".tabela-pridonesi tbody").append(('<tr pridonesi_id="' + item.id + '">' +
+                    '<td>' +
+//                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                    '</td>' +
+                    '<td class="id">' + redenbroj + '</td>' +
+                    '<td class="naziv">' + item.naziv + '</td>' +
+                    '<td class="zirosmetka">' + item.zirosmetka + '</td>' +
+                    '<td class="stapka">' + item.stapka + '</td>' +
+                    '<td class="cel_na_uplata">' + item.cel_na_uplata + '</td>' +
+                    '<td class="povikuvacki_broj">' + item.povikuvacki_broj + '</td>' +
+                    '<td class="banka_id">' + item.banka_id + '</td>' +
+                    '<td class="uplatna_smetka">' + item.uplatna_smetka + '</td>' +
+                    '</tr>'
+                    ));
+                redenbroj = 1*redenbroj + 1*1;
+            });
+            jQuery(".tabela-pridonesi").trigger("update");
+        }
+    });
+}
+function pridones_nov() {
+    var formurl = "/index.php/plata_podatoci/pridonesi/nov_pridones";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нов придонес",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function pridones_izmeni(pridonesi_id) {
+    var formurl = "/index.php/plata_podatoci/pridonesi/izmeni";
+    var data = {  id: pridonesi_id  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени придонес",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function pridones_delete(pridonesi_id){
+    var r=confirm("Избриши придонес");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/plata_podatoci/pridonesi/delete_pridonesi";
+            var data = {  id: pridonesi_id  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    pridonesi_polnilista();
+                }
+            });
+        }
+    }
+}
+function  samopridonesi_polnilista()
+{
+    var formurl = "/index.php/plata_podatoci/samopridonesi/polnilista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+            var redenbroj = 1;
+            jQuery(".tabela-samopridonesi tbody").html('');
+            jQuery.each(response, function (index, item) {
+                jQuery(".tabela-samopridonesi tbody").append(('<tr samopridonesi_id="' + item.id + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                    '</td>' +
+                    '<td class="id">' + redenbroj + '</td>' +
+                    '<td class="naziv">' + item.naziv + '</td>' +
+                    '<td class="procent">' + item.procent + '</td>' +
+                    '</tr>'
+                    ));
+                redenbroj = 1*redenbroj + 1*1;
+            });
+            jQuery(".tabela-samopridonesi").trigger("update");
+        }
+    });
+}
+function samopridones_nov() {
+    var formurl = "/index.php/plata_podatoci/samopridonesi/nov_samopridones";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нов самопридонес",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function samopridones_izmeni(samopridonesi_id) {
+    var formurl = "/index.php/plata_podatoci/samopridonesi/izmeni";
+    var data = {  id: samopridonesi_id  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени самопридонес",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function samopridones_delete(samopridonesi_id){
+    var r=confirm("Избриши самопридонес");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/plata_podatoci/samopridonesi/delete_samopridonesi";
+            var data = {  id: samopridonesi_id  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    samopridonesi_polnilista();
+                }
+            });
+        }
+    }
+}
+function  kreditori_polnilista()
+{
+    var formurl = "/index.php/plata_podatoci/kreditori/polnilista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+            var redenbroj = 1;
+            jQuery(".tabela-kreditori tbody").html('');
+            jQuery.each(response, function (index, item) {
+                jQuery(".tabela-kreditori tbody").append(('<tr kreditor_id="' + item.id + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                    '</td>' +
+                    '<td class="id">' + redenbroj + '</td>' +
+                    '<td class="naziv">' + item.naziv + '</td>' +
+                    '<td class="zirosmetka">' + item.zirosmetka + '</td>' +
+                    '</tr>'
+                    ));
+                redenbroj = 1*redenbroj + 1*1;
+            });
+            jQuery(".tabela-kreditori").trigger("update");
+        }
+    });
+}
+function kreditor_nov() {
+    var formurl = "/index.php/plata_podatoci/kreditori/nov_kreditor";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нов кредитор",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function kreditor_izmeni(kreditor_id) {
+    var formurl = "/index.php/plata_podatoci/kreditori/izmeni";
+    var data = {  id: kreditor_id  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени кредитор",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function kreditor_delete(kreditor_id){
+    var r=confirm("Избриши кредитор");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/plata_podatoci/kreditori/delete_kreditori";
+            var data = {  id: kreditor_id  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    kreditori_polnilista();
+                }
+            });
+        }
+    }
+}

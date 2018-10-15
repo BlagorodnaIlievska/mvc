@@ -1,0 +1,89 @@
+@charset "UTF-8";
+
+* {
+    font-family: "DejaVu Sans Mono";
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+}
+.print_body {
+    margin: 5mm;
+}
+.print_body input,
+.print_body textarea {
+    border: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.hidden {display: none;}
+.print_body input[type="text"] {border-bottom: 1px solid #000 !important; height: 15px; padding: 4px 0 !important; line-height: 15px; }
+.print_body textarea {border-bottom: 1px solid #000 !important;}
+table {border-collapse: collapse !important;width: 100%;margin-top: 30px;}
+.desno-print {text-align: right;white-space: nowrap;}
+.centar-print {text-align: center;}
+h1 {font-size: 26px;text-align: center;width: 100%;}
+.logo-print {width: 190mm;}
+.logo-holder {text-align: center;width: 100%;}
+.logo-holder img {text-align: center;}
+.do-klient {float: right;width: 300px;text-align: right;margin-right: 20px;}
+.do-klient label {margin-right: 10px;}
+.izlezna-header {width: 100%;height:60px;margin-top: 30px;}
+.izlezna-datum {float: left;width: 400px;}
+.vkupno-izlez {width:100%;text-align:right;height: 30px;}
+.informacii_plakjanje input {white-space: nowrap;width:60%;}
+.mestozapotpis {margin-bottom: 30px;}
+.izleznafaktura-od {width: 500px;}
+.potpis-izleznafaktura {width: 33%;height: 50px;float: left;}
+.mp-mp-izleznafaktura {float: left;width: 8%;height: 50px;}
+.nov-artikl .novupat-podmeni li input.osnovosig {width: 212px;white-space: nowrap;}
+textarea {line-height: 20px;}
+.novupat-podmeni .osnovosig {width: 202px !important; }
+.novupat-podmeni .karton {width: 200px !important;}
+input[type="radio"] {display: none;}
+.izjava-container{width: 100% !important;}
+.recepta-fineprint-border {font-family: Helvetica Neue !important;}
+.recepta-column-wrapper {float: none !important;width: auto !important;}
+.recepta-desna-kolona {width: auto !important;float: none; !important;}
+.recepta-fineprint-border {margin-top: -20px !important;}
+.printdisplay {display: block !important; }
+.slika_barkod.printnotdisplay {display: none !important;}
+.recepta-column-wrapper {margin: 0px !important;padding: 0 !important;}
+.recepta-fineprint-border {display: none;}
+.mestozaplavkarton {float: right;}
+.printdisplay {display: none;}
+.printnotdisplay {display: block !important;}
+
+/*Livce za plata print*/
+.livce-za-plata {border: 1px solid #000;}
+.lzp-pecatenona {margin-left: 400px;}
+.lzp-osnovi-podatoci {border-bottom: 1px solid #000;}
+.osnovni-info-levo , .osnovni-info-desno {width: 250px;display: inline-block;padding-left: 10px;}
+.lzp-primanja-zadrskinaslovi{border-bottom: 1px solid #000;border-top: 1px solid #000;}
+.lzp-primanja-naslov {width: 300px;border-right: 1px solid #000;display: inline-block;font-weight: bold;padding-left: 5px;}
+.lzp-zadrski-naslov {width: 300px;display: inline-block;font-weight: bold;padding-left: 5px;}
+.lzp-primanja-info {width: 295px;padding-left: 10px;border-right: 1px solid #000;display: inline-block;}
+.lzp-primanja-info p {display: inline-block;}
+.lzp-3col-1 {width: 150px;display: inline-block;}
+.lzp-3col-1-1 {width: 170px;display: inline-block;white-space: nowrap;}
+.lzp-3col-2 {width: 40px;text-align: center;display: inline-block;}
+.lzp-3col-2-2 {width: 10px;text-align: center;display: inline-block;}
+.lzp-3col-3 {width: 80px;text-align: right;display: inline-block;}
+.lzp-3col-3-neto {width: 150px;text-align: right;display: inline-block;border: 1px solid #000;}
+.lzp-2col-1 {width: 197px;display: inline-block;}
+.lzp-2col-2 {width: 80px;text-align: right;display: inline-block;}
+.lzp-sur {background-color: #e0e0e0;border:1px solid #000;border-right: 0;}
+.zadrski {display: inline-block;width: 300px;}
+.bruto-lzp {padding-left: 10px;}
+.danocno-lzp {margin-left: 300px;}
+.brotoneto-lzp {border-top: 1px solid #000;height: 45px;}
+.brotoneto-lzp-content {padding-left: 10px;display: inline-block;width: 350px;}
+.lzp-neto {display: inline-block;margin-top: 10px;}
+.lzp-neto div strong {font-size: 16px;}
+.bneto {font-size: 16px;font-weight: bold;}
+.lzp-neto {margin-top: 10px;padding-top: 10px;}
+.kredititabela td {text-align: center;}
+.fzomfoot1 {width: 370px;display: inline-block}
+.fzomfoot2 {width: 220px;display: inline-block;}
+.fzomfoot3 {display: inline-block;width: 200px;}
+.text-right {text-align: right;}
+.top-fzom {height: 130px;}

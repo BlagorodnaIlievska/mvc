@@ -1,0 +1,136 @@
+<div class="kasa-glavnalista">
+    <div class="kasalista">
+        <div class="buttoncontainer">
+            <?php if (bis_check_access('kasa_vlez_izlez_nov')): ?>
+            <button class="button" onclick="odliv_priliv_nov()" >Нов</button>
+            <?php endif ?>
+            <?php if (bis_check_access('kasa_vlez_izlez_pecati')): ?>
+            <a href="" target="_blank" class="cmd-printlink-all">
+                <?php endif ?>
+            <?php if (bis_check_access('kasa_vlez_izlez_kasov_izvestaj')): ?>
+                <button type="button" class="print"><span>Касов извештај</span></button>
+            </a>
+                <?php endif ?>
+            <?php if (bis_check_access('kasa_vlez_izlez_baraj')): ?>
+            <button type="button" class="baraj button"><span>Барај</span></button>
+            <?php endif ?>
+            <?php if (bis_check_access('kasa_vlez_izlez_pecati_kasa')): ?>
+    <a href="" target="_blank" class="cmd-printlink"><button type="button" class="print"><span>Печати каса</span></button></a>
+            <?php endif ?>
+        </div>
+        <div class="filtermenukasa">
+            <div class="filter-kasa">
+                <?php if (bis_check_access('kasa_vlez_izlez_filter_period_od_do')): ?>
+                <span>Период од:</span>
+                <? $d=date("Y-m-d");?>
+                <input type="text" class="periodod pregledsostojba" name="periodod" value=<?echo $d;?> >
+                <span style="margin: 0 5px;">до:</span>
+                <input type="text" class="perioddo pregledsostojba" name="perioddo" value=<?echo $d;?> >
+                <?php endif ?>
+    <div class="sostojba">
+            </div>
+                <div class="filter-kasa" >
+                    <?php if (bis_check_access('kasa_vlez_izlez_filter_po_kasa')):
+                    echo form_label('Каса: ','kasa');
+                    echo form_dropdown('kasa',$kasa,'','class="ddkasa pregledsostojba"');
+                    endif;
+                    ?>
+                    <?php if (bis_check_access('kasa_vlez_izlez_prikaz_momentalna_sostojba')): ?>
+                    Моментална состојба : <input type="text" name="sos" class="sos"  readonly="">
+                    <?php endif; ?>
+                </div>
+            </div>
+         </div>
+        <div class="kasatabela">
+        <p class="naslovkasapregled" > ( <span class="vkupnostavki">0</span> ) Преглед на каси</p>
+        <div class="predtabela">
+        <table class="tabela-kasalista">
+            <thead>
+            <tr>
+                <th class="ac"></th>
+                <th class="datum">Датум</th>
+                <th class="broj">Број</th>
+                <th class="klient">Клиент</th>
+                <th class="odliv">Одлив</th>
+                <th class="priliv">Прилив</th>
+                <th class="sostojbakasa hide">Состојба</th>
+                <th class="povik-broj">Повик.број</th>
+                <th class="konto-broj">Конто</th>
+                <th class="namena">Намена</th>
+                <th class="zabeleska">Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    function kasa_getSelektirana(){
+        if ( jQuery(".tabela-kasalista tbody tr.active").attr("kasa_id") > 0 ) {
+            return jQuery(".tabela-kasalista tbody tr.active").attr("kasa_id") ;
+        } else {
+            return 0;
+        }
+    }
+    jQuery(document).ready(function () {
+        //jQuery('.ddkasa').combobox();
+        jQuery('.periodod').datepicker({dateFormat:'dd-mm-yy'});
+        jQuery('.periodod').datepicker('setDate', new Date(2013, 00, 01));
+        jQuery('.perioddo').datepicker({dateFormat:'dd-mm-yy'});
+        jQuery('.perioddo').datepicker('setDate', new Date());
+        jQuery(".baraj").live("click", function () {
+            if (jQuery(".filtermenukasa").hasClass("prikazano")) {
+                jQuery(".filtermenukasa").hide(500);
+                jQuery(".filtermenukasa").removeClass("prikazano");
+            } else {
+                jQuery(".filtermenukasa").show(500);
+                jQuery(".filtermenukasa").addClass("prikazano");
+            }
+        });
+        jQuery(".cmd-printlink").click(function(e){
+            if (kasa_getSelektirana()>0){
+
+                var kasaid = jQuery('.ddkasa option:selected').val();
+                console.log(kasaid) ;
+              //  console.log(kasa_getSelektirana());
+                jQuery(".cmd-printlink").attr("href","/index.php/print/pdf?view=/index.php/kasi/kasi/print_edna_kasa&kasaid="+ kasaid + "&kasa_id="+kasa_getSelektirana());
+            }
+            else {
+                alert("Ве молиме изберете каса");
+                e.preventDefault();
+                return false;
+            }
+        });
+        odliv_priliv_popolnilista();
+        odliv_priliv_popolnisostojba();
+        jQuery(".tabela-kasalista").tablesorter();
+        jQuery(".tabela-kasalista tbody tr").live('click', function () {
+            jQuery(".tabela-kasalista tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+        jQuery(".tabela-kasalista .edit-tr").live('click', function () {
+            odliv_priliv_izmeni(jQuery(this).parent().parent().attr('kasa_id'));
+        });
+        jQuery(".tabela-kasalista .delete-tr").live('click', function () {
+            odliv_priliv_delete(jQuery(this).parent().parent().attr('kasa_id'));
+        });
+        jQuery('.pregledsostojba').live('change', function () {
+            jQuery(".tabela-kasalista").find("tr:gt(1)").remove();
+            var kasaid = jQuery('.ddkasa option:selected').val();
+            var period1 = jQuery('.periodod').val();
+            var period2 = jQuery('.perioddo').val();
+            prebaruvanje(kasaid,period1,period2);
+            sostojba(kasaid,period2);
+        });
+        jQuery(".cmd-printlink-all").click(function(){
+            var kasaid = jQuery('.ddkasa option:selected').val();
+            var period1 = jQuery('.periodod').val();
+            var period2 = jQuery('.perioddo').val();
+            jQuery(".cmd-printlink-all").attr("href","/index.php/print/pdf?view=/index.php/kasi/kasi/print_kasi_tabela&kasaid="+ kasaid + "&period1=" + period1 + "&period2=" + period2);
+        });
+    });
+</script>

@@ -1,0 +1,8 @@
+<div id="edit_vlez_roba_form" class="pop-menu-tabs">
+    <ul>
+        <li><a href="#priemnica">Приемница</a></li>
+        <li><a href="#faktura">Фактура</a></li>
+    </ul>
+    <div id="priemnica"></div>
+    <div id="faktura"></div>
+</div>

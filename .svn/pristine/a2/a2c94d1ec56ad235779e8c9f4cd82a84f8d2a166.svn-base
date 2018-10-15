@@ -1,0 +1,109 @@
+<div class="katalog-glavnalista">
+    <div class="kataloglista">
+        <div class="buttoncontainer">
+            <button class="button" onclick="katalog_nov()">Нов Каталог</button>
+        </div>
+        <table class="tabela-kataloglista">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Име</th>
+                <th>Шифра</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+
+        </table>
+    </div>
+    <div class="podkataloglista">
+        <div class="buttoncontainer">
+            <button class="button" onclick="katalog_novpodkatalog()">Нов ПодКаталог</button>
+        </div>
+        <table class="tabela-podkataloglista">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Име</th>
+                <th>Шифра</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+
+        </table>
+    </div>
+    <div class="clear"></div>
+    <div class="katalogartiklilista">
+        <div class="buttoncontainer">
+            <button class="button" onclick="artikli_nov()">Нов Артикал</button>
+        </div>
+        <table class="tabela-katalogartiklilista">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Шифра</th>
+                <th>Име/Модел</th>
+                <th>Опис</th>
+                <th>Цена</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+
+        </table>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        katalog_popolnilista();
+        jQuery(".tabela-kataloglista").tablesorter();
+        jQuery(".tabela-podkataloglista").tablesorter();
+        jQuery(".tabela-katalogartiklilista").tablesorter();
+        jQuery(".tabela-kataloglista tbody tr").live('click', function () {
+            jQuery(".tabela-kataloglista tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+            katalog_popolnipodlista(jQuery(this).attr("katalog_id"));
+            katalog_popolnikartiklilista(jQuery(this).attr("katalog_id"));
+        });
+        jQuery(".tabela-kataloglista .edit-tr").live('click', function () {
+            katalog_izmeni(jQuery(this).parent().parent().attr('katalog_id'));
+        });
+        jQuery(".tabela-kataloglista .delete-tr").live('click', function () {
+            katalog_delete(jQuery(this).parent().parent().attr('katalog_id'));
+        });
+
+
+        jQuery(".tabela-podkataloglista tbody tr").live('click', function () {
+            jQuery(".tabela-podkataloglista tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+            katalog_popolnikartiklilista(jQuery(this).attr("katalog_id"));
+        });
+        jQuery(".tabela-katalogartiklilista tbody tr").live('click', function () {
+            jQuery(".tabela-katalogartiklilista tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+
+        });
+        jQuery(".tabela-podkataloglista .delete-tr").live('click', function () {
+            katalog_deletepodkatalog(jQuery(this).parent().parent().attr('katalog_id'));
+        });
+        jQuery(".tabela-podkataloglista .edit-tr").live('click', function () {
+            katalog_izmenipodkatalog(jQuery(this).parent().parent().attr('katalog_id'));
+        });
+
+        jQuery(".tabela-katalogartiklilista .edit-tr").live('click', function () {
+            artikli_izmeni(jQuery(this).parent().parent().attr('artikal_id'));
+
+        });
+        jQuery(".tabela-katalogartiklilista .delete-tr").live('click', function () {
+            artikli_delete(jQuery(this).parent().parent().attr('artikal_id'));
+        });
+        jQuery(".tabela-katalogartiklilista .info-tr").live('click', function () {
+            artikli_prikaziartikl(jQuery(this).parent().parent().attr('artikal_id'));
+        });
+
+    });
+</script>

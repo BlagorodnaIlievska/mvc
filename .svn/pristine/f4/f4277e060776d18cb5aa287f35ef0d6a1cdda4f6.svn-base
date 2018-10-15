@@ -1,0 +1,81 @@
+<div id="info_faktura_form">
+
+    <div class="faktura-od-dobavuvac">
+        <p align="left">ЈЗУ ЗА Т,ОБ,АН,РЕАН И ИНТ,ЛЕК И УРГ.ЦЕНТАР - СКОПЈЕ</p>
+        <div class="f-od-dobavuvac broj">
+            <label>Број :</label>
+            <input type="text" class="fakturabroj" name="broj" value="<?= $nalog[0]->broj; ?>">
+        </div>
+
+        <div class="f-od-dobavuvac1 datum">
+            <label>Датум :</label>
+            <input type="text" name="datum" class="fakturadatum" value="<?= $nalog[0]->datum; ?>">
+        </div>
+
+    </div>
+    <br>
+    <br>
+    <br>
+  <div class="stavkipopistabeladiv">
+        <table class="tabela-pecati-nalog" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th>РБ</th>
+                <th>Конто</th>
+                <th>Бр.док</th>
+                <th >Коминтент</th>
+
+                <th>Опис</th>
+                <th>Должи</th>
+                <th>Побарува</th>
+
+            </tr>
+            </thead>
+          <tbody>
+            <?php $stavki = $nalog[0]->stavki; if(is_array($stavki)){ ?>
+                <?php $i=1; $dolzi=0; $pobaruva=0; $saldo=0; foreach($stavki as $stavka): ?>
+
+                <tr>
+                    <td class="redenbr"><?= $i; ?></td>
+                    <td class="sifra"><?= $stavka->konto; ?></td>
+
+                    <td class="stavka"><?= $stavka->broj_dok; ?></td>
+                    <td class="konto"><?= $stavka->komintent; ?></td>
+                    <td class="kolicina centar-print"></td>
+                    <td class="edmerka centar-print"><?= $stavka->dolzi; ?></td>
+                    <td class="cena desno-print"><?= $stavka->pobaruva; ?></td>
+
+                </tr>
+                    <?php $i++;
+                        $dolzi= $dolzi + $stavka->dolzi;
+                        $pobaruva=$pobaruva +$stavka->pobaruva;
+                    ?>
+                    <?php endforeach; ?>
+                <?php };  $saldo=$pobaruva-$dolzi;
+                      ?>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><?= $dolzi; ?></td>
+                <td><?= $pobaruva; ?></td>
+            </tr>
+            <tr>
+                <td>Салдо</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><?= $saldo; ?></td>
+            </tr>
+            </tfoot>
+        </table>
+
+    </div>
+
+</div

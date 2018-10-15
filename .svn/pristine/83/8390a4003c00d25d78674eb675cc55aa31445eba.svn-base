@@ -1,0 +1,28 @@
+<?php  //if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Menu extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function index()
+    {
+        $data['main_content'] = 'covecki_resursi/index_form';
+        $this->load->view('includes/template', $data);
+    }
+
+    public function pregled()
+    {
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+
+        $data['firma']         =$this->covecki_resursi_model->get_firmi();
+        $data['oddel']         =$this->covecki_resursi_model->get_oddeli();
+        $data['pododdel']      =$this->covecki_resursi_model->get_pododdeli();
+        $data['klasifikacija'] =$this->covecki_resursi_model->get_klasifikacii();
+
+        $this->load->view('covecki_resursi/covecki_form', $data);
+    }
+
+}

@@ -1,0 +1,8 @@
+.mkblista  {
+    width: 100%;
+    float: left;
+    margin-top: 10px;
+}
+.mkb-glavnalista .buttoncontainer { margin-top:10px; margin-bottom:10px; }
+.tabela-mkblista tr td {white-space: pre-wrap;}
+.mkbopis {white-space: nowrap !important;overflow: hidden;}

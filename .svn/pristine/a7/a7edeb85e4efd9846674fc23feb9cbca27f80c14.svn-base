@@ -1,0 +1,62 @@
+<div class="lekar-glavnalista">
+    <div class="lekarlista">
+        <?php if (bis_check_access('sistemsko_podesuvanje_bolnicko_rabotenje_sifrarnik_site_lekari_nov_button')): ?>
+            <div class="buttoncontainer">
+                <button class="button" onclick="site_lekari_nov()">Нов</button>
+            </div>
+            <?php endif ?>
+        <div class="predtabela">
+        <table class="tabela-lekarlista">
+            <thead>
+            <tr>
+                <th></th>
+                <th>ИД</th>
+                <th>Ар.бр</th>
+                <th>Д.бр</th>
+                <th>Шифра</th>
+                <th>Назив</th>
+                <th>Единица</th>
+                <th>Дејност</th>
+                <th>Специјалност</th>
+                <th>Адреса</th>
+                <th>Место</th>
+                <th>Факсимил</th>
+                <th>Име</th>
+                <th>Презиме</th>
+                <th>Од</th>
+                <th>До</th>
+                <th>Мед.сестра</th>
+                <th>Име(отс.)</th>
+                <th>Презиме</th>
+                <th>Факсимил</th>
+                <th>Причина за отсуство</th>
+                <th>Замена од</th>
+                <th>Замена до</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+
+        </table>
+            </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        site_lekari_popolnilista();
+        jQuery(".tabela-lekarlista").tablesorter();
+
+        jQuery(".tabela-lekarlista tbody tr").live('click', function () {
+            jQuery(".tabela-lekarlista tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+        jQuery(".tabela-lekarlista .edit-tr").live('click', function () {
+            site_lekari_izmeni(jQuery(this).parent().parent().attr('lekarid'));
+        });
+        jQuery(".tabela-lekarlista .delete-tr").live('click', function () {
+            site_lekari_delete(jQuery(this).parent().parent().attr('lekarid'));
+        });
+
+    });
+</script>

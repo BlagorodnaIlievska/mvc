@@ -1,0 +1,57 @@
+<html>
+<head>
+
+</head>
+<body>
+<p align='center'>Lista na sumi po klienti</p>
+<table  border='1'   width='150' height='60' align='center' >
+    <tr>
+        <td>Klient.</td>
+        <td>Osnova.</td>
+        <td>Ddv</td>
+        <td>Vkupno</td>
+
+    </tr>
+
+    <?php
+    $reden=1;
+    $o=0;
+    $d=0;
+    $v=0;
+    if(isset($q)){
+        foreach($q as $row){
+
+            echo "<tr>" ;
+            echo "<td width='20'>" . $row->firmaIme . "</td>";
+            echo "<td width='60'>" .$row->osnova."</td>";
+            echo "<td width='60'>".$row->ddv. "</td>";
+            echo "<td width='60'>" .$row->vkupno."</td>";
+
+
+
+            $reden=$reden+1;
+            $o+=$row->osnova;
+            $d+=$row->ddv;
+            $v+=$row->vkupno;
+
+            //$b+=$bezddv;
+            echo " </tr>";
+
+        }
+    }
+
+    ?>
+
+</table>
+<br>
+<br>
+<br>
+<p class="doleLevo">
+    <? echo 'Osnova vkupno  :'.$o;?>
+    <br>
+    <? echo 'Ddv vkupno :'.$d;?>
+    <br>
+   <? echo 'Vkupno :'.$v;?>
+</p>
+</body>
+</html>

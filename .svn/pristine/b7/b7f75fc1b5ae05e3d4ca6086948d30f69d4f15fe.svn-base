@@ -1,0 +1,21 @@
+<div id="index" class="main-menu-tabs">
+    <ul>
+        <?php if (bis_check_access('izvodi_pregled_izvodi_tab')): ?>
+            <li><a href="/index.php/izvodi/menu/pregled_izvodi">Преглед на изводи</a></li>
+        <?php endif ?>
+        <?php if (bis_check_access('izvodi_prebaruvanje_izvodi_tab')): ?>
+            <li><a href="/index.php/izvodi/menu/prebaruvanje">Пребарување на изводи</a></li>
+        <?php endif ?>
+<!--        <li><a href="/index.php/izvodi/menu/fin_grupiranje">Фин. групирање</a></li>-->
+    </ul>
+</div>
+
+<script>
+//    jQuery(document).ready(function() {
+//        jQuery('.main-menu-tabs').tabs({
+//            cache: true,
+//            ajaxOptions: {
+//                type: "POST"
+//            }});
+//    });
+</script>

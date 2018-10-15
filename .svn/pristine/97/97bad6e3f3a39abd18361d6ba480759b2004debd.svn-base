@@ -1,0 +1,68 @@
+<br/>
+<p><h3 style="text-align: center">Листа на суми по клиент (на сите клиенти)</h3></p>
+<br/>
+<br/>
+<p style="text-align: left">Период од: <?php echo $periodod; ?></p>
+<p style="text-align: left">Период до: <?php echo $perioddo; ?></p>
+<br/>
+<br/>
+<div class="prikaz">
+    <p class="naslovperiod"> ( <span class="vkupnostavki"><?= count($klienti, COUNT_NORMAL)  ?></span> ) во листа</p>
+
+    <div class="predtabela">
+        <table class="tperiodklienti" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th>Клиент</th>
+                <th class="vkupno">Вкупно</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <?php
+            $vkupno_vk = 0;
+             foreach($klienti as $klient){
+                ?>
+            <tr class='trow'>
+                <?php
+                $vk = 0; $klientot = '';
+                if(property_exists($klient, 'vkupno')){
+
+                    $vk = $klient->vkupno;
+                }else if(property_exists($klient, 'pacientIznos')){
+                    $vk = $klient->pacientIznos;
+                }
+
+
+
+                if(property_exists($klient, 'firmaIme')){
+                    $klientot = $klient->firmaIme;
+                }elseif(property_exists($klient, 'pacientIme') && property_exists($klient, 'pacientTatkovoIme') && property_exists($klient, 'pacientPrezime')){
+                    $klientot = $klient->pacientIme . ' ' . $klient->pacientTatkovoIme . ' ' . $klient->pacientPrezime;
+                }
+
+?>
+                    <td class="klient"><?php echo $klientot; ?></td>
+                    <td class="vkupno"><?php echo $vk; ?></td>
+
+ </tr>
+                <?php
+$vkupno_vk += $vk;
+            } ?>
+
+            </tbody>
+        </table>
+    </div>
+    <table class="sumiranje sumklienti">
+        <tfoot>
+        <tr>
+            <td class="vkupnolabel" style="width:300px;">Вкупно:</td>
+
+            <td class="vkupnovkupno" style="width:104px;"><?= $vkupno_vk ?></td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<style type="text/css">
+    th {background-color: transparent !important;}
+</style>

@@ -1,0 +1,2537 @@
+<?php
+
+class Pacienti_model extends CI_Model
+{
+
+    public function proveridalipostoiPacient($embg)
+    {
+        $this->db->from("bis_pacienti");
+        $this->db->where("embg", $embg);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function updatePacientPriem($data)
+    {
+        $data['firma_id'] = $this->session->userdata('firma_id');
+        $data['doktor_id'] = $this->session->userdata('doktor_id');
+        $data['priem_datum'] = bis_convert_date_mk_to_usa($data['priem_datum']);
+        $data['vaznost_na_upat'] = bis_convert_date_mk_to_usa($data['vaznost_na_upat']);
+        $id=$data['update_id'];
+        unset($data['update_id']);
+        $this->db->where("id", $id);
+        $insert = $this->db->update('bis_pacienti_priem', $data);
+
+        return $insert;
+
+    }
+    public function getPacienti($filter = '')    //ne filtrira po maticen
+    {
+        if (is_array($filter)) {
+            //  $this->db->from();
+            foreach ($filter as $key => $val) {
+                if ($val == "") unset($filter[$key]);
+            }
+           $this->db->order_by("id", "DESC");
+       //    print_r($filter); die();
+            $query = $this->db->get_where("bis_pacienti", $filter);
+
+            // echo "array";
+            //  print_r($query);   die();
+        } else {
+            $this->db->from("bis_pacienti");
+            $this->db->order_by("id", "DESC");
+            // echo "obicno";
+            $query = $this->db->get();
+        }
+
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+
+    public function getPacienti_test($embg,$broj_zdravstvena_legitimacija,$datum_ragjanje,$ezbo,$ime,$pol,$prezime,$tatkovoime)    //ne filtrira po maticen
+    {
+        $this->db->select('*');
+        $this->db->from('bis_pacienti');
+        if(isset($embg)) $this->db->like('embg',$embg,'after');
+        if(isset($broj_zdravstvena_legitimacija)) $this->db->like('br_zdravstvena_legitimacija',$broj_zdravstvena_legitimacija,'after');
+       //if(isset($datum_ragjanje)) $this->db->where('datum_na_raganje',$datum_ragjanje);
+         if(isset($ezbo)) $this->db->like('ezbo',$ezbo,'after');
+       if(isset($ime)) $this->db->like('ime',$ime,'after');
+        if(isset($pol)) $this->db->like('pol',$pol,'after');
+       if(isset($prezime)) $this->db->like('prezime',$prezime,'after');
+        if(isset($tatkovoime)) $this->db->like('tatkovoime',$tatkovoime,'after');
+        $query=$this->db->get();
+
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+
+    public function getPacient($id)
+    {
+        $this->db->from("bis_pacienti");
+        $this->db->where("id", $id);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $tempquery = $query->result();
+            return $tempquery[0];
+        }
+    }
+
+    public function updatePacient($id, $data)
+    {
+        $data['datum_na_raganje'] = bis_convert_date_mk_to_usa($data['datum_na_raganje']);
+        $this->db->where("id", $id);
+        $this->db->update("bis_pacienti", $data);
+    }
+
+    public function getPacient2($id)
+    {
+        $this->db->select('bis_pacienti.ime, bis_pacienti.prezime, bis_pacienti.datum_na_raganje, bis_pacienti.pol, bis_pacienti.ulica, bis_pacienti.broj_na_kuka');
+        $this->db->from("bis_pacienti_priem");
+        $this->db->where("bis_pacienti_priem.id", $id);
+        $this->db->join('bis_pacienti', 'bis_pacienti_priem.pacient_id=bis_pacienti.id');
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $tempquery = $query->result();
+            return $tempquery[0];
+        }
+    }
+
+    public function getVleznoDsg($id)
+    {
+        $this->db->select('bis_pacienti_priem.ima_vlezno_dsg as imaVleznoDsg,
+                           bis_pacienti_priem.vlezno_dsg_id as vleznoDsgId,
+                           dsg_uslugi.naziv as vleznoDsgNaziv
+                          ');
+        $this->db->from("bis_pacienti_priem");
+        $this->db->join('dsg_uslugi', 'bis_pacienti_priem.vlezno_dsg_id=dsg_uslugi.id');
+        $this->db->where("bis_pacienti_priem.id", $id);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $tempquery = $query->result();
+            return $tempquery[0];
+        }
+    }
+
+    public function getPacientOsig($id)
+    {
+        $this->db->from("bis_pacienti_osig");
+        $this->db->where("pacient_id", $id);
+        $this->db->limit(1, 0);
+        $this->db->order_by("id", "DESC");
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $tempquery = $query->result();
+            return $tempquery[0];
+        } else {
+            return '';
+        }
+    }
+
+    public function getPacientPriemi($id)
+    {
+        $this->db->from("bis_pacienti_priem");
+        $this->db->where("pacient_id", $id);
+        $this->db->where("priem_status !=", 40);
+//        $this->db->limit(1, 0);
+        $this->db->order_by("id", "DESC");
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $tempquery = $query->result();
+            return $tempquery;
+        }
+    }
+
+    public function getPacientPriemiIstorija($id)
+    {
+        $this->db->from("bis_pacienti_priem");
+        $this->db->where("pacient_id", $id);
+        $this->db->where("priem_status !=", 40);
+//        $this->db->limit(1, 0);
+        $this->db->order_by("id", "DESC");
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $tempquery = $query->result();
+            return $tempquery;
+        }
+    }
+
+    public function getPriemi($firma)
+    {
+        $this->db->select("bis_pacienti_priem.*, bis_pacienti.ime,
+                           bis_pacienti.prezime, bis_pacienti.tatkovoime,
+                           bis_pacienti.datum_na_raganje,
+                           bis_pacienti.br_zdravstvena_legitimacija,
+                           bis_firmi.upaten_vo as upaten_vo,
+                           bis_firmi.ime as pod_oddel_ime,
+                           bis_osnov_na_osiguruvanje.sifra as tip_na_osiguruvanje
+                           ");
+        $this->db->from("bis_pacienti_priem");
+        $this->db->where("priem_status !=", 40);
+        //$this->db->where("priem_status !=", 50);
+        $this->db->where("deleted", 0);
+        $this->db->where("bis_pacienti_priem.firma_id",$firma);
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->join("bis_firmi", "bis_pacienti_priem.pod_oddel=bis_firmi.id", "left");
+        $this->db->join("bis_osnov_na_osiguruvanje", "bis_pacienti_priem.participacija=bis_osnov_na_osiguruvanje.id", "left");
+        $this->db->order_by("id", "DESC");
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $tempquery = $query->result();
+            $this->load->model("covecki_resursi/covecki_resursi_model");
+            $this->load->model("start/start_model");
+            foreach ($tempquery as $key => $row) {
+                $tempquery[$key]->doktor = $this->covecki_resursi_model->getDoktorImePrezime($row->doktor_id);
+                $tempquery[$key]->firma_ime = $this->start_model->getFirmaIme($row->firma_id);
+                $tempquery[$key]->pod_oddel_ime = $this->start_model->getFirmaIme($row->pod_oddel);
+            }
+            return $tempquery;
+        }
+    }
+
+    public function getPriemid($id)
+    {
+        $this->db->select("bis_pacienti_priem.*, bis_pacienti.ime, bis_pacienti.prezime, bis_pacienti.tatkovoime,  bis_pacienti.datum_na_raganje,  bis_pacienti.br_zdravstvena_legitimacija");
+        $this->db->from("bis_pacienti_priem");
+//        $this->db->where("priem_status !=", 40);
+//        $this->db->where("priem_status !=", 50);
+        $this->db->where("bis_pacienti_priem.id", $id);
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->order_by("bis_pacienti_priem.id", "DESC");
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $tempquery = $query->result();
+            $this->load->model("covecki_resursi/covecki_resursi_model");
+            $this->load->model("start/start_model");
+            foreach ($tempquery as $key => $row) {
+                $tempquery[$key]->doktor = $this->covecki_resursi_model->getDoktorImePrezime($row->doktor_id);
+                $tempquery[$key]->firma_ime = $this->start_model->getFirmaIme($row->firma_id);
+            }
+            return $tempquery;
+        }
+    }
+    public function delete_priem($id)
+    {
+        $data['deleted'] = 1;
+        $this->db->where("id", $id);
+        $delete = $this->db->update('bis_pacienti_priem', $data);
+        return $delete;
+    }
+
+    public function proveriDaliPlatenoLekuvanje($fakturi)
+    {
+        $niza_fakturi = explode(",", $fakturi);
+//        bis_debug($niza_fakturi, "niza");
+        $flag = true;
+
+        foreach($niza_fakturi as $faktura)
+        {
+            $this->db->select("stavka.flagStatus");
+            $this->db->from("stavka");
+            $this->db->where("stavka.ID", $faktura);
+            $query = $this->db->get();
+            if($query->num_rows > 0)
+            {
+                $result = $query->result();
+                if($result[0]->flagStatus == 0) $flag = false;
+            }
+        }
+        return $flag;
+    }
+    public function getShalterPriemi($data)
+    {
+        /*
+         * 40 - ne fakturirani
+         * 50 - fakturirani
+         * 0 - bez status, ne zatvoreno ( site )
+         *
+         */
+        $niza = array(0, 40, 50);
+        $this->db->select("bis_pacienti_priem.*, bis_pacienti.ime, bis_pacienti.prezime,
+                           bis_pacienti.tatkovoime,  bis_pacienti.datum_na_raganje,
+                           bis_pacienti.br_zdravstvena_legitimacija,
+                           bis_firmi.upaten_vo as upaten_vo,
+                           bis_firmi.ime as pod_oddel_ime,
+                           bis_osnov_na_osiguruvanje.sifra as tip_na_osiguruvanje
+                   ");
+        $this->db->from("bis_pacienti_priem");
+        $this->db->where("bis_pacienti_priem.deleted", 0);
+        $this->db->where('bis_pacienti_priem.firma_id',$data['izbrana_firma']) ;
+        if ($data['priem_status'] == 0) {
+        } elseif ($data['priem_status'] == 50) {
+            $this->db->where("bis_pacienti_priem.priem_status", 50);
+
+        } elseif ($data['priem_status'] == 40) {
+            $this->db->where("bis_pacienti_priem.priem_status <=", 40);
+
+        }
+
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->join("bis_firmi", "bis_pacienti_priem.pod_oddel=bis_firmi.id", "left");
+        $this->db->join("bis_osnov_na_osiguruvanje", "bis_pacienti_priem.participacija=bis_osnov_na_osiguruvanje.id", "left");
+        $this->db->order_by("id", "DESC");
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $tempquery = $query->result();
+            $this->load->model("covecki_resursi/covecki_resursi_model");
+            $this->load->model("start/start_model");
+            foreach ($tempquery as $key => $row) {
+                $tempquery[$key]->doktor = $this->covecki_resursi_model->getDoktorImePrezime($row->doktor_id);
+                $tempquery[$key]->firma_ime = $this->start_model->getFirmaIme($row->firma_id);
+                if($row->priem_status == 50) $tempquery[$key]->plateno_lekuvanje = $this->proveriDaliPlatenoLekuvanje($row->faktura_id);
+                else $tempquery[$key]->plateno_lekuvanje = 0;
+            }
+            return $tempquery;
+        }
+    }
+    public function getShalterPriemiFondovski($data)
+    {
+        /*
+         * 40 - ne fakturirani
+         * 50 - fakturirani
+         * 0 - bez status, ne zatvoreno ( site )
+         *
+         */
+        $niza = array(1, 2, 3);
+        $this->db->select("bis_pacienti_priem.*, bis_pacienti.ime, bis_pacienti.prezime, bis_pacienti.tatkovoime,
+                           bis_pacienti.datum_na_raganje,  bis_pacienti.br_zdravstvena_legitimacija,
+                           bis_osnov_na_osiguruvanje.participacija_id, bis_firmi.ime as podOddel
+                           ");
+        $this->db->from("bis_pacienti_priem");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->join("bis_osnov_na_osiguruvanje", "bis_osnov_na_osiguruvanje.id=bis_pacienti_priem.participacija");
+        $this->db->join("bis_firmi", "bis_firmi.id=bis_pacienti_priem.pod_oddel");
+        if ($data['status'] == 2) {
+            $this->db->join("stavka", "bis_pacienti_priem.id=stavka.lekuvanje_id", "left");
+            $this->db->where("stavka.flagStatus", 1);
+            $this->db->where("stavka.lekuvanje_fakturirano_za", 1);
+        }   elseif ($data['status'] == 3) {
+            $this->db->join("stavka", "bis_pacienti_priem.id=stavka.lekuvanje_id", "left");
+            $this->db->where("stavka.flagStatus", 0);
+            $this->db->where("stavka.lekuvanje_fakturirano_za", 1);
+        }
+        $this->db->where("bis_pacienti_priem.priem_status", 50);
+        $this->db->where("bis_pacienti_priem.firma_id", $data['izbrana_firma']);
+        $this->db->where_in("bis_osnov_na_osiguruvanje.participacija_id", $niza);
+        $this->db->order_by("id", "DESC");
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $tempquery = $query->result();
+            $this->load->model("covecki_resursi/covecki_resursi_model");
+            $this->load->model("start/start_model");
+            foreach ($tempquery as $key => $row) {
+                $tempquery[$key]->doktor = $this->covecki_resursi_model->getDoktorImePrezime($row->doktor_id);
+                $tempquery[$key]->firma_ime = $this->start_model->getFirmaIme($row->firma_id);
+                $tempquery[$key]->fond_trosok = $this->getFondovskiTrosokCena($row->id);
+                $tempquery[$key]->realen_trosok = $this->getRealenTrosokCena($row->id);
+                $tempquery[$key]->naplateni_paketi = $this->getNaplateniPaketi($row->id);
+            }
+            return $tempquery;
+        }
+    }
+
+    public function getShalterFakturirani()
+    {
+        $this->db->select("bis_pacienti_priem.*, bis_pacienti.ime, bis_pacienti.prezime, bis_pacienti.tatkovoime,  bis_pacienti.datum_na_raganje,  bis_pacienti.br_zdravstvena_legitimacija");
+        $this->db->from("bis_pacienti_priem");
+        $this->db->where("bis_pacienti_priem.priem_status", 50);
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id");
+        $this->db->order_by("id", "DESC");
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $tempquery = $query->result();
+            $this->load->model("covecki_resursi/covecki_resursi_model");
+            $this->load->model("start/start_model");
+            foreach ($tempquery as $key => $row) {
+                $tempquery[$key]->doktor = $this->covecki_resursi_model->getDoktorImePrezime($row->doktor_id);
+                $tempquery[$key]->firma_ime = $this->start_model->getFirmaIme($row->firma_id);
+            }
+            return $tempquery;
+        }
+    }
+
+
+    public function getPriemiIstorija()
+    {
+        $this->db->from("bis_pacienti_priem");
+        $this->db->where("priem_status !=", 40);
+        $this->db->order_by("id", "DESC");
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $tempquery = $query->result();
+            return $tempquery;
+        }
+    }
+
+    public function getPregledi($priem_id)
+    {
+        $this->db->from("bis_pacienti_pregledi");
+        $this->db->where("priem_id", $priem_id);
+        $this->db->order_by("id", "DESC");
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $tempquery = $query->result();
+            $this->load->model("covecki_resursi/covecki_resursi_model");
+            $this->load->model("start/start_model");
+            foreach ($tempquery as $key => $row) {
+                $tempquery[$key]->doktor = $this->covecki_resursi_model->getDoktorImePrezime($row->doktor_id);
+                $tempquery[$key]->firma_ime = $this->start_model->getFirmaIme($row->firma_id);
+            }
+            return $tempquery;
+        }
+    }
+
+    function getPreglediDijagnozi($priem_id)
+    {
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->where("priem_id", $priem_id);
+        $this->db->order_by("id", "DESC");
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $tempquery = $query->result();
+            $this->load->model("covecki_resursi/covecki_resursi_model");
+            $this->load->model("start/start_model");
+            foreach ($tempquery as $key => $row) {
+                $tempquery[$key]->doktor = $this->covecki_resursi_model->getDoktorImePrezime($row->doktor_id);
+                $tempquery[$key]->firma_ime = $this->start_model->getFirmaIme($row->firma_id);
+            }
+            return $tempquery;
+        }
+    }
+
+    function getPregled($id)
+    {
+        $this->db->from("bis_pacienti_pregledi_dijagnoza");
+        $this->db->where("id", $id);
+        $query = $this->db->get();
+        if ($query->num_rows() == 1) {
+            $tempquery = $query->result();
+            $this->load->model("covecki_resursi/covecki_resursi_model");
+            $this->load->model("start/start_model");
+            foreach ($tempquery as $key => $row) {
+                $tempquery[$key]->doktor = $this->covecki_resursi_model->getDoktorImePrezime($row->doktor_id);
+                $tempquery[$key]->firma_ime = $this->start_model->getFirmaIme($row->firma_id);
+                $tempquery[$key]->dijagnozi = $this->getDijagnoziByPregled($id);
+                $tempquery[$key]->uslugi = $this->getUslugiByPregled($id);
+                $tempquery[$key]->dop_uslugi = $this->getDopUslugiByPregled($id);
+                $tempquery[$key]->terapija = $this->getTerapijaByPregled($id);
+                $tempquery[$key]->potroseni_materijali = $this->getPotMaterijaliByPregled($id);
+                $tempquery[$key]->recepti = $this->getReceptiByPregled($id);
+            }
+            return $tempquery[0];
+        }
+    }
+
+    public function getUslugiByPregled($pregled_id)
+    {
+        $this->db->where('pregled_id', $pregled_id);
+        $query = $this->db->get('bis_pregledi_paketi');
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            foreach ($result as $key => $row) {
+                if ($row->paket_id > 0) {
+                    if ($row->cenovnik == 1) $paket = $this->getPaketInfo($row->paket_id);
+                    if ($row->cenovnik == 2) $paket = $this->getPaketInfoDsg($row->paket_id);
+                    if ($row->cenovnik == 3) $paket = $this->getPaketInfoDb($row->paket_id);
+                    if ($row->cenovnik == 4) $paket = $this->getPaketInfoSpec($row->paket_id);
+                    $result[$key]->paketInfo = $paket;
+                }
+            }
+            return $result;
+        } else return false;
+    }
+
+    public function getDopUslugiByPregled($pregled_id)
+    {
+        $this->db->select('bis_pregledi_paketi_dopolnitelni.*, paketi.naziv as naziv, paketi.sifra as sifra');
+        $this->db->from('bis_pregledi_paketi_dopolnitelni');
+        $this->db->join('paketi', 'bis_pregledi_paketi_dopolnitelni.paket_id = paketi.id', 'left');
+        $this->db->where('bis_pregledi_paketi_dopolnitelni.pregled_id', $pregled_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            foreach ($result as $key => $row) {
+                if ($row->paket_id > 0) {
+                    if ($row->cenovnik == 1) $paket = $this->getPaketInfo($row->paket_id);
+                    if ($row->cenovnik == 2) $paket = $this->getPaketInfoDsg($row->paket_id);
+                    if ($row->cenovnik == 3) $paket = $this->getPaketInfoDb($row->paket_id);
+                    if ($row->cenovnik == 4) $paket = $this->getPaketInfoSpec($row->paket_id);
+                    $result[$key]->paketInfo = $paket;
+                }
+            }
+            return $result;
+        } else return false;
+    }
+
+    public function getTerapijaByPregled($pregled_id)
+    {
+        $this->db->where('pregled_id', $pregled_id);
+        $query = $this->db->get('bis_pregledi_lekovi');
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result;
+        } else return false;
+    }
+    public function getBolnickiDenoviByPregled($pregled_id)
+    {
+        $this->db->select('bis_pregledi_bolnicki_denovi.*,
+                            bolnicki_denovi_stacionar.sifra as sifra,
+                            bolnicki_denovi_stacionar.naziv as naziv');
+        $this->db->from('bis_pregledi_bolnicki_denovi');
+        $this->db->join('bolnicki_denovi_stacionar', 'bis_pregledi_bolnicki_denovi.bolnicki_denovi_id = bolnicki_denovi_stacionar.id', 'left');
+        $this->db->where('pregled_id', $pregled_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result;
+        } else return false;
+    }
+
+
+    public function getIzvrseniUslugi($pregled_id)
+    {
+        $this->db->select('bis_pregledi_paketi_2.*, paketi.naziv as naziv, paketi.sifra as sifra');
+        $this->db->from('bis_pregledi_paketi_2');
+        $this->db->join('paketi', 'bis_pregledi_paketi_2.paket_id = paketi.id', 'left');
+        $this->db->where('bis_pregledi_paketi_2.pregled_id', $pregled_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result;
+        }
+        else return false;
+    }
+
+    public function getDijagnoziByPregled($pregled_id)
+    {
+        $this->db->select('bis_pregledi_dijagnoza.id as dbid, bis_pregledi_dijagnoza.*, bis_mkb_10.*');
+        $this->db->from('bis_pregledi_dijagnoza');
+        $this->db->join('bis_mkb_10', 'bis_pregledi_dijagnoza.dijagnoza = bis_mkb_10.id', 'left');
+        $this->db->where('bis_pregledi_dijagnoza.pregled_id', $pregled_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result;
+        } else return false;
+    }
+
+    public function getUpatnaDijagnoza($dijagnoza_id)
+    {
+        $this->db->where('id', $dijagnoza_id);
+        $query = $this->db->get('bis_mkb_10');
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            return $result[0];
+        } else return false;
+    }
+
+    public function getUpatnaDijagnozaZaPriem($priem_id)
+    {
+        $this->db->select('bis_mkb_10.*');
+        $this->db->where('bis_pacienti_pregledi_dijagnoza.priem_id', $priem_id);
+        $this->db->from('bis_pacienti_pregledi_dijagnoza');
+        $this->db->join('bis_mkb_10', 'bis_pacienti_pregledi_dijagnoza.dijagnoza_upatna=bis_mkb_10.id');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result[0];
+        } else return false;
+    }
+
+    public function getPotMaterijaliByPregled($pregled_id)
+    {
+        $this->db->select('
+                    bis_pregledi_materijali.*,
+                    s1.S1Ime as artiklIme,
+                    s1.sifra as artiklSifra,
+                    bis_magacin.ime as magacinIme
+        ');
+        $this->db->from('bis_pregledi_materijali');
+        $this->db->join('s1', 'bis_pregledi_materijali.artikal_id = s1.SID', 'left');
+        $this->db->join('bis_magacin', 'bis_pregledi_materijali.magacin_id = bis_magacin.id', 'left');
+        $this->db->where('pregled_id', $pregled_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result;
+        } else return false;
+    }
+
+    public function getReceptiByPregled($pregled_id)
+    {
+        $this->db->where('pregled_id', $pregled_id);
+        $query = $this->db->get('bis_pregledi_recepti');
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result;
+        } else return false;
+    }
+
+    public function nov($data)
+    {
+        if ($this->proveridalipostoiPacient($data['embg'])) {
+            return "vekepostoi";
+        }
+        $data['datum_na_raganje'] = bis_convert_date_mk_to_usa($data['datum_na_raganje']);
+        $insert = $this->db->insert('bis_pacienti', $data);
+        return $insert;
+    }
+
+    public function izbrisi($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_pacienti');
+    }
+
+    public function vnesiPacientOsig($data)
+    {
+        $insert = $this->db->insert('bis_pacienti_osig', $data);
+        if ($insert) $id = $this->db->insert_id();
+        return $id;
+    }
+    public function updatePacientOsig($id, $data)
+    {
+        $this->db->where('id', $id);
+        $this->db->update('bis_pacienti_osig', $data);
+        return true;
+    }
+
+    public function vnesiPacientPridruznik($data)
+    {
+        if($data['ime'])
+        {
+            unset($data['ima_pridruznik']);
+            $insert = $this->db->insert('bis_pacienti_pridruznik', $data);
+            if ($insert) $id = $this->db->insert_id();
+        }
+        else $id = 0;
+        return $id;
+    }
+    public function updatePacientPridruznik($id, $data)
+    {
+        $priem_id = $data['priem_id'];
+        unset($data['priem_id']);
+        if(isset($data['ima_pridruznik']))
+        {
+            unset($data['ima_pridruznik']);
+            if($id==0)
+            {
+                $insert = $this->db->insert('bis_pacienti_pridruznik', $data);
+                if ($insert) $insert_id = $this->db->insert_id();
+                $this->updatePriemPridruznik($priem_id, $insert_id);
+                return $insert_id;
+            }
+            else{
+                $this->db->where('id', $id);
+                $this->db->update('bis_pacienti_pridruznik', $data);
+                return true;
+            }
+        }
+        else {
+            $this->updatePriemPridruznik($priem_id, 0);
+            return false;
+        }
+    }
+    public function updatePriemPridruznik($priem_id, $pridruznik_id)
+    {
+        $data['pridruznik_id'] = $pridruznik_id;
+        $this->db->where('id', $priem_id);
+        $this->db->update('bis_pacienti_priem', $data);
+        return true;
+    }
+
+    public function vnesiPacientPriem($data)
+    {
+        if(isset($data['donesen_so_brza_pomos'])) $data['donesen_so_brza_pomos']=1;
+        $data['firma_id'] = $this->session->userdata('firma_id');
+        $data['doktor_id'] = $this->session->userdata('doktor_id');
+        $data['priem_datum'] = bis_convert_date_mk_to_usa($data['priem_datum']);
+        if (isset($data['vaznost_na_upat'])){
+            $data['vaznost_na_upat'] = bis_convert_date_mk_to_usa($data['vaznost_na_upat']);
+        }
+
+
+        $insert = $this->db->insert('bis_pacienti_priem', $data);
+        if ($insert) {
+            $lastbroj = $this->getLastPriemBroj();
+            $newbroj = $lastbroj + 1;
+            $this->incrementPriemBroj($newbroj);
+            $this->incrementPodOddelBrojVoDnevnik($data['pod_oddel'], $data['broj_vo_dnevnik']);
+        }
+        return $insert;
+    }
+
+    public function vnesiPacientKontakt($id, $data)
+    {
+        $this->db->where("id", $id);
+        $this->db->update('bis_pacienti', $data);
+        return true;
+    }
+
+    public function updatepregleddijagnoza($data)
+    {
+        $participacija = $data['participacija_id'];
+        $dijagnoza = (isset($data['dijagnoza']) ? $data['dijagnoza'] : "");
+        $lekovi = (isset($data['lekovi']) ? $data['lekovi'] : "");
+        $potrosenmaterijal = (isset($data['potrosenmaterijal']) ? $data['potrosenmaterijal'] : "");
+        $recepti = (isset($data['recepti']) ? $data['recepti'] : "");
+        $paketi = (isset($data['paketi']) ? $data['paketi'] : "");
+        $paketi2 = (isset($data['paketi2']) ? $data['paketi2'] : "");
+        $paketi_dopolnitelni = (isset($data['paketi-dopolnitelni']) ? $data['paketi-dopolnitelni'] : "");
+        $bolnicki_denovi = (isset($data['bolnicki_denovi']) ? $data['bolnicki_denovi'] : "");
+        $pregled_id = $data['update_id'];
+        $priem_id = $data['priem_id'];
+
+        unset($data['potrosenmaterijal']);
+        unset($data['recepti']);
+        unset($data['lekovi']);
+        unset($data['dijagnoza']);
+        unset($data['paketi']);
+        unset($data['paketi2']);
+        unset($data['paketi-dopolnitelni']);
+        unset($data['participacija_id']);
+        unset($data['update_id']);
+        unset($data['bolnicki_denovi']);
+        $data['firma_id'] = $this->session->userdata('firma_id');
+        $data['doktor_id'] = $this->session->userdata('doktor_id');
+        $data['pregled_datum'] = date("Y-m-d");
+        $this->db->where('id', $pregled_id);
+        $insert = $this->db->update('bis_pacienti_pregledi_dijagnoza', $data);
+
+        if (is_array($lekovi)) {
+            if (count($lekovi) > 0) {
+                foreach ($lekovi as $lek) {
+                    if (isset($lek['delete'])) {
+                        if ($lek['delete'] == 1) $this->deletepregled_lekovi($lek['id']);
+                        elseif($lek['delete'] == 0) $this->updatepregled_lekovi($pregled_id, $priem_id, $lek);
+                    } else $this->zacuvajpregled_lekovi($pregled_id, $priem_id, $lek);
+                }
+            }
+        }
+        if (is_array($potrosenmaterijal)) {
+            if (count($potrosenmaterijal) > 0) {
+                foreach ($potrosenmaterijal as $materijal) {
+                    if (isset($materijal['delete'])) {
+                        if ($materijal['delete'] == 1) $this->deletepregled_potrosenmaterijal($materijal['id']);
+                        elseif($materijal['delete'] == 0) $this->updatepregled_potrosenmaterijal($pregled_id, $priem_id, $materijal);
+                    } elseif($materijal['artikal_id']) $this->zacuvajpregled_potrosenmaterijal($pregled_id, $priem_id, $materijal);
+                }
+
+            }
+        }
+        if (is_array($recepti)) {
+            if (count($recepti) > 0) {
+                foreach ($recepti as $recepta) {
+                    if (isset($recepta['delete'])) {
+                        if ($recepta['delete'] == 1) $this->deletepregled_recepti($recepta['id']);
+                        elseif($recepta['delete'] == 0) $this->updatepregled_recepti($recepta);
+                    } else $this->zacuvajpregled_recepti($pregled_id, $recepta);
+                }
+            }
+        }
+        if (is_array($dijagnoza)) {
+            if (count($dijagnoza) > 0) {
+                foreach ($dijagnoza as $dijag) {
+                    if (isset($dijag['delete'])) {
+                        if ($dijag['delete'] == 1) $this->deletepregled_dijagnoza($dijag['id']);
+                        elseif($dijag['delete'] == 0) $this->updatepregled_dijagnoza($pregled_id, $priem_id, $dijag);
+                    } elseif($dijag['dijagnoza']) $this->zacuvajpregled_dijagnoza($pregled_id, $priem_id, $dijag['dijagnoza']);
+                }
+            }
+        }
+        if (is_array($paketi)) {
+            if (count($paketi) > 0) {
+                foreach ($paketi as $paket) {
+                    if (isset($paket['delete'])) {
+                        if($participacija ==4 || $participacija == 5)
+                        {
+                            if ($paket['delete'] == 1) $this->deletepregled_paketi($paket['id']);
+                            elseif ($paket['delete'] == 0) $this->updatepregled_paketi($paket);
+                        }
+                        else{
+                            if ($paket['delete'] == 1) $this->deletepregled_paketi2($paket['id']);
+                            elseif ($paket['delete'] == 0) $this->updatepregled_paketi2($paket);
+                        }
+                    } elseif($paket['paket_id']) $this->zacuvajpregled_paketi2($priem_id, $pregled_id, $paket);
+                }
+            }
+        }
+        if (is_array($paketi2)) {
+            if (count($paketi2) > 0) {
+                foreach ($paketi2 as $paket) {
+                    if (isset($paket['delete'])) {
+                        if ($paket['delete'] == 1) $this->deletepregled_paketi($paket['id']);
+                        elseif ($paket['delete'] == 0) $this->updatepregled_paketi($paket);
+                    } elseif($paket['paket_id']) $this->zacuvajpregled_paketi($priem_id, $pregled_id, $paket);
+                }
+            }
+        }
+        if (is_array($paketi_dopolnitelni)) {
+            if (count($paketi_dopolnitelni) > 0) {
+                foreach ($paketi_dopolnitelni as $paket) {
+                    if (isset($paket['delete'])) {
+                        if ($paket['delete'] == 1) $this->deletepregled_paketi_dopolnitelni($paket['id']);
+                        elseif ($paket['delete'] == 0) $this->updatepregled_paketi_dopolnitelni($paket);
+                    } elseif($paket['paket_id']) $this->zacuvajpregled_paketi_dopolnitelni($priem_id, $pregled_id, $paket);
+                }
+            }
+        }
+        if (is_array($bolnicki_denovi)) {
+            if (count($bolnicki_denovi) > 0) {
+                foreach ($bolnicki_denovi as $den) {
+                    if (isset($den['delete'])) {
+                        if ($den['delete'] == 1) $this->deletepregled_bolnickidenovi($den['id']);
+                        elseif($den['delete'] == 0) $this->updatepregled_bolnickidenovi($den);
+                    } elseif($den['bolnicki_denovi_id']) $this->zacuvajpregled_bolnickidenovi($priem_id, $pregled_id, $den);
+                }
+            }
+        }
+        return $insert;
+    }
+
+    public function zacuvajpregled($data)
+    {
+        $this->updateStatusPriem($data['priem_id'], $data['status_id']);
+        $data['firma_id'] = $this->session->userdata('firma_id');
+        $data['doktor_id'] = $this->session->userdata('doktor_id');
+        $insert = $this->db->insert('bis_pacienti_pregledi', $data);
+        return $insert;
+    }
+
+    public function zacuvajpregleddijagnoza($data)
+    {
+        $participacija = $data['participacija_id'];
+        $dijagnoza = (isset($data['dijagnoza']) ? $data['dijagnoza'] : "");
+        $lekovi = (isset($data['lekovi']) ? $data['lekovi'] : "");
+        $potrosenmaterijal = (isset($data['potrosenmaterijal']) ? $data['potrosenmaterijal'] : "");
+        $recepti = (isset($data['recepti']) ? $data['recepti'] : "");
+        $paketi = (isset($data['paketi']) ? $data['paketi'] : "");
+        $paketi2 = (isset($data['paketi2']) ? $data['paketi2'] : "");
+        $paketi_dopolnitelni = (isset($data['paketi-dopolnitelni']) ? $data['paketi-dopolnitelni'] : "");
+        $bolnicki_denovi = (isset($data['bolnicki_denovi']) ? $data['bolnicki_denovi'] : "");
+//        $this->updateStatusPriem($data['priem_id'], $data['status_id']);
+        unset($data['potrosenmaterijal']);
+        unset($data['recepti']);
+        unset($data['lekovi']);
+        unset($data['dijagnoza']);
+        unset($data['paketi']);
+        unset($data['paketi-dopolnitelni']);
+        unset($data['paketi2']);
+        unset($data['participacija_id']);
+        unset($data['bolnicki_denovi']);
+        $data['firma_id'] = $this->session->userdata('firma_id');
+        $data['doktor_id'] = $this->session->userdata('doktor_id');
+        $data['pregled_datum'] = date("Y-m-d");
+        $insert = $this->db->insert('bis_pacienti_pregledi_dijagnoza', $data);
+
+        $pregled_id = $this->db->insert_id();
+        $priem_id = $data['priem_id'];
+        if (is_array($lekovi)) {
+            if (count($lekovi) > 0) {
+                foreach ($lekovi as $lek) {
+                    $this->zacuvajpregled_lekovi($pregled_id, $priem_id, $lek);
+                }
+            }
+        }
+        if (is_array($potrosenmaterijal)) {
+            if (count($potrosenmaterijal) > 0) {
+                foreach ($potrosenmaterijal as $artikal) {
+                    if($artikal['artikal_id']) $this->zacuvajpregled_potrosenmaterijal($pregled_id, $priem_id, $artikal);
+                }
+
+            }
+        }
+        if (is_array($recepti)) {
+            if (count($recepti) > 0) {
+                foreach ($recepti as $recepta) {
+                    $this->zacuvajpregled_recepti($pregled_id, $recepta);
+                }
+            }
+        }
+        if (is_array($dijagnoza)) {
+            if (count($dijagnoza) > 0) {
+                foreach ($dijagnoza as $dijag) {
+                    if($dijag) $this->zacuvajpregled_dijagnoza($pregled_id, $priem_id, $dijag);
+                }
+            }
+        }
+        if (is_array($paketi)) {
+            if (count($paketi) > 0) {
+                foreach ($paketi as $paket) {
+                    if($paket['paket_id']) {
+                        if($participacija == 4 || $participacija == 5) $this->zacuvajpregled_paketi($priem_id, $pregled_id, $paket);
+                        else $this->zacuvajpregled_paketi2($priem_id, $pregled_id, $paket);
+                    }
+                }
+            }
+        }
+        if (is_array($paketi2)) {
+            if (count($paketi2) > 0) {
+                foreach ($paketi2 as $paket) {
+                    if($paket['paket_id']) $this->zacuvajpregled_paketi($priem_id, $pregled_id, $paket);
+                }
+            }
+        }
+        if (is_array($paketi_dopolnitelni)) {
+            if (count($paketi_dopolnitelni) > 0) {
+                foreach ($paketi_dopolnitelni as $paket) {
+                    if($paket['paket_id']) $this->zacuvajpregled_paketi_dopolnitelni($priem_id, $pregled_id, $paket);
+                }
+            }
+        }
+        if (is_array($bolnicki_denovi)) {
+            if (count($bolnicki_denovi) > 0) {
+                foreach ($bolnicki_denovi as $den) {
+                    if($den['bolnicki_denovi_id']) $this->zacuvajpregled_bolnickidenovi($priem_id, $pregled_id, $den);
+                }
+            }
+        }
+        return $insert;
+    }
+
+    public function zacuvajpriemuslugi($data)
+    {
+        $paketi = (isset($data['paketi']) ? $data['paketi'] : "");
+        $priem_id = $data['priem_id'];
+//        $this->updateStatusPriem($data['priem_id'], $data['status_id']);
+        unset($data['paketi']);
+        unset($data['priem_id']);
+
+        if (is_array($paketi)) {
+            if (count($paketi) > 0) {
+                foreach ($paketi as $paket) {
+                    if($paket['paket_id']) $this->zacuvajpregled_paketi($priem_id, 0, $paket);
+                }
+            }
+        }
+//        return $insert;
+    }
+
+    public function zacuvajpriemdopolnitelniuslugi($data)
+    {
+        $paketi = (isset($data['paketi-dopolnitelni']) ? $data['paketi-dopolnitelni'] : "");
+        $priem_id = $data['priem_id'];
+//        $this->updateStatusPriem($data['priem_id'], $data['status_id']);
+        unset($data['paketi-dopolnitelni']);
+        unset($data['priem_id']);
+
+        if (is_array($paketi)) {
+            if (count($paketi) > 0) {
+                foreach ($paketi as $paket) {
+                    if($paket['paket_id']) $this->zacuvajpregled_paketi_dopolnitelni($priem_id, 0, $paket);
+                }
+            }
+        }
+//        return $insert;
+    }
+
+    public function zacuvajpregled_lekovi($pregled_id, $priem_id, $data)
+    {
+        $data['priem_id'] = $priem_id;
+        $data['pregled_id'] = $pregled_id;
+        $data['doktor_id'] = $this->session->userdata("korisnik_id");
+        $this->db->insert('bis_pregledi_lekovi', $data);
+    }
+
+    public function updatepregled_lekovi($pregled_id, $priem_id, $data)
+    {
+        $id = $data["id"];
+        unset($data["id"]);
+        unset($data["delete"]);
+
+        $data['priem_id'] = $priem_id;
+        $data['pregled_id'] = $pregled_id;
+        $data['doktor_id'] = $this->session->userdata("korisnik_id");
+        $this->db->where('id', $id);
+        $this->db->update('bis_pregledi_lekovi', $data);
+    }
+
+    public function deletepregled_lekovi($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_pregledi_lekovi');
+    }
+
+    public function updatepriemterapija($data)
+    {
+        $terapii = $data['lekovi'];
+        if (is_array($terapii)) {
+            if (count($terapii) > 0) {
+                foreach ($terapii as $terapija) {
+                    $row_id = $terapija['dbid'];
+                    unset($terapija['dbid']);
+
+                    $this->db->where('id', $row_id);
+                    $this->db->update('bis_pregledi_lekovi', $terapija);
+                }
+            }
+        }
+    }
+
+    public function zacuvajpregled_dijagnoza($pregled_id, $priem_id, $dijagnoza)
+    {
+        $data['pregled_id'] = $pregled_id;
+        $data['priem_id'] = $priem_id;
+        $data['dijagnoza'] = $dijagnoza;
+        $this->db->insert('bis_pregledi_dijagnoza', $data);
+    }
+
+    public function updatepregled_dijagnoza($pregled_id, $priem_id, $dijagnoza)
+    {
+        $id = $dijagnoza["id"];
+        unset($dijagnoza["id"]);
+        unset($dijagnoza["delete"]);
+
+        $data['pregled_id'] = $pregled_id;
+        $data['priem_id'] = $priem_id;
+        $data['dijagnoza'] = $dijagnoza['dijagnoza'];
+        $this->db->where('id', $id);
+        $this->db->update('bis_pregledi_dijagnoza', $data);
+    }
+
+    public function deletepregled_dijagnoza($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_pregledi_dijagnoza');
+    }
+
+    public function zacuvajpregled_potrosenmaterijal($pregled_id, $priem_id, $data)
+    {
+        $data['pregled_id'] = $pregled_id;
+        $data['priem_id'] = $priem_id;
+        $data['magacin_id'] = $data["magacin_id"];
+        $this->db->insert('bis_pregledi_materijali', $data);
+    }
+
+    public function updatepregled_potrosenmaterijal($pregled_id, $priem_id, $data)
+    {
+        $id = $data["id"];
+        unset($data["id"]);
+        unset($data["delete"]);
+
+        $data['pregled_id'] = $pregled_id;
+        $data['priem_id'] = $priem_id;
+        $data['magacin_id'] = $data["magacin_id"];
+        $this->db->where('id', $id);
+        $this->db->update('bis_pregledi_materijali', $data);
+    }
+
+    public function deletepregled_potrosenmaterijal($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_pregledi_materijali');
+    }
+
+    public function zacuvajpregled_recepti($pregled_id, $data)
+    {
+        $data['pregled_id'] = $pregled_id;
+        $data['doktor_id'] = $this->session->userdata("korisnik_id");
+        $this->db->insert('bis_pregledi_recepti', $data);
+    }
+
+    public function updatepregled_recepti($data)
+    {
+        $id = $data['id'];
+        unset($data['id']);
+        unset($data['delete']);
+        $data['doktor_id'] = $this->session->userdata("korisnik_id");
+        $this->db->where('id', $id);
+        $this->db->update('bis_pregledi_recepti', $data);
+    }
+
+    public function deletepregled_recepti($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_pregledi_recepti');
+    }
+
+    public function zacuvajpregled_paketi($priem_id, $pregled_id, $data)
+    {
+        $data['pregled_id'] = $pregled_id;
+        $data['priem_id'] = $priem_id;
+        $this->db->insert('bis_pregledi_paketi', $data);
+    }
+
+    public function updatepregled_paketi($data)
+    {
+        $id = $data["id"];
+        unset($data["id"]);
+        unset($data["delete"]);
+
+        $this->db->where('id', $id);
+        $this->db->update('bis_pregledi_paketi', $data);
+    }
+
+    public function zacuvajpregled_paketi2($priem_id, $pregled_id, $data)
+    {
+        $data['pregled_id'] = $pregled_id;
+        $data['priem_id'] = $priem_id;
+        $this->db->insert('bis_pregledi_paketi_2', $data);
+    }
+
+    public function updatepregled_paketi2($data)
+    {
+        $id = $data["id"];
+        unset($data["id"]);
+        unset($data["delete"]);
+        $this->db->where('id', $id);
+        $this->db->update('bis_pregledi_paketi_2', $data);
+    }
+
+    public function deletepregled_paketi2($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_pregledi_paketi_2');
+    }
+
+    public function deletepregled_paketi($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_pregledi_paketi');
+    }
+
+    public function zacuvajpregled_paketi_dopolnitelni($priem_id, $pregled_id, $data)
+    {
+        $data['pregled_id'] = $pregled_id;
+        $data['priem_id'] = $priem_id;
+        $this->db->insert('bis_pregledi_paketi_dopolnitelni', $data);
+    }
+
+    public function zacuvajpregled_bolnickidenovi($priem_id, $pregled_id, $data)
+    {
+        $data['pregled_id'] = $pregled_id;
+        $data['priem_id'] = $priem_id;
+        $data['datum_od'] = bis_convert_date_mk_to_usa($data['datum_od']);
+        $data['datum_do'] = bis_convert_date_mk_to_usa($data['datum_do']);
+        $this->db->insert('bis_pregledi_bolnicki_denovi', $data);
+    }
+
+    public function deletepregled_bolnickidenovi($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_pregledi_bolnicki_denovi');
+    }
+
+    public function updatepregled_bolnickidenovi($data)
+    {
+        $id = $data["id"];
+        $data['datum_od'] = bis_convert_date_mk_to_usa($data['datum_od']);
+        $data['datum_do'] = bis_convert_date_mk_to_usa($data['datum_do']);
+        unset($data["id"]);
+        unset($data["delete"]);
+        $this->db->where('id', $id);
+        $this->db->update('bis_pregledi_bolnicki_denovi', $data);
+    }
+
+    public function updatepregled_paketi_dopolnitelni($data)
+    {
+        $id = $data["id"];
+        unset($data["id"]);
+        unset($data["delete"]);
+        $this->db->where('id', $id);
+        $this->db->update('bis_pregledi_paketi_dopolnitelni', $data);
+    }
+
+    public function deletepregled_paketi_dopolnitelni($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_pregledi_paketi_dopolnitelni');
+    }
+
+    public function generiraj_ispratnica($priem_id, $faktura_id)
+    {
+        //tabela stavka tip 720
+        $data['tip'] = 720;
+        $data['datum'] = date("Y-m-d");
+        //ISP-AVTOMACKIBROJ
+        $data['textBroj'] = "StoleFunction";
+        $data['firmaID'] = 0;
+        $data['pacient_id'] = 0;
+        $data['vrska_dokumenti'] = 'FAKTURA TEXT BR';
+        $data['zaDokID'] = 0;
+    }
+
+    public function updateStatusPriem($priem_id, $status)
+    {
+        $this->db->where("id", $priem_id);
+        $data['priem_status'] = $status;
+        $this->db->update('bis_pacienti_priem', $data);
+    }
+
+    public function zapisiDatumZatvoranjeNaPriem($priem_id)
+    {
+        $this->db->where("id", $priem_id);
+        $data['priem_datum_zavrsen'] = bis_convert_date_usa_to_mk(date('Y-m-d'));
+        $this->db->update('bis_pacienti_priem', $data);
+    }
+
+    public function clearDatumZatvoranjeNaPriem($priem_id)
+    {
+        $this->db->where("id", $priem_id);
+        $data['priem_datum_zavrsen'] = '';
+        $this->db->update('bis_pacienti_priem', $data);
+    }
+
+    public function zapisiFakturaZaPriem($priem_id, $faktura_id)
+    {
+        $update = "UPDATE bis_pacienti_priem  SET faktura_id = CONCAT_WS(',', faktura_id, '$faktura_id') WHERE id = '$priem_id'";
+        $this->db->query($update);
+    }
+    public function getOsnovOsiguruvanjeID($priem)
+    {
+        $this->db->where('id', $priem);
+        $query = $this->db->get('bis_pacienti_priem');
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            return $result[0]->participacija;
+        } else {
+            $result = false;
+            return$result;
+        }
+    }
+
+    public function zemiKontoSporedParticipacija($participacija_id, $priem_id)
+    {
+        if($participacija_id == 1) return 138;
+        elseif($participacija_id == 4)
+        {
+            $osnov_osig = $this->getOsnovOsiguruvanjeID($priem_id);
+            if($osnov_osig == 66) return 558;
+            elseif($osnov_osig == 490) return 557;
+        }
+        elseif($participacija_id == 5)
+        {
+            $osnov_osig = $this->getOsnovOsiguruvanjeID($priem_id);
+            if($osnov_osig == 67) return 560;
+            elseif($osnov_osig == 492) return 559;
+        }
+        else return 0;
+    }
+
+    public function generiraj_izleznafaktura($priem_id)
+    {
+        $this->updateStatusPriem($priem_id, 50);
+//        $dijagnoza = (isset($data['dijagnoza']) ? $data['dijagnoza'] : "");
+        //tabela stavka tip 20
+        $faktura_cena_sam = $this->input->get("cenasam");
+        $faktura_cena_fzom = $this->input->get("cenafzom");
+        $faktura_cena_dopolnitelni = $this->input->get("cena_dopolnitelni");
+
+        $upaten_vo = $this->getUpatenVo($priem_id);
+        if($upaten_vo->upaten_vo == 3) $suma_bolnickidenovi = $this->presmetajSumaBolnickiDenovi($priem_id);
+        else $suma_bolnickidenovi = 0;
+
+        $oddel = $this->input->get("oddel");
+        $participacija = $this->input->get("participacija");
+        $konto = $this->zemiKontoSporedParticipacija($participacija, $priem_id);
+        $data['MFID'] = 1;
+        $data['tip'] = 20;
+        $data['datum'] = bis_convert_date_mk_to_usa($this->input->get("datum_presmetka"));
+        $data['datum_zapis'] = bis_convert_date_mk_to_usa($this->input->get("datum_presmetka"));
+        $data['datetime'] = time();
+        $data['sysDateCreated'] = time();
+        $result_if = $this->createIFBroj();
+        $broevi = explode("-", $result_if);
+        $data['textBroj'] = $broevi[0];
+        $data['arhTextBroj'] = $broevi[0];
+        $data['arhIntBroj'] = $broevi[1];
+        $data['intBroj'] = $broevi[1];
+        $data['firmaID'] = 0;
+        $data['pacient_id'] = $this->getPacientZaPriem($priem_id);
+        $data['rokDatum'] = date("Y-m-d");
+        $data['rokPlat'] = 0;
+        $data['tipID'] = $konto;
+        $data['participacija_id'] = $participacija;
+        $data['p_osnova'] = $faktura_cena_sam;
+        $data['p_vkupno'] = $faktura_cena_sam;
+        $data['vkupno_iznos_paketi'] = $faktura_cena_sam+$faktura_cena_fzom;
+        $data['presmetana_participacija'] = $faktura_cena_sam;
+        $data['vkupno_fzom'] = $faktura_cena_fzom;
+        $data['firma_id'] = $oddel;
+        $data['lekuvanje_fakturirano_za'] = 1;
+        $data['lekuvanje_id'] = $priem_id;
+
+        $insert = $this->db->insert('stavka', $data);
+        // faktura za izvrseni uslugi
+        if ($insert) {
+            $faktura_id = $this->db->insert_id();
+            $this->zapisiFakturaZaPriem($priem_id, $faktura_id);
+
+            $this->db->where('priem_id', $priem_id);
+            $this->db->where('fakturiran', 0);
+            $query = $this->db->get('bis_pregledi_paketi');
+
+            if ($query->num_rows() > 0) {
+                $result = $query->result();
+                $this->kreirajStavkiPoIzleznaFakturaPriem($result, $faktura_id, 'bis_pregledi_paketi');
+            }
+            // ispratnica za potrosenite materijali
+            $this->db->where('priem_id', $priem_id);
+            $this->db->where('fakturiran', 0);
+            $querym = $this->db->get('bis_pregledi_materijali');
+
+            if ($querym->num_rows() > 0) {
+                $resultm = $querym->result();
+                if($participacija == 4 || $participacija == 5){
+                    $this->kreirajStavkiPoIzleznaFakturaPriemMaterijali($resultm, $faktura_id);
+                }
+                $this->kreirajIspratnicaZaPriem($resultm, $faktura_id, $data);
+            }
+            //kreiraj nova izlezna faktura za dopolnitelnite uslugi
+            $dop_faktura_id = $this->generiraj_if_dopolnitelni_uslugi($priem_id, $faktura_cena_dopolnitelni, $oddel);
+            //nova faktura za pridruznik dokolku ima
+            $pridruznik_faktura_id = $this->generiraj_if_pridruznik($priem_id, $faktura_id, $oddel);
+        }
+        else $faktura_id = false;
+
+        $end_result = '';
+        $end_result = $faktura_id . ":" . $dop_faktura_id . ":" . $pridruznik_faktura_id;
+
+        return $end_result;
+    }
+
+    public function generiraj_if_dopolnitelni_uslugi($priem_id, $faktura_cena, $oddel)
+    {
+        $this->db->where('priem_id', $priem_id);
+        $this->db->where('fakturiran', 0);
+        $query = $this->db->get('bis_pregledi_paketi_dopolnitelni');
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+
+            $data['MFID'] = 1;
+            $data['tip'] = 20;
+            $data['datum'] = date("Y-m-d");
+            $data['datum_zapis'] = date("Y-m-d");
+            $data['datetime'] = time();
+            $data['sysDateCreated'] = time();
+            $result_if = $this->createIFBroj();
+            $broevi = explode("-", $result_if);
+            $data['textBroj'] = $broevi[0];
+            $data['arhTextBroj'] = $broevi[0];
+            $data['arhIntBroj'] = $broevi[1];
+            $data['intBroj'] = $broevi[1];
+            $data['firmaID'] = 0;
+            $data['pacient_id'] = $this->getPacientZaPriem($priem_id);
+            $data['rokDatum'] = date("Y-m-d");
+            $data['rokPlat'] = 0;
+            $data['tipID'] = 40;
+//        $data['vrska_dokumenti'] = 'FAKTURA TEXT BR';
+            $data['p_osnova'] = $faktura_cena;
+            $data['p_vkupno'] = $faktura_cena;
+            $data['participacija_id'] = 4;
+            $data['presmetana_participacija'] = $faktura_cena;
+            $data['vkupno_fzom'] = 0;
+            $data['firma_id'] = $oddel;
+            $data['lekuvanje_fakturirano_za'] = 2;
+            $data['lekuvanje_id'] = $priem_id;
+
+            $insert = $this->db->insert('stavka', $data);
+            if($insert) {
+                $faktura_id = $this->db->insert_id();
+                $this->kreirajStavkiPoIzleznaFakturaPriem($result, $faktura_id, 'bis_pregledi_paketi_dopolnitelni');
+                $this->zapisiFakturaZaPriem($priem_id, $faktura_id);
+                return $faktura_id;
+            }
+        }
+        else return 0;
+
+    }
+
+    public function presmetajCenaPaketiZaPriem($priem_id)
+    {
+        $this->db->select('SUM(paketi.cena) as cena');
+        $this->db->from('paketi');
+        $this->db->join('bis_pacienti_pregledi', 'paketi.ID = bis_pacienti_pregledi.paket_id', 'left');
+        $this->db->where('bis_pacienti_pregledi.priem_id', $priem_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result[0]->cena;
+    }
+
+    public function generiraj_if_pridruznik($priem_id, $faktura_id, $oddel)
+    {
+        $this->db->select('pridruznik_id');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->where('id', $priem_id);
+        $query = $this->db->get();
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            $pridruznik = $result[0]->pridruznik_id;
+        } else {
+            $pridruznik = 0;
+        }
+        if($pridruznik > 0)
+        {
+            $this->db->select('bis_pacienti_pridruznik.*, bis_pridruznik_uslugi.*');
+            $this->db->from('bis_pacienti_pridruznik');
+            $this->db->join('bis_pridruznik_uslugi', 'bis_pacienti_pridruznik.usluga_id = bis_pridruznik_uslugi.id', 'left');
+            $this->db->where('bis_pacienti_pridruznik.id', $pridruznik);
+            $this->db->where('bis_pacienti_pridruznik.fakturiran', 0);
+            $query = $this->db->get();
+            if ($query->num_rows() > 0) {
+                $result = $query->result();
+
+                // presmetka na kolicina denovi so razlika od datum_odjava i datum_priem
+                $datum_odjava = strtotime($result[0]->datum_na_odjava);
+                $datum_priem = strtotime($result[0]->datum_na_priem);
+                $diff = abs($datum_odjava - $datum_priem);
+                $years = floor($diff / (365*60*60*24));
+                $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+                $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+
+                $data['MFID'] = 1;
+                $data['tip'] = 20;
+                $data['datum'] = date("Y-m-d");
+                $data['datum_zapis'] = date("Y-m-d");
+                $data['datetime'] = time();
+                $data['sysDateCreated'] = time();
+                $result_if = $this->createIFBroj();
+                $broevi = explode("-", $result_if);
+                $data['textBroj'] = $broevi[0];
+                $data['arhTextBroj'] = $broevi[0];
+                $data['arhIntBroj'] = $broevi[1];
+                $data['intBroj'] = $broevi[1];
+                $data['firmaID'] = 0;
+                $data['komintent_ime'] = $result[0]->ime . " " . $result[0]->prezime;
+                $data['pacient_id'] = $this->getPacientZaPriem($priem_id);
+                $data['rokDatum'] = date("Y-m-d");
+                $data['rokPlat'] = 0;
+                $data['tipID'] = 0;
+                $data['vrska_dokumenti'] = $faktura_id;
+                $data['p_osnova'] = $result[0]->cena * $days;
+                $data['p_vkupno'] = $result[0]->cena * $days;
+                $data['participacija_id'] = 0;
+                $data['presmetana_participacija'] = 0;
+                $data['vkupno_fzom'] = 0;
+                $data['firma_id'] = $oddel;
+                $data['lekuvanje_fakturirano_za'] = 3;
+                $data['lekuvanje_id'] = $priem_id;
+
+                $insert = $this->db->insert('stavka', $data);
+                $faktura_id = $this->db->insert_id();
+                return $faktura_id;
+            }
+        }
+        else return 0;
+    }
+
+    public function getPacientZaPriem($priem_id)
+    {
+        $this->db->select('pacient_id');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->where('bis_pacienti_priem.id', $priem_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result[0]->pacient_id;
+    }
+
+    function getPacientFullPoPriemId($priem_id)
+    {
+        $pacient_id = $this->getPacientZaPriem($priem_id);
+        $this->db->select('*');
+        $this->db->from('bis_pacienti');
+        $this->db->where('bis_pacienti.id', $pacient_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            $osig = $this->getPacientOsig($pacient_id);
+            unset($osig->id);
+            $merged = (object)array_merge((array)$result[0], (array)$osig);
+            return $merged;
+        } else {
+            return false;
+        }
+
+    }
+    public function getPacientFullPoPriemId_zaZapisPriem($priem_id)
+    {
+        $pacient_id = $this->getPacientZaPriem($priem_id);
+        $this->db->select('bis_pacienti_priem.*, bis_lekari_site.zdravstvena_ustanova, bis_firmi.ime as oddelenie');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->join('bis_lekari_site', 'bis_lekari_site.id = bis_pacienti_priem.spec_ustanova_id', 'left');
+        $this->db->join('bis_firmi', 'bis_firmi.id = bis_pacienti_priem.firma_id', 'left');
+        $this->db->where('bis_pacienti_priem.id', $priem_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            $pacient_info = $this->getPacient($pacient_id);
+            unset($pacient_info->id);
+            $merged = (object)array_merge((array)$result[0], (array)$pacient_info);
+            return $merged;
+
+        } else {
+            return false;
+        }
+    }
+
+
+    public function getPacientFullPoPriemId_zaOtpusnaForma($priem_id)
+    {
+        //$pacient_id = $this->getPacientZaPriem($priem_id);
+        $this->db->select('datum_na_raganje, embg,  CONCAT(ime, " ", tatkovoIme, " ", prezime) as pacient, CONCAT(ulica, " ", broj_na_kuka, ", ", grad, " ", opstina, ", ", drzava) as adresa, CONCAT( priem_datum, ",  ", priem_vreme) as priemD, priem_sifra', FALSE);
+        $this->db->from('bis_pacienti_priem');
+        $this->db->join('bis_pacienti', 'bis_pacienti.id = bis_pacienti_priem.pacient_id', 'left');
+        $this->db->where('bis_pacienti_priem.id', $priem_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result[0];
+
+        } else {
+            return false;
+        }
+    }
+
+    public function getPaketInfo($paket_id)
+    {
+        $this->db->select('*');
+        $this->db->from('paketi');
+        $this->db->where('paketi.id', $paket_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result[0];
+    }
+
+    public function getPaketInfoDsg($paket_id)
+    {
+        $this->db->select('*');
+        $this->db->from('dsg_uslugi');
+        $this->db->where('id', $paket_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result[0];
+    }
+
+    public function getPaketInfoDb($paket_id)
+    {
+        $this->db->select('*');
+        $this->db->from('dnevnaBol_uslugi');
+        $this->db->where('id', $paket_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result[0];
+    }
+
+    public function getPaketInfospec($paket_id)
+    {
+        $this->db->select('*');
+        $this->db->from('spec_kon_prev_zz');
+        $this->db->where('id', $paket_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result[0];
+    }
+
+    public function kreirajStavkiPoIzleznaFakturaPriem($result, $faktura_id, $tabela_paketi)
+    {
+        foreach ($result as $key => $row) {
+            if ($row->paket_id > 0) {
+                if ($row->cenovnik == 1) $paket = $this->getPaketInfo($row->paket_id);
+                if ($row->cenovnik == 2) $paket = $this->getPaketInfoDsg($row->paket_id);
+                if ($row->cenovnik == 3) $paket = $this->getPaketInfoDb($row->paket_id);
+                if ($row->cenovnik == 4) $paket = $this->getPaketInfoSpec($row->paket_id);
+                $data_paket['ID'] = $faktura_id;
+                $data_paket['SID'] = $paket->id;
+                $data_paket['sifra_paket'] = $paket->sifra;
+                $data_paket['Stavka'] = $paket->naziv;
+                $data_paket['cena'] = $paket->cena;
+                $data_paket['iznos_participacija'] = $paket->participacija;
+                $data_paket['kolicina'] = $row->kolicina;
+                $data_paket['edinica_merka'] = 4;
+                $data_paket['cenovnik'] = $row->cenovnik;
+                $data_paket['tip_stavka'] = 1;
+                $query = $this->db->insert('stavkadetali', $data_paket);
+                if($query){
+                    $data_update['fakturiran'] = 1;
+                    $this->db->where("id", $row->id);
+                    $this->db->update($tabela_paketi, $data_update);
+                }
+            }
+        }
+    }
+
+    public function test($cenovnik,$paket_id)
+    {
+                if ($cenovnik == 1) $paket = $this->getPaketInfo($paket_id);
+                if ($cenovnik == 2) $paket = $this->getPaketInfoDsg($paket_id);
+                if ($cenovnik == 3) $paket = $this->getPaketInfoDb($paket_id);
+                if ($cenovnik == 4) $paket = $this->getPaketInfoSpec($paket_id);
+//        bis_debug($paket, "paket");
+    }
+
+    public function kreirajStavkiPoIzleznaFakturaPriemMaterijali($result, $faktura_id)
+    {
+        foreach ($result as $key => $row) {
+            $artikal = $row->artikal_id;
+            $materijal = $this->getMaterijaliPoPriem($artikal);
+
+            $data_mat['ID'] = $faktura_id;
+            $data_mat['SID'] = $artikal;
+            $data_mat['stavka'] = $materijal[0]->naziv;
+            $data_mat['cena'] = $materijal[0]->cena;
+            $data_mat['kolicina'] = $row->kolicina;
+            $data_mat['DDV'] = $row->ddv;
+            $data_mat['cenovnik'] = 9;
+            $this->db->insert('stavkadetali', $data_mat);
+        }
+    }
+
+    public function kreirajIspratnicaZaPriem($result, $faktura_id, $data)
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data_isp['MFID'] = 1;
+        $data_isp['tip'] = 720;
+        $data_isp['datum'] = date("Y-m-d");
+        $data_isp['datum_zapis'] = date("Y-m-d");
+        $data_isp['datetime'] = time();
+        $data_isp['sysDateCreated'] = time();
+        $result_ispratnica = $this->createIspratnicaBroj();
+        $broevi = explode("-", $result_ispratnica);
+        $textBroj = $broevi[0];
+        $data_isp['textBroj'] = $broevi[0];
+        $data_isp['arhTextBroj'] = $broevi[0];
+        $data_isp['intBroj'] = $broevi[1];
+        $data_isp['arhIntBroj'] = $broevi[1];
+        $data_isp['firmaID'] = 0;
+        $data_isp['pacient_id'] = $data['pacient_id'];
+        $data_isp['vrska_dokumenti'] = 'ISP-FAKTURA TEXT BR';
+        $data_isp['zaDokID'] = $faktura_id;
+
+        $insert_isp = $this->db->insert('stavka', $data_isp);
+        if ($insert_isp) {
+            $insert_isp_id = $this->db->insert_id();
+            foreach ($result as $key => $row) {
+                $artikal = $row->artikal_id;
+                $materijal = $this->getMaterijaliPoPriem($artikal);
+                $sostojba = $this->materijalno_model->sostojbaArtiklMagacin($artikal, $row->magacin_id);
+                $novasostojba = $sostojba - $row->kolicina;
+                $data_mat['ID'] = $insert_isp_id;
+                $data_mat['SID'] = $artikal;
+                $data_mat['stavka'] = $materijal[0]->naziv;
+                $data_mat['cena'] = $materijal[0]->cena;
+                $data_mat['kolicina'] = $row->kolicina;
+                $data_mat['DDV'] = $materijal[0]->ddv;
+                if($materijal[0]->edMerkaID > 0) $data_mat['edinica_merka'] = $materijal[0]->edMerkaID;
+                else $data_mat['edinica_merka'] = 4;
+                $data_mat['magacin'] = $row->magacin_id;
+                $data_mat['sostojba'] = $novasostojba;
+                $data_mat['konto'] = $materijal[0]->konto;
+                $data_mat['SRDCena'] = $this->materijalno_model->getLastSrednaCenaArtikl($artikal, 0);
+                $this->db->insert('det', $data_mat);
+
+                //update deka ovie materijali se fakturirani
+                $data_update['fakturiran'] = 1;
+                $this->db->where("id", $row->id);
+                $this->db->update('bis_pregledi_materijali', $data_update);
+            }
+            $this->updateVrzaniDokumenti($faktura_id, $textBroj);
+        }
+    }
+
+    public function getMaterijaliPoPaket($priem_id)
+    {
+        $this->db->select('*');
+        $this->db->from('bis_pregledi_materijali');
+        $this->db->where('pregled_id', $priem_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getMaterijaliPoPriem($artikal_id)
+    {
+        $this->db->select('
+                    s1.SID as SID,
+                    s1.sifra as sifra,
+                    s1.S1Ime as naziv,
+                    s1.Cen0 as cena,
+                    s1.EdMerka as edMerkaID,
+                    s1.konto as konto,
+                    s1.ddv as ddv,
+                    bis_edmerki.ime_dolgo as edMerka
+                    ');
+        $this->db->from('s1');
+        $this->db->join('bis_edmerki','s1.EdMerka = bis_edmerki.id','left');
+        $this->db->where('SID', $artikal_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function createIFBroj()
+    {
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $lastbroj = $this->izlezni_fakturi_model->getLastIFBroj();
+        $newbroj = $lastbroj + 1;
+        $newbrojint = $newbroj;
+        $prefix = "ИФ";
+        $current_year = date("Y");
+        $year = substr($current_year, 2, 2);
+        if (strlen($lastbroj) == 0) $newbroj = $prefix . '0001' . '/' . $year;
+        if (strlen($lastbroj) == 1) $newbroj = $prefix . '000' . $newbroj . '/' . $year;
+        if (strlen($lastbroj) == 2) $newbroj = $prefix . '00' . $newbroj . '/' . $year;
+        if (strlen($lastbroj) == 3) $newbroj = $prefix . '0' . $newbroj . '/' . $year;
+        if (strlen($lastbroj) == 4) $newbroj = $prefix . $newbroj . '/' . $year;
+        $this->izlezni_fakturi_model->incrementIFBroj($newbrojint);
+        return $newbroj . "-" . $newbrojint;
+    }
+
+    public function createIspratnicaBroj()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $lastbroj = $this->materijalno_model->getLastIspratnicaBroj();
+        $newbroj = $lastbroj + 1;
+        $newbrojint = $newbroj;
+        $prefix = "ИСП";
+        $current_year = date("Y");
+        $year = substr($current_year, 2, 2);
+        if (strlen($lastbroj) == 0) $newbroj = $prefix . '0001' . '/' . $year;
+        if (strlen($lastbroj) == 1) $newbroj = $prefix . '000' . $newbroj . '/' . $year;
+        if (strlen($lastbroj) == 2) $newbroj = $prefix . '00' . $newbroj . '/' . $year;
+        if (strlen($lastbroj) == 3) $newbroj = $prefix . '0' . $newbroj . '/' . $year;
+        if (strlen($lastbroj) == 4) $newbroj = $prefix . $newbroj . '/' . $year;
+        $this->materijalno_model->incrementIspratnicaBroj($newbrojint);
+        return $newbroj . "-" . $newbrojint;
+    }
+
+    public function getShalterPriemByID($id)
+    {
+        $this->db->select("bis_pacienti_priem.*, bis_pacienti.ime, bis_pacienti.prezime, bis_pacienti.tatkovoime,
+                           bis_pacienti.datum_na_raganje,  bis_pacienti.br_zdravstvena_legitimacija, bis_osnov_na_osiguruvanje.participacija_id");
+        $this->db->from("bis_pacienti_priem");
+//        $this->db->where("priem_status", 40);
+        $this->db->where("bis_pacienti_priem.id", $id);
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id", "left");
+        $this->db->join("bis_osnov_na_osiguruvanje", "bis_pacienti_priem.participacija=bis_osnov_na_osiguruvanje.id", "left");
+//        $this->db->order_by("id", "DESC");
+        $query = $this->db->get();
+        if ($query->num_rows == 1) {
+            $tempquery = $query->result();
+            $this->load->model("covecki_resursi/covecki_resursi_model");
+            foreach ($tempquery as $key => $row) {
+                if ($row->doktor_id > 0) {
+                    $doktor = $this->covecki_resursi_model->getDoktor($row->doktor_id);
+                    if (isset($doktor->ime)) {
+                        $tempquery[$key]->doktor = $doktor->ime . " " . $doktor->prezime;
+                    } else {
+                        $tempquery[$key]->doktor = '';
+                    }
+
+
+                } else {
+                    $tempquery[$key]->doktor = '';
+                }
+
+            }
+            return $tempquery[0];
+
+        }
+    }
+
+    public function zemiPacientPriemInfo($priem_id)
+    {
+        $this->db->select('bis_pacienti.*');
+        $this->db->from('bis_pacienti');
+        $this->db->where('bis_pacienti_priem.id', $priem_id);
+        $this->db->join("bis_pacienti_priem", "bis_pacienti_priem.pacient_id=bis_pacienti.id");
+        $query = $this->db->get();
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            return $result[0];
+        } else return false;
+    }
+
+    public function zemiPaketiZaPriem($priem_id)
+    {
+        $this->db->where('priem_id', $priem_id);
+        $this->db->where('fakturiran', 0);
+        $query = $this->db->get('bis_pregledi_paketi');
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            foreach ($result as $key => $row) {
+                if ($row->cenovnik == 1) $result[$key]->paket = $this->getPaketUsluga($row->paket_id);
+                if ($row->cenovnik == 2) $result[$key]->paket = $this->getPaketUslugaDsg($row->paket_id);
+                if ($row->cenovnik == 3) $result[$key]->paket = $this->getPaketUsugaDb($row->paket_id);
+                if ($row->cenovnik == 4) $result[$key]->paket = $this->getPaketUsugaSpec($row->paket_id);
+            }
+            return $result;
+        } else return false;
+    }
+
+    public function zemiDopolnitelniPaketiZaPriem($priem_id)
+    {
+        $this->db->where('priem_id', $priem_id);
+        $this->db->where('fakturiran', 0);
+        $query = $this->db->get('bis_pregledi_paketi_dopolnitelni');
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            foreach ($result as $key => $row) {
+                if ($row->cenovnik == 1) $result[$key]->paket = $this->getPaketUsluga($row->paket_id);
+                if ($row->cenovnik == 2) $result[$key]->paket = $this->getPaketUslugaDsg($row->paket_id);
+                if ($row->cenovnik == 3) $result[$key]->paket = $this->getPaketUsugaDb($row->paket_id);
+                if ($row->cenovnik == 4) $result[$key]->paket = $this->getPaketUsugaSpec($row->paket_id);
+            }
+            return $result;
+        } else return false;
+    }
+
+    public function zemiBolnickiDenoviZaPriem($priem_id)
+    {
+        $this->db->select('bis_pregledi_bolnicki_denovi.*,
+                            bolnicki_denovi_stacionar.sifra as sifra,
+                            bolnicki_denovi_stacionar.naziv as naziv');
+        $this->db->from('bis_pregledi_bolnicki_denovi');
+        $this->db->join('bolnicki_denovi_stacionar', 'bis_pregledi_bolnicki_denovi.bolnicki_denovi_id = bolnicki_denovi_stacionar.id', 'left');
+        $this->db->where('priem_id', $priem_id);
+        $this->db->where('fakturiran', 0);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result;
+        } else return false;
+    }
+
+    public function zemiTerapijaZaPriem($priem_id)
+    {
+        $this->db->select('bis_pregledi_lekovi.*, bis_pacienti_pregledi_dijagnoza.pregled_datum');
+        $this->db->from('bis_pregledi_lekovi');
+        $this->db->join('bis_pacienti_pregledi_dijagnoza', 'bis_pregledi_lekovi.pregled_id=bis_pacienti_pregledi_dijagnoza.id', 'left');
+        $this->db->where('bis_pregledi_lekovi.priem_id', $priem_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result;
+        } else return false;
+    }
+
+    public function getBolnickiDenoviZaPriem($priem_id)
+    {
+        $this->db->select('bis_pregledi_bolnicki_denovi.*,
+                           bolnicki_denovi_stacionar.sifra as sifra,
+                           bolnicki_denovi_stacionar.naziv as naziv');
+        $this->db->from('bis_pregledi_bolnicki_denovi');
+        $this->db->join('bolnicki_denovi_stacionar', 'bis_pregledi_bolnicki_denovi.bolnicki_denovi_id = bolnicki_denovi_stacionar.id', 'left');
+        $this->db->where('priem_id', $priem_id);
+        //$this->db->where('fakturiran', 1);  //ne znam zosto ni treba ova? -none ( go trgnav pa ke vidime)
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result;
+        } else return false;
+    }
+
+    public function presmetajSumaBolnickiDenovi($priem_id)
+    {
+        $this->db->where('priem_id', $priem_id);
+        $this->db->where('fakturiran', 0);
+        $query = $this->db->get('bis_pregledi_bolnicki_denovi');
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            $suma_vkupno = 0;
+            foreach($result as $res)
+            {
+                $suma_den = $res->kolicina * $res->cena;
+                $suma_vkupno += $suma_den;
+            }
+            return $suma_vkupno;
+        } else return 0;
+    }
+
+    public function getPaketUsluga($paket_id)
+    {
+        $this->db->where('id', $paket_id);
+        $query = $this->db->get('paketi');
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            return $result[0];
+        } else return false;
+    }
+
+    public function getOsnovOsiguruvanje($priem_id)
+    {
+        $this->db->select('bis_osnov_na_osiguruvanje.naziv as osnov_osiguruvanje');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->join('bis_osnov_na_osiguruvanje', 'bis_pacienti_priem.participacija=bis_osnov_na_osiguruvanje.id');
+        $this->db->where('bis_pacienti_priem.id', $priem_id);
+        $query = $this->db->get();
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            return $result[0]->osnov_osiguruvanje;
+        } else return false;
+    }
+
+    public function getOsnovOsiguruvanjeParticipacijaID($priem_id)
+    {
+        $this->db->select('bis_osnov_na_osiguruvanje.participacija_id as osnov_osiguruvanje');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->join('bis_osnov_na_osiguruvanje', 'bis_pacienti_priem.participacija=bis_osnov_na_osiguruvanje.id');
+        $this->db->where('bis_pacienti_priem.id', $priem_id);
+        $query = $this->db->get();
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            return $result[0]->osnov_osiguruvanje;
+        } else return false;
+    }
+    public function getPaketUslugaDsg($paket_id)
+    {
+        $this->db->where('id', $paket_id);
+        $query = $this->db->get('dsg_uslugi');
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            return $result[0];
+        } else return false;
+    }
+
+    public function getPaketUsugaDb($paket_id)
+    {
+        $this->db->where('id', $paket_id);
+        $query = $this->db->get('dnevnaBol_uslugi');
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            return $result[0];
+        } else return false;
+    }
+
+    public function getPaketUsugaSpec($paket_id)
+    {
+        $this->db->where('id', $paket_id);
+        $query = $this->db->get('spec_kon_prev_zz');
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            return $result[0];
+        } else return false;
+    }
+
+    public function zemiMaterijaliZaPriem($priem_id)
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->db->select('bis_pregledi_materijali.*');
+        $this->db->from('bis_pregledi_materijali');
+        $this->db->where('bis_pregledi_materijali.priem_id', $priem_id);
+        $this->db->where('bis_pregledi_materijali.fakturiran', 0);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            foreach ($result as $key => $row) {
+                $tempquery[$key] = $this->getMaterijaliPoPriem($row->artikal_id);
+                $tempquery[$key][0]->kolicina = $row->kolicina;
+                $tempquery[$key][0]->magacin = $this->getMagacinByID($row->magacin_id);
+                $tempquery[$key][0]->sredna_cena = $this->materijalno_model->getLastSrednaCenaArtikl($row->artikal_id,0);
+            }
+//            bis_debug($tempquery);
+            return $tempquery;
+        } else return false;
+    }
+
+    public function getPriemByCriteria($pacient, $broj, $priem, $dijagnoza, $period_od, $period_do)
+    {
+        $this->db->select("bis_pacienti_priem.*, bis_pacienti.ime, bis_pacienti.prezime, bis_pacienti.tatkovoime,  bis_pacienti.datum_na_raganje,  bis_pacienti.br_zdravstvena_legitimacija");
+        $this->db->from("bis_pacienti_priem");
+        $this->db->join("bis_pacienti", "bis_pacienti.id=bis_pacienti_priem.pacient_id", "left");
+        $this->db->join("bis_pacienti_pregledi_dijagnoza", "bis_pacienti_pregledi_dijagnoza.priem_id=bis_pacienti_priem.id", "left");
+        $this->db->where("bis_pacienti_priem.deleted", 0);
+        $this->db->where("bis_pacienti_priem.priem_status !=", 40);
+        if ($pacient > 0) $this->db->where("bis_pacienti_priem.pacient_id", $pacient);
+        if (strlen($broj) > 0) $this->db->like("bis_pacienti_priem.id", $broj, "both");
+        if ($priem == 1) $this->db->where("bis_pacienti_priem.priem_status !=", 50);
+        if ($priem == 2) $this->db->where("bis_pacienti_priem.priem_status", 50);
+        if ($dijagnoza > 0) $this->db->where("bis_pacienti_pregledi_dijagnoza.dijagnoza_upatna", $dijagnoza);
+        if (strlen($period_od) > 0) $this->db->where('bis_pacienti_priem.priem_datum >=', $period_od);
+        if (strlen($period_do) > 0) $this->db->where('bis_pacienti_priem.priem_datum <=', $period_do);
+        $this->db->order_by("bis_pacienti_priem.id", "DESC");
+        $query = $this->db->get();
+        bis_debug($this->db->last_query(), "query");
+        if ($query->num_rows > 0) {
+            $tempquery = $query->result();
+            $this->load->model("covecki_resursi/covecki_resursi_model");
+            $this->load->model("start/start_model");
+            foreach ($tempquery as $key => $row) {
+                $tempquery[$key]->doktor = $this->covecki_resursi_model->getDoktorImePrezime($row->doktor_id);
+                $tempquery[$key]->firma_ime = $this->start_model->getFirmaIme($row->firma_id);
+                $tempquery[$key]->pod_oddel_ime = $this->start_model->getFirmaIme($row->pod_oddel);
+            }
+            return $tempquery;
+        }
+    }
+
+    public function getMagacinByID($id)
+    {
+        $this->db->select('ime');
+        $this->db->from('bis_magacin');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0]->ime;
+    }
+
+    public function get_faktura_priem($id)
+    {
+        $this->db->select('faktura_id');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result;
+        } else return false;
+    }
+
+    public function getLastPriemBroj()
+    {
+        $this->db->select('broj');
+        $this->db->from('autoincrement');
+        $this->db->where('id', '7');
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0]->broj;
+    }
+
+    public function incrementPriemBroj($newbroj)
+    {
+        $newbroj = array(
+            'broj' => $newbroj
+        );
+        $this->db->where('id', '7');
+        $query = $this->db->update('autoincrement', $newbroj);
+        return $query;
+    }
+
+    public function kreirajKasaZaPriem($podatoci)
+    {
+        $data['MFID'] = "1";
+        $data['ZSID'] = "0";
+        $data['datum'] = $podatoci['datum'];
+        $data['zaDokID'] = $podatoci['faktura_dbid'];
+        $data['zaPovikBroj'] = $podatoci['fakturabroj'];
+        $kasa_broj = $this->createKasaBroj($podatoci['kasi']);
+        $broevi = explode("-", $kasa_broj);
+        $textBroj = $broevi[0];
+        $data['textBroj'] = $broevi[0];
+        $data['arhTextBroj'] = $broevi[0];
+        $data['arhIntBroj'] = $broevi[1];
+        $data['IntBroj'] = $broevi[1];
+        $data['z_uplata'] = $podatoci['priliv'];
+        $data['tipID']=$podatoci['konto'];
+        $data['firmaID'] = "0";
+        $data['firma_id'] =$podatoci['firma_id'];
+        $data['pacient_id'] = $podatoci['pacient_id'];
+        $data['kasa'] = $podatoci['kasi'];
+        $data['tip'] = "550";
+        $data['sostojba'] = $podatoci['priliv']; //prasaj
+        $insert = $this->db->insert('stavka', $data);
+        $id = $this->db->insert_id();
+        if ($insert) {
+            $this->load->model('kasi/kasi_model');
+            $lastbroj = $this->kasi_model->getLastKasaBroj($podatoci['kasi']);
+            $newbroj =intval($lastbroj[0]->broj) +1;
+            $this->kasi_model->incrementKasaBroj($newbroj,$podatoci['kasi']);
+            $this->updateVrzaniDokumenti($podatoci['faktura_dbid'], $textBroj);
+            $this->load->model('izvodi/izvodi_model');
+            $this->izvodi_model->update_faktura_status($podatoci['faktura_dbid']);
+        };
+        return $id;
+    }
+
+    public function createKasaBroj($kasa_faktura)
+    {
+        $this->load->model('kasi/kasi_model');
+        $rezultat = $this->kasi_model->getLastKasaBroj($kasa_faktura);
+        $lastbroj = intval($rezultat[0]->broj);
+        $newbroj = intval($rezultat[0]->broj) + 1;
+        $newbrojint = $newbroj;
+        $prefix = "Каса";
+        $current_year = date("Y");
+        $year = substr($current_year, 2, 2);
+        if (strlen($lastbroj) == 0) $newbroj = $prefix . '0001' . '/' . $year;
+        if (strlen($lastbroj) == 1) $newbroj = $prefix . '000' . $newbroj . '/' . $year;
+        if (strlen($lastbroj) == 2) $newbroj = $prefix . '00' . $newbroj . '/' . $year;
+        if (strlen($lastbroj) == 3) $newbroj = $prefix . '0' . $newbroj . '/' . $year;
+        if (strlen($lastbroj) == 4) $newbroj = $prefix . $newbroj . '/' . $year;
+        $this->kasi_model->incrementKasaBroj($newbrojint, $kasa_faktura);
+        return $newbroj . "-" . $newbrojint;
+    }
+
+    public function updateVrzaniDokumenti($faktura_id, $dokument)
+    {
+        $promeni = "UPDATE stavka  SET vrska_dokumenti = CONCAT_WS(',', vrska_dokumenti, '$dokument') WHERE ID = '$faktura_id'";
+        $this->db->query($promeni);
+    }
+
+    public function pacienti_site_dropdown()
+    {
+        $this->db->select('id, ime, tatkovoime, prezime');
+        $this->db->from('bis_pacienti');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown['0'] = 'Сите';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['id']] = $row['ime'] . " " . $row['tatkovoime'] . " " . $row['prezime'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function getCenaZaUsluga($id)
+    {
+        $this->db->select('*');
+        $this->db->from('paketi');
+        $this->db->where('paketi.id', $id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result[0]->cena;
+        } else {
+            $result = false;
+            return $result;
+        }
+    }
+
+    public function getCenaZaBolnickiDen($id)
+    {
+        $this->db->where('id', $id);
+        $query = $this->db->get('bolnicki_denovi_stacionar');
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            return $result[0]->cena;
+        } else {
+            $result = false;
+            return $result;
+        }
+    }
+
+    public function getPridruznikUslugi(){
+        $query = $this->db->get('bis_pridruznik_uslugi');
+        if($query->num_rows() > 0){
+            $result = $query->result();
+            return $result;
+        }
+    }
+
+    public function getKomintenti(){
+        $query = $this->db->get('firma');
+        if($query->num_rows() > 0){
+            $result = $query->result();
+            return $result;
+        }
+    }
+
+    public function getParticipacijaID($priem_id){
+        $this->db->select('
+                    bis_osnov_na_osiguruvanje.participacija_id as participacija_id
+                    ');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->join('bis_osnov_na_osiguruvanje', 'bis_pacienti_priem.participacija = bis_osnov_na_osiguruvanje.id', 'left');
+        $this->db->where('bis_pacienti_priem.id', $priem_id);
+        $query = $this->db->get();
+        if($query->num_rows() == 1){
+            $result = $query->result();
+            return $result[0]->participacija_id;
+        }
+        else return false;
+    }
+
+    public function getUpatenVo($priem_id){
+        $this->db->select('
+                    bis_pacienti_priem.pod_oddel as pod_oddel_id,
+                    bis_firmi.ime as pod_oddel_ime,
+                    bis_firmi.upaten_vo as upaten_vo
+                    ');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->join('bis_firmi', 'bis_pacienti_priem.pod_oddel = bis_firmi.id', 'left');
+        $this->db->where('bis_pacienti_priem.id', $priem_id);
+        $query = $this->db->get();
+        if($query->num_rows() == 1){
+            $result = $query->result();
+            return $result[0];
+        }
+        else return false;
+//        $this->db->where('id', $priem_id);
+//        $query = $this->db->get('bis_pacienti_priem');
+//        if($query->num_rows() == 1){
+//            $result = $query->result();
+//            return $result[0]->pod_oddel;
+//        }
+//        else return false;
+    }
+
+    public function get_dijagnoza_priem($priem_id)
+    {
+        $this->db->select('
+                    bis_mkb_10.sifra as sifra,
+                    bis_mkb_10.opis as opis,
+                    bis_pregledi_dijagnoza.id,
+                    ');
+        $this->db->from('bis_pregledi_dijagnoza');
+        $this->db->join('bis_mkb_10', 'bis_pregledi_dijagnoza.dijagnoza = bis_mkb_10.id', 'left');
+        $this->db->where('bis_pregledi_dijagnoza.priem_id', $priem_id);
+        $this->db->order_by('bis_pregledi_dijagnoza.id','desc');
+        $this->db->limit(1);
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+            return $result;
+        }
+        else return false;
+    }
+
+    public function get_if_info($id)
+    {
+        $this->db->select('
+                    stavka.*,
+                    bis_pacienti.*,
+                    bis_firmi.ime as oddel
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->join('bis_firmi', 'stavka.firma_id = bis_firmi.id', 'left');
+        $this->db->where('stavka.ID', $id);
+        $query = $this->db->get();
+        if($query->num_rows() == 1)
+        {
+            $result = $query->result();
+//            $result[0]->stavki = $this->getInfoIzleznaDetali($id);
+            return $result;
+        }
+        else
+        {
+            $result = false;
+            return $result;
+        }
+    }
+
+    public function getPriemSostavPaketi($priem_id)
+    {
+        $this->db->select('paket_id');
+        $this->db->from('bis_pregledi_paketi');
+        $this->db->where('priem_id', $priem_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $tempquery = $query->result();
+            $sostav = '';
+
+            foreach ($tempquery as $key => $val) {
+                if(($this->getSostavPaket($val->paket_id))) $sostav[$key]->sostav_paket = $this->getSostavPaket($val->paket_id);
+            }
+
+        }
+
+            return $sostav;
+
+
+
+    }
+
+    public function getSostavPaket($paket_id)
+    {
+        $this->db->where('parent_id', $paket_id);
+        $query = $this->db->get('spec_kon_prev_zz_sodrzina');
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result;
+        }
+        else {
+            $result = '';
+            return $result;
+        }
+    }
+
+    public function getUstanovaInfo($id)
+    {
+        $this->db->select('
+                    bis_firmi.*
+                ');
+        $this->db->from('bis_firmi');
+        $this->db->where('bis_firmi.id', $id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result[0];
+        }
+        else {
+            $result = '';
+            return $result;
+        }
+    }
+    public function getPododdelInfo($id)
+    {
+        $this->db->select('
+                    bis_firmi.*
+                ');
+        $this->db->from('bis_firmi');
+        $this->db->where('bis_firmi.id', $id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result[0];
+        }
+        else {
+            $result = '';
+            return $result;
+        }
+    }
+    public function getPododdelZaPriem($priem_id)
+    {
+        $this->db->where('id', $priem_id);
+        $query = $this->db->get('bis_pacienti_priem');
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            return $result[0]->pod_oddel;
+        }
+        else {
+            $result = '';
+            return $result;
+        }
+    }
+
+    public function getRealenTrosok($id)
+    {
+        $this->db->where('priem_id', $id);
+        $query = $this->db->get('bis_pregledi_paketi_2');
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            foreach ($result as $key => $val) {
+                $paket[$key] = $this->getPaketInfo($val->paket_id);
+                $paket[$key]->kolicina = $val->kolicina;
+            }
+            return $paket;
+        }
+        else {
+            $result = '';
+            return $result;
+        }
+    }
+    public function getRealenTrosokCena($id)
+    {
+        $this->db->where('priem_id', $id);
+        $query = $this->db->get('bis_pregledi_paketi_2');
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            $realen_trosok = 0;
+            foreach ($result as $key => $val) {
+                $paket[$key] = $this->getPaketInfo($val->paket_id);
+                $paket[$key]->kolicina = $val->kolicina;
+                $realen_trosok = $realen_trosok + $val->kolicina*$paket[$key]->cena;
+            }
+            return $realen_trosok;
+        }
+        else {
+            $result = '';
+            return $result;
+        }
+    }
+    public function getFondovskiTrosokCena($id)
+    {
+        $this->db->where('priem_id', $id);
+        $query = $this->db->get('bis_pregledi_paketi');
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            $fondovski_trosok = 0;
+            foreach ($result as $key => $val) {
+                if ($val->cenovnik == 1) $paket[$key] = $this->getPaketInfo($val->paket_id);
+                if ($val->cenovnik == 2) $paket[$key] = $this->getPaketInfoDsg($val->paket_id);
+                if ($val->cenovnik == 3) $paket[$key] = $this->getPaketInfoDb($val->paket_id);
+                if ($val->cenovnik == 4) $paket[$key] = $this->getPaketInfoSpec($val->paket_id);
+                $paket[$key]->kolicina = $val->kolicina;
+                $fondovski_trosok = $fondovski_trosok + $val->kolicina*$paket[$key]->participacija;
+            }
+            return $fondovski_trosok;
+        }
+        else {
+            $result = '';
+            return $result;
+        }
+    }
+    public function getNaplateniPaketi($priem_id)
+    {
+        $this->db->where('priem_id', $priem_id);
+        $query = $this->db->get('bis_pregledi_paketi');
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            $fondovski_trosok = 0;
+            foreach ($result as $key => $val) {
+                if ($val->cenovnik == 1) $paket[$key] = $this->getPaketInfo($val->paket_id);
+                if ($val->cenovnik == 2) $paket[$key] = $this->getPaketInfoDsg($val->paket_id);
+                if ($val->cenovnik == 3) $paket[$key] = $this->getPaketInfoDb($val->paket_id);
+                if ($val->cenovnik == 4) $paket[$key] = $this->getPaketInfoSpec($val->paket_id);
+                $paket[$key]->kolicina = $val->kolicina;
+            }
+            return $paket;
+        }
+        else {
+            $result = '';
+            return $result;
+        }
+    }
+    public function getPotroseniMaterijaliByPriem($priem_id)
+    {
+
+        $this->db->select('
+                    bis_pregledi_materijali.*,
+                    s1.S1Ime as artiklIme,
+                    s1.sifra as artiklSifra,
+                    bis_magacin.ime as magacinIme
+
+
+        ');
+        $this->db->from('bis_pregledi_materijali');
+        $this->db->where('bis_pregledi_materijali.priem_id', $priem_id);
+        $this->db->join('s1', 'bis_pregledi_materijali.artikal_id = s1.SID', 'left');
+        $this->db->join('bis_magacin', 'bis_pregledi_materijali.magacin_id = bis_magacin.id', 'left');
+       // $this->db->join('stavkadetali', 'bis_pregledi_materijali.artikal_id = stavkadetali.SID', 'left');
+
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            $sredna_cena = 0;
+            foreach ($result as $key => $val) {
+              $result[$key]->sredna_cena = $this->getSrednaCena($val->artikal_id);
+
+               // $result[$key]->sredna_cena = 77;
+            }
+            return $result;
+        } else return false;
+    }
+    public  function getSrednaCena($id){
+        $this->db->select('stavkadetali.cena as cena');
+        $this->db->from('stavkadetali');
+        $this->db->where('stavkadetali.SID',$id);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result[0]->cena;
+        }
+        else return false;
+
+    }
+
+    public function getDopUslugiByPriem($priem_id)
+    {
+        $this->db->where('priem_id', $priem_id);
+        $query = $this->db->get('bis_pregledi_paketi_dopolnitelni');
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            foreach ($result as $key => $row) {
+                if ($row->paket_id > 0) {
+                    if ($row->cenovnik == 1) $paket = $this->getPaketInfo($row->paket_id);
+                    if ($row->cenovnik == 2) $paket = $this->getPaketInfoDsg($row->paket_id);
+                    if ($row->cenovnik == 3) $paket = $this->getPaketInfoDb($row->paket_id);
+                    if ($row->cenovnik == 4) $paket = $this->getPaketInfoSpec($row->paket_id);
+                    $result[$key]->paketInfo = $paket;
+                }
+            }
+            return $result;
+        } else return false;
+    }
+    public function getFaksimilDoktor($priem_id)
+    {
+        $this->db->select('
+                    covecki_resursi.*
+        ');
+        $this->db->from('bis_pacienti_priem');
+        $this->db->join('covecki_resursi', 'bis_pacienti_priem.za_doktor_id = covecki_resursi.id', 'left');
+        $this->db->where('bis_pacienti_priem.id', $priem_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result[0]->broj_faksimil;
+        } else return false;
+    }
+
+    public function getOddelZaPriem($priem_id)
+    {
+        $this->db->where('id', $priem_id);
+        $query = $this->db->get('bis_pacienti_priem');
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            return $result[0]->firma_id;
+        }
+        else {
+            $result = '';
+            return $result;
+        }
+    }
+    public function getOddelIme($oddel_id)
+    {
+        $this->db->where('id', $oddel_id);
+        $query = $this->db->get('bis_firmi');
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            return $result[0]->ime;
+        }
+        else {
+            $result = '';
+            return $result;
+        }
+    }
+    public function get_new_broj_vo_dnevnik($id)
+    {
+        $this->db->where('id', $id);
+        $query = $this->db->get('bis_firmi');
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+            $broj = $result[0]->poceten_broj_vo_dnevnik;
+            $nov_broj = $broj + 1;
+            return $nov_broj;
+        }
+        else {
+            $result = '';
+            return $result;
+        }
+    }
+
+    public function incrementPodOddelBrojVoDnevnik($dokument, $broj_vo_dnevnik)
+    {
+        $data = array('poceten_broj_vo_dnevnik' => $broj_vo_dnevnik);
+
+        $this->db->where('id', $dokument);
+        $query = $this->db->update('bis_firmi', $data);
+        return $query;
+    }
+}

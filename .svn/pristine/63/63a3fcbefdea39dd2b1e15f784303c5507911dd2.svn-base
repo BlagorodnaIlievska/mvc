@@ -1,0 +1,84 @@
+<?php
+
+class Banka_model extends CI_Model{
+
+
+    public function create_banka()
+    {
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('bis_banki', $new_field_insert_data);
+        return $insert;
+    }
+
+    public function getAll()
+    {
+        $query = $this->db->get('bis_banki');
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+
+    public function delete_banka($id){
+
+        $this->db->where('id',$id);
+        $this->db->delete('bis_banki');
+    }
+
+    public function edit_banka($id){
+
+        $this->db->where('id', $id);
+        $query = $this->db->get('bis_banki');
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+
+    public function update_banka()
+    {
+        $field_update_data = array(
+
+            'ime' => $this->input->post('BankaIme')
+        );
+
+        $this->db->where('id', $this->input->post('BankaID'));
+        $update = $this->db->update('bis_banki', $field_update_data);
+        return $update;
+    }
+
+    function get_banka_dropdown()
+    {
+        $this->db->select('id, ime');
+        $this->db->from('bis_banki');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = 'избери банка';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime'];
+            }
+        }
+        return $dropdown;
+    }
+    function get_grad_dropdown()
+    {
+        $this->db->select('id, ime');
+        $this->db->from('bis_gradovi');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = 'избери град';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime'];
+            }
+        }
+        return $dropdown;
+    }
+
+}

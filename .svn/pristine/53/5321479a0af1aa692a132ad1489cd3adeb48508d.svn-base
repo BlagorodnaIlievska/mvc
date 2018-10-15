@@ -1,0 +1,8 @@
+<button type="button" value="" class="button bnovobaranje"><span>Ново барање</span></button>
+<script>
+    jQuery(document).ready(function () {
+        jQuery('.bnovobaranje').click(function () {
+            nov_dogovor();
+        });
+    });
+</script>

@@ -1,0 +1,2639 @@
+<div>
+
+    <h4 align="center">СТАТИСТИЧКИ ПОДАТОЦИ ВО ОРГАНИЗАЦИОНИТЕ ЕДИНИЦИ НА ЈЗУ УК за трауматологија, ортопедски болести, анестезија, реанимација и интензивно лекување и ургентен центар-Скопје</h4>
+    <br>
+</div>
+<!--<form class="pacienti-pregled-forma" method="post" action="/index.php/upati/upati/create_biohemiska_analiza"> -->
+Преглед : <select id="prebaruvaj-po-godina" class="prebaruvaj-comboboxes">
+    <option value="06-30-1">Од 1ви до 6ти месец</option>
+    <option value="06-30-2">Од 7ти до 12ти месец</option>
+</select>
+    &nbsp; &nbsp; Година: <!-- <input class="prebaraj-godina" type="text" name="za_godina"> -->
+<select name="yearpicker" id="yearpicker" class="prebaruvaj-comboboxes" style="width: 100px"></select>
+
+<div class="statistika-levo">
+
+<div class="notacordion parametri-pregled-pacienti">
+<h3><a href="javascript:">1. Вкупен број на прегледани лица</a></h3>
+
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td>1. Вкупен број на прегледани лица </td>
+            <td><input type="text" readonly name="broj_1" class="broj_1" value="<?echo $q1['broj_1'];?>"></td>
+            <td><input type="text" readonly name="broj_2" class="broj_2" value="<?echo $q2['broj_2'];?>"></td>
+            <td><input type="text" readonly name="broj_3" class="broj_3" value="<?echo $q3['broj_3'];?>"></td>
+            <td><input type="text" readonly name="broj_4" class="broj_4" value="<?echo $q4['broj_4'];?>"></td>
+            <td><input type="text" readonly name="broj_5" class="broj_5" value="<?echo $q5['broj_5'];?>"></td>
+            <td><input type="text" readonly name="broj_6" class="broj_6" value="<?echo $q6['broj_6'];?>"></td>
+            <td><input type="text" readonly name="broj_7" class="broj_7" value="<?echo $q7['broj_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>1.а Од тоа здравствени осигуреници </td>
+            <td><input type="text" readonly name="broj_osigureni_1" class="broj_osigureni_1" value="<?echo $q1['broj_osigureni_1'];?>"></td>
+            <td><input type="text" readonly name="broj_osigureni_2" class="broj_osigureni_2" value="<?echo $q2['broj_osigureni_2'];?>"></td>
+            <td><input type="text" readonly name="broj_osigureni_3" class="broj_osigureni_3" value="<?echo $q3['broj_osigureni_3'];?>"></td>
+            <td><input type="text" readonly name="broj_osigureni_4" class="broj_osigureni_4" value="<?echo $q4['broj_osigureni_4'];?>"></td>
+            <td><input type="text" readonly name="broj_osigureni_5" class="broj_osigureni_5"  value="<?echo $q5['broj_osigureni_5'];?>"></td>
+            <td><input type="text" readonly name="broj_osigureni_6" class="broj_osigureni_6" value="<?echo $q6['broj_osigureni_6'];?>"></td>
+            <td><input type="text" readonly name="broj_osigureni_7" class="broj_osigureni_7" value="<?echo $q7['broj_osigureni_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>1.б Од тоа приватни пациенти </td>
+            <td><input type="text" readonly name="broj_privatni_1" class="broj_privatni_1" value="<?echo $q1['broj_privatni_1'];?>"></td>
+            <td><input type="text" readonly name="broj_privatni_2" class="broj_privatni_2" value="<?echo $q2['broj_privatni_2'];?>"></td>
+            <td><input type="text" readonly name="broj_privatni_3" class="broj_privatni_3"  value="<?echo $q3['broj_privatni_3'];?>"></td>
+            <td><input type="text" readonly name="broj_privatni_4" class="broj_privatni_4"  value="<?echo $q4['broj_privatni_4'];?>"></td>
+            <td><input type="text" readonly name="broj_privatni_5" class="broj_privatni_5" value="<?echo $q5['broj_privatni_5'];?>"></td>
+            <td><input type="text" readonly name="broj_privatni_6" class="broj_privatni_6" value="<?echo $q6['broj_privatni_6'];?>"></td>
+            <td><input type="text" readonly name="broj_privatni_7" class="broj_privatni_7" value="<?echo $q7['broj_privatni_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>1.в Од тоа пациенти по основ на дополнителна дејност </td>
+            <td><input type="text" readonly name="dop_dejnost_1" class="dop_dejnost_1" value="<?echo $q1['dop_dejnost_1'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_2" class="dop_dejnost_2" value="<?echo $q2['dop_dejnost_2'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_3" class="dop_dejnost_3" value="<?echo $q3['dop_dejnost_3'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_4" class="dop_dejnost_4" value="<?echo $q4['dop_dejnost_4'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_5" class="dop_dejnost_5" value="<?echo $q5['dop_dejnost_5'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_6" class="dop_dejnost_6" value="<?echo $q6['dop_dejnost_6'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_7" class="dop_dejnost_7" value="<?echo $q7['dop_dejnost_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>1.г Од тоа останати пациенти (МЗ) </td>
+            <td><input type="text" readonly name="broj_MZ_1" class="broj_MZ_1" value="<?echo $q1['broj_MZ_1'];?>"></td>
+            <td><input type="text" readonly name="broj_MZ_2" class="broj_MZ_2" value="<?echo $q2['broj_MZ_2'];?>"></td>
+            <td><input type="text" readonly name="broj_MZ_3" class="broj_MZ_3" value="<?echo $q3['broj_MZ_3'];?>"></td>
+            <td><input type="text" readonly name="broj_MZ_4" class="broj_MZ_4" value="<?echo $q4['broj_MZ_4'];?>"></td>
+            <td><input type="text" readonly name="broj_MZ_5" class="broj_MZ_5" value="<?echo $q5['broj_MZ_5'];?>"></td>
+            <td><input type="text" readonly name="broj_MZ_6" class="broj_MZ_6" value="<?echo $q6['broj_MZ_6'];?>"></td>
+            <td><input type="text" readonly name="broj_MZ_7" class="broj_MZ_7" value="<?echo $q7['broj_MZ_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>1.д Од тоа пациенти со интерклинички упат </td>
+            <td><input type="text" readonly name="broj_so_interklinicki_1" class="broj_so_interklinicki_1" value="<?echo $q1['broj_so_interklinicki_1'];?>" ></td>
+            <td><input type="text" readonly name="broj_so_interklinicki_2" class="broj_so_interklinicki_2" value="<?echo $q2['broj_so_interklinicki_2'];?>"></td>
+            <td><input type="text" readonly name="broj_so_interklinicki_3" class="broj_so_interklinicki_3" value="<?echo $q3['broj_so_interklinicki_3'];?>"></td>
+            <td><input type="text" readonly name="broj_so_interklinicki_4" class="broj_so_interklinicki_4" value="<?echo $q4['broj_so_interklinicki_4'];?>"></td>
+            <td><input type="text" readonly name="broj_so_interklinicki_5" class="broj_so_interklinicki_5" value="<?echo $q5['broj_so_interklinicki_5'];?>"></td>
+            <td><input type="text" readonly name="broj_so_interklinicki_6" class="broj_so_interklinicki_6"  value="<?echo $q6['broj_so_interklinicki_6'];?>"></td>
+            <td><input type="text" readonly name="broj_so_interklinicki_7" class="broj_so_interklinicki_7" value="<?echo $q7['broj_so_interklinicki_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>1.ѓ Пациенти без комплетна документација </td>
+            <td><input type="text" readonly name="broj_bez_upat_1" class="broj_bez_upat_1" value="<?echo $q1['broj_bez_upat_1'];?>"></td>
+            <td><input type="text" readonly name="broj_bez_upat_2" class="broj_bez_upat_2" value="<?echo $q2['broj_bez_upat_2'];?>"></td>
+            <td><input type="text" readonly name="broj_bez_upat_3" class="broj_bez_upat_3" value="<?echo $q3['broj_bez_upat_3'];?>"></td>
+            <td><input type="text" readonly name="broj_bez_upat_4" class="broj_bez_upat_4" value="<?echo $q4['broj_bez_upat_4'];?>"></td>
+            <td><input type="text" readonly name="broj_bez_upat_5" class="broj_bez_upat_5" value="<?echo $q5['broj_bez_upat_5'];?>"></td>
+            <td><input type="text" readonly name="broj_bez_upat_6" class="broj_bez_upat_6" value="<?echo $q6['broj_bez_upat_6'];?>"></td>
+            <td><input type="text" readonly name="broj_bez_upat_7" class="broj_bez_upat_7" value="<?echo $q7['broj_bez_upat_7'];?>"></td>
+        </tr>
+    </table>
+</div>
+<h3><a href="javascript:">2. Број на стационарно примени пациенти</a></h3>
+
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td>2. Број на стационарно примени пациенти </td>
+            <td><input type="text" readonly name="broj_vo_stacionar_1" class="broj_vo_stacionar_1" value="<?echo $q1['broj_vo_stacionar_1'];?>" ></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_2" class="broj_vo_stacionar_2"  value="<?echo $q2['broj_vo_stacionar_2'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_3" class="broj_vo_stacionar_3" value="<?echo $q3['broj_vo_stacionar_3'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_4" class="broj_vo_stacionar_4" value="<?echo $q4['broj_vo_stacionar_4'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_5" class="broj_vo_stacionar_5" value="<?echo $q5['broj_vo_stacionar_5'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_6" class="broj_vo_stacionar_6" value="<?echo $q6['broj_vo_stacionar_6'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_7" class="broj_vo_stacionar_7" value="<?echo $q7['broj_vo_stacionar_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>2.а Од тоа здравствени осигуреници </td>
+            <td><input type="text" readonly name="broj_vo_stacionar_osigurenici_1" class="broj_vo_stacionar_osigurenici_1" value="<?echo $q1['broj_vo_stacionar_osigurenici_1'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_osigurenici_2" class="broj_vo_stacionar_osigurenici_2" value="<?echo $q2['broj_vo_stacionar_osigurenici_2'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_osigurenici_3" class="broj_vo_stacionar_osigurenici_3" value="<?echo $q3['broj_vo_stacionar_osigurenici_3'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_osigurenici_4" class="broj_vo_stacionar_osigurenici_4" value="<?echo $q4['broj_vo_stacionar_osigurenici_4'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_osigurenici_5" class="broj_vo_stacionar_osigurenici_5" value="<?echo $q5['broj_vo_stacionar_osigurenici_5'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_osigurenici_6" class="broj_vo_stacionar_osigurenici_6" value="<?echo $q6['broj_vo_stacionar_osigurenici_6'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_osigurenici_7" class="broj_vo_stacionar_osigurenici_7" value="<?echo $q7['broj_vo_stacionar_osigurenici_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>2.б Од тоа приватни пациенти </td>
+            <td><input type="text" readonly name="broj_vo_stacionar_privatni_1" class="broj_vo_stacionar_privatni_1" value="<?echo $q1['broj_vo_stacionar_privatni_1'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_privatni_2" class="broj_vo_stacionar_privatni_2" value="<?echo $q2['broj_vo_stacionar_privatni_2'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_privatni_3" class="broj_vo_stacionar_privatni_3" value="<?echo $q3['broj_vo_stacionar_privatni_3'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_privatni_4" class="broj_vo_stacionar_privatni_4" value="<?echo $q4['broj_vo_stacionar_privatni_4'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_privatni_5" class="broj_vo_stacionar_privatni_5" value="<?echo $q5['broj_vo_stacionar_privatni_5'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_privatni_6" class="broj_vo_stacionar_privatni_6" value="<?echo $q6['broj_vo_stacionar_privatni_6'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_privatni_7" class="broj_vo_stacionar_privatni_7" value="<?echo $q7['broj_vo_stacionar_privatni_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>2.в Од тоа пациенти по основ на дополнителна дејност </td>
+            <td><input type="text" readonly name="dop_dejnost_privatni_1" class="dop_dejnost_privatni_1" value="<?echo $q1['dop_dejnost_privatni_1'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_privatni_2" class="dop_dejnost_privatni_2" value="<?echo $q2['dop_dejnost_privatni_2'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_privatni_3" class="dop_dejnost_privatni_3" value="<?echo $q3['dop_dejnost_privatni_3'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_privatni_4" class="dop_dejnost_privatni_4" value="<?echo $q4['dop_dejnost_privatni_4'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_privatni_5" class="dop_dejnost_privatni_5" value="<?echo $q5['dop_dejnost_privatni_5'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_privatni_6" class="dop_dejnost_privatni_6" value="<?echo $q6['dop_dejnost_privatni_6'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_privatni_7" class="dop_dejnost_privatni_7" value="<?echo $q7['dop_dejnost_privatni_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>2.г Од тоа останати пациенти (МЗ) </td>
+            <td><input type="text" readonly name="broj_vo_stacionar_MZ_1" class="broj_vo_stacionar_MZ_1" value="<?echo $q1['broj_vo_stacionar_MZ_1'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_MZ_2" class="broj_vo_stacionar_MZ_2" value="<?echo $q2['broj_vo_stacionar_MZ_2'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_MZ_3" class="broj_vo_stacionar_MZ_3" value="<?echo $q3['broj_vo_stacionar_MZ_3'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_MZ_4" class="broj_vo_stacionar_MZ_4" value="<?echo $q4['broj_vo_stacionar_MZ_4'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_MZ_5" class="broj_vo_stacionar_MZ_5" value="<?echo $q5['broj_vo_stacionar_MZ_5'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_MZ_6" class="broj_vo_stacionar_MZ_6" value="<?echo $q6['broj_vo_stacionar_MZ_6'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_MZ_7" class="broj_vo_stacionar_MZ_7" value="<?echo $q7['broj_vo_stacionar_MZ_7'];?>" ></td>
+        </tr>
+        <tr>
+        <td>2.д Од тоа пациенти со интерклинички упат </td>
+        <td><input type="text" readonly name="broj_vo_stacionar_interklinicki_1" class="broj_vo_stacionar_interklinicki_1" value="<?echo $q1['broj_vo_stacionar_interklinicki_1'];?>"></td>
+        <td><input type="text" readonly name="broj_vo_stacionar_interklinicki_2" class="broj_vo_stacionar_interklinicki_2" value="<?echo $q2['broj_vo_stacionar_interklinicki_2'];?>"></td>
+        <td><input type="text" readonly name="broj_vo_stacionar_interklinicki_3" class="broj_vo_stacionar_interklinicki_3" value="<?echo $q3['broj_vo_stacionar_interklinicki_3'];?>"></td>
+        <td><input type="text" readonly name="broj_vo_stacionar_interklinicki_4" class="broj_vo_stacionar_interklinicki_4" value="<?echo $q4['broj_vo_stacionar_interklinicki_4'];?>"></td>
+        <td><input type="text" readonly name="broj_vo_stacionar_interklinicki_5" class="broj_vo_stacionar_interklinicki_5" value="<?echo $q5['broj_vo_stacionar_interklinicki_5'];?>"></td>
+        <td><input type="text" readonly name="broj_vo_stacionar_interklinicki_6" class="broj_vo_stacionar_interklinicki_6" value="<?echo $q6['broj_vo_stacionar_interklinicki_6'];?>"></td>
+        <td><input type="text" readonly name="broj_vo_stacionar_interklinicki_7" class="broj_vo_stacionar_interklinicki_7" value="<?echo $q7['broj_vo_stacionar_interklinicki_7'];?>"></td>
+    </tr>
+        <tr>
+            <td>2.ѓ Пациенти без комплетна документација </td>
+            <td><input type="text" readonly name="broj_vo_stacionar_bez_upat_1" class="broj_vo_stacionar_bez_upat_1" value="<?echo $q1['broj_vo_stacionar_bez_upat_1'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_bez_upat_2" class="broj_vo_stacionar_bez_upat_2" value="<?echo $q2['broj_vo_stacionar_bez_upat_2'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_bez_upat_3" class="broj_vo_stacionar_bez_upat_3" value="<?echo $q3['broj_vo_stacionar_bez_upat_3'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_bez_upat_4" class="broj_vo_stacionar_bez_upat_4" value="<?echo $q4['broj_vo_stacionar_bez_upat_4'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_bez_upat_5" class="broj_vo_stacionar_bez_upat_5" value="<?echo $q5['broj_vo_stacionar_bez_upat_5'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_bez_upat_6" class="broj_vo_stacionar_bez_upat_6" value="<?echo $q6['broj_vo_stacionar_bez_upat_6'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_bez_upat_7" class="broj_vo_stacionar_bez_upat_7" value="<?echo $q7['broj_vo_stacionar_bez_upat_7'];?>"></td>
+        </tr>
+    </table>
+</div>
+
+
+<div class="clear"></div>
+
+<h3><a href="javascript:">3. Број на испишани пациенти</a></h3>
+
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td>3. Број на испишани пациенти</td>
+            <td><input type="text" readonly name="broj_na_ispisani_1" class="broj_na_ispisani_1" value="<?echo $q1['broj_na_ispisani_1'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_2" class="broj_na_ispisani_2" value="<?echo $q2['broj_na_ispisani_2'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_3" class="broj_na_ispisani_3" value="<?echo $q3['broj_na_ispisani_3'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_4" class="broj_na_ispisani_4" value="<?echo $q4['broj_na_ispisani_4'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_5" class="broj_na_ispisani_5" value="<?echo $q5['broj_na_ispisani_5'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_6" class="broj_na_ispisani_6" value="<?echo $q6['broj_na_ispisani_6'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_7" class="broj_na_ispisani_7" value="<?echo $q7['broj_na_ispisani_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>3.а Од тоа здравствени осигуреници </td>
+            <td><input type="text" readonly name="broj_na_ispisani_osigurenici_1" class="broj_na_ispisani_osigurenici_1" value="<?echo $q1['broj_na_ispisani_osigurenici_1'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_osigurenici_2" class="broj_na_ispisani_osigurenici_2" value="<?echo $q2['broj_na_ispisani_osigurenici_2'];?>" ></td>
+            <td><input type="text" readonly name="broj_na_ispisani_osigurenici_3" class="broj_na_ispisani_osigurenici_3" value="<?echo $q3['broj_na_ispisani_osigurenici_3'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_osigurenici_4" class="broj_na_ispisani_osigurenici_4" value="<?echo $q4['broj_na_ispisani_osigurenici_4'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_osigurenici_5" class="broj_na_ispisani_osigurenici_5" value="<?echo $q5['broj_na_ispisani_osigurenici_5'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_osigurenici_6" class="broj_na_ispisani_osigurenici_6" value="<?echo $q6['broj_na_ispisani_osigurenici_6'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_osigurenici_7" class="broj_na_ispisani_osigurenici_7" value="<?echo $q7['broj_na_ispisani_osigurenici_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>3.б Од тоа приватни пациенти </td>
+            <td><input type="text" readonly name="broj_na_ispisani_privatni_1" class="broj_na_ispisani_privatni_1" value="<?echo $q1['broj_na_ispisani_privatni_1'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_privatni_2" class="broj_na_ispisani_privatni_2" value="<?echo $q2['broj_na_ispisani_privatni_2'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_privatni_3" class="broj_na_ispisani_privatni_3" value="<?echo $q3['broj_na_ispisani_privatni_3'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_privatni_4" class="broj_na_ispisani_privatni_4" value="<?echo $q4['broj_na_ispisani_privatni_4'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_privatni_5" class="broj_na_ispisani_privatni_5" value="<?echo $q5['broj_na_ispisani_privatni_5'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_privatni_6" class="broj_na_ispisani_privatni_6" value="<?echo $q6['broj_na_ispisani_privatni_6'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_privatni_7" class="broj_na_ispisani_privatni_7" value="<?echo $q7['broj_na_ispisani_privatni_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>3.в Од тоа пациенти по основ на дополнителна дејност </td>
+            <td><input type="text" readonly name="dop_dejnost_ispisani_1" class="dop_dejnost_ispisani_1" value="<?echo $q1['dop_dejnost_ispisani_1'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_ispisani_2" class="dop_dejnost_ispisani_2" value="<?echo $q2['dop_dejnost_ispisani_2'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_ispisani_3" class="dop_dejnost_ispisani_3" value="<?echo $q3['dop_dejnost_ispisani_3'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_ispisani_4" class="dop_dejnost_ispisani_4" value="<?echo $q4['dop_dejnost_ispisani_4'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_ispisani_5" class="dop_dejnost_ispisani_5" value="<?echo $q5['dop_dejnost_ispisani_5'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_ispisani_6" class="dop_dejnost_ispisani_6" value="<?echo $q6['dop_dejnost_ispisani_6'];?>"></td>
+            <td><input type="text" readonly name="dop_dejnost_ispisani_7" class="dop_dejnost_ispisani_7" value="<?echo $q7['dop_dejnost_ispisani_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>3.г Од тоа останати пациенти (МЗ) </td>
+            <td><input type="text" readonly name="broj_na_ispisani_MZ_1" class="broj_na_ispisani_MZ_1" value="<?echo $q1['broj_na_ispisani_MZ_1'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_MZ_2" class="broj_na_ispisani_MZ_2" value="<?echo $q2['broj_na_ispisani_MZ_2'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_MZ_3" class="broj_na_ispisani_MZ_3" value="<?echo $q3['broj_na_ispisani_MZ_3'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_MZ_4" class="broj_na_ispisani_MZ_4" value="<?echo $q4['broj_na_ispisani_MZ_4'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_MZ_5" class="broj_na_ispisani_MZ_5" value="<?echo $q5['broj_na_ispisani_MZ_5'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_MZ_6" class="broj_na_ispisani_MZ_6" value="<?echo $q6['broj_na_ispisani_MZ_6'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_MZ_7" class="broj_na_ispisani_MZ_7" value="<?echo $q7['broj_na_ispisani_MZ_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>3.д Од тоа пациенти со интерклинички упат </td>
+            <td><input type="text" readonly name="broj_na_ispisani_so_interklinicki_1" class="broj_na_ispisani_so_interklinicki_1" value="<?echo $q1['broj_na_ispisani_so_interklinicki_1'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_so_interklinicki_2" class="broj_na_ispisani_so_interklinicki_2" value="<?echo $q2['broj_na_ispisani_so_interklinicki_2'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_so_interklinicki_3" class="broj_na_ispisani_so_interklinicki_3" value="<?echo $q3['broj_na_ispisani_so_interklinicki_3'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_so_interklinicki_4" class="broj_na_ispisani_so_interklinicki_4" value="<?echo $q4['broj_na_ispisani_so_interklinicki_4'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_so_interklinicki_5" class="broj_na_ispisani_so_interklinicki_5" value="<?echo $q5['broj_na_ispisani_so_interklinicki_5'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_so_interklinicki_6" class="broj_na_ispisani_so_interklinicki_6" value="<?echo $q6['broj_na_ispisani_so_interklinicki_6'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_so_interklinicki_7" class="broj_na_ispisani_so_interklinicki_7" value="<?echo $q7['broj_na_ispisani_so_interklinicki_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>3.ѓ Пациенти без комплетна документација </td>
+            <td><input type="text" readonly name="broj_na_ispisani_bez_dokumenti_1" class="broj_na_ispisani_bez_dokumenti_1" value="<?echo $q1['broj_na_ispisani_bez_dokumenti_1'];?>" ></td>
+            <td><input type="text" readonly name="broj_na_ispisani_bez_dokumenti_2" class="broj_na_ispisani_bez_dokumenti_2" value="<?echo $q2['broj_na_ispisani_bez_dokumenti_2'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_bez_dokumenti_3" class="broj_na_ispisani_bez_dokumenti_3" value="<?echo $q3['broj_na_ispisani_bez_dokumenti_3'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_bez_dokumenti_4" class="broj_na_ispisani_bez_dokumenti_4" value="<?echo $q4['broj_na_ispisani_bez_dokumenti_4'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_bez_dokumenti_5" class="broj_na_ispisani_bez_dokumenti_5" value="<?echo $q5['broj_na_ispisani_bez_dokumenti_5'];?>"></td>
+            <td><input type="text" readonly name="broj_na_ispisani_bez_dokumenti_6" class="broj_na_ispisani_bez_dokumenti_6" value="<?echo $q6['broj_na_ispisani_bez_dokumenti_6'];?>"></td>
+            <td><input type="text" readonly name="se" class="broj_na_ispisani_bez_dokumenti_7" value="<?echo $q7['broj_na_ispisani_bez_dokumenti_7'];?>"></td>
+        </tr>
+    </table>
+</div>
+
+<div class="clear"></div>
+<h3><a href="javascript:">4.Број на извршени ЕХО прегледи</a></h3>
+
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td>4.Број на извршени ЕХО прегледи </td>
+            <td><input type="text" readonly name="broj_eho_pregledi_1" class="broj_eho_pregledi_1" value="<?echo $q1['broj_eho_pregledi_1'];?>"></td>
+            <td><input type="text" readonly name="broj_eho_pregledi_2" class="broj_eho_pregledi_2" value="<?echo $q2['broj_eho_pregledi_2'];?>"></td>
+            <td><input type="text" readonly name="broj_eho_pregledi_3" class="broj_eho_pregledi_3" value="<?echo $q3['broj_eho_pregledi_3'];?>"></td>
+            <td><input type="text" readonly name="broj_eho_pregledi_4" class="broj_eho_pregledi_4" value="<?echo $q4['broj_eho_pregledi_4'];?>"></td>
+            <td><input type="text" readonly name="broj_eho_pregledi_5" class="broj_eho_pregledi_5" value="<?echo $q5['broj_eho_pregledi_5'];?>"></td>
+            <td><input type="text" readonly name="broj_eho_pregledi_6" class="broj_eho_pregledi_6" value="<?echo $q6['broj_eho_pregledi_6'];?>"></td>
+            <td><input type="text" readonly name="broj_eho_pregledi_7" class="broj_eho_pregledi_7" value="<?echo $q7['broj_eho_pregledi_7'];?>"></td>
+        </tr>
+
+    </table>
+</div>
+<div class="clear"></div>
+<h3><a href="javascript:">5.Број на прегледи на ДЕКСА</a></h3>
+
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td>5.Број на прегледи на ДЕКСА</td>
+            <td><input type="text" readonly name="broj_deksa_pregledi_1" class="broj_deksa_pregledi_1" value="<?echo $q1['broj_deksa_pregledi_1'];?>"></td>
+            <td><input type="text" readonly name="broj_deksa_pregledi_2" class="broj_deksa_pregledi_2" value="<?echo $q2['broj_deksa_pregledi_2'];?>"></td>
+            <td><input type="text" readonly name="broj_deksa_pregledi_3" class="broj_deksa_pregledi_3" value="<?echo $q3['broj_deksa_pregledi_3'];?>"></td>
+            <td><input type="text" readonly name="broj_deksa_pregledi_4" class="broj_deksa_pregledi_4" value="<?echo $q4['broj_deksa_pregledi_4'];?>"></td>
+            <td><input type="text" readonly name="broj_deksa_pregledi_5" class="broj_deksa_pregledi_5" value="<?echo $q5['broj_deksa_pregledi_5'];?>"></td>
+            <td><input type="text" readonly name="broj_deksa_pregledi_6" class="broj_deksa_pregledi_6" value="<?echo $q6['broj_deksa_pregledi_6'];?>"></td>
+            <td><input type="text" readonly name="broj_deksa_pregledi_7" class="broj_deksa_pregledi_7" value="<?echo $q7['broj_deksa_pregledi_7'];?>"></td>
+        </tr>
+    </table>
+</div>
+
+<div class="clear"></div>
+<h3><a href="javascript:">6.Број на РТГ-снимања (инвестигации)</a></h3>
+
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td>6.Број на РТГ-снимања (инвестигации)</td>
+            <td><input type="text" readonly name="broj_rtg_1" class="broj_rtg_1" value="<?echo $q1['broj_rtg_1'];?>"></td>
+            <td><input type="text" readonly name="broj_rtg_2" class="broj_rtg_2" value="<?echo $q2['broj_rtg_2'];?>"></td>
+            <td><input type="text" readonly name="broj_rtg_3" class="broj_rtg_3" value="<?echo $q3['broj_rtg_3'];?>"></td>
+            <td><input type="text" readonly name="broj_rtg_4" class="broj_rtg_4" value="<?echo $q4['broj_rtg_4'];?>"></td>
+            <td><input type="text" readonly name="broj_rtg_5" class="broj_rtg_5" value="<?echo $q5['broj_rtg_5'];?>"></td>
+            <td><input type="text" readonly name="broj_rtg_6" class="broj_rtg_6" value="<?echo $q6['broj_rtg_6'];?>"></td>
+            <td><input type="text" readonly name="broj_rtg_7" class="broj_rtg_7" value="<?echo $q7['broj_rtg_7'];?>"></td>
+        </tr>
+    </table>
+</div>
+<h3><a href="javascript:">7.Број на лица во Дневна болница</a></h3>
+
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td>7.Број на лица во Дневна болница</td>
+            <td><input type="text" readonly name="broj_dnevna_bolnica_1" class="broj_dnevna_bolnica_1" value="<?echo $q1['broj_dnevna_bolnica_1'];?>"></td>
+            <td><input type="text" readonly name="broj_dnevna_bolnica_2" class="broj_dnevna_bolnica_2" value="<?echo $q2['broj_dnevna_bolnica_2'];?>"></td>
+            <td><input type="text" readonly name="broj_dnevna_bolnica_3" class="broj_dnevna_bolnica_3" value="<?echo $q3['broj_dnevna_bolnica_3'];?>"></td>
+            <td><input type="text" readonly name="broj_dnevna_bolnica_4" class="broj_dnevna_bolnica_4" value="<?echo $q4['broj_dnevna_bolnica_4'];?>"></td>
+            <td><input type="text" readonly name="broj_dnevna_bolnica_5" class="broj_dnevna_bolnica_5" value="<?echo $q5['broj_dnevna_bolnica_5'];?>"></td>
+            <td><input type="text" readonly name="broj_dnevna_bolnica_6" class="broj_dnevna_bolnica_6" value="<?echo $q6['broj_dnevna_bolnica_6'];?>"></td>
+            <td><input type="text" readonly name="broj_dnevna_bolnica_7" class="broj_dnevna_bolnica_7" value="<?echo $q7['broj_dnevna_bolnica_7'];?>"></td>
+        </tr>
+    </table>
+</div>
+<h3><a href="javascript:">8.Лабораториски испитувања</a></h3>
+
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td>8.Лабораториски испитувања</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+    </table>
+</div>
+<h3><a href="javascript:">9.Бр. на упати од здравствена установа до др. здравствена установа</a></h3>
+
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td>9.Бр. на упати од здравствена установа до др. здравствена установа</td>
+            <td><input type="text" readonly name="broj_interbolnicki_upati_1" class="broj_interbolnicki_upati_1" value="<?echo $q1['broj_interbolnicki_upati_1'];?>"></td>
+            <td><input type="text" readonly name="broj_interbolnicki_upati_2" class="broj_interbolnicki_upati_2" value="<?echo $q2['broj_interbolnicki_upati_2'];?>"></td>
+            <td><input type="text" readonly name="broj_interbolnicki_upati_3" class="broj_interbolnicki_upati_3" value="<?echo $q3['broj_interbolnicki_upati_3'];?>"></td>
+            <td><input type="text" readonly name="broj_interbolnicki_upati_4" class="broj_interbolnicki_upati_4" value="<?echo $q4['broj_interbolnicki_upati_4'];?>"></td>
+            <td><input type="text" readonly name="broj_interbolnicki_upati_5" class="broj_interbolnicki_upati_5" value="<?echo $q5['broj_interbolnicki_upati_5'];?>"></td>
+            <td><input type="text" readonly name="broj_interbolnicki_upati_6" class="broj_interbolnicki_upati_6" value="<?echo $q6['broj_interbolnicki_upati_6'];?>"></td>
+            <td><input type="text" readonly name="broj_interbolnicki_upati_7" class="broj_interbolnicki_upati_7" value="<?echo $q7['broj_interbolnicki_upati_7'];?>"></td>
+        </tr>
+    </table>
+</div>
+<h3><a href="javascript:">10.Задоволство на осигурани лица</a></h3>
+
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td>10.Задоволство на осигурани лица</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+    </table>
+</div>
+<h3><a href="javascript:">11.Количник на број на првите и повторените амбл. прегледи во период од три(3)м.</a></h3>
+
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td>11.Количник на број на првите и повторените амбл. прегледи во период од три(3)м.</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+    </table>
+</div>
+<h3><a href="javascript:">12.Амбл. прегледи во пер. од три(3) месеци</a></h3>
+
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td>12.Амбл. прегледи во пер. од три(3) месеци</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+    </table>
+</div>
+<h3><a href="javascript:">13.Бр. на упати од една О.Е. до друга О.Е. во рамките на ЈЗУ</a></h3>
+
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td>13.Бр. на упати од една О.Е. до друга О.Е. во рамките на ЈЗУ</td>
+            <td><input type="text" readonly name="broj_interklinicki_upati_1" class="broj_interklinicki_upati_1" value="<?echo $q1['broj_interklinicki_upati_1'];?>" ></td>
+            <td><input type="text" readonly name="broj_interklinicki_upati_2" class="broj_interklinicki_upati_2" value="<?echo $q2['broj_interklinicki_upati_2'];?>"></td>
+            <td><input type="text" readonly name="broj_interklinicki_upati_3" class="broj_interklinicki_upati_3" value="<?echo $q3['broj_interklinicki_upati_3'];?>"></td>
+            <td><input type="text" readonly name="broj_interklinicki_upati_4" class="broj_interklinicki_upati_4" value="<?echo $q4['broj_interklinicki_upati_4'];?>"></td>
+            <td><input type="text" readonly name="broj_interklinicki_upati_5" class="broj_interklinicki_upati_5" value="<?echo $q5['broj_interklinicki_upati_5'];?>"></td>
+            <td><input type="text" readonly name="broj_interklinicki_upati_6" class="broj_interklinicki_upati_6" value="<?echo $q6['broj_interklinicki_upati_6'];?>"></td>
+            <td><input type="text" readonly name="broj_interklinicki_upati_7" class="broj_interklinicki_upati_7" value="<?echo $q7['broj_interklinicki_upati_7'];?>"></td>
+        </tr>
+    </table>
+</div>
+<h3><a href="javascript:">14.АМБУЛАНТИ</a></h3>
+
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+
+        <tr>
+            <td>14.а Количник на бројот на првите и повторените амбул. прегледи</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td>14.б Број на упати до здравствена установа</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+    </table>
+</div>
+<h3><a href="javascript:">15.Болнички стационар</a></h3>
+
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+
+        <tr>
+            <td>15.а Број на хоспитализирани пациенти</td>
+            <td><input type="text" readonly name="broj_vo_stacionar_1" class="broj_vo_stacionar_1 "value="<?echo $q1['broj_vo_stacionar_1'];?>" ></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_2" class="broj_vo_stacionar_2" value="<?echo $q2['broj_vo_stacionar_2'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_3" class="broj_vo_stacionar_3" value="<?echo $q3['broj_vo_stacionar_3'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_4" class="broj_vo_stacionar_4" value="<?echo $q4['broj_vo_stacionar_4'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_5" class="broj_vo_stacionar_5" value="<?echo $q5['broj_vo_stacionar_5'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_6" class="broj_vo_stacionar_6" value="<?echo $q6['broj_vo_stacionar_6'];?>"></td>
+            <td><input type="text" readonly name="broj_vo_stacionar_7" class="broj_vo_stacionar_7" value="<?echo $q7['broj_vo_stacionar_7'];?>"></td>
+        </tr>
+        <tr>
+            <td>15.б Просечно време на престој во болница</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td>15.в Број на лекувани пациенти во дневна болница</td>
+            <td><input type="text" readonly name="broj_dnevna_bolnica_1" class="broj_dnevna_bolnica_1" value="<?echo $q1['broj_dnevna_bolnica_1'];?>"></td>
+            <td><input type="text" readonly name="broj_dnevna_bolnica_2" class="broj_dnevna_bolnica_2" value="<?echo $q2['broj_dnevna_bolnica_2'];?>"></td>
+            <td><input type="text" readonly name="broj_dnevna_bolnica_3" class="broj_dnevna_bolnica_3" value="<?echo $q3['broj_dnevna_bolnica_3'];?>"></td>
+            <td><input type="text" readonly name="broj_dnevna_bolnica_4" class="broj_dnevna_bolnica_4" value="<?echo $q4['broj_dnevna_bolnica_4'];?>"></td>
+            <td><input type="text" readonly name="broj_dnevna_bolnica_5" class="broj_dnevna_bolnica_5" value="<?echo $q5['broj_dnevna_bolnica_5'];?>"></td>
+            <td><input type="text" readonly name="broj_dnevna_bolnica_6" class="broj_dnevna_bolnica_6" value="<?echo $q6['broj_dnevna_bolnica_6'];?>"></td>
+            <td><input type="text" readonly name="broj_dnevna_bolnica_7" class="broj_dnevna_bolnica_7" value="<?echo $q7['broj_dnevna_bolnica_7'];?>"></td>
+        </tr>
+    </table>
+</div>
+
+</div>
+<div class="clear"></div>
+<br/><br/>
+
+<div class="footer-pregled-pacienti">
+
+    <div class="statusselektor">
+
+    </div>
+
+    <div class="actions-pregled-pacienti">
+        <!--            <button type="button" class="button izbrisi"><span>Èçáðèøè</span></button>-->
+        <!--            <button type="button" class="button promeni"><span>Ïðîìåíè</span></button>-->
+
+    </div>
+</div>
+
+</div>
+
+
+<div class="statistika-desno">
+<div class="notacordion parametri-pregled-pacienti">
+<h3><a href="javascript:">I. ГРУПА НА ПОДАТОЦИ (О.Е. Клиника за трауматологија и О.Е Клиника за ортопедски болести)</a></h3>
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">вкупен број на лекувани пациенти</td>
+            <td><input type="text" readonly name="broj_lekuvani_vo_tra_1" class="broj_a1_1 broj_lekuvani_vo_tra_1" value="<?echo $t1['broj_a1_1'];?>"></td>
+            <td><input type="text" readonly name="broj_lekuvani_vo_tra_2" class="broj_a1_2 broj_lekuvani_vo_tra_2" value="<?echo $t2['broj_a1_2'];?>"></td>
+            <td><input type="text" readonly name="broj_lekuvani_vo_tra_3" class="broj_a1_3 broj_lekuvani_vo_tra_3" value="<?echo $t3['broj_a1_3'];?>"></td>
+            <td><input type="text" readonly name="broj_lekuvani_vo_tra_4" class="broj_a1_4 broj_lekuvani_vo_tra_4" value="<?echo $t4['broj_a1_4'];?>"></td>
+            <td><input type="text" readonly name="broj_lekuvani_vo_tra_5" class="broj_a1_5 broj_lekuvani_vo_tra_5" value="<?echo $t5['broj_a1_5'];?>"></td>
+            <td><input type="text" readonly name="broj_lekuvani_vo_tra_6" class="broj_a1_6 broj_lekuvani_vo_tra_6" value="<?echo $t6['broj_a1_6'];?>"></td>
+            <td><input type="text" readonly name="broj_lekuvani_vo_tra_7" class="broj_a1_7 broj_lekuvani_vo_tra_7" value="<?echo $t7['broj_a1_7'];?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">вкупен број на денови на болничко лечење</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на оперирани пациенти со вкупен број на предоперативни денови</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на неоперирани пациенти</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на испратени пациенти во друга здравствена установа на понатамошна дијагностика и третман, освен за рехабилитација</td>
+            <td><input type="text" readonly name="isprateni_druga_zu_t1" class="broj_a5_1 isprateni_druga_zu_t1" value="<?echo $t1['broj_a5_1']; ?>"></td>
+            <td><input type="text" readonly name="isprateni_druga_zu_t2" class="broj_a5_2 isprateni_druga_zu_t2" value="<?echo $t2['broj_a5_2']; ?>"></td>
+            <td><input type="text" readonly name="isprateni_druga_zu_t3" class="broj_a5_3 isprateni_druga_zu_t3" value="<? echo $t3['broj_a5_3']; ?>"></td>
+            <td><input type="text" readonly name="isprateni_druga_zu_t4" class="broj_a5_4 isprateni_druga_zu_t4" value="<? echo $t4['broj_a5_4']; ?>"></td>
+            <td><input type="text" readonly name="isprateni_druga_zu_t5" class="broj_a5_5 isprateni_druga_zu_t5" value="<? echo $t5['broj_a5_5']; ?>"></td>
+            <td><input type="text" readonly name="isprateni_druga_zu_t6" class="broj_a5_6 isprateni_druga_zu_t6" value="<? echo $t6['broj_a5_6']; ?>"></td>
+            <td><input type="text" readonly name="isprateni_druga_zu_t7" class="broj_a5_7 isprateni_druga_zu_t7" value="<? echo $t7['broj_a5_7']; ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на упатени пациенти на патохистолошка дијагноза</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на совпаѓања на клинички и патолошки дијагнози</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на повторни хоспитализации со иста дијагноза во рок од 30 дена од отпуштањето од ОЕ Клиника</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на оперирани пациенти во општа, спинална и епидурална анестезија</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на испишани пациенти</td>
+            <td><input type="text" readonly name="broj_ispisani_t1" class="broj_a10_1 broj_ispisani_t1" value="<? echo $t1['broj_a10_1'] ?>"></td>
+            <td><input type="text" readonly name="broj_ispisani_t2" class="broj_a10_2 broj_ispisani_t2" value="<? echo $t2['broj_a10_2'] ?>"></td>
+            <td><input type="text" readonly name="broj_ispisani_t3" class="broj_a10_3 broj_ispisani_t3" value="<? echo $t3['broj_a10_3'] ?>"></td>
+            <td><input type="text" readonly name="broj_ispisani_t4" class="broj_a10_4 broj_ispisani_t4" value="<? echo $t4['broj_a10_4'] ?>"></td>
+            <td><input type="text" readonly name="broj_ispisani_t5" class="broj_a10_5 broj_ispisani_t5" value="<? echo $t5['broj_a10_5'] ?>"></td>
+            <td><input type="text" readonly name="broj_ispisani_t6" class="broj_a10_6 broj_ispisani_t6" value="<? echo $t6['broj_a10_6'] ?>"></td>
+            <td><input type="text" readonly name="broj_ispisani_t7" class="broj_a10_7 broj_ispisani_t7" value="<? echo $t7['broj_a10_7'] ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на медицински сестри (болнички дел)</td>
+            <td><input type="text" readonly name="broj_medSes_t1" class="broj_a11_1 broj_medSes_t1" value="<?echo $t1['broj_a11_1']; ?>"></td>
+            <td><input type="text" readonly name="broj_medSes_t2" class="broj_a11_2 broj_medSes_t2" value="<?echo $t2['broj_a11_2']; ?>"></td>
+            <td><input type="text" readonly name="broj_medSes_t3" class="broj_a11_3 broj_medSes_t3" value="<?echo $t3['broj_a11_3']; ?>"></td>
+            <td><input type="text" readonly name="broj_medSes_t4" class="broj_a11_4 broj_medSes_t4" value="<?echo $t4['broj_a11_4']; ?>"></td>
+            <td><input type="text" readonly name="broj_medSes_t5" class="broj_a11_5 broj_medSes_t5" value="<?echo $t5['broj_a11_5']; ?>"></td>
+            <td><input type="text" readonly name="broj_medSes_t6" class="broj_a11_6 broj_medSes_t6" value="<?echo $t6['broj_a11_6']; ?>"></td>
+            <td><input type="text" readonly name="broj_medSes_t7" class="broj_a11_7 broj_medSes_t7" value="<?echo $t7['broj_a11_7']; ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на искористени болнички постели</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на умрени лица во првите 48 часа од прием во ОЕ Клиника</td>
+            <td><input type="text" readonly name="umreni48_odpriem_t1" class="broj_b1_1 umreni48_odpriem_t1" value="<?echo $t1['broj_b1_1'] ?>"></td>
+            <td><input type="text" readonly name="umreni48_odpriem_t2" class="broj_b1_2 umreni48_odpriem_t2" value="<?echo $t2['broj_b1_2'] ?>"></td>
+            <td><input type="text" readonly name="umreni48_odpriem_t3" class="broj_b1_3 umreni48_odpriem_t3" value="<?echo $t3['broj_b1_3'] ?>"></td>
+            <td><input type="text" readonly name="umreni48_odpriem_t4" class="broj_b1_4 umreni48_odpriem_t4" value="<?echo $t4['broj_b1_4'] ?>"></td>
+            <td><input type="text" readonly name="umreni48_odpriem_t5" class="broj_b1_5 umreni48_odpriem_t5" value="<?echo $t5['broj_b1_5'] ?>"></td>
+            <td><input type="text" readonly name="umreni48_odpriem_t6" class="broj_b1_6 umreni48_odpriem_t6" value="<?echo $t6['broj_b1_6'] ?>"></td>
+            <td><input type="text" readonly name="umreni48_odpriem_t7" class="broj_b1_7 umreni48_odpriem_t7" value="<?echo $t7['broj_b1_7'] ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на умрени оперирани пациенти</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на умрени неоперирани пациенти</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на обдукциони случаи</td>
+            <td><input type="text" readonly name="broj_obdukcionisl_t1" class="broj_b4_1 broj_obdukcionisl_t1" value="<?echo $t1['broj_b4_1']; ?>"></td>
+            <td><input type="text" readonly name="broj_obdukcionisl_t2" class="broj_b4_2 broj_obdukcionisl_t2" value="<?echo $t2['broj_b4_2']; ?>"></td>
+            <td><input type="text" readonly name="broj_obdukcionisl_t3" class="broj_b4_3 broj_obdukcionisl_t3" value="<?echo $t3['broj_b4_3']; ?>"></td>
+            <td><input type="text" readonly name="broj_obdukcionisl_t4" class="broj_b4_4 broj_obdukcionisl_t4" value="<?echo $t4['broj_b4_4']; ?>"></td>
+            <td><input type="text" readonly name="broj_obdukcionisl_t5" class="broj_b4_5 broj_obdukcionisl_t5" value="<?echo $t5['broj_b4_5']; ?>"></td>
+            <td><input type="text" readonly name="broj_obdukcionisl_t6" class="broj_b4_6 broj_obdukcionisl_t6" value="<?echo $t6['broj_b4_6']; ?>"></td>
+            <td><input type="text" readonly name="broj_obdukcionisl_t7" class="broj_b4_7 broj_obdukcionisl_t7" value="<?echo $t7['broj_b4_7']; ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на совпаѓања на клинички и обдукциони дијагнози</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на паѓања и повреди на пациенти настанати во текот на хоспитализација во ОЕ Клиника</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на пациенти лекувани во интензивна нега</td>
+            <td><input type="text" readonly name="br_vo_intenzivnanega_t1" class="broj_v2_1 br_vo_intenzivnanega_t1" value="<?echo $t1['broj_v2_1'] ?>"></td>
+            <td><input type="text" readonly name="br_vo_intenzivnanega_t2" class="broj_v2_2 br_vo_intenzivnanega_t2" value="<?echo $t2['broj_v2_2'] ?>"></td>
+            <td><input type="text" readonly name="br_vo_intenzivnanega_t3" class="broj_v2_3 br_vo_intenzivnanega_t3" value="<?echo $t3['broj_v2_3'] ?>"></td>
+            <td><input type="text" readonly name="br_vo_intenzivnanega_t4" class="broj_v2_4 br_vo_intenzivnanega_t4" value="<?echo $t4['broj_v2_4'] ?>"></td>
+            <td><input type="text" readonly name="br_vo_intenzivnanega_t5" class="broj_v2_5 br_vo_intenzivnanega_t5" value="<?echo $t5['broj_v2_5'] ?>"></td>
+            <td><input type="text" readonly name="br_vo_intenzivnanega_t6" class="broj_v2_6 br_vo_intenzivnanega_t6" value="<?echo $t6['broj_v2_6'] ?>"></td>
+            <td><input type="text" readonly name="br_vo_intenzivnanega_t7" class="broj_v2_7 br_vo_intenzivnanega_t7" value="<?echo $t7['broj_v2_7'] ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на болнички инфекции во одделението за интензивна нега</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на пациенти со инфекција на оперираните места според степенот на микробна контаминација</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на оперирани пациенти од исто ниво на контаминација</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на лежечки пациенти со декубитални рани</td>
+            <td><input type="text" readonly name="br_pac_dekubitRani_t1" class="broj_v6_1 br_pac_dekubitRani_t1" value="<?echo $t1['broj_v6_1']; ?>"></td>
+            <td><input type="text" readonly name="br_pac_dekubitRani_t2" class="broj_v6_2 br_pac_dekubitRani_t2" value="<?echo $t2['broj_v6_2']; ?>"></td>
+            <td><input type="text" readonly name="br_pac_dekubitRani_t3" class="broj_v6_3 br_pac_dekubitRani_t3" value="<?echo $t3['broj_v6_3']; ?>"></td>
+            <td><input type="text" readonly name="br_pac_dekubitRani_t4" class="broj_v6_4 br_pac_dekubitRani_t4" value="<?echo $t4['broj_v6_4']; ?>"></td>
+            <td><input type="text" readonly name="br_pac_dekubitRani_t5" class="broj_v6_5 br_pac_dekubitRani_t5" value="<?echo $t5['broj_v6_5']; ?>"></td>
+            <td><input type="text" readonly name="br_pac_dekubitRani_t6" class="broj_v6_6 br_pac_dekubitRani_t6" value="<?echo $t6['broj_v6_6']; ?>"></td>
+            <td><input type="text" readonly name="br_pac_dekubitRani_t7" class="broj_v6_7 br_pac_dekubitRani_t7" value="<?echo $t7['broj_v6_7']; ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на компликации настанати врз основа на дадена анестезија</td>
+            <td><input type="text" readonly name="br_kompl_anestezija_t1" class="broj_v7_1 br_kompl_anestezija_t1" value="<? echo $t1['broj_v7_1']; ?>"></td>
+            <td><input type="text" readonly name="br_kompl_anestezija_t2" class="broj_v7_2 br_kompl_anestezija_t2" value="<? echo $t2['broj_v7_2']; ?>"></td>
+            <td><input type="text" readonly name="br_kompl_anestezija_t3" class="broj_v7_3 br_kompl_anestezija_t3" value="<? echo $t3['broj_v7_3']; ?>"></td>
+            <td><input type="text" readonly name="br_kompl_anestezija_t4" class="broj_v7_4 br_kompl_anestezija_t4" value="<? echo $t4['broj_v7_4']; ?>"></td>
+            <td><input type="text" readonly name="br_kompl_anestezija_t5" class="broj_v7_5 br_kompl_anestezija_t5" value="<? echo $t5['broj_v7_5']; ?>"></td>
+            <td><input type="text" readonly name="br_kompl_anestezija_t6" class="broj_v7_6 br_kompl_anestezija_t6" value="<? echo $t6['broj_v7_6']; ?>"></td>
+            <td><input type="text" readonly name="br_kompl_anestezija_t7" class="broj_v7_7 br_kompl_anestezija_t7" value="<? echo $t7['broj_v7_7']; ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на пациенти со уринарен катетар и број на пациенти со инфекции на уринарен систем</td>
+            <td><input type="text" readonly name="br_pac_urinKat_urinInf_t1" class="broj_v8_1 br_pac_urinKat_urinInf_t1"value="<? echo $t1['broj_v8_1']; ?>"></td>
+            <td><input type="text" readonly name="br_pac_urinKat_urinInf_t2" class="broj_v8_2 br_pac_urinKat_urinInf_t2" value="<? echo $t2['broj_v8_2']; ?>"></td>
+            <td><input type="text" readonly name="br_pac_urinKat_urinInf_t3" class="broj_v8_3 br_pac_urinKat_urinInf_t3" value="<? echo $t3['broj_v8_3']; ?>"></td>
+            <td><input type="text" readonly name="br_pac_urinKat_urinInf_t4" class="broj_v8_4 br_pac_urinKat_urinInf_t4" value="<? echo $t4['broj_v8_4']; ?>"></td>
+            <td><input type="text" readonly name="br_pac_urinKat_urinInf_t5" class="broj_v8_5 br_pac_urinKat_urinInf_t5" value="<? echo $t5['broj_v8_5']; ?>"></td>
+            <td><input type="text" readonly name="br_pac_urinKat_urinInf_t6" class="broj_v8_6 br_pac_urinKat_urinInf_t6" value="<? echo $t6['broj_v8_6']; ?>"></td>
+            <td><input type="text" readonly name="br_pac_urinKat_urinInf_t7" class="broj_v8_7 br_pac_urinKat_urinInf_t7" value="<? echo $t7['broj_v8_7']; ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на повторени операции во иста регија</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на механички јатрогени оштетувања настанати во тек на хируршка интервенција</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на тромбоемболиски компликации</td>
+            <td><input type="text" readonly name="br_tromb_kompl_t1" class="broj_v11_1 br_tromb_kompl_t1" value="<? echo $t1['broj_v11_1']; ?>"></td>
+            <td><input type="text" readonly name="br_tromb_kompl_t2" class="broj_v11_2 br_tromb_kompl_t2" value="<? echo $t2['broj_v11_2']; ?>"></td>
+            <td><input type="text" readonly name="br_tromb_kompl_t3" class="broj_v11_3 br_tromb_kompl_t3" value="<? echo $t3['broj_v11_3']; ?>"></td>
+            <td><input type="text" readonly name="br_tromb_kompl_t4" class="broj_v11_4 br_tromb_kompl_t4" value="<? echo $t4['broj_v11_4']; ?>"></td>
+            <td><input type="text" readonly name="br_tromb_kompl_t5" class="broj_v11_5 br_tromb_kompl_t5" value="<? echo $t5['broj_v11_5']; ?>"></td>
+            <td><input type="text" readonly name="br_tromb_kompl_t6" class="broj_v11_6 br_tromb_kompl_t6" value="<? echo $t6['broj_v11_6']; ?>"></td>
+            <td><input type="text" readonly name="br_tromb_kompl_t7" class="broj_v11_7 br_tromb_kompl_t7" value="<? echo $t7['broj_v11_7']; ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на прегледи со интер-специјалистички упат (од друга Клиника)</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на приеми со интер-болнички упат</td>
+            <td><input type="text" readonly name="br_interBolnicki_t1" class="broj_v13_1 br_interBolnicki_t1" value="<?echo $t1['broj_v13_1'];  ?>"></td>
+            <td><input type="text" readonly name="br_interBolnicki_t2" class="broj_v13_2 br_interBolnicki_t2" value="<?echo $t2['broj_v13_2'];  ?>"></td>
+            <td><input type="text" readonly name="br_interBolnicki_t3" class="broj_v13_3 br_interBolnicki_t3" value="<?echo $t3['broj_v13_3'];  ?>"></td>
+            <td><input type="text" readonly name="br_interBolnicki_t4" class="broj_v13_4 br_interBolnicki_t4" value="<?echo $t4['broj_v13_4'];  ?>"></td>
+            <td><input type="text" readonly name="br_interBolnicki_t5" class="broj_v13_5 br_interBolnicki_t5" value="<?echo $t5['broj_v13_5'];  ?>"></td>
+            <td><input type="text" readonly name="br_interBolnicki_t6" class="broj_v13_6 br_interBolnicki_t6" value="<?echo $t6['broj_v13_6'];  ?>"></td>
+            <td><input type="text" readonly name="br_interBolnicki_t7" class="broj_v13_7 br_interBolnicki_t7" value="<?echo $t7['broj_v13_7'];  ?>"></td>
+
+        </tr>
+<!--  v16 -->
+
+        <tr>
+            <td class="txt_opis_wdth">бр на приеми по лекари</td>
+            <?php for($n = 1; $n <=7; $n++){?>
+            <td class="broj_v14_<?echo $n ?> br_piemi_po_lekari_t<?echo $n ?>">
+                <?php
+                if(!empty(${"t". $n}['broj_v16_'.$n]) && ${"t".$n}['broj_v16_'.$n] != 0){
+                    ?>
+                    <h3><a href="javascript:">Лекари - приеми</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th></th><th></th></tr>
+                            <?php //for($m = 0; $m < ${"t".$n}['broj_v14_'.$n]; $m++){
+                            $arr0 = ${"t".$n}['broj_v16_'.$n][0];
+                            $arr1 = ${"t".$n}['broj_v16_'.$n][1];
+                            reset($arr0); reset($arr1);
+                            while((list($key1,$val1) = each($arr1)) && (list($key0, $val0) = each($arr0))){
+                                $class1 = "broj_v16_". $n . "_1_". $key1;
+                                $class2 = "broj_v16_". $n . "_0_". $key0;
+                                ?>
+                                <tr>
+                                    <td><input type="text" readonly name="br_priemi_po_lekari_t<?echo $n ?>_1" class="<?echo $class1 ?> br_priemi_po_lekari_t<?echo $n ?>_1" value="<?echo $val1 ?>"></td>
+                                    <td><input type="text" readonly name="br_priemi_po_lekari_t<?echo $n ?>_0" class="<?echo $class2 ?> br_priemi_po_lekari_t<?echo $n ?>_0" value="<?echo $val0 ?>"></td>
+                                </tr>
+                                <?php
+                            } ?>
+                        </table></div>
+                    <?php
+                }else {?>
+                    <h3><a href="javascript:">Лекари - приеми</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table></div>
+                    <?php } ?>
+            </td>
+
+            <?php
+        }  ?>
+        </tr>
+  <tr>
+<td class="txt_opis_wdth">бр на прегледи по лекари</td>
+<?php for($n = 1; $n <=7; $n++){?>
+<td class="broj_v14_<?echo $n ?> br_pegledi_po_lekari_t<?echo $n ?>">
+    <?php
+    if(!empty(${"t". $n}['broj_v14_'.$n]) && ${"t".$n}['broj_v14_'.$n] != 0){
+        ?>
+            <h3><a href="javascript:">Лекари - прегледи</a></h3>
+            <div class="pregled-pacient-info">
+                    <table class="tbl_pregl_lekar_<?echo $n ?> input-table-bio"><tr><th></th><th></th></tr><tbody>
+                   <?php //for($m = 0; $m < ${"t".$n}['broj_v14_'.$n]; $m++){
+        $arr0 = ${"t".$n}['broj_v14_'.$n][0];
+        $arr1 = ${"t".$n}['broj_v14_'.$n][1];
+                        reset($arr0); reset($arr1);
+        while((list($key1,$val1) = each($arr1)) && (list($key0, $val0) = each($arr0))){
+            $class1 = "broj_v14_". $n . "_1_". $key1;
+            $class2 = "broj_v14_". $n . "_0_". $key0;
+            ?>
+            <tr>
+            <td><input type="text" readonly name="br_pregledi_po_lekari_t<?echo $n ?>_1" class="<?echo $class1 ?> br_priems_po_lekari_t<?echo $n ?>_1" value="<?echo $val1 ?>"></td>
+            <td><input type="text" readonly name="br_pregledi_po_lekari_t<?echo $n ?>_0" class="<?echo $class2 ?> br_priems_po_lekari_t<?echo $n ?>_0" value="<?echo $val0 ?>"></td>
+            </tr>
+            <?php
+            } ?>
+                    </tbody></table></div>
+        <?php
+}else {?>
+        <h3><a href="javascript:">Лекари - прегледи</a></h3>
+        <div class="pregled-pacient-info">
+            <table class="tbl_pregl_lekar_<?echo $n ?> input-table-bio"><tr><th>0</th><th></th></tr><tbody></tbody></table></div>
+        <?php } ?>
+        </td>
+
+        <?php
+    }  ?>
+        </tr>
+<tr>
+            <td class="txt_opis_wdth">бр на прегледи по пакети</td>
+            <td class="broj_v15_1 br_pregledi_po_paketi_t1">
+                <?php if(!empty($t1['broj_v15_1']) && $t1['broj_v15_1']!=0){
+                if(!empty($t1['broj_v15_1']['92'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник 92</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio"><tr><th></th><th></th></tr>
+                    <?php
+                                $ii = 0;
+                    foreach($t1['broj_v15_1']['92'] as $row_92){
+                        $class1 = "broj_v15_1_92_" . $ii . "_naziv";
+                        $class2 = "broj_v15_1_92_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_92_v15_1_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_92_v15_1_<?echo $ii; ?>_naziv" value="<?echo $row_92->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_92_v15_1_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_92_v15_1_<?echo $ii; ?>_broj" value="<?echo $row_92->Broj; ?>"></td>
+                        </tr> <?php }
+                                $ii++;
+                                ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                <h3><a href="javascript:">ценовник 92</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                        </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t1['broj_v15_1']['dsg'])){?>
+                    <h3><a href="javascript:">ценовник DSG</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php
+                                $ii = 0;
+                    foreach($t1['broj_v15_1']['dsg'] as $row_dsg){
+                        $class1 = "broj_v15_1_dsg_" . $ii . "_naziv";
+                        $class2 = "broj_v15_1_dsg_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_dsg_v15_1_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_dsg_v15_1_<?echo $ii; ?>_naziv" value="<?echo $row_dsg->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_dsg_v15_1_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_dsg_v15_1_<?echo $ii; ?>_broj" value="<?echo $row_dsg->Broj; ?>"></td>
+                        </tr> <?php
+                        $ii++;
+                    }                              ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник DSG</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+
+                    <?php
+                }
+
+                if(!empty($t1['broj_v15_1']['dnevna'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник ДБ</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php
+                                $ii = 0;
+                    foreach($t1['broj_v15_1']['dnevna'] as $row_db){
+                        $class1 = "broj_v15_1_dnevna_" . $ii . "_naziv";
+                        $class2 = "broj_v15_1_dnevna_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_dnevna_v15_1_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_dnevna_v15_1_<?echo $ii; ?>_naziv" value="<?echo $row_db->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_dnevna_v15_1_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_dnevna_v15_1_<?echo $ii; ?>_broj" value="<?echo $row_db->Broj; ?>"></td>
+                        </tr>
+                        <?php
+                        $ii++;
+                    }
+                                ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник DB</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+
+                <?php }
+                if(!empty($t1['broj_v15_1']['spec'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник СКЗЗ</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php  $ii = 0;
+                    foreach($t1['broj_v15_1']['spec'] as $row_spec){
+                        $class1 = "broj_v15_1_spec_" . $ii . "_naziv";
+                        $class2 = "broj_v15_1_spec_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_spec_v15_1_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_spec_v15_1_<?echo $ii; ?>_naziv" value="<?echo $row_spec->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_spec_v15_1_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_spec_v15_1_<?echo $ii; ?>_broj" value="<?echo $row_spec->Broj; ?>"></td>
+                        </tr><?php   $ii++; }
+
+                                ?>
+                            </table>
+                        </div>
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник СКЗЗ</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+       <?php     } }else
+                echo 0; ?>
+            </td>
+            <td class="broj_v15_2 br_pregledi_po_paketi_t2">
+                <?php if(!empty($t2['broj_v15_2']) && $t2['broj_v15_2']!=0){
+                if(!empty($t2['broj_v15_2']['92'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник 92</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio"><tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t2['broj_v15_2']['92'] as $row_92){
+                        $class1 = "broj_v15_2_92_" . $ii . "_naziv";
+                        $class2 = "broj_v15_2_92_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_92_v15_2_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_92_v15_2_<?echo $ii; ?>_naziv" value="<?echo $row_92->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_92_v15_2_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_92_v15_2_<?echo $ii; ?>_broj" value="<?echo $row_92->Broj; ?>"></td>
+                        </tr> <?php  $ii++; }
+
+                                ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник 92</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t2['broj_v15_2']['dsg'])){?>
+                    <h3><a href="javascript:">ценовник DSG</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t2['broj_v15_2']['dsg'] as $row_dsg){
+                        $class1 = "broj_v15_2_dsg_" . $ii . "_naziv";
+                        $class2 = "broj_v15_2_dsg_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_dsg_v15_2_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_dsg_v15_2_<?echo $ii; ?>_naziv" value="<?echo $row_dsg->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_dsg_v15_2_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_dsg_v15_2_<?echo $ii; ?>_broj" value="<?echo $row_dsg->Broj; ?>"></td>
+                        </tr><?php  $ii++; }
+
+                                ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник DSG</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t2['broj_v15_2']['dnevna'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник ДБ</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t2['broj_v15_2']['dnevna'] as $row_db){
+                        $class1 = "broj_v15_2_dnevna_" . $ii . "_naziv";
+                        $class2 = "broj_v15_2_dnevna_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_dnevna_v15_2_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_dnevna_v15_2_<?echo $ii; ?>_naziv" value="<?echo $row_db->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_dnevna_v15_2_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_dnevna_v15_2_<?echo $ii; ?>_broj" value="<?echo $row_db->Broj; ?>"></td>
+                        </tr><?php  $ii++; }
+
+                                ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник ДБ</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t2['broj_v15_2']['spec'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник СКЗЗ</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t2['broj_v15_2']['spec'] as $row_spec){
+                        $class1 = "broj_v15_2_spec_" . $ii . "_naziv";
+                        $class2 = "broj_v15_2_spec_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_spec_v15_2_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_spec_v15_2_<?echo $ii; ?>_naziv" value="<?echo $row_spec->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_spec_v15_2_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_spec_v15_2_<?echo $ii; ?>_broj" value="<?echo $row_spec->Broj; ?>"></td>
+                        </tr>
+<?php                                 $ii++;
+                    }
+                                ?>
+                            </table>
+                        </div>
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник СКЗЗ</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+            }else echo 0;    ?>
+            </td>
+            <td class="broj_v15_3 br_pregledi_po_paketi_t3">
+                <?php if(!empty($t3['broj_v15_3']) && $t3['broj_v15_3']!=0){
+                if(!empty($t3['broj_v15_3']['92'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник 92</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio"><tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t3['broj_v15_3']['92'] as $row_92){
+                        $class1 = "broj_v15_3_92_" . $ii . "_naziv";
+                        $class2 = "broj_v15_3_92_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_92_v15_3_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_92_v15_3_<?echo $ii; ?>_naziv" value="<?echo $row_92->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_92_v15_3_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_92_v15_3_<?echo $ii; ?>_broj" value="<?echo $row_92->Broj; ?>"></td>
+                        </tr>
+                        <?php                                 $ii++; }
+                       ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник 92</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t3['broj_v15_3']['dsg'])){?>
+                    <h3><a href="javascript:">ценовник DSG</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t3['broj_v15_3']['dsg'] as $row_dsg){
+                        $class1 = "broj_v15_3_dsg_" . $ii . "_naziv";
+                        $class2 = "broj_v15_3_dsg_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_dsg_v15_3_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_dsg_v15_3_<?echo $ii; ?>_naziv" value="<?echo $row_dsg->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_dsg_v15_3_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_dsg_v15_3_<?echo $ii; ?>_broj" value="<?echo $row_dsg->Broj; ?>"></td>
+                        </tr><?php  $ii++; }
+
+                                ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник DSG</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t3['broj_v15_3']['dnevna'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник ДБ</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t3['broj_v15_3']['dnevna'] as $row_db){
+                        $class1 = "broj_v15_3_dnevna_" . $ii . "_naziv";
+                        $class2 = "broj_v15_3_dnevna_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_dnevna_v15_3_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_dnevna_v15_3_<?echo $ii; ?>_naziv" value="<?echo $row_db->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_dnevna_v15_3_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_dnevna_v15_3_<?echo $ii; ?>_broj" value="<?echo $row_db->Broj; ?>"></td>
+                        </tr>
+ <?php $ii++; } ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник ДБ</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t3['broj_v15_3']['spec'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник СКЗЗ</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t3['broj_v15_3']['spec'] as $row_spec){
+                        $class1 = "broj_v15_3_spec_" . $ii . "_naziv";
+                        $class2 = "broj_v15_3_spec_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_spec_v15_3_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_spec_v15_3_<?echo $ii; ?>_naziv" value="<?echo $row_spec->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_spec_v15_3_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_spec_v15_3_<?echo $ii; ?>_broj" value="<?echo $row_spec->Broj; ?>"></td>
+                        </tr>
+ <?php  $ii++; } ?>
+                            </table>
+                        </div>
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник СКЗЗ</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+            }else
+                echo 0; ?>
+            </td>
+            <td class="broj_v15_4 br_pregledi_po_paketi_t4">
+                <?php if(!empty($t4['broj_v15_4']) && $t4['broj_v15_4']!=0){
+                if(!empty($t4['broj_v15_4']['92'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник 92</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio"><tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t4['broj_v15_4']['92'] as $row_92){
+                        $class1 = "broj_v15_4_92_" . $ii . "_naziv";
+                        $class2 = "broj_v15_4_92_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_92_v15_4_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_92_v15_4_<?echo $ii; ?>_naziv" value="<?echo $row_92->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_92_v15_4_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_92_v15_4_<?echo $ii; ?>_broj" value="<?echo $row_92->Broj; ?>"></td>
+                        </tr> <?php $ii++; } ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник 92</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t4['broj_v15_4']['dsg'])){?>
+                    <h3><a href="javascript:">ценовник DSG</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t4['broj_v15_4']['dsg'] as $row_dsg){
+                        $class1 = "broj_v15_4_dsg_" . $ii . "_naziv";
+                        $class2 = "broj_v15_4_dsg_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_dsg_v15_4_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_dsg_v15_4_<?echo $ii; ?>_naziv" value="<?echo $row_dsg->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_dsg_v15_4_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_dsg_v15_4_<?echo $ii; ?>_broj" value="<?echo $row_dsg->Broj; ?>"></td>
+                        </tr>
+                        <?php $ii++; } ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник DSG</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t4['broj_v15_4']['dnevna'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник ДБ</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t4['broj_v15_4']['dnevna'] as $row_db){
+                        $class1 = "broj_v15_4_dnevna_" . $ii . "_naziv";
+                        $class2 = "broj_v15_4_dnevna_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_dnevna_v15_4_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_dnevna_v15_4_<?echo $ii; ?>_naziv" value="<?echo $row_db->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_dnevna_v15_4_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_dnevna_v15_4_<?echo $ii; ?>_broj" value="<?echo $row_db->Broj; ?>"></td>
+                        </tr>
+                        <?php $ii++; } ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник ДБ</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t4['broj_v15_4']['spec'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник СКЗЗ</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t4['broj_v15_4']['spec'] as $row_spec){
+                        $class1 = "broj_v15_4_spec_" . $ii . "_naziv";
+                        $class2 = "broj_v15_4_spec_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_spec_v15_4_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_spec_v15_4_<?echo $ii; ?>_naziv" value="<?echo $row_spec->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_spec_v15_4_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_spec_v15_4_<?echo $ii; ?>_broj" value="<?echo $row_spec->Broj; ?>"></td>
+                        </tr>
+                        <?php $ii++; } ?>
+                            </table>
+                        </div>
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник СКЗЗ</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+            }else
+                echo 0; ?>
+            </td>
+            <td class="broj_v15_5 br_pregledi_po_paketi_t5">
+                <?php if(!empty($t5['broj_v15_5']) && $t5['broj_v15_5']!=0){
+                if(!empty($t5['broj_v15_5']['92'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник 92</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio"><tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t5['broj_v15_5']['92'] as $row_92){
+                        $class1 = "broj_v15_5_92_" . $ii . "_naziv";
+                        $class2 = "broj_v15_5_92_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_92_v15_5_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_92_v15_5_<?echo $ii; ?>_naziv" value="<?echo $row_92->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_92_v15_5_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_92_v15_5_<?echo $ii; ?>_broj" value="<?echo $row_92->Broj; ?>"></td>
+                        </tr>
+                        <?php $ii++; } ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник 92</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t5['broj_v15_5']['dsg'])){?>
+                    <h3><a href="javascript:">ценовник DSG</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t5['broj_v15_5']['dsg'] as $row_dsg){
+                        $class1 = "broj_v15_5_dsg_" . $ii . "_naziv";
+                        $class2 = "broj_v15_5_dsg_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_dsg_v15_5_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_dsg_v15_5_<?echo $ii; ?>_naziv" value="<?echo $row_dsg->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_dsg_v15_5_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_dsg_v15_5_<?echo $ii; ?>_broj" value="<?echo $row_dsg->Broj; ?>"></td>
+                        </tr>
+                        <?php $ii++; } ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник DSG</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t5['broj_v15_5']['dnevna'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник ДБ</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii++;
+                    foreach($t5['broj_v15_5']['dnevna'] as $row_db){
+                        $class1 = "broj_v15_5_dnevna_" . $ii . "_naziv";
+                        $class2 = "broj_v15_5_dnevna_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_dnevna_v15_5_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_dnevna_v15_5_<?echo $ii; ?>_naziv" value="<?echo $row_db->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_dnevna_v15_5_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_dnevna_v15_5_<?echo $ii; ?>_broj" value="<?echo $row_db->Broj; ?>"></td>
+                        </tr>
+                        <?php $ii++; } ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник ДБ</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t5['broj_v15_5']['spec'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник СКЗЗ</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t5['broj_v15_5']['spec'] as $row_spec){
+                        $class1 = "broj_v15_5_spec_" . $ii . "_naziv";
+                        $class2 = "broj_v15_5_spec_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_spec_v15_5_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_spec_v15_5_<?echo $ii; ?>_naziv" value="<?echo $row_spec->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_spec_v15_5_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_spec_v15_5_<?echo $ii; ?>_broj" value="<?echo $row_spec->Broj; ?>"></td>
+                        </tr>
+                        <?php $ii++; } ?>
+                            </table>
+                        </div>
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник СКЗЗ</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+            }else
+                echo 0; ?>
+            </td>
+            <td class="broj_v15_6 br_pregledi_po_paketi_t6">
+                <?php if(!empty($t6['broj_v15_6']) && $t6['broj_v15_6']!=0){
+                if(!empty($t6['broj_v15_6']['92'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник 92</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio"><tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t6['broj_v15_6']['92'] as $row_92){
+                        $class1 = "broj_v15_6_92_" . $ii . "_naziv";
+                        $class2 = "broj_v15_6_92_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_92_v15_6_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_92_v15_6_<?echo $ii; ?>_naziv" value="<?echo $row_92->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_92_v15_6_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_92_v15_6_<?echo $ii; ?>_broj" value="<?echo $row_92->Broj; ?>"></td>
+                        </tr>
+                        <?php $ii++; } ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник 92</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+            ?>
+                <?php
+                if(!empty($t6['broj_v15_6']['dsg'])){?>
+                    <h3><a href="javascript:">ценовник DSG</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t6['broj_v15_6']['dsg'] as $row_dsg) {
+                        $class1 = "broj_v15_6_dsg_" . $ii . "_naziv";
+                        $class2 = "broj_v15_6_dsg_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_dsg_v15_6_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_dsg_v15_6_<?echo $ii; ?>_naziv" value="<?echo $row_dsg->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_dsg_v15_6_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_dsg_v15_6_<?echo $ii; ?>_broj" value="<?echo $row_dsg->Broj; ?>"></td>
+                        </tr>
+                                <?php $ii++; } ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник DSG</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t6['broj_v15_6']['dnevna'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник ДБ</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t6['broj_v15_6']['dnevna'] as $row_db){
+                        $class1 = "broj_v15_6_dnevna_" . $ii . "_naziv";
+                        $class2 = "broj_v15_6_dnevna_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_dnevna_v15_6_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_dnevna_v15_6_<?echo $ii; ?>_naziv" value="<?echo $row_db->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_dnevna_v15_6_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_dnevna_v15_6_<?echo $ii; ?>_broj" value="<?echo $row_db->Broj; ?>"></td>
+                        </tr>
+                        <?php $ii++; } ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник ДБ</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t6['broj_v15_6']['spec'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник СКЗЗ</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t6['broj_v15_6']['spec'] as $row_spec){
+                        $class1 = "broj_v15_6_spec_" . $ii . "_naziv";
+                        $class2 = "broj_v15_6_spec_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_spec_v15_6_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_spec_v15_6_<?echo $ii; ?>_naziv" value="<?echo $row_spec->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_spec_v15_6_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_spec_v15_6_<?echo $ii; ?>_broj" value="<?echo $row_spec->Broj; ?>"></td>
+                        </tr>
+                        <?php $ii++; } ?>
+                            </table>
+                        </div>
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник СКЗЗ</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+            }else
+                echo 0; ?>
+            </td>
+            <td class="broj_v15_7 br_pregledi_po_paketi_t7">
+                <?php if(!empty($t7['broj_v15_7']) && $t7['broj_v15_7']!=0){
+                if(!empty($t7['broj_v15_7']['92'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник 92</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio"><tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t7['broj_v15_7']['92'] as $row_92){
+                        $class1 = "broj_v15_7_92_" . $ii . "_naziv";
+                        $class2 = "broj_v15_7_92_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_92_v15_7_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_92_v15_7_<?echo $ii; ?>_naziv" value="<?echo $row_92->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_92_v15_7_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_92_v15_7_<?echo $ii; ?>_broj" value="<?echo $row_92->Broj; ?>"></td>
+                        </tr>
+                        <?php $ii++; } ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник 92</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+
+                ?>
+                <?php
+                if(!empty($t7['broj_v15_7']['dsg'])){?>
+                    <h3><a href="javascript:">ценовник DSG</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t7['broj_v15_7']['dsg'] as $row_dsg){
+                        $class1 = "broj_v15_7_dsg_" . $ii . "_naziv";
+                        $class2 = "broj_v15_7_dsg_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_dsg_v15_7_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_dsg_v15_7_<?echo $ii; ?>_naziv" value="<?echo $row_dsg->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_dsg_v15_7_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_dsg_v15_7_<?echo $ii; ?>_broj" value="<?echo $row_dsg->Broj; ?>"></td>
+                        </tr>
+                        <?php $ii++; } ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник DSG</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t7['broj_v15_7']['dnevna'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник ДБ</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t7['broj_v15_7']['dnevna'] as $row_db){
+                        $class1 = "broj_v15_7_dnevna_" . $ii . "_naziv";
+                        $class2 = "broj_v15_7_dnevna_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_dnevna_v15_7_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_dnevna_v15_7_<?echo $ii; ?>_naziv" value="<?echo $row_db->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_dnevna_v15_7_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_dnevna_v15_7_<?echo $ii; ?>_broj" value="<?echo $row_db->Broj; ?>"></td>
+                        </tr>
+                        <?php $ii++; } ?>
+                            </table>
+                        </div>
+
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник ДБ</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php
+                if(!empty($t7['broj_v15_7']['spec'])){
+                    ?>
+                    <h3><a href="javascript:">ценовник СКЗЗ</a></h3>
+                        <div class="pregled-pacient-info">
+                            <table class="input-table-bio">
+                                <tr><th></th><th></th></tr>
+                    <?php $ii = 0;
+                    foreach($t7['broj_v15_7']['spec'] as $row_spec){
+                        $class1 = "broj_v15_7_spec_" . $ii . "_naziv";
+                        $class2 = "broj_v15_7_spec_" . $ii . "_broj";
+                        ?>
+                        <tr>
+                            <td><input type="text" readonly name="pregl_po_paketi_spec_v15_7_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_paketi_spec_v15_7_<?echo $ii; ?>_naziv" value="<?echo $row_spec->Naziv; ?>"></td>
+                            <td><input type="text" readonly name="pregl_po_paketi_spec_v15_7_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_paketi_spec_v15_7_<?echo $ii; ?>_broj" value="<?echo $row_spec->Broj; ?>"></td>
+                        </tr>
+                        <?php $ii++; } ?>
+                            </table>
+                        </div>
+                        <?php
+                }else{
+                    ?>
+                    <h3><a href="javascript:">ценовник СКЗЗ</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table>
+                    </div>
+                    <?php
+                }
+            }else echo 0;    ?>
+            </td>
+           <!-- <td><input type="text" readonly name="br_pregledi_po_paketi_t7" class="br_pregledi_po_paketi_t7"><?//echo $t7['broj_v15_7'];  ?></td> -->
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">прегледи по дијагнози</td>
+            <?php for($n = 1; $n <=7; $n++){?>
+            <td class="broj_v20_<?echo $n ?> pregledi_po_dijag_t<?echo $n ?>">
+                <?php
+                if(!empty(${"t". $n}['broj_v20_'.$n]) && !empty(${"t". $n}['broj_v20_'.$n]['dijagnoza'])){
+                    ?>
+                    <h3><a href="javascript:">Дијагнози</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th></th><th></th></tr>
+                            <?php $ii = 0;
+                            $niza = ${"t".$n}['broj_v20_'.$n]['dijagnoza'];
+                            foreach($niza as $row_dijag){
+                                $class1 = "broj_v20_".$n . "_" . $ii . "_naziv";
+                                $class2 = "broj_v20_".$n . "_" . $ii . "_broj";
+                                ?>
+                                <tr>
+                                    <td><input type="text" readonly name="pregl_po_dijag_v20_<?echo $n ?>_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_dijag_v20_<?echo $n ?>_<?echo $ii; ?>_naziv" value="<?echo $row_dijag->Naziv; ?>"></td>
+                                    <td><input type="text" readonly name="pregl_po_dijag_v20_<?echo $n ?>_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_dijag_v20_<?echo $n ?>_<?echo $ii; ?>_broj" value="<?echo $row_dijag->Broj; ?>"></td>
+                                </tr>
+                                <?php $ii++; } ?>
+                        </table></div>
+                    <?php
+                }else {?>
+                    <h3><a href="javascript:">Дијагнози</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table></div>
+                    <?php } ?>
+            </td>
+
+            <?php
+        }  ?>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">прегледи по групни дијагнози</td>
+            <?php for($n = 1; $n <=7; $n++){?>
+            <td class="broj_v21_<?echo $n ?> pregledi_po_grp_dijag_t<?echo $n ?>">
+                <?php
+                if(!empty(${"t". $n}['broj_v21_'.$n]) && !empty(${"t". $n}['broj_v21_'.$n]['dijagnoza'])){
+                    ?>
+                    <h3><a href="javascript:">Групни дијагнози</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th></th><th></th></tr>
+                            <?php $ii = 0;
+                            $niza = ${"t".$n}['broj_v21_'.$n]['dijagnoza'];
+                            foreach($niza as $row_dijag){
+                                $class1 = "broj_v21_".$n . "_" . $ii . "_naziv";
+                                $class2 = "broj_v21_".$n . "_" . $ii . "_broj";
+                                ?>
+                                <tr>
+                                    <td><input type="text" readonly name="pregl_po_dijag_v21_<?echo $n ?>_<?echo $ii; ?>_naziv" class="<?echo $class1; ?> pregl_po_dijag_v21_<?echo $n ?>_<?echo $ii; ?>_naziv" value="<?echo $row_dijag->grupna_dija; ?>"></td>
+                                    <td><input type="text" readonly name="pregl_po_dijag_v21_<?echo $n ?>_<?echo $ii; ?>_broj" class="<?echo $class2; ?> pregl_po_dijag_v21_<?echo $n ?>_<?echo $ii; ?>_broj" value="<?echo $row_dijag->Broj; ?>"></td>
+                                </tr>
+                                <?php $ii++; } ?>
+                        </table></div>
+                    <?php
+                }else {?>
+                    <h3><a href="javascript:">Групни дијагнози</a></h3>
+                    <div class="pregled-pacient-info">
+                        <table class="input-table-bio"><tr><th>0</th><th></th></tr></table></div>
+                    <?php } ?>
+            </td>
+
+            <?php
+        }  ?>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">услуги(статистички извештај)</td>
+            <td><input type="text" readonly name="uslugi_t1" class="broj_v22_1 uslugi_t1" value="<?echo $t1['broj_v22_1']['num_uslugi']->num_uslugi; ?>"></td>
+            <td><input type="text" readonly name="uslugi_t2" class="broj_v22_2 uslugi_t2" value="<?echo $t2['broj_v22_2']['num_uslugi']->num_uslugi; ?>"></td>
+            <td><input type="text" readonly name="uslugi_t3" class="broj_v22_3 uslugi_t3" value="<?echo $t3['broj_v22_3']['num_uslugi']->num_uslugi; ?>"></td>
+            <td><input type="text" readonly name="uslugi_t4" class="broj_v22_4 uslugi_t4" value="<?echo $t4['broj_v22_4']['num_uslugi']->num_uslugi; ?>"></td>
+            <td><input type="text" readonly name="uslugi_t5" class="broj_v22_5 uslugi_t5" value="<?echo $t5['broj_v22_5']['num_uslugi']->num_uslugi; ?>"></td>
+            <td><input type="text" readonly name="uslugi_t6" class="broj_v22_6 uslugi_t6" value="<?echo $t6['broj_v22_6']['num_uslugi']->num_uslugi; ?>"></td>
+            <td><input type="text" readonly name="uslugi_t7" class="broj_v22_7 uslugi_t7" value="<?echo $t7['broj_v22_7']['num_uslugi']->num_uslugi; ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">МКБ 10</td>
+            <td><input type="text" readonly name="mkb10_t1" class="broj_v23_1 mkb10_t1" value="<?echo $t1['broj_v23_1']['num_mkb10']->num_mkb10; ?>"></td>
+            <td><input type="text" readonly name="mkb10_t2" class="broj_v23_2 mkb10_t2" value="<?echo $t2['broj_v23_2']['num_mkb10']->num_mkb10; ?>"></td>
+            <td><input type="text" readonly name="mkb10_t3" class="broj_v23_3 mkb10_t3" value="<?echo $t3['broj_v23_3']['num_mkb10']->num_mkb10; ?>"></td>
+            <td><input type="text" readonly name="mkb10_t4" class="broj_v23_4 mkb10_t4" value="<?echo $t4['broj_v23_4']['num_mkb10']->num_mkb10; ?>"></td>
+            <td><input type="text" readonly name="mkb10_t5" class="broj_v23_5 mkb10_t5" value="<?echo $t5['broj_v23_5']['num_mkb10']->num_mkb10; ?>"></td>
+            <td><input type="text" readonly name="mkb10_t6" class="broj_v23_6 mkb10_t6" value="<?echo $t6['broj_v23_6']['num_mkb10']->num_mkb10; ?>"></td>
+            <td><input type="text" readonly name="mkb10_t7" class="broj_v23_7 mkb10_t7" value="<?echo $t7['broj_v23_7']['num_mkb10']->num_mkb10; ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">бр на итни приеми</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">пресметка по лекар</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis_wdth">пресметка по амбулантски пакети</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+    </table>
+</div>
+<h3><a href="javascript:">II. Група на податоци(О.Е Карил)</a></h3>
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td class="txt_opis">вкупен број на лекувани пациенти</td>
+            <td><input type="text" readonly name="broj_lekuvani_vo_karil_1" class="broj1_1 broj_lekuvani_vo_karil_1" value="<?echo $k1['broj1_1']; ?>"></td>
+            <td><input type="text" readonly name="broj_lekuvani_vo_karil_2" class="broj1_2 broj_lekuvani_vo_karil_2" value="<?echo $k2['broj1_2'];  ?>" ></td>
+            <td><input type="text" readonly name="broj_lekuvani_vo_karil_3" class="broj1_3 broj_lekuvani_vo_karil_3" value="<?echo $k3['broj1_3'];?>"></td>
+            <td><input type="text" readonly name="broj_lekuvani_vo_karil_4" class="broj1_4 broj_lekuvani_vo_karil_4" value="<?echo $k4['broj1_4'];?>"></td>
+            <td><input type="text" readonly name="broj_lekuvani_vo_karil_5" class="broj1_5 broj_lekuvani_vo_karil_5" value="<?echo $k5['broj1_5'];?>"></td>
+            <td><input type="text" readonly name="broj_lekuvani_vo_karil_6" class="broj1_6 broj_lekuvani_vo_karil_6" value="<?echo $k6['broj1_6'];?>"></td>
+            <td><input type="text" readonly name="broj_lekuvani_vo_karil_7" class="broj1_7 broj_lekuvani_vo_karil_7" value="<?echo $k7['broj1_7'];?>"></td>
+                </tr>
+        <tr>
+            <td class="txt_opis">вкупен број на денови на болничко лечење</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на оперирани пациенти во општа</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на оперирани пациенти во спинална</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на оперирани пациенти во епидурална анестезија</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на пациенти со уринарен катетер</td>
+            <td><input type="text" readonly name="br_urinaKateter_k1" class="broj6_1 br_urinaKateter_k1" value="<?echo $k1['broj6_1'] ?>"></td>
+            <td><input type="text" readonly name="br_urinaKateter_k2" class="broj6_2 br_urinaKateter_k2" value="<?echo $k2['broj6_2'] ?>"></td>
+            <td><input type="text" readonly name="br_urinaKateter_k3" class="broj6_3 br_urinaKateter_k3" value="<?echo $k3['broj6_3'] ?>"></td>
+            <td><input type="text" readonly name="br_urinaKateter_k4" class="broj6_4 br_urinaKateter_k4" value="<?echo $k4['broj6_4'] ?>"></td>
+            <td><input type="text" readonly name="br_urinaKateter_k5" class="broj6_5 br_urinaKateter_k5" value="<?echo $k5['broj6_5'] ?>"></td>
+            <td><input type="text" readonly name="br_urinaKateter_k6" class="broj6_6 br_urinaKateter_k6" value="<?echo $k6['broj6_6'] ?>"></td>
+            <td><input type="text" readonly name="br_urinaKateter_k7" class="broj6_7 br_urinaKateter_k7" value="<?echo $k7['broj6_7'] ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на пациенти со инфекции на уринарен систем</td>
+            <td><input type="text" readonly name="br_infekciiUrina_k1" class="broj7_1 br_infekciiUrina_k1" value="<?echo $k1['broj7_1'] ?>"></td>
+            <td><input type="text" readonly name="br_infekciiUrina_k2" class="broj7_2 br_infekciiUrina_k2" value="<?echo $k2['broj7_2'] ?>"></td>
+            <td><input type="text" readonly name="br_infekciiUrina_k3" class="broj7_3 br_infekciiUrina_k3" value="<?echo $k3['broj7_3'] ?>"></td>
+            <td><input type="text" readonly name="br_infekciiUrina_k4" class="broj7_4 br_infekciiUrina_k4" value="<?echo $k4['broj7_4'] ?>"></td>
+            <td><input type="text" readonly name="br_infekciiUrina_k5" class="broj7_5 br_infekciiUrina_k5" value="<?echo $k5['broj7_5'] ?>"></td>
+            <td><input type="text" readonly name="br_infekciiUrina_k6" class="broj7_6 br_infekciiUrina_k6" value="<?echo $k6['broj7_6'] ?>"></td>
+            <td><input type="text" readonly name="br_infekciiUrina_k7" class="broj7_7 br_infekciiUrina_k7" value="<?echo $k7['broj7_7'] ?>"></td>
+        </tr>
+        <tr>
+        <td class="txt_opis">број на повторни приеми-враќање на одделението за централно интензивно лекување на пациенти кои се лекувани на хируршките клиники во текот на хоспитализацијата</td>
+        <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        <td><input type="text" readonly name="se" class="hematoloski1"></td>
+    </tr>
+        <tr>
+            <td class="txt_opis">број на испратени пациенти во друга здравствена установа на понатамошна дијагностика и третман, освен за рехабилитација</td>
+            <td><input type="text" readonly name="br_drZUstan_k1" class="broj9_1 br_drZUstan_k1" value="<?echo $k1['broj9_1']  ?>"></td>
+            <td><input type="text" readonly name="br_drZUstan_k2" class="broj9_2 br_drZUstan_k2" value="<?echo $k2['broj9_2']  ?>"></td>
+            <td><input type="text" readonly name="br_drZUstan_k3" class="broj9_3 br_drZUstan_k3" value="<?echo $k3['broj9_3']  ?>"></td>
+            <td><input type="text" readonly name="br_drZUstan_k4" class="broj9_4 br_drZUstan_k4" value="<?echo $k4['broj9_4']  ?>"></td>
+            <td><input type="text" readonly name="br_drZUstan_k5" class="broj9_5 br_drZUstan_k5" value="<?echo $k5['broj9_5']  ?>"></td>
+            <td><input type="text" readonly name="br_drZUstan_k6" class="broj9_6 br_drZUstan_k6" value="<?echo $k6['broj9_6']  ?>"></td>
+            <td><input type="text" readonly name="br_drZUstan_k7" class="broj9_7 br_drZUstan_k7" value="<?echo $k7['broj9_7']  ?>"></td>
+
+        </tr>
+        <tr>
+            <td class="txt_opis">број на упатени пациенти на патохистолошка дијагноза</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на совпаѓања на kлинички и патолошки дијагнози</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на умрени лица</td>
+            <td><input type="text" readonly name="br_umreni_k1" class="broj12_1 br_umreni_k1" value="<?echo $k1['broj12_1'];  ?>"></td>
+            <td><input type="text" readonly name="br_umreni_k2" class="broj12_2 br_umreni_k2" value="<?echo $k2['broj12_2'];  ?>"></td>
+            <td><input type="text" readonly name="br_umreni_k3" class="broj12_3 br_umreni_k3" value="<?echo $k3['broj12_3'];  ?>"></td>
+            <td><input type="text" readonly name="br_umreni_k4" class="broj12_4 br_umreni_k4" value="<?echo $k4['broj12_4'];  ?>"></td>
+            <td><input type="text" readonly name="br_umreni_k5" class="broj12_5 br_umreni_k5" value="<?echo $k5['broj12_5'];  ?>"></td>
+            <td><input type="text" readonly name="br_umreni_k6" class="broj12_6 br_umreni_k6" value="<?echo $k6['broj12_6'];  ?>"></td>
+            <td><input type="text" readonly name="br_umreni_k7" class="broj12_7 br_umreni_k7" value="<?echo $k7['broj12_7'];  ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на умрени лица во првите 48 часа од прием во ОЕ клиниката</td>
+            <td><input type="text" readonly name="br_umreni48_k1" class="broj13_1 br_umreni48_k1" value="<?echo $k1['broj13_1'];  ?>"></td>
+            <td><input type="text" readonly name="br_umreni48_k2" class="broj13_2 br_umreni48_k2" value="<?echo $k2['broj13_2'];  ?>"></td>
+            <td><input type="text" readonly name="br_umreni48_k3" class="broj13_3 br_umreni48_k3" value="<?echo $k3['broj13_3'];  ?>"></td>
+            <td><input type="text" readonly name="br_umreni48_k4" class="broj13_4 br_umreni48_k4" value="<?echo $k4['broj13_4'];  ?>"></td>
+            <td><input type="text" readonly name="br_umreni48_k5" class="broj13_5 br_umreni48_k5" value="<?echo $k5['broj13_5'];  ?>"></td>
+            <td><input type="text" readonly name="br_umreni48_k6" class="broj13_6 br_umreni48_k6" value="<?echo $k6['broj13_6'];  ?>"></td>
+            <td><input type="text" readonly name="br_umreni48_k7" class="broj13_7 br_umreni48_k7" value="<?echo $k7['broj13_7'];  ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на обдукциони случаи</td>
+            <td><input type="text" readonly name="br_obdukc_k1" class="broj14_1 br_obdukc_k1" value="<?echo $k1['broj14_1'];  ?>"></td>
+            <td><input type="text" readonly name="br_obdukc_k2" class="broj14_2 br_obdukc_k2" value="<?echo $k2['broj14_2'];  ?>"></td>
+            <td><input type="text" readonly name="br_obdukc_k3" class="broj14_3 br_obdukc_k3" value="<?echo $k3['broj14_3'];  ?>"></td>
+            <td><input type="text" readonly name="br_obdukc_k4" class="broj14_4 br_obdukc_k4" value="<?echo $k4['broj14_4'];  ?>"></td>
+            <td><input type="text" readonly name="br_obdukc_k5" class="broj14_5 br_obdukc_k5" value="<?echo $k5['broj14_5'];  ?>"></td>
+            <td><input type="text" readonly name="br_obdukc_k6" class="broj14_6 br_obdukc_k6" value="<?echo $k6['broj14_6'];  ?>"></td>
+            <td><input type="text" readonly name="br_obdukc_k7" class="broj14_7 br_obdukc_k7" value="<?echo $k7['broj14_7'];  ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на совпаѓања на клинички и обдукциони дијагнози</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на болнички инфекции во одделението за централно интензивно лекување</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на болнички инфекции во одделението за интензивна нега</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на лежечки пациенти со декубитални рани</td>
+            <td><input type="text" readonly name="br_dekubRani_k1" class="broj18_1 br_dekubRani_k1" value="<?echo $k1['broj18_1'];  ?>"></td>
+            <td><input type="text" readonly name="br_dekubRani_k2" class="broj18_2 br_dekubRani_k2" value="<?echo $k2['broj18_2'];  ?>"></td>
+            <td><input type="text" readonly name="br_dekubRani_k3" class="broj18_3 br_dekubRani_k3" value="<?echo $k3['broj18_3'];  ?>"></td>
+            <td><input type="text" readonly name="br_dekubRani_k4" class="broj18_4 br_dekubRani_k4" value="<?echo $k4['broj18_4'];  ?>"></td>
+            <td><input type="text" readonly name="br_dekubRani_k5" class="broj18_5 br_dekubRani_k5" value="<?echo $k5['broj18_5'];  ?>"></td>
+            <td><input type="text" readonly name="br_dekubRani_k6" class="broj18_6 br_dekubRani_k6" value="<?echo $k6['broj18_6'];  ?>"></td>
+            <td><input type="text" readonly name="br_dekubRani_k7" class="broj18_7 br_dekubRani_k7" value="<?echo $k7['broj18_7'];  ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на компликации настанати врз основа на дадена анестезија</td>
+            <td><input type="text" readonly name="br_komplOdAnest_k1" class="broj19_1 br_komplOdAnest_k1" value="<?echo $k1['broj19_1'];  ?>"></td>
+            <td><input type="text" readonly name="br_komplOdAnest_k2" class="broj19_2 br_komplOdAnest_k2" value="<?echo $k2['broj19_2'];  ?>"></td>
+            <td><input type="text" readonly name="br_komplOdAnest_k3" class="broj19_3 br_komplOdAnest_k3" value="<?echo $k3['broj19_3'];  ?>"></td>
+            <td><input type="text" readonly name="br_komplOdAnest_k4" class="broj19_4 br_komplOdAnest_k4" value="<?echo $k4['broj19_4'];  ?>"></td>
+            <td><input type="text" readonly name="br_komplOdAnest_k5" class="broj19_5 br_komplOdAnest_k5" value="<?echo $k5['broj19_5'];  ?>"></td>
+            <td><input type="text" readonly name="br_komplOdAnest_k6" class="broj19_6 br_komplOdAnest_k6" value="<?echo $k6['broj19_6'];  ?>"></td>
+            <td><input type="text" readonly name="br_komplOdAnest_k7" class="broj19_7 br_komplOdAnest_k7" value="<?echo $k7['broj19_7'];  ?>"></td>
+
+        </tr>
+        <tr>
+            <td class="txt_opis">број на испишани пациенти</td>
+            <td><input type="text" readonly name="br_ispisPac_k1" class="broj20_1 br_ispisPac_k1" value="<?echo $k1['broj20_1'];  ?>"></td>
+            <td><input type="text" readonly name="br_ispisPac_k2" class="broj20_2 br_ispisPac_k2" value="<?echo $k2['broj20_2'];  ?>"></td>
+            <td><input type="text" readonly name="br_ispisPac_k3" class="broj20_3 br_ispisPac_k3" value="<?echo $k3['broj20_3'];  ?>"></td>
+            <td><input type="text" readonly name="br_ispisPac_k4" class="broj20_4 br_ispisPac_k4" value="<?echo $k4['broj20_4'];  ?>"></td>
+            <td><input type="text" readonly name="br_ispisPac_k5" class="broj20_5 br_ispisPac_k5" value="<?echo $k5['broj20_5'];  ?>"></td>
+            <td><input type="text" readonly name="br_ispisPac_k6" class="broj20_6 br_ispisPac_k6" value="<?echo $k6['broj20_6'];  ?>"></td>
+            <td><input type="text" readonly name="br_ispisPac_k7" class="broj20_7 br_ispisPac_k7" value="<?echo $k7['broj20_7'];  ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на медицински сестри (болнички дел)</td>
+            <td><input type="text" readonly name="br_medSes_k1" class="broj21_1 br_medSes_k1" value="<?echo $k1['broj21_1'];  ?>"></td>
+            <td><input type="text" readonly name="br_medSes_k2" class="broj21_2 br_medSes_k2" value="<?echo $k2['broj21_2'];  ?>"></td>
+            <td><input type="text" readonly name="br_medSes_k3" class="broj21_3 br_medSes_k3" value="<?echo $k3['broj21_3'];  ?>"></td>
+            <td><input type="text" readonly name="br_medSes_k4" class="broj21_4 br_medSes_k4" value="<?echo $k4['broj21_4'];  ?>"></td>
+            <td><input type="text" readonly name="br_medSes_k5" class="broj21_5 br_medSes_k5" value="<?echo $k5['broj21_5'];  ?>"></td>
+           <td><input type="text" readonly name="br_medSes_k6" class="broj21_6 br_medSes_k6"  value="<?echo $k6['broj21_6'];  ?>"></td>
+           <td><input type="text" readonly name="br_medSes_k7" class="broj21_7 br_medSes_k7"  value="<?echo $k7['broj21_7'];  ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на искористени болнички постели</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на стационирани пациенти над 30 дена</td>
+            <td><input type="text" readonly name="br_stacPac_k1" class="broj23_1 br_stacPac_k1" value="<?echo $k1['broj23_1'];  ?>"></td>
+            <td><input type="text" readonly name="br_stacPac_k2" class="broj23_2 br_stacPac_k2" value="<?echo $k2['broj23_2'];  ?>"></td>
+            <td><input type="text" readonly name="br_stacPac_k3" class="broj23_3 br_stacPac_k3" value="<?echo $k3['broj23_3'];  ?>"></td>
+            <td><input type="text" readonly name="br_stacPac_k4" class="broj23_4 br_stacPac_k4" value="<?echo $k4['broj23_4'];  ?>"></td>
+            <td><input type="text" readonly name="br_stacPac_k5" class="broj23_5 br_stacPac_k5" value="<?echo $k5['broj23_5'];  ?>"></td>
+            <td><input type="text" readonly name="br_stacPac_k6" class="broj23_6 br_stacPac_k6" value="<?echo $k6['broj23_6'];  ?>"></td>
+            <td><input type="text" readonly name="br_stacPac_k7" class="broj23_7 br_stacPac_k7" value="<?echo $k7['broj23_7'];  ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на пациенти со трахеотомија</td>
+            <td><input type="text" readonly name="br_traheotomija_k1" class="broj24_1 br_traheotomija_k1" value="<?echo $k1['broj24_1'];  ?>"></td>
+            <td><input type="text" readonly name="br_traheotomija_k2" class="broj24_2 br_traheotomija_k2" value="<?echo $k2['broj24_2'];  ?>"></td>
+            <td><input type="text" readonly name="br_traheotomija_k3" class="broj24_3 br_traheotomija_k3" value="<?echo $k3['broj24_3'];  ?>"></td>
+            <td><input type="text" readonly name="br_traheotomija_k4" class="broj24_4 br_traheotomija_k4" value="<?echo $k4['broj24_4'];  ?>"></td>
+            <td><input type="text" readonly name="br_traheotomija_k5" class="broj24_5 br_traheotomija_k5" value="<?echo $k5['broj24_5'];  ?>"></td>
+            <td><input type="text" readonly name="br_traheotomija_k6" class="broj24_6 br_traheotomija_k6" value="<?echo $k6['broj24_6'];  ?>"></td>
+            <td><input type="text" readonly name="br_traheotomija_k7" class="broj24_7 br_traheotomija_k7" value="<?echo $k7['broj24_7'];  ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на пациенти со дијализа и плазмофереза</td>
+            <td><input type="text" readonly name="br_dijaliza_plazmofereza_k1" class="broj25_1 br_dijaliza_plazmofereza_k1" value="<?echo $k1['broj25_1']  ?>"></td>
+            <td><input type="text" readonly name="br_dijaliza_plazmofereza_k2" class="broj25_2 br_dijaliza_plazmofereza_k2" value="<?echo $k2['broj25_2']  ?>"></td>
+            <td><input type="text" readonly name="br_dijaliza_plazmofereza_k3" class="broj25_3 br_dijaliza_plazmofereza_k3" value="<?echo $k3['broj25_3']  ?>"></td>
+            <td><input type="text" readonly name="br_dijaliza_plazmofereza_k4" class="broj25_4 br_dijaliza_plazmofereza_k4" value="<?echo $k4['broj25_4']  ?>"></td>
+            <td><input type="text" readonly name="br_dijaliza_plazmofereza_k5" class="broj25_5 br_dijaliza_plazmofereza_k5" value="<?echo $k5['broj25_5']  ?>"></td>
+            <td><input type="text" readonly name="br_dijaliza_plazmofereza_k6" class="broj25_6 br_dijaliza_plazmofereza_k6" value="<?echo $k6['broj25_6']  ?>"></td>
+            <td><input type="text" readonly name="br_dijaliza_plazmofereza_k7" class="broj25_7 br_dijaliza_plazmofereza_k7" value="<?echo $k7['broj25_7']  ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на пациенти со дијагноза политраума</td>
+            <td><input type="text" readonly name="br_politaruma_k1" class="broj26_1 br_politaruma_k1" value="<?echo $k1['broj26_1']; ?>"></td>
+            <td><input type="text" readonly name="br_politaruma_k2" class="broj26_2 br_politaruma_k2" value="<?echo $k2['broj26_2']; ?>"></td>
+            <td><input type="text" readonly name="br_politaruma_k3" class="broj26_3 br_politaruma_k3" value="<?echo $k3['broj26_3']; ?>"></td>
+            <td><input type="text" readonly name="br_politaruma_k4" class="broj26_4 br_politaruma_k4" value="<?echo $k4['broj26_4']; ?>"></td>
+            <td><input type="text" readonly name="br_politaruma_k5" class="broj26_5 br_politaruma_k5" value="<?echo $k5['broj26_5']; ?>"></td>
+            <td><input type="text" readonly name="br_politaruma_k6" class="broj26_6 br_politaruma_k6" value="<?echo $k6['broj26_6']; ?>"></td>
+            <td><input type="text" readonly name="br_politaruma_k7" class="broj26_7 br_politaruma_k7" value="<?echo $k7['broj26_7']; ?>"></td>
+
+        </tr>
+        <tr>
+            <td class="txt_opis">број на хируршки пациенти</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на нехируршки пациенти</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на анестезиолошки прегледи со ЕКГ</td>
+            <td><input type="text" readonly name="br_EKGPpregledi_k1" class="broj29_1 br_EKGPpregledi_k1" value="<?echo $k1['broj29_1']; ?>"></td>
+            <td><input type="text" readonly name="br_EKGPpregledi_k2" class="broj29_2 br_EKGPpregledi_k2" value="<?echo $k2['broj29_2']; ?>"></td>
+            <td><input type="text" readonly name="br_EKGPpregledi_k3" class="broj29_3 br_EKGPpregledi_k3" value="<?echo $k3['broj29_3']; ?>"></td>
+            <td><input type="text" readonly name="br_EKGPpregledi_k4" class="broj29_4 br_EKGPpregledi_k4" value="<?echo $k4['broj29_4']; ?>"></td>
+            <td><input type="text" readonly name="br_EKGPpregledi_k5" class="broj29_5 br_EKGPpregledi_k5" value="<?echo $k5['broj29_5']; ?>"></td>
+            <td><input type="text" readonly name="br_EKGPpregledi_k6" class="broj29_6 br_EKGPpregledi_k6" value="<?echo $k6['broj29_6']; ?>"></td>
+            <td><input type="text" readonly name="br_EKGPpregledi_k7" class="broj29_7 br_EKGPpregledi_k7" value="<?echo $k7['broj29_7']; ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на амбулантни анестезии</td>
+            <td><input type="text" readonly name="br_amb_anes_k1" class="broj30_1 br_amb_anes_k1" value="<?echo $k1['broj30_1'];  ?>"></td>
+            <td><input type="text" readonly name="br_amb_anes_k2" class="broj30_2 br_amb_anes_k2" value="<?echo $k2['broj30_2'];  ?>"></td>
+            <td><input type="text" readonly name="br_amb_anes_k3" class="broj30_3 br_amb_anes_k3" value="<?echo $k3['broj30_3'];  ?>"></td>
+            <td><input type="text" readonly name="br_amb_anes_k4" class="broj30_4 br_amb_anes_k4" value="<?echo $k4['broj30_4'];  ?>"></td>
+            <td><input type="text" readonly name="br_amb_anes_k5" class="broj30_5 br_amb_anes_k5" value="<?echo $k5['broj30_5'];  ?>"></td>
+            <td><input type="text" readonly name="br_amb_anes_k6" class="broj30_6 br_amb_anes_k6" value="<?echo $k6['broj30_6'];  ?>"></td>
+            <td><input type="text" readonly name="br_amb_anes_k7" class="broj30_7 br_amb_anes_k7" value="<?echo $k7['broj30_7'];  ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на конзилијарни прегледи</td>
+            <td><input type="text" readonly name="br_konz_pregledi_k1" class="broj31_1 br_konz_pregledi_k1" value="<?echo $k1['broj31_1'];  ?>"></td>
+            <td><input type="text" readonly name="br_konz_pregledi_k2" class="broj31_2 br_konz_pregledi_k2" value="<?echo $k2['broj31_2'];  ?>"></td>
+            <td><input type="text" readonly name="br_konz_pregledi_k3" class="broj31_3 br_konz_pregledi_k3" value="<?echo $k3['broj31_3'];  ?>"></td>
+            <td><input type="text" readonly name="br_konz_pregledi_k4" class="broj31_4 br_konz_pregledi_k4" value="<?echo $k4['broj31_4'];  ?>"></td>
+            <td><input type="text" readonly name="br_konz_pregledi_k5" class="broj31_5 br_konz_pregledi_k5" value="<?echo $k5['broj31_5'];  ?>"></td>
+            <td><input type="text" readonly name="br_konz_pregledi_k6" class="broj31_6 br_konz_pregledi_k6" value="<?echo $k6['broj31_6'];  ?>"></td>
+            <td><input type="text" readonly name="br_konz_pregledi_k7" class="broj31_7 br_konz_pregledi_k7" value="<?echo $k7['broj31_7'];  ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на конзилијарни прегледи со итна интубација</td>
+            <td><input type="text" readonly name="br_konz_pregledi_intubacija_k1" class="broj32_1 br_konz_pregledi_intubacija_k1" value="<?echo $k1['broj32_1']  ?>"></td>
+            <td><input type="text" readonly name="br_konz_pregledi_intubacija_k2" class="broj32_2 br_konz_pregledi_intubacija_k2" value="<?echo $k2['broj32_2']  ?>"></td>
+            <td><input type="text" readonly name="br_konz_pregledi_intubacija_k3" class="broj32_3 br_konz_pregledi_intubacija_k3" value="<?echo $k3['broj32_3']  ?>"></td>
+            <td><input type="text" readonly name="br_konz_pregledi_intubacija_k4" class="broj32_4 br_konz_pregledi_intubacija_k4" value="<?echo $k4['broj32_4']  ?>"></td>
+            <td><input type="text" readonly name="br_konz_pregledi_intubacija_k5" class="broj32_5 br_konz_pregledi_intubacija_k5" value="<?echo $k5['broj32_5']  ?>"></td>
+            <td><input type="text" readonly name="br_konz_pregledi_intubacija_k6" class="broj32_6 br_konz_pregledi_intubacija_k6" value="<?echo $k6['broj32_6']  ?>"></td>
+            <td><input type="text" readonly name="br_konz_pregledi_intubacija_k7" class="broj32_7 br_konz_pregledi_intubacija_k7" value="<?echo $k7['broj32_7']  ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на централен венски катетер (ЦВК)</td>
+            <td><input type="text" readonly name="br_CVK_k1" class="broj33_1 br_CVK_k1" value="<?echo $k1['broj33_1'];  ?>"></td>
+            <td><input type="text" readonly name="br_CVK_k2" class="broj33_2 br_CVK_k2" value="<?echo $k2['broj33_2'];  ?>"></td>
+            <td><input type="text" readonly name="br_CVK_k3" class="broj33_3 br_CVK_k3" value="<?echo $k3['broj33_3'];  ?>"></td>
+            <td><input type="text" readonly name="br_CVK_k4" class="broj33_4 br_CVK_k4" value="<?echo $k4['broj33_4'];  ?>"></td>
+            <td><input type="text" readonly name="br_CVK_k5" class="broj33_5 br_CVK_k5" value="<?echo $k5['broj33_5'];  ?>"></td>
+            <td><input type="text" readonly name="br_CVK_k6" class="broj33_6 br_CVK_k6" value="<?echo $k6['broj33_6'];  ?>"></td>
+            <td><input type="text" readonly name="br_CVK_k7" class="broj33_7 br_CVK_k7" value="<?echo $k7['broj33_7'];  ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на пациенти за третман на болка</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на општа анестезија (до 90 мин)</td>
+            <td><input type="text" readonly name="br_opsta_anestezija_k1" class="broj35_1 br_opsta_anestezija_k1" value="<?echo $k1['broj35_1']; ?>"></td>
+            <td><input type="text" readonly name="br_opsta_anestezija_k2" class="broj35_2 br_opsta_anestezija_k2" value="<?echo $k2['broj35_2']; ?>"></td>
+            <td><input type="text" readonly name="br_opsta_anestezija_k3" class="broj35_3 br_opsta_anestezija_k3" value="<?echo $k3['broj35_3']; ?>"></td>
+            <td><input type="text" readonly name="br_opsta_anestezija_k4" class="broj35_4 br_opsta_anestezija_k4" value="<?echo $k4['broj35_4']; ?>"></td>
+            <td><input type="text" readonly name="br_opsta_anestezija_k5" class="broj35_5 br_opsta_anestezija_k5" value="<?echo $k5['broj35_5']; ?>"></td>
+            <td><input type="text" readonly name="br_opsta_anestezija_k6" class="broj35_6 br_opsta_anestezija_k6" value="<?echo $k6['broj35_6']; ?>"></td>
+            <td><input type="text" readonly name="br_opsta_anestezija_k7" class="broj35_7 br_opsta_anestezija_k7" value="<?echo $k7['broj35_7']; ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на општа анестезија (над 90 мин)</td>
+            <td><input type="text" readonly name="br_opsta_anestezija_nad90_k1" class="broj36_1 br_opsta_anestezija_nad90_k1" value="<?echo $k1['broj36_1']; ?>"></td>
+            <td><input type="text" readonly name="br_opsta_anestezija_nad90_k2" class="broj36_2 br_opsta_anestezija_nad90_k2" value="<?echo $k2['broj36_2']; ?>"></td>
+            <td><input type="text" readonly name="br_opsta_anestezija_nad90_k3" class="broj36_3 br_opsta_anestezija_nad90_k3" value="<?echo $k3['broj36_3']; ?>"></td>
+            <td><input type="text" readonly name="br_opsta_anestezija_nad90_k4" class="broj36_4 br_opsta_anestezija_nad90_k4" value="<?echo $k4['broj36_4']; ?>"></td>
+            <td><input type="text" readonly name="br_opsta_anestezija_nad90_k5" class="broj36_5 br_opsta_anestezija_nad90_k5" value="<?echo $k5['broj36_5']; ?>"></td>
+            <td><input type="text" readonly name="br_opsta_anestezija_nad90_k6" class="broj36_6 br_opsta_anestezija_nad90_k6" value="<?echo $k6['broj36_6']; ?>"></td>
+            <td><input type="text" readonly name="br_opsta_anestezija_nad90_k7" class="broj36_7 br_opsta_anestezija_nad90_k7" value="<?echo $k7['broj36_7']; ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на комбинирани анест. (општа и епидурална)</td>
+            <td><input type="text" readonly name="br_kombinirana_anestezija_k1" class="broj37_1 br_kombinirana_anestezija_k1" value="<?echo $k1['broj37_1']; ?>"></td>
+            <td><input type="text" readonly name="br_kombinirana_anestezija_k2" class="broj37_2 br_kombinirana_anestezija_k2" value="<?echo $k2['broj37_2']; ?>"></td>
+            <td><input type="text" readonly name="br_kombinirana_anestezija_k3" class="broj37_3 br_kombinirana_anestezija_k3" value="<?echo $k3['broj37_3']; ?>"></td>
+            <td><input type="text" readonly name="br_kombinirana_anestezija_k4" class="broj37_4 br_kombinirana_anestezija_k4" value="<?echo $k4['broj37_4']; ?>"></td>
+            <td><input type="text" readonly name="br_kombinirana_anestezija_k5" class="broj37_5 br_kombinirana_anestezija_k5" value="<?echo $k5['broj37_5']; ?>"></td>
+            <td><input type="text" readonly name="br_kombinirana_anestezija_k6" class="broj37_6 br_kombinirana_anestezija_k6" value="<?echo $k6['broj37_6']; ?>"></td>
+            <td><input type="text" readonly name="br_kombinirana_anestezija_k7" class="broj37_7 br_kombinirana_anestezija_k7" value="<?echo $k7['broj37_7']; ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на регионални анестезии</td>
+            <td><input type="text" readonly name="br_regional_anestezii_k1" class="broj38_1 br_regional_anestezii_k1" value="<?echo $k1['broj38_1']; ?>"></td>
+            <td><input type="text" readonly name="br_regional_anestezii_k2" class="broj38_2 br_regional_anestezii_k2" value="<?echo $k2['broj38_2']; ?>"></td>
+            <td><input type="text" readonly name="br_regional_anestezii_k3" class="broj38_3 br_regional_anestezii_k3" value="<?echo $k3['broj38_3']; ?>"></td>
+            <td><input type="text" readonly name="br_regional_anestezii_k4" class="broj38_4 br_regional_anestezii_k4" value="<?echo $k4['broj38_4']; ?>"></td>
+            <td><input type="text" readonly name="br_regional_anestezii_k5" class="broj38_5 br_regional_anestezii_k5" value="<?echo $k5['broj38_5']; ?>"></td>
+            <td><input type="text" readonly name="br_regional_anestezii_k6" class="broj38_6 br_regional_anestezii_k6" value="<?echo $k6['broj38_6']; ?>"></td>
+            <td><input type="text" readonly name="br_regional_anestezii_k7" class="broj38_7 br_regional_anestezii_k7" value="<?echo $k7['broj38_7']; ?>"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на итни анестезии</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на третирани пациенти во соба за будење до 60 мин.</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td class="txt_opis">број на третирани пациенти во соба за будење до 120 мин.</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>      <tr>
+            <td class="txt_opis">број на третирани пациенти во соба за будење над 120 мин.</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+
+    </table>
+</div>
+<div class="clear"></div>
+<h3><a href="javascript:"> III Група на податоци (О.Е Ургентен центар)</a></h3>
+<div class="pregled-pacient-info">
+    <table class="input-table-bio">
+        <tr>
+            <th></th>
+            <th>месец 1</th>
+            <th>месец 2</th>
+            <th>месец 3</th>
+            <th>месец 4</th>
+            <th>месец 5</th>
+            <th>месец 6</th>
+            <th>ВКУПНО</th>
+        </tr>
+        <tr>
+            <td>број на итни случаи кои се прегледани во рок од еден саат од моментот на нивното јавување во ОЕ Ургентен центар</td>
+            <td><input type="text" readonly name="itni_slucai_uc1" class="broj1_1 itni_slucai_uc1" value="<?echo $uc1['broj1_1']; ?>"></td>
+            <td><input type="text" readonly name="itni_slucai_uc2" class="broj1_2 itni_slucai_uc2" value="<?echo $uc2['broj1_2']; ?>"></td>
+            <td><input type="text" readonly name="itni_slucai_uc3" class="broj1_3 itni_slucai_uc3" value="<?echo $uc3['broj1_3']; ?>"></td>
+            <td><input type="text" readonly name="itni_slucai_uc4" class="broj1_4 itni_slucai_uc4" value="<?echo $uc4['broj1_4']; ?>"></td>
+            <td><input type="text" readonly name="itni_slucai_uc5" class="broj1_5 itni_slucai_uc5" value="<?echo $uc5['broj1_5']; ?>"></td>
+            <td><input type="text" readonly name="itni_slucai_uc6" class="broj1_6 itni_slucai_uc6" value="<?echo $uc6['broj1_6']; ?>"></td>
+            <td><input type="text" readonly name="itni_slucai_uc7" class="broj1_7 itni_slucai_uc7" value="<?echo $uc7['broj1_7']; ?>"></td>
+        </tr>
+        <tr>
+            <td> вкупен број на кардио-пулмонални реанимации</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td> број на успешни кардио-пулмонални реанимации</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+        <tr>
+            <td> постоење на протокол за згрижување на тешки трауми во писмена форма</td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+            <td><input type="text" readonly name="se" class="hematoloski1"></td>
+        </tr>
+
+    </table>
+</div>
+<div class="clear"></div>
+<div class="clear"></div>
+</div>
+<div class="clear"></div>
+<br/>
+
+<div class="footer-pregled-pacienti">
+
+    <div class="statusselektor">
+
+    </div>
+
+    <div class="actions-pregled-pacienti">
+        <!--            <button type="button" class="button izbrisi"><span>Èçáðèøè</span></button>-->
+        <!--            <button type="button" class="button promeni"><span>Ïðîìåíè</span></button>-->
+<!--        <button type="button" class="button snimi-forma"><span>Çà÷óâà¼</span></button>-->
+    </div>
+</div>
+</div>
+<!-- </form> -->
+
+<script>
+
+    jQuery(document).ready(function () {
+        for (i = new Date().getFullYear(); i >= 1970; i--)
+        {
+            $('#yearpicker').append($('<option />').val(i).html(i));
+        }
+        jQuery('.prebaruvaj-comboboxes').live('change', function () {
+            var polovina = jQuery('#prebaruvaj-po-godina option:selected').val();
+            var godina = jQuery('#yearpicker option:selected').val();
+            var formaction = "/index.php/statisticki_podatoci/statistika/prebaruvanje";
+            var data = {
+                polovina:polovina,
+                godina:godina
+            }
+            jQuery.ajax({
+                url:formaction,
+                type:'POST',
+                data:data,
+                dataType:'json',
+                success:function (response) {
+                    var prenosi = response[0]['prenos'];
+                    var prenosi_traum_ort = response[1]['prenos_traum'];
+                    var prenosi_karil = response[2]['prenos_karil'];
+                    var prenosi_uc = response[3]['prenos_uc'];
+
+                    jQuery.each(prenosi, function (index, item) {
+// console.log(index,item);
+                        jQuery.each(item, function (index2, item2) {
+                          // console.log(index2, item2);
+
+                            jQuery("."+index2).val(item2);
+                        });
+                    });
+                    jQuery.each(prenosi_karil, function(index3, item3){
+                        //console.log(index3, item3);
+                        jQuery.each(item3, function(index33, item33){
+                            jQuery("."+index33).val(item33);
+                            //console.log(index33, item33);
+                        });
+                    });
+                    jQuery.each(prenosi_uc, function(index4, item4){
+                        jQuery.each(item4, function(index44, item44){
+                            jQuery("."+index44).val(item44);
+                        });
+                    });
+                    for(var n = 1; n <= 7; n++){
+var item = prenosi_traum_ort[n];
+                        console.log(n, item);
+                        jQuery.each(item, function(indexn, itemn){
+                            console.log(indexn, itemn);
+                            if(indexn.indexOf("v14") > 0){
+                                var class1 = "", class2 = "";
+                                jQuery(".tbl_pregl_lekar_"+n+" tbody").html(" ");
+                                if(itemn != null && itemn.length != 0){
+                                    var itemn_0;
+                                    jQuery.each(itemn[1], function(index_1, itemn_1){
+                                        class1 = "broj_v14_"+ n + "_1_"+index_1;
+                                        class2 = "broj_v14_"+ n + "_0_"+index_1;
+                                        itemn_0 = itemn[0][index_1];
+         jQuery(".tbl_pregl_lekar_"+n+" tbody").append(('<tr>'
+                 +'<td><input type="text" readonly name="br_pregledi_po_lekari_t'+n+'_1" class="'+class1+' br_priems_po_lekari_t'+n+'_1" value="'+itemn_1+'">'+'</td>'
+                 +'<td><input type="text" readonly name="br_pregledi_po_lekari_t'+n+'_0" class="'+class2+' br_priems_po_lekari_t'+n+'_0" value="'+itemn_0+'">'+'</td>' +
+                 '</tr>'));
+ console.log(index_1, itemn_1, class1, " - ", itemn_0, class2);
+                                    });
+                                }else{
+                                    jQuery(".tbl_pregl_lekar_"+n+" tbody").append('<tr><td>0</td></tr>');
+}
+ }else
+                            if(indexn.indexOf("v15") > 0){}
+                            else
+                            if(indexn.indexOf("v16") > 0){}
+                            else
+                            if(indexn.indexOf("v20") > 0){}
+                            else
+                            if(indexn.indexOf("v21") > 0){}
+                            else{
+                                jQuery("."+indexn).val(itemn);
+                            }
+                        });
+                    }
+                }
+                });
+        });
+
+        jQuery(".parametri-pregled-pacienti.notacordion").addClass("ui-accordion ui-accordion-icons ui-widget ui-helper-reset")
+                .find("h3")
+                .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
+                .hover(function () {
+                    jQuery(this).toggleClass("ui-state-hover");
+                })
+                .prepend('<span class="ui-icon ui-icon-triangle-1-e"></span>')
+                .click(function () {
+                    jQuery(this)
+                            .toggleClass("ui-accordion-header-active ui-state-active ui-state-default ui-corner-bottom")
+                            .find("> .ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
+                            .next().toggleClass("ui-accordion-content-active").slideToggle();
+                    return false;
+                })
+                .next()
+                .addClass("ui-accordion-content  ui-helper-reset ui-widget-content ui-corner-bottom")
+                .hide();
+    });
+</script>
+<style type="text/css">
+
+.txt_opis{
+    white-space: normal;
+}
+    .txt_opis_wdth{}
+</style>

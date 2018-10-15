@@ -1,0 +1,316 @@
+<div id="update_pacient_form">
+
+<?php
+    $pol=array(
+        '0'=>'maski',
+        '1'=>'zenski'
+    );
+    if(isset($pacient)){
+
+        foreach($pacient as $row) {
+
+            $b0=$row->pacientID;
+            $b1=$row->ime;
+            $b2=$row->tatkovoIme;
+            $b3=$row->prezime;
+            $b4=$row->PID;
+            $b5=$row->datRag;
+            $b6=$row->pol;
+            $b7=$row->embr;
+            $b8=$row->ezbo;
+            $b9=$row->ulica;
+            $b10=$row->broj;
+            $b11=$row->naselenoMesto;
+            $b12=$row->opstina;
+            $b13=$row->drzava;
+            $b14=$row->nacionalnost;
+            $b15=$row->rabotodavac;
+            $b16=$row->naselenoRab;
+            $b17=$row->sifraDejnost;
+            $b18=$row->regBroj;
+            $b19=$row->rabMesto;
+            $b20=$row->telefon;
+            $b21=$row->mobilen1;
+            $b22=$row->mobilen2;
+            $b23=$row->blizokZaKontakt;
+            $b24=$row->oslobodenOdPar;
+            $b25=$row->pricina;
+            $b26=$row->resenie;
+            $b27=$row->tipNaOsig;
+            $b28=$row->fzoPodracna;
+            $b29=$row->imeNaOsigurenik;
+            $b30=$row->prezimeNaOsigurenik;
+            $b31=$row->embrNaOsigurenik;
+            $b32=$row->osnovOsigurenik;
+            $b33=$row->sifraZemja;
+            $b34=$row->stranskaZemja;
+            $b35=$row->stranstvoBrOsiguruvanje;
+            $b36=$row->ehis;
+            $b37=$row->krvodaritel;
+            $b38=$row->brNaKrvodaritel;
+            $b39=$row->krvnaGrupa;
+            $b40=$row->rhFaktor;
+            $b41=$row->alergii;
+            $b42=$row->hronicniZaboluvanja;
+            $b43=$row->deformiteti;
+            $b44=$row->zabeleska;
+            $b45=$row->slika;
+
+
+
+        }
+    }
+    ?>
+
+
+
+    <h3>Promena na podatoci za pacient</h3>
+
+    <?php echo form_open('pacienti/pacienti/update_pacient');?>
+
+    <?php echo form_hidden('pacientID', $b0);?>
+<fieldset class='slika'>
+    <img  src="images/logo.png" width="210" height="280">
+</fieldset>
+    <fieldset class='pod'>
+        <?  echo form_label('Ime na pacient:', 'ime');
+        echo form_input('ime',$b1, 'id="ime"');
+        echo br();
+        echo form_label('Tatkovo ime:', 'tatkovoIme');
+        echo form_input('tatkovoIme',$b2, 'id="tatkovoIme"');
+        echo br();
+        echo form_label('Prezime:', 'prezime');
+        echo form_input('prezime',$b3, 'id="prezime"');
+        ?>
+    </fieldset>
+    <fieldset class="datum">
+        <?    echo form_label('Pacient ID:', 'PID');
+        echo form_input('PID',$b4, 'id="PID"');
+        echo br();
+        echo form_label('Datum na ragjanje:', 'datRag');
+        echo form_input('datRag',$b5, 'id="datRag"');
+        echo br();
+        echo form_label('Pol: ', 'pol');
+        echo form_dropdown('pol', $pol, 'id="pol"');?>
+    </fieldset>
+    <fieldset class="mbr">
+        <?  echo form_label('EMBR:', 'embr');
+        echo form_input('embr',$b7, 'id="embr"');
+        echo br();
+        echo form_label('EZBO:', 'ezbo');
+        echo form_input('ezbo',$b8, 'id="ezbo"');?>
+    </fieldset>
+    <?echo br();
+    echo br();
+    echo br();
+    echo br();
+    echo br();
+    echo br();
+    echo br();
+    echo br();
+    echo br();
+    echo br();
+    echo br();
+    echo br();
+    echo br();
+    echo br();
+    echo br();
+    echo br();
+    ?>
+    <p align='center'>Podatoci za kontakt</p>
+    <fieldset class="mesto_na_ziveenje">
+        <legend>Adresa na ziveenje</legend><br>
+        <div class="">
+    <?echo form_label('Ulica:', 'ulica');?>
+    <?php echo form_input('ulica', $b9, 'ulica');?>
+    <?echo form_label('Broj:', 'broj');?>
+    <?php echo form_input('broj', $b10, 'broj');?>
+    <?echo form_label('Naseleno mesto:', 'naselenoMesto');?>
+    <?php echo form_input('naselenoMesto', $b11, 'naselenoMesto');?>
+    <?echo form_label('Opstina:', 'opstina');?>
+    <?php echo form_input('opstina', $b12, 'opstina');?>
+    <?echo form_label('Drzava:', 'drzava');?>
+    <?php echo form_input('drzava', $b13, 'drzava');?>
+    <?echo form_label('Nacionalnost:', 'nacionalnost');?>
+    <?php echo form_input('nacionalnost', $b14, 'nacionalnost');?>
+        </div>
+    </fieldset>
+    <fieldset class="rabotodavac">
+        <legend>Rabotodavac</legend><br>
+        <div class="">
+    <?echo form_label('Rabotodavac:', 'rabotodavac');?>
+    <?php echo form_input('rabotodavac', $b15, 'rabotodavac');?>
+    <?echo form_label('Naseleno mesto:', 'naselenoRab');?>
+    <?php echo form_input('naselenoRab', $b16, 'naselenoRab');?>
+    <?echo form_label('Sifra na dejnost:', 'sifraDejnost');?>
+    <?php echo form_input('sifraDejnost', $b17, 'sifraDejnost');?>
+    <?echo form_label('Registarski broj:', 'regBroj');?>
+    <?php echo form_input('regBroj', $b18, 'regBroj');?>
+    <?echo form_label('Rabotno mesto:', 'rabMesto');?>
+    <?php echo form_input('rabMesto', $b19, 'rabMesto');?>
+        </div>
+    </fieldset>
+    <fieldset class="kontakt">
+        <legend>Kontakt informacii</legend><br>
+        <div class="">
+    <?echo form_label('Telefon:', 'telefon');?>
+    <?php echo form_input('telefon', $b20, 'telefon');?>
+    <?echo form_label('Mobilen 1:', 'mobilen1');?>
+    <?php echo form_input('mobilen1', $b21, 'mobilen1');?>
+    <?echo form_label('Mobilen 2:', 'mobilen2');?>
+    <?php echo form_input('mobilen2', $b22, 'mobilen2');?>
+    <?echo form_label('Blizok za kontakt:', 'blizokZaKontakt');?>
+    <?php echo form_input('blizokZaKontakt', $b23, 'blizokZaKontakt');?>
+        </div>
+    </fieldset>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <p align='center'>Podatoci za osiguruvanje</p>
+    <fieldset class="participacija">
+        <legend>Participacija</legend><br>
+        <div class="">
+    <?echo form_label('Osloboden od participacija:', 'oslobodenOdPar');?>
+    <?php echo form_input('oslobodenOdPar', $b24, 'oslobodenOdPar');?>
+    <?echo form_label('Pricina:', 'pricina');?>
+    <?php echo form_input('pricina', $b25, 'pricina');?>
+    <?echo form_label('Resenie:', 'resenie');?>
+    <?php echo form_input('resenie', $b26, 'resenie');?>
+        </div>
+    </fieldset>
+    <fieldset class="osiguruvanje">
+        <legend>Osiguruvanje</legend><br>
+        <div class="">
+    <?echo form_label('Tip na osiguruvanje:', 'tipNaOsig');?>
+    <?php echo form_input('tipNaOsig', $b27, 'tipNaOsig');?>
+    <?echo form_label('Podracna:', 'fzoPodracna');?>
+    <?php echo form_input('fzoPodracna', $b28, 'fzoPodracna');?>
+        </div>
+    </fieldset>
+    <fieldset class="nositel_na_osig">
+        <legend>Nositel na osiguruvannje</legend><br>
+        <div class="">
+    <?echo form_label('Ime na osigurenik:', 'imeNaOsigurenik');?>
+    <?php echo form_input('imeNaOsigurenik', $b29, 'imeNaOsigurenik');?>
+    <?echo form_label('Prezime na osigurenik:', 'prezimeNaOsigurenik');?>
+    <?php echo form_input('prezimeNaOsigurenik', $b30, 'prezimeNaOsigurenik');?>
+    <?echo form_label('EMBR na osigurenik:', 'embrNaOsigurenik');?>
+    <?php echo form_input('embrNaOsigurenik', $b31, 'embrNaOsigurenik');?>
+    <?echo form_label('Osnov:', 'osnovOsigurenik');?>
+    <?php echo form_input('osnovOsigurenik', $b32, 'osnovOsigurenik');?>
+
+        </div>
+        <legend>Stranski osigurenik na teret na FZOM</legend><br>
+        <div class="">
+    <?echo form_label('Sifra na zemja:', 'sifraZemja');?>
+    <?php echo form_input('sifraZemja', $b33, 'sifraZemja');?>
+    <?echo form_label('Stranska zemja:', 'stranskaZemja');?>
+    <?php echo form_input('stranskaZemja', $b34, 'stranskaZemja');?>
+    <?echo form_label('Br na osiguruvanje:', 'stranstvoBrOsiguruvanje');?>
+    <?php echo form_input('stranstvoBrOsiguruvanje', $b35, 'stranstvoBrOsiguruvanje');?>
+    <?echo form_label('EHIS:', 'ehis');?>
+    <?php echo form_input('ehis', $b36, 'ehis');?>
+        </div>
+    </fieldset>
+    <fieldset class="zabeleskazapacient">
+        <legend>Zabeleska za pacientot</legend><br>
+        <div class="">
+            <?echo form_label('Zabeleska:', 'zabeleska');?>
+            <?php echo form_input('zabeleska', $b44 ,'class="zabeleskazapacient"');?>
+        </div>
+    </fieldset>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <fieldset class="krvodaritel">
+        <legend>Krvodaritel</legend><br>
+        <div class="">
+    <?echo form_label('Krvodaritel:', 'krvodaritel');?>
+    <?php echo form_input('krvodaritel', $b37, 'krvodaritel');?>
+    <?echo form_label('Br na krvodaritel:', 'brNaKrvodaritel');?>
+    <?php echo form_input('brNaKrvodaritel', $b38, 'brNaKrvodaritel');?>
+    <?echo form_label('Krvna grupa:', 'krvnaGrupa');?>
+    <?php echo form_input('krvnaGrupa', $b39, 'krvnaGrupa');?>
+    <?echo form_label('Rh faktor:', 'rhFaktor');?>
+    <?php echo form_input('rhFaktor', $b40, 'rhFaktor');?>
+        </div>
+    </fieldset>
+    <fieldset class="alergii">
+        <legend>Alergii</legend><br>
+        <div class="">
+    <?echo form_label('Alergii:', 'alergii');?>
+    <?php echo form_input('alergii', $b41, 'alergii');?>
+    <?echo form_label('Hronicni zaboluvanja:', 'hronicniZaboluvanja');?>
+    <?php echo form_input('hronicniZaboluvanja', $b42, 'hronicniZaboluvanja');?>
+    <?echo form_label('Deformiteti:', 'deformiteti');?>
+    <?php echo form_input('deformiteti', $b43, 'deformiteti');?>
+        </div>
+    </fieldset>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+    <input type="button" value="Update" class="ajaxsubmitform"><br>
+
+
+
+    <?php echo form_close(); ?>
+
+
+
+</div>

@@ -1,0 +1,40 @@
+function magacin_nov() {
+
+    formurl = "/index.php/start/magacin/nov";
+    title = "Нов Магацин";
+    nov(formurl, title)
+
+}
+
+function magacin_popolnilista() {
+
+    formurl="/index.php/start/magacin/popolnilista";
+    table_class= [".magacin-tabela"];
+    items=["tipime","ime","sifra","lokacija","firma"] ;
+
+    popolni_lista(formurl,table_class,items)
+
+}
+
+
+function magacin_izmeni(magacinid) {
+
+    id=magacinid;
+    formurl="/index.php/start/magacin/izmeni";
+    title="Измени Магацин";
+
+    izmeni(id,formurl,title)
+}
+
+function magacin_delete(magacinid){
+
+    id=magacinid ;
+    title="Избриши Магацин";
+    formurl="/index.php/start/magacin/delete_magacin";
+    lista_na="magacin";
+
+    brisi(id,title,formurl,lista_na);
+
+}
+
+

@@ -1,0 +1,168 @@
+<div id="nova_stavka_form">
+    <fieldset>
+    <?php
+    echo form_open('izvodi/menu/create_stavka');
+    ?>
+    <div class="podatoci-nov-izvod">
+        <input type="hidden" class="zirosmetkaid" name="zirosmetkaid">
+        <input type="hidden" class="bybroj" name="bybroj">
+        <input type="hidden" class="stavkabroj" name="stavkabroj">
+        <input type="hidden" class="bydatum" name="bydatum">
+        <div class="nov-izvod">
+            <label class="labelfirma">Коминтент: </label>
+            <?php echo form_dropdown('firma', $klient, '', 'class="firma searchfirma" formaction="/index.php/kasa/menu/proveri_firma"'); ?>
+            <input type="hidden" class="firmaid" name="firmaid">
+        </div>
+        <div class="nov-izvod-clear">
+            <label>Жиросметка: </label>
+            <?php echo form_dropdown('stavkazirosmetka', $zirosmetka, '', 'class="stavkazirosmetka"'); ?>
+            <input type="hidden" class="firmazirosmetkaid" name="firmazirosmetkaid">
+            <input type="text" class="adresa" name="adresa" readonly>
+        </div>
+        <div class="nov-izvod">
+            <label>Одлив: </label>
+            <input type="text" name="s-odliv" class='s-odliv inline medium'>
+            <label>Прилив: </label>
+            <input type="text" name="s-priliv" class='s-priliv inline medium'>
+        </div>
+        <div class="nov-izvod">
+            <label>Шифра: </label>
+            <input type="text" name="s-sifra" class="s-sifra inline medium">
+        </div>
+        <div class="nov-izvod">
+            <label>Повикувачки број: </label>
+            <input type="checkbox" name="s-faktura" class="s-faktura" disabled="true" formaction="/index.php/izvodi/menu/povrzi_postoecka"> - Уплата по фактура
+            <input type="hidden" name="zadokument" class="zadokument">
+            <input type="text" name="s-brojfaktura" class="s-brojfaktura" disabled="true">
+        </div>
+        <div class="nov-izvod">
+            <label>Забелешка: </label>
+            <textarea  style="overflow-y:scroll;width:99%;resize: none;" class="zabeleska" name="zabeleska"></textarea>
+        </div>
+        <div class="nov-izvod">
+            <label>Конто: </label>
+            <?php
+            echo form_dropdown('grupa', $grupa);
+            ?>
+        </div>
+    </div>
+    <button type="button" class="snimibutton button"><span>Зачувај</span></button>
+    <?php echo form_close(); ?>
+    </fieldset>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+      //  jQuery('.grupa').combobox();
+        jQuery('.firma').combobox();
+        getNewStavkaBrojByIzvod();
+        jQuery('.zirosmetkaid').val(jQuery('.tabelaizvod tr.clicked').find('.izvodzirosmetkaid').text());
+        jQuery('.bybroj').val(jQuery('.tabelaizvod tr.clicked').find('.izvodbroj').text());
+        jQuery('.bydatum').val(jQuery('.tabelaizvod tr.clicked').find('.izvoddatum').text());
+        jQuery('.s-odliv').blur(function(){
+            if( jQuery('.s-odliv').val().length >= 1 )
+            {
+                jQuery('.s-priliv').val("");
+                jQuery('.s-faktura').attr("disabled", false);
+                jQuery('.s-brojfaktura').attr("disabled", false);
+            }
+        });
+        jQuery('.s-priliv').blur(function(){
+            if( jQuery('.s-priliv').val().length >= 1 )
+            {
+                jQuery('.s-odliv').val("");
+                jQuery('.s-faktura').attr("disabled", false);
+                jQuery('.s-brojfaktura').attr("disabled", false);
+            }
+        });
+//        jQuery('.stavkazirosmetka').live('change',function(){
+//            var smetkaid = jQuery(this).val();
+//            jQuery('.firmazirosmetkaid').val(smetkaid);
+//        });
+    jQuery('.firma').live("change", function(){
+        var formaction=jQuery('.firma').attr('formaction');
+        if( jQuery('.firma option:selected').text().length >= 1 ) {
+            var data = {
+                firma: jQuery('.firma option:selected').text()
+            }
+            jQuery.ajax({
+                url: formaction,
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+//                    jQuery('.stavkazirosmetka').val((response[0].ziroSka));
+                    jQuery('.firmazirosmetkaid').val((response[0].ziroSkaID));
+                    jQuery('.firmaid').val((response[0].firmaID));
+                    jQuery('.adresa').val((response[0].adresa));
+
+                    jQuery.ajax({
+                        url: "/index.php/izvodi/menu/getZirosmetkiZaKlient",
+                        type: 'POST',
+                        data: { firmaid: jQuery('.firmaid').val() },
+//                        data: { firmaid: 63 },
+                        dataType: 'json',
+                        success: function(response) {
+//                            console.log(response);
+                            var sel = jQuery(".stavkazirosmetka");
+                            sel.empty();
+                            for (var i=0; i<response.length; i++) {
+                                sel.append('<option value="' + response[i].id + '">' + response[i].zirosmetka + '</option>');
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        else
+        {
+            jQuery(".stavkazirosmetka").empty();
+            jQuery(".firmazirosmetkaid").val('');
+            jQuery(".adresa").val('');
+        }
+    });
+        jQuery('.s-faktura').live('click',function(){
+            if(jQuery('.s-faktura').is(":checked"))
+            {
+                var formaction=jQuery(this).attr('formaction');
+                var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+                jQuery.ajax({
+                    url:formaction,
+                    success:function (response) {
+                        var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+                        jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                        jQuery("." + tempdialog).html(response);
+                        jQuery('div.' + tempdialog).dialog({
+                            autoOpen:true,
+                            width:"auto",
+                            position:"center",
+                            modal:true,
+                            title:"Поврзи фактура",
+                            close:function (event, ui) {
+                                jQuery(this).dialog("destroy");
+                                jQuery(this).remove();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        jQuery('.snimibutton').live('click',function(){
+            var ovakopce = jQuery(this);
+            var formaction = jQuery(this).parent().attr('action');
+//            var dialogid = jQuery(this).parent().parent().parent();
+            var data = jQuery(this).parent().serialize();
+            jQuery.ajax({
+                url: formaction,
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery('.tabelaizvod').find('tr.active').click();
+                    destroyparentdialog(ovakopce);
+                }
+            });
+        });
+    });
+</script>

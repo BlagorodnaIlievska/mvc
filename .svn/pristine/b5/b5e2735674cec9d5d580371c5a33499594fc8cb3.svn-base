@@ -1,0 +1,44 @@
+<div class="novodel">
+    <form method="post" action="/index.php/start/firma/create_pododel">
+    <fieldset>
+        <legend>Нов Пододел</legend>
+
+        <input type="hidden" name="parent_id" value="<?php echo $idnafirma ?>" />
+        <input type="hidden" name="parent_odel_id" value="<?php echo $idnaodel ?>" />
+        Име на Фирма: <?php echo $imenafirma ?><br />
+        Шифра на Фирма: <?php echo $sifranafirma ?><br /><br />
+
+        Име на Одел: <?php echo $imenaodel ?><br />
+        Шифра на Одел: <?php echo $sifranaodel ?><br /><br />
+
+        Име на Пододел:<br />
+        <input type="text" value="" name="ime"><br />
+        Шифра на Пододел:<br />
+	    <input type="text" value="" name="sifra"><br />
+        Адреса:<br />
+        <input type="text" value="" name="adresa"><br />
+        Даночен број:<br />
+        <input type="text" value="" name="danocenbroj"><br />
+        Почетен број во дневник:<br/>
+        <input type="text" value="" name="poceten_broj_vo_dnevnik"><br/>
+        ДДВ Обврзник:<br/>
+        <select name="ddv_obvrznik">
+            <option value="0">Не</option>
+            <option value="1">Да</option>
+        </select>
+        <br/>
+        Град:<br/>
+        <select name="grad_id">
+            <option value="0"></option>
+		    <?php foreach ($gradovi as $grad) { ?>
+            <option value="<?php echo $grad->id ?>"><?php echo $grad->ime ?></option>
+		    <?php } ?>
+        </select>
+
+
+
+
+    </fieldset><br/>
+        <input type="button" class="ajaxpododelcreateform button" value="Додади"><br/>
+    </form>
+</div>

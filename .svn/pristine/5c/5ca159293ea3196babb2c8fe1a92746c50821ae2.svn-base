@@ -1,0 +1,50 @@
+<div class="editgrupa">
+    <form method="post" action="/index.php/paketi/paket/update_grupa">
+        <input type="hidden" name="id" value="<?php echo $id ?>" />
+
+        <?php
+        if ($tip=='grupa') {  ?>
+        Назив на група:<br />
+        <input type="text" value="<?php echo $nazivnagrupa ?>" name="naziv"><br />
+
+        <?php } elseif($tip=='podgrupa'){ ?>
+
+        Назив на група: <?php echo $nazivnagrupa ?><br />
+
+        Назив на подгрупа:<br />
+        <input type="text" value="<?php echo $nazivnapodgrupa ?>" name="naziv"><br />
+
+
+        <?php } elseif($tip=='paket'){ ?>
+        Назив на група: <?php echo $nazivnagrupa ?><br />
+
+        Назив на подгрупа: <?php echo $nazivnapodgrupa ?><br />
+
+
+        Назив на пакет:<br />
+        <input type="text" value="<?php echo $nazivnapaket ?>" name="naziv"><br />
+
+        Шифра на пакет:<br />
+        <input type="text" value="<?php echo $sifranapaket ?>" name="sifra"><br />
+        Цена на пакет:<br />
+        <input type="text" value="<?php echo $cenanapaket ?>" name="cena"><br />
+
+
+
+
+        <?php } elseif($tip =='sodrzina'){ ?>
+        Назив на група: <?php echo $nazivnagrupa ?><br />
+        Назив на подгрупа: <?php echo $nazivnapodgrupa ?><br />
+        Назив на пакет: <?php echo $nazivnapaket ?><br />
+
+        Содржина : <br />
+        <input type="text" value="<?php echo $sodrzinapaket ?>" name="sodrzina"><br />
+
+        <? } ?>
+
+
+
+
+        <input type="button" class="ajaxpaketiupdate button" value="Измени"><br/>
+    </form>
+</div>

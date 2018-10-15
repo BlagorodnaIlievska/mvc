@@ -1,0 +1,27 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Main_menu extends CI_Controller{
+
+	function __construct()
+	{
+		parent::__construct();
+	}
+
+	public function index()
+	{
+		$menus= array();
+		$menus[0]['class']="korisnici-content";
+		$menus[0]['link']="/index.php/korisnici/korisnici/lista";
+		$menus[0]['label']="Корисници";
+		$menus[1]['class']="ulogi-content";
+		$menus[1]['link']="/index.php/korisnici/ulogi/lista";
+		$menus[1]['label']="Работна група";
+
+
+		$data['main_content'] = 'korisnici/main_menu';
+		$data['ajax'] = 0;
+		$data['menus'] = $menus;
+		$this->load->view('includes/template', $data);
+	}
+}
+

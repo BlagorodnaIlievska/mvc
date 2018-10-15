@@ -1,0 +1,6 @@
+.smenalista  {
+    width: 365px;
+    float: left;
+    margin-top: 10px;
+}
+.smena-glavnalista .buttoncontainer { margin-top:10px; margin-bottom:10px; }

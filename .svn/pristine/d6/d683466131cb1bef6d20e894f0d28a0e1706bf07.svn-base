@@ -1,0 +1,73 @@
+<html>
+<head>
+</head>
+<body>
+
+<p align='center'>Pregled na kasi</p>
+
+<table  border='1'   width='150' height='60' align='center'>
+    <tr>
+
+        <td>No.</td>
+        <td>Kasa</td>
+        <td>Datum</td>
+        <td>Broj</td>
+        <td>Klient</td>
+        <td>Odliv</td>
+        <td>Priliv</td>
+        <td>###</td>
+        <td>Grupa</td>
+        <td>Zabeleska</td>
+
+
+    </tr>
+
+    <?php
+    $reden=1;
+
+    if(isset($q)){
+        foreach($q as $row){
+
+            echo "<tr>" ;
+
+            echo "<td width='20'>" . $reden . "</td>";
+            echo "<td width='100'>" . $row->kasaIme. "</td>";
+            echo "<td width='100'>" . $row->datum. "</td>";
+            echo "<td width='60'>" .$row->intBroj."</td>";
+            echo "<td width='60'>" .$row->firmaIme."</td>";
+            if($row->tip==540){
+                echo "<td width='60'>".$row->suma."</td>";
+                echo "<td width='60'></td>";
+            }
+            if($row->tip==550){
+                echo "<td width='60'></td>";
+                echo "<td width='60'>".$row->suma."</td>";
+            }
+
+            echo "<td width='60'>###</td>";
+            echo "<td width='60'>" .$row->grupa."</td>";
+            echo "<td width='60'>".$row->zabeleska. "</td>";
+
+            $reden=$reden+1;
+
+
+            echo " </tr>";
+
+        }
+    }
+    else {echo 'Vo momentov nema kasi';}
+    ?>
+
+</table>
+<br>
+<br>
+<br>
+<!--<p class="doleLevo">
+    <?//echo 'Osnova vkupno  :'.$o;?>
+    <br>
+    <?//echo 'Ddv vkupno :'.$d;?>
+    <br>
+    <? //echo 'Vkupno :'.$v;?>
+</p>-->
+</body>
+</html>

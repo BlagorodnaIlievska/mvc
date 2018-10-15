@@ -1,0 +1,36 @@
+<? $glavna=$mkb->mkb_glavna_id;?>
+<div class="novaedmerka">
+    <form action="/index.php/mkb/mkb/update_mkb" method="post">
+        <fieldset>
+            <input type="hidden" name="id" value="<?php echo $mkb->id  ?>"/>
+
+            <legend>Измени </legend>
+            <?  echo form_label('Главна група', 'mkb_glavna_id');
+            echo form_dropdown('mkb_glavna_id',$mkb_glavna,$glavna);
+            ?> <br/>
+            Шифра:<br/>
+            <input type="text" name="sifra" value="<?php echo $mkb->sifra ?>"/><br/>
+            Опис:<br/>
+            <input type="text" name="opis" value="<?php echo $mkb->opis ?>"/><br/>
+            Неприфатена примарна дијагноза:<br/>
+            <input type="text" name="neprifatena_primarna_dijagnoza" value="<?php echo $mkb->neprifatena_primarna_dijagnoza ?>"/><br/>
+            Возраст:<br/>
+            <input type="text" name="vozrast" value="<?php echo $mkb->vozrast ?>"/><br/>
+            Пол:<br/>
+            <input type="text" name="pol" value="<?php echo $mkb->pol ?>"/><br/>
+            Главна дијагностичка категорија:<br/>
+            <input type="text" name="glavna_kategorija" value="<?php echo $mkb->glavna_kategorija ?>"/><br/>
+
+
+
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="mkb_popolnilista()" poraka_uspesno=" успешно изменета"
+                poraka_neuspesno="Грешка при снимање"
+                ><span>Сними</span></button>
+
+        <br/>
+    </form>
+
+</div>

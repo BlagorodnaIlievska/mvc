@@ -1,0 +1,336 @@
+<div class="lekar-glavnalista">
+    <div class="lekarlista">
+        <div class="buttoncontainer">
+            <?php if (bis_check_access('knizenje_nov_nalog_kopce')): ?>
+            <button class="button" onclick="nov_nalog()">Нов налoг</button>
+            <?php endif ?>
+            <?php if (bis_check_access('knizenje_pecati_nalog_kopce')): ?>
+            <a href="" target="_blank" class="cmd-printlink-nalog">
+                <button type="button" class="print"><span>Печати</span></button>
+            </a>
+            <?php endif ?>
+        </div>
+        <p class="naslovnalozi" >Налози</p>
+       <div class="predtabela">
+            <table class="tabela-naloglista">
+                <thead>
+                <tr><th class="infofaktura"></th>
+                    <th class="infofaktura"></th>
+                    <th class="broj-nalog">Број на налог</th>
+                    <th class="datum">Датум</th>
+                    <th class="tip">Тип</th>
+                    <th class="oddel">Оддел</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr class="trow">
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="naslovnalozi" > Ставки во документот - Детално</p>
+        <div class="predtabela">
+            <table class="nalogdetali">
+                <thead>
+                <tr>
+                    <th style="width: 40px;"></th>
+                    <th class="redenbroj">РБ</th>
+                    <th class="konto">Конто</th>
+                    <th class="broj_dok">Бр.док.</th>
+                    <th class="komitent">Коминтент</th>
+                    <th class="opis">Опис</th>
+                    <th class="dolg">Должи</th>
+                    <th class="pobaruva">Побарува</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="hiderow">
+                    <td class="promena_id">
+                    </td>
+                    <td class="redendet"></td>
+                    <td class="kontodet"></td>
+                    <td class="brojdok"></td>
+                    <td class="kom"></td>
+                    <td class="opisdet"></td>
+                    <td class="dolzidet"></td>
+                    <td class="pobaruvadet"></td>
+
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="vkupno-dolzi text-right"></td>
+                <td class="vkupno-pobaruva text-right"></td>
+                </tr>
+                <tr>
+                    <td>Салдо:</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="saldo text-right"></td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+        <input type="hidden" class="test" value="1">
+    </div>
+
+<script>
+    function nalog_getSelektiran(){
+        if ( jQuery(".tabela-naloglista tbody tr.active").attr("nalogid") > 0 ) {
+            return jQuery(".tabela-naloglista tbody tr.active").attr("nalogid") ;
+        } else {
+            return 0;
+        }
+    }
+
+    jQuery(document).ready(function () {
+        nalozi_popolnilista();
+        //console.log(jQuery('.test').val());
+      //  proveri_id(jQuery(this).parent().parent().attr("za_dok_id"));
+     //   site_lekari_popolnilista();
+        jQuery(".tabela-naloglista").tablesorter();
+        jQuery(".nalogdetali").tablesorter();
+        jQuery(".tabela-naloglista").delegate("tbody tr.trow", "click", function () {
+            jQuery(".tabela-naloglista .trow").removeClass("active");
+            jQuery(this).addClass('active');
+            var nalogid = jQuery(this).attr("nalogid");
+            var data = {
+                nalogid:nalogid
+            }
+
+           // console.log(nalogid);
+            jQuery.ajax({
+                url:"/index.php/knizenje/nalog/getNalogDetali",
+                type:'POST',
+                data:data,
+                dataType:'json',
+                success:function (response) {
+           //console.log('test');
+                    var vkupno_dolzi=0;
+                    var vkupno_pobaruva=0;
+                    var saldo=0;
+                    var rb=response.length;
+                    jQuery(".nalogdetali tbody").find("tr:gt(1)").remove();
+                    var tr = jQuery('.nalogdetali tbody tr:last');
+                    tr.removeClass('hiderow');
+                    for (var i = 0; i < response.length; i++) {
+
+                       console.log(response[i].tip) ;
+                       // console.log(response[i].konto) ;
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find(".promena_id").html('<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>');
+                        newrow.find(".redendet").html(rb);
+                        newrow.attr("nalog_id", nalogid);
+                        newrow.attr("tip_komintent", response[i].tip_komintent);
+                        newrow.attr("za_dok_id",response[i].dokid);
+                        newrow.attr("tip", response[i].tip);
+                        newrow.attr("zsid", response[i].zsid);
+                        newrow.attr("broj_izvod", response[i].broj_dok);
+                        newrow.find(".kontodet").html(response[i].konto);
+                        newrow.find(".brojdok").html(response[i].broj_dok);
+                        newrow.find(".kom").html(response[i].komintent);
+                        newrow.find(".opisdet").html(response[i].opis);
+                        newrow.find(".dolzidet").html(response[i].dolzi);
+                        newrow.find(".pobaruvadet").html(response[i].pobaruva);
+                        rb--;
+                        if(response[i].dolzi.length > 0){
+                            var temp1=response[i].dolzi;
+                            vkupno_dolzi=vkupno_dolzi + 1*temp1;
+                        }
+
+                        if(response[i].pobaruva.length > 0){
+                            var temp2=response[i].pobaruva;
+                            vkupno_pobaruva=vkupno_pobaruva + 1*temp2;
+                        }
+                         saldo= vkupno_pobaruva - vkupno_dolzi;
+                    }
+                    tr.addClass('hiderow');
+                    jQuery(".nalogdetali tfoot .vkupno-dolzi").html(formatnumbermkd(vkupno_dolzi));
+                    jQuery(".nalogdetali tfoot .vkupno-pobaruva").html(formatnumbermkd(vkupno_pobaruva));
+                    jQuery(".nalogdetali tfoot .saldo").html(formatnumbermkd(saldo));
+                    jQuery(".nalogdetali").trigger("update");
+                }
+            });
+
+        });
+
+        jQuery(".tabela-lekarlista tbody tr").live('click', function () {
+            jQuery(".tabela-lekarlista tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+          
+        });
+//        function proveri_id(id){
+//            var id=id;
+//
+//            jQuery.ajax({
+//                url:"/index.php/vlezni_fakturi/pregled_vlezni/proveri_dali_ja_ima_fakturata?id="+id,
+//                type:'POST',
+//                dataType:'json',
+//                success:function (response) {
+//                   // console.log(response);
+//
+//                   if (response.length > 0) {alert(' Документот може да се едитира'); jQuery('.test').val(1);  }
+//                    else {alert('Документот не постои и не може да се едитира'); jQuery('.test').val(0); }
+//
+//                }
+//
+//            });
+//        }
+        jQuery('.nalogdetali .edit-tr').live('click',function () {
+         //  proveri_id(jQuery(this).parent().parent().attr("za_dok_id"));
+         ///   console.log(jQuery('.test').val());
+            var id=jQuery(this).parent().parent().attr("za_dok_id");
+            var nalogid=jQuery(this).parent().parent().attr("nalog_id");
+            var komintent=jQuery(this).parent().parent().attr("tip_komintent");
+
+
+            //  console.log(jQuery('.test').val());
+            var tip=jQuery(this).parent().parent().attr("tip");
+            console.log(tip);
+            var zsid=jQuery(this).parent().parent().attr("zsid");
+            var broj_izvod=jQuery(this).parent().parent().attr("broj_izvod");
+
+            jQuery.ajax({
+                url:"/index.php/vlezni_fakturi/pregled_vlezni/proveri_dali_ja_ima_fakturata?id="+id,
+                type:'POST',
+                dataType:'json',
+                success:function (response) {
+                    // console.log(response);
+
+                    if (response.length > 0) {
+
+                        if(tip==550 || tip==540){
+                            odliv_priliv_izmeni(id);
+                            var elem=jQuery(this);
+                            //   destroyparentdialog(elem);
+                        }
+                        else if(tip==50 || tip==40){
+                            // console.log(broj_izvod,zsid);
+                            edit_izvod(broj_izvod,zsid);
+                            var elem=jQuery(this);
+                            // destroyparentdialog(elem);
+                        }
+                        else if(tip==10){
+                            var elem=jQuery(this);
+                            // proveri_dali_ja_ima_fakturata(id);
+                            // destroyparentdialog(elem);
+                            var formaction = "/index.php/vlezni_fakturi/pregled_vlezni/editVleznaFaktura?id=" + id;
+                            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+
+                            jQuery.ajax({
+                                url:formaction,
+                                success:function (response) {
+//            console.log(response);
+                                    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                                    jQuery("." + tempdialog).html(response);
+                                    jQuery('div.' + tempdialog).dialog({
+                                        autoOpen:true,
+                                        width:"auto",
+                                        position:[20, 20],
+                                        modal:true,
+                                        title:"Измени Фактура",
+                                        dialogClass: 'dialogsotabovi',
+                                        close:function (event, ui) {
+                                            jQuery(this).dialog("destroy");
+                                            jQuery(this).remove();
+                                        }
+                                    });
+                                    jQuery.ajax({
+                                        url:'/index.php/vlezni_fakturi/faktura/editFaktura?id='+id,
+                                        type:'GET',
+                                        success:function (response) {
+                                            jQuery("." + tempdialog +" #editfaktura").html(response);
+                                        }
+                                    });
+
+                                }
+                            });
+                        }
+                        else if(tip==20){
+                            var elem=jQuery(this);
+
+                            // destroyparentdialog(elem);
+                            var komintent=jQuery(this).parent().parent().attr("tip_komintent");
+                            var formaction = "/index.php/izlezni_fakturi/pregled_izlezni/editIzleznaFaktura?id=" + id;
+                            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+
+                            jQuery.ajax({
+                                url:formaction,
+                                success:function (response) {
+//            console.log(response);
+                                    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                                    jQuery("." + tempdialog).html(response);
+                                    jQuery('div.' + tempdialog).dialog({
+                                        autoOpen:true,
+                                        width:"auto",
+                                        position:[20, 20],
+                                        modal:true,
+                                        title:"Измени Фактура",
+                                        dialogClass: 'dialogsotabovi',
+                                        close:function (event, ui) {
+                                            jQuery(this).dialog("destroy");
+                                            jQuery(this).remove();
+                                        }
+                                    });
+                                    jQuery.ajax({
+                                        url:'/index.php/izlezni_fakturi/faktura/editFaktura?id='+id,
+                                        type:'GET',
+                                        data: {komintent: komintent},
+                                        success:function (response) {
+                                            jQuery("." + tempdialog +" #editfaktura").html(response);
+                                        }
+                                    });
+
+                                }
+                            });
+                        }
+
+                    }
+                    else {alert('Документот не постои и не може да се едитира'); }
+
+                }
+
+            });
+
+          //
+
+        //   jQuery(".nalogdetali tbody").find("tr:gt(1)").remove();
+     //  console.log(nalogid,id,tip,zsid,broj_izvod);
+            // izmeni_nalog(nalogid);
+
+
+
+        });
+        jQuery('.tabela-naloglista .info-tr').live('click',function () {
+            var nalogid=jQuery(this).parent().parent().attr("nalogid");
+//            console.log(nalogid);
+            info_nalog(nalogid);
+        });
+        jQuery('.tabela-naloglista .delete-tr').live('click',function () {
+            var nalogid=jQuery(this).parent().parent().attr("nalogid");
+ //  console.log(nalogid);
+             delete_nalog(nalogid);
+        });
+        jQuery(".cmd-printlink-nalog").click(function(e){
+           // console.log(nalog_getSelektiran());
+            if (nalog_getSelektiran()>0){
+
+                jQuery(".cmd-printlink-nalog").attr("href","/index.php/print/pdf?view=/index.php/knizenje/nalog/print_nalog&id="+nalog_getSelektiran());
+            } else {
+                alert("Ве молиме одберете налог");
+                e.preventDefault();
+                return false;
+            }
+        });
+    });
+</script>

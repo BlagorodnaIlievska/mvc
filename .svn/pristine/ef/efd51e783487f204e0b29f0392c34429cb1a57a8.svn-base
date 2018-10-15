@@ -1,0 +1,97 @@
+<?
+$pridruznik = array('0' => 'потребен е', '1' => 'не е потребен');
+?>
+<div class="nov-artikl novbolnicki-upat">
+    <form action="/index.php/upati/upati/create_upat" method="post">
+        <input type="hidden" name="priem_id" value="<?php echo $priem_id ?>"/>
+
+        <div class="novupat-levomeni">
+            <input type="hidden" name="tip_upat" value="bolnicki">
+            Назив на здравствена установа<br/>
+            <input type="text" class="upat" value="ЈЗУ Ургентни Клиники" disabled=""/>
+            <br>
+            Работна единица - одделение <br/>
+            <input type="text" name="rabotna_edinica_oddelenie" class="upat"
+                   value="<?php echo $this->session->userdata('firma_ime') ?>" readonly=""/> <br>
+            Број на лекарски дневник <br/>
+            <input type="text"  class="upat" value="<?php echo $priem_id ?>" disabled=""/> <br>
+            <br>
+
+        </div>
+        <div class="novupat-desnomeni bolnicki">
+
+            До: <br>
+            <input type="text" name="do_zdravstvena_ustanova" class="upat"/> <br>
+            Работна единица - одделение <br/>
+            <input type="text" name="rabotna_edinica_oddelenie" class="upat"/> <br>
+            Место: <br>
+            <input type="text" name="mesto_na_zdr_ustanova" class="upat"/> <br>
+        </div>
+
+        <div class="novupat-podmeni">
+            <ul>
+            <h4 align='center' class="naslovupat">БОЛНИЧКИ УПАТ</h4><br/>
+                <li>Име: <input type="text" name="ime" class="upatime" disabled=""/>
+                Татково име: <input type="text" name="tatkovoime" type="text" class="upatime" disabled=""/>
+                Презиме: <input type="text" name="prezime" class="upatime nomargin" disabled=""/></li>
+                <li>Адреса: <input type="text" name="ulica" class="ulica" disabled=""></li>
+                <li>Број на здр. легитимација: <input type="text" name="br_zdravstvena_legitimacija" class="zdrleg" disabled=""/>
+                Единствен матичен број: <input type="text" name="embg" class="zdrleg" disabled=""></li>
+                <li>Единствен здравствен број на осигуреникот: <input type="text" name="ezbo" class="ezbo" disabled=""/></li>
+                <li>Осигуреното лице е пријавено во здравствено осиг. во подрачна служба <input type="text" name="fzo_podracna" class="podracna" disabled=""></li>
+                <li>Основ на осигурување <input type="text" name="osnov_na_osiguruvanje" class="osnovosig" disabled="">
+                Број на здравствен картон <input type="text" name="br_zdr_karton" class="karton" disabled="" ></li>
+
+                <li><p>Задолжително да се заокружи доколку упатува избраниот лекар</p></li>
+            </ul>
+            1. Дијагностицирано хронично заболување: <br>
+            <textarea style="overflow-y:scroll;width:100%;resize: none;" name="hronicno"></textarea> <br>
+            2. Итен случај по проценка на избраниот лекар (да се наведе образложение): <br>
+            <textarea style="overflow-y:scroll;width:100%;resize: none;" name="itenpolekar"></textarea> <br>
+            3. Итен случај (да се наведе број на потврда за прием на осигурено лице хоспитализирано во болничка
+            установа): <br>
+            <textarea style="overflow-y:scroll;width:100%;resize: none;" name="itenbolnica"></textarea> <br>
+            Дијагноза: <br>
+            <textarea style="overflow-y:scroll;width:100%;resize: none;" name="dijagnoza"></textarea> <br>
+            <ul class="datumvrememesto-upat">
+                <li><label>Шифра:</label> <input type="text" name="sifra_dijagnoza" class="sifradijagnoza"/></li>
+                <li><label>Придружник:</label>
+                    <select name="pridruznik" class="pridruznik">
+                        <?php foreach($pridruznik as $key => $val) { ?>
+                            <option value="<?= $key ?>"><?= $val ?></option>
+                        <?php } ?>
+                    </select>
+                </li>
+                <li><label>Датум:</label> <input type="text" name="datum" class="datum" readonly="" value="<?php echo date("d-m-Y") ?>"/></li>
+                <li><label>Време:</label> <input type="text" name="vreme" class="vreme" readonly="" value="<?php echo date("H:i") ?>"/></li>
+                <li><label>Место: </label><input type="text" name="mesto"/></li>
+            </ul>
+
+
+        </div>
+
+        <br/>
+
+        <div class="addstavka floatright">
+            <?php if($print == 2) { ?>
+            <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_bolnicki_upat&id=" class="printlink" target="_blank" >
+                <button type="button" class="print"><span>Принт</span></button>
+            </a>
+            <?php } ?>
+            <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_bolnicki_upat&id=" class="printlinkupati hide" target="_blank" >
+                <button type="button" class="print"><span>Принт</span></button>
+            </a>
+            <button type="button" class="button snimi-forma-upati" poraka_uspesno="успешно снимен"
+                    poraka_neuspesno="Грешка при снимање" izvrsi="lekuvanja_listasozapisi(lekuvanja_getaktiven_priemid())">
+                    <span>Сними</span>
+            </button>
+
+        </div>
+
+    </form>
+</div>
+<script>
+    jQuery(document).ready(function(){
+        jQuery('.datum').datepicker({dateFormat:'yy-mm-dd'});
+    });
+</script>

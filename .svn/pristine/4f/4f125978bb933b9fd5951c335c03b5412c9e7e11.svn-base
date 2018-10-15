@@ -1,0 +1,67 @@
+
+<p align="center">Преглед на испратници</p><br/><br/>
+<?php
+/* foreach($ispratnici as $ispratnica){
+     print_r($ispratnica);
+     $vrzanidok = '';
+     foreach($ispratnica->dokumenti as $dok){
+         $vrzanidok += '<span>' .  $dok->textBroj . '</span>';
+     }
+ }
+die();
+*/
+?>
+<div>
+    <table border="1" align="center">
+        <thead>
+        <tr>
+            <th class="broj">Број</th>
+            <th class="datum">Датум</th>
+            <th class="klient">Комитент</th>
+            <th class="faktura">Фактура</th>
+            <th class="zabeleska">Забелешка</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        foreach($ispratnici as $ispratnica){
+
+            $vrzanidok = '';
+            foreach($ispratnica->dokumenti as $dok){
+                $vrzanidok .=  '<span>' .  $dok->textBroj . '</span>';
+            }
+
+
+            ?>
+        <tr>
+            <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; width: 50px;"><? echo $ispratnica->textBroj; ?></td>
+            <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; width: 87px;"><? echo $ispratnica->datum; ?></td>
+
+            <?php
+            if($ispratnica->firmaID > 0){
+?>
+                <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $ispratnica->firmaime; ?></td>
+                <?php
+            }else
+                if($ispratnica->pacient_id > 0)
+                {
+                    $pacientImePrezime = $ispratnica->pacientIme . " " . $ispratnica->pacientTatkovoIme . " " . $ispratnica->pacientPrezime;
+
+                    ?>
+                    <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $pacientImePrezime; ?></td>
+                    <?php
+                }
+            ?>
+
+
+            <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $vrzanidok; ?></td>
+            <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $ispratnica->komentar; ?></td>
+        </tr>
+
+            <?php
+        }
+
+        ?>
+        </tbody>
+    </table>
+</div>

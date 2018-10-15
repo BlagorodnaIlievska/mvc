@@ -1,0 +1,41 @@
+<div class="proizvoditel-glavnalista">
+    <div class="proizvoditellista">
+        <div class="buttoncontainer">
+            <button class="button" onclick="proizvoditel_nov()">Нов Производител</button>
+        </div>
+        <div class="predtabela">
+        <table class="tabela-proizvoditellista">
+            <thead>
+            <tr>
+                <th width='25'></th>
+                <th> Име</th>
+
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+
+        </table>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        proizvoditel_popolnilista();
+        jQuery(".tabela-proizvoditellista").tablesorter();
+
+        jQuery(".tabela-proizvoditellista tbody tr").live('click', function () {
+            jQuery(".tabela-proizvoditellista tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+
+        });
+        jQuery(".tabela-proizvoditellista .edit-tr").live('click', function () {
+            proizvoditel_izmeni(jQuery(this).parent().parent().attr('proizvoditel_id'));
+        });
+        jQuery(".tabela-proizvoditellista .delete-tr").live('click', function () {
+            proizvoditel_delete(jQuery(this).parent().parent().attr('proizvoditel_id'));
+        });
+
+    });
+</script>

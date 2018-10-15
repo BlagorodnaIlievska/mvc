@@ -1,0 +1,51 @@
+<?php
+
+class Zemji_model extends CI_Model
+{
+
+    public function getZemji()
+    {
+        //  $this->db->where("parent_id", 0);
+        $query = $this->db->get('bis_zemji');
+        return $query->result();
+    }
+
+
+    public function getZemja($id)
+    {
+        $this->db->where("id", $id);
+        $query = $this->db->get('bis_zemji');
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_zemja()
+    {
+        $insert_data = $this->input->post();
+        $insert      = $this->db->insert('bis_zemji', $insert_data);
+        return $insert;
+    }
+
+
+    public function delete_zemja($id)
+    {
+
+        $this->db->where('id', $id);
+        $this->db->delete('bis_zemji');
+
+
+    }
+
+    public function update_zemja()
+    {
+        $field_update_data =	$this->input->post();
+
+        $this->db->where('id',$field_update_data['id']);
+      //  unset($field_update_data['id']);
+        $this->db->update('bis_zemji', $field_update_data);
+    }
+
+
+
+}

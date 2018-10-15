@@ -1,0 +1,39 @@
+<?php  if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class Pdf extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+
+    }
+    function index(){
+        $this->output->set_header('Content-type: application/pdf');
+        header('Content-type: application/pdf');
+        $this->load->helper(array('dompdf'));
+        $get=$this->input->get();
+        $print_type=(isset($get['landscape']) ? "landscape" : "portrait");
+        $controller= $get['view'];
+        $parametri='';
+        unset($get['view']);
+        if (count($get) > 0) {
+            $parametri.='?';
+            foreach($get as $key=>$val) {
+                $parametri .= "$key=$val&";
+            }
+        }
+//        bis_debug($_SERVER['HTTP_HOST'],'httphost');
+        $html= $this->loadurl("http://".$_SERVER['HTTP_HOST'].$controller.$parametri);
+
+       pdf_outputdata($html,$print_type);
+    }
+    private function loadurl($url){
+
+        return file_get_contents($url);
+    }
+
+}
+

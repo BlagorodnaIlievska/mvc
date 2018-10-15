@@ -1,0 +1,71 @@
+
+<div style="text-align: center; margin-bottom: 30px">Преглед на должници</div>
+<div class="dolznici_pecati">
+    <?php
+    $vkupnouplata = 0;
+?>
+<p class="naslovdolznici" > ( <span class="vkupnostavki"><?php
+      echo count($dolz, COUNT_NORMAL); ?></span> )  Должници</p>
+    <div class="predtabela">
+<table id="tabela-dolznici" border="1">
+            <thead>
+            <tr>
+                <th>Должници</th>
+                <th class="sostojbah">Состојба</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+    foreach($dolz as $dolznik){
+if(property_exists($dolznik, 'firmaID')){
+                if($dolznik->firmaID > 0){
+                    ?>
+                <tr>
+                    <td class="klient"><?php echo $dolznik->firmaIme; ?></td>
+                    <td class="sostojba"><?php
+                        setlocale(LC_MONETARY, 'it_IT');
+                        echo money_format('%.2n', $dolznik->vkupno);
+                         ?></td>
+
+                </tr>
+
+                    <?php
+                    $vkupnouplata = $vkupnouplata + ($dolznik->vkupno);
+                }}
+        if(property_exists($dolznik, 'pacientID')){
+                if($dolznik->pacientID > 0){
+                    $pacient = $dolznik->pacientIme . " " . $dolznik->pacientTatkovoIme . " " . $dolznik->pacientPrezime;
+?>
+                <tr>
+                    <td class="klient"><?php echo $pacient; ?></td>
+                    <td class="sostojba-pacient"><?php
+                        setlocale(LC_MONETARY, 'it_IT');
+                            echo money_format('%.2n', $dolznik->pacientIznos);
+                      ?></td>
+
+                </tr>
+                    <?php
+                    $vkupnouplata = $vkupnouplata + $dolznik->pacientIznos;
+                }}
+                ?>
+
+
+                <?php
+            }
+            ?>
+
+            </tbody>
+        </table>
+        </div>
+<table class="sumiranje">
+        <tfoot>
+        <tr>
+            <td colspan="1">Вкупно:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td class="vkupno"><?php  echo $vkupnouplata; ?></td>
+        </tr>
+        </tfoot>
+    </table>
+
+</div>

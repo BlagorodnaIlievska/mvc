@@ -1,0 +1,23 @@
+<h1>Create a new field</h1>
+
+<fieldset>
+    <legend>Field Information</legend><br>
+
+    <?php
+    echo form_open('users/fields/create_field');
+    echo form_dropdown('role', $roles );
+    ?><br><br>
+    <?php
+    echo form_input('field_name', set_value('field_name', 'Field Name'));
+    echo form_input('field_type', set_value('field_type', 'Field Type'));
+    echo form_input('field_label', set_value('field_label', 'Field Label'));
+    //echo form_submit('submit', 'Submit');
+    ?>
+    <input type="button" value="Submit" class="ajaxcreateform"><br>
+
+    <?php
+    echo validation_errors('<p class="error">');
+    echo form_close();
+    ?>
+
+</fieldset>

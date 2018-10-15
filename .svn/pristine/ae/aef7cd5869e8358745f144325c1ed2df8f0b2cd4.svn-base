@@ -1,0 +1,254 @@
+<?php
+
+class Profaktura_model extends CI_Model{
+
+    public function create_faktura()
+    {
+
+        $insert_data = array(
+            'MFID' => 1,
+            'tip' => 120,
+            'datum' => $this->input->post('datum'),
+            //'datDen'=>1,
+            'intBroj'=>1,
+            'textBroj'=>$this->input->post('broj'),
+            //'arhIntBroj'=>1,
+            'arhTextBroj'=>$this->input->post('arhiva'),
+            'firmaID'=>$this->input->post('klient'),
+            //'firmaZSmetkaID'=>1,
+            'p_osnova'=>$this->input->post('osnova'),
+
+            'p_ddv'=>$this->input->post('ddv2'),
+            'p_vkupno'=>$this->input->post('vkupnose'),
+            //  'p_popustprc'=>1,
+            //'z_uplata'=>1,
+            'flagStatus'=>$this->input->post('platena_options'),
+            'rokDatum'=>$this->input->post('rok'),
+            //'rokPlat'=>1,
+            //'TZSID'=>1,
+            // 'komentar'=>'bla',
+            // 'komentarPrint'=>'bla',
+            // 'zaDokID'=>1,
+            //  'zaSifraID'=>1,
+            'tipID'=>$this->input->post('grupa'),
+            //   'zaPovikBroj'=>1,
+            'nacinID'=>$this->input->post('nacin_options'),
+            // 'tipTip1ID'=>1,
+            'zaKlientID'=>$this->input->post('zaklient'),
+            //  'sysCreatorID'=>1,
+            //'sysDateCreated'=>1,
+            //'sysChangerID'=>1,
+            //'sysDateChanged'=>1,
+            // 'datumTime'=>1,
+            //  'n_Osnova'=>0,
+            'valutaID'=>$this->input->post('valuta_options'),
+            //  'kurs'=>1,
+            //  'p_osnova_0'=>1,
+            //  'p_osnova_A'=>1,
+            //
+            // 'p_osnova_B'=>1,
+            'p_ddv_A'=>1,
+            'p_ddv_B'=>1
+
+        );
+
+        $insert = $this->db->insert('stavka', $insert_data);
+        return $insert;
+    }
+   /* public function baraj_faktura_site()
+    {
+        $this->db->select('
+                    stavka.textBroj,
+                    stavka.datum,
+
+                    firma.ime as firma,
+                    stavka.ZSID as ZSID,
+                    stavka.p_osnova,
+                    stavka.p_ddv,
+                    stavka.p_vkupno,
+                    stavka.komentar
+
+                    ');
+        $this->db->from('stavka');
+        $this->db->where('stavka.tip','120');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        //$this->db->join('zirosmetki', 'stavka.ZSID = zirosmetki.TZSID', 'left');
+        // $this->db->where('stavka.firmaID', $klient);
+        //  $this->db->order_by('ZSID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }*/
+    public function getPregled($klientid, $statusid, $nacinid)
+    {
+        //$this->db->distinct();
+        $this->db->select('
+                    stavka.textBroj,
+                    stavka.datum,
+
+                    firma.ime as firma,
+                    stavka.ZSID as ZSID,
+                    stavka.p_osnova,
+                    stavka.p_ddv,
+                    stavka.p_vkupno,
+                    stavka.komentar
+
+                    ');
+        $this->db->from('stavka');
+        // $this->db->where('stavka.tip','20');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        // $this->db->join('kasi', 'stavka.ZSID = kasi.kasaID', 'left');
+        //$this->db->join('tip', 'stavka.tipID = tip.tipID', 'left');
+        $this->db->where('stavka.tip','120');
+        if($statusid!=2) $this->db->where('stavka.flagStatus',$statusid);
+
+
+
+        if($nacinid)$this->db->where('stavka.nacinID', $nacinid);
+        if($klientid) $this->db->where('stavka.firmaID', $klientid);
+
+
+        //$this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function getStatus($statid,$filterid)
+    {
+        //$this->db->distinct();
+        $this->db->select('
+                    stavka.textBroj,
+                    stavka.datum,
+                    firma.ime as firma,
+                    stavka.ZSID as ZSID,
+                    stavka.p_vkupno,
+                    stavka.komentar
+
+                    ');
+        $this->db->from('stavka');
+        // $this->db->where('stavka.tip','20');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        // $this->db->join('kasi', 'stavka.ZSID = kasi.kasaID', 'left');
+        //$this->db->join('tip', 'stavka.tipID = tip.tipID', 'left');
+        $this->db->like('stavka.textBroj', $filterid);
+        $this->db->where('stavka.tip','120');
+        if($statid!=2) $this->db->where('stavka.flagStatus',$statid);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+ /*   public function baraj_faktura_status($status)
+    {
+        $this->db->select('
+                    stavka.textBroj,
+                    stavka.datum,
+
+                    firma.ime as firma,
+                    stavka.ZSID as ZSID,
+                    stavka.p_osnova,
+                    stavka.p_ddv,
+                    stavka.p_vkupno,
+                    stavka.komentar
+
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        //$this->db->join('zirosmetki', 'stavka.ZSID = zirosmetki.TZSID', 'left');
+        $this->db->where('stavka.flagStatus', $status);
+        $this->db->where('stavka.tip','120');
+        //  $this->db->order_by('ZSID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function baraj_faktura_nacin($nacin)
+    {
+        $this->db->select('
+                    stavka.textBroj,
+                    stavka.datum,
+
+                    firma.ime as firma,
+                    stavka.ZSID as ZSID,
+                    stavka.p_osnova,
+                    stavka.p_ddv,
+                    stavka.p_vkupno,
+                    stavka.komentar
+
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        //$this->db->join('zirosmetki', 'stavka.ZSID = zirosmetki.TZSID', 'left');
+        $this->db->where('stavka.nacinID', $nacin);
+        $this->db->where('stavka.tip','120');
+        //  $this->db->order_by('ZSID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function baraj_faktura_klient($klient)
+    {
+        $this->db->select('
+                    stavka.textBroj,
+                    stavka.datum,
+
+                    firma.ime as firma,
+                    stavka.ZSID as ZSID,
+                    stavka.p_osnova,
+                    stavka.p_ddv,
+                    stavka.p_vkupno,
+                    stavka.komentar
+
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        //$this->db->join('zirosmetki', 'stavka.ZSID = zirosmetki.TZSID', 'left');
+        $this->db->where('stavka.firmaID', $klient);
+        $this->db->where('stavka.tip','120');
+        //  $this->db->order_by('ZSID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }*/
+}

@@ -1,0 +1,64 @@
+<?php
+
+class Smena_model extends CI_Model
+{
+
+    public function getSmeni()
+    {
+        //  $this->db->where("parent_id", 0);
+        $this->db->limit(50);
+        $query = $this->db->get('smenska_grupa');
+        return $query->result();
+    }
+
+
+    public function getSmena($id)
+    {
+        $this->db->where("id", $id);
+        $query = $this->db->get('smenska_grupa');
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_smena()
+    {
+        $this->db->insert('smenska_grupa', $this->input->post());
+    }
+
+
+    public function delete_smena($id)
+    {
+
+        $this->db->where('id', $id);
+        $this->db->delete('smenska_grupa');
+
+
+    }
+
+    public function update_smena()
+    {
+        $field_update_data =	$this->input->post();
+
+        $this->db->where('id',$field_update_data['id']);
+        unset($field_update_data['id']);
+        $this->db->update('smenska_grupa', $field_update_data);
+    }
+
+    public function smena_dropdown(){
+        $this->db->select('id, ime');
+        $this->db->from('smenska_grupa');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = 'избери';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime'];
+            }
+        }
+        return $dropdown;
+
+    }
+
+}

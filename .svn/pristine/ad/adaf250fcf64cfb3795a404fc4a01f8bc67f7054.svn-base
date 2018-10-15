@@ -1,0 +1,84 @@
+<div id="edit_banka_form">
+
+
+
+
+
+
+
+    <?php
+
+    $delete = img(array(
+
+        'src' => 'images/delete.png',
+
+        'width' => '15',
+
+        'height' => '15',
+
+    ));
+
+    $edit = img(array(
+
+        'src' => 'images/edit.png',
+
+        'width' => '15',
+
+        'height' => '15',
+
+    ));
+
+    ?>
+
+
+
+<table class="tabela" border="1" cellspacing="2" cellpadding="2">
+
+    <tr>
+
+
+
+        <td>id</td>
+
+
+
+        <td>Ime</td>
+
+
+
+    </tr>
+
+
+
+    <?php if(isset($banka)): foreach($banka as $row){
+
+
+
+    echo "<tr>";
+
+    echo "<td>". anchor("podatoci/banka/delete_banka/$row->BankaID", $delete, array('class' => 'delete-tr')) . " "
+
+        . anchor("podatoci/banka/edit_banka/$row->BankaID?ajax=1", $edit, array('class' => 'edit-tr')) . "</td>";
+
+    echo "<td>" . $row->BankaIme . "</td>";
+
+
+}
+
+    ?>
+
+    </table>
+
+
+
+    <?php endif; ?>
+
+
+
+    <a href='<?php echo base_url(); ?>index.php/podatoci/banka/topdf'><span
+
+            style='color:green;'>Export to Pdf</span></a>
+
+
+
+</div>

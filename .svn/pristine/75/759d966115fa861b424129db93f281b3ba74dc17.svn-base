@@ -1,0 +1,180 @@
+<div id="covecki_form">
+    <?php
+    $delete = img(array(
+        'src' => 'images/delete.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $smeni=array(
+        '1'=>'една смена',
+        '2'=>'во смени'
+    );
+    ?>
+    <div class="buttoncontainer">
+        <button class="button" onclick="vraboten_nov()">Нов вработен</button>
+        <button type="button" value="" class="baraj button"><span>Барај</span></button>
+    </div>
+    <div class="filtermenu" style="display: none;">
+        <div class="filter-vleznifak">
+            <?  echo form_label('Фирма :', 'firma');
+            echo form_dropdown('firma',$firma,'','class="ddfirma listacovecki" style="margin-left : 10px; margin-right:20px"');
+            ?>
+        </div>
+        <div class="filter-vleznifak">
+            <? echo form_label('Оддел :','oddel');
+            echo form_dropdown('oddel',$oddel,'','class="ddoddel listacovecki" style="margin-left : 10px; margin-right:20px"'); ?>
+        </div>
+        <div class="filter-vleznifak">
+            <? echo form_label('Пододдел :','pododdel');
+            echo form_dropdown('pododdel',$pododdel,'','class="ddpododdel listacovecki" style="margin-left : 10px; margin-right:20px"');
+            ?>
+        </div>
+    </div>
+    <div>
+        <div class="predtabela">
+            <table class="filter-covecki-resursi" >
+                <thead>
+                <tr>
+                    <th></th>
+                    <th class="redenbr">РБ</th>
+                    <th>Име</th>
+                    <th>Презиме</th>
+                    <th>Платен список</th>
+                    <th>Бр ЛК.</th>
+                    <th>Фирма</th>
+                    <th>Оддел</th>
+                    <th>Пододдел</th>
+                    <th>Сменска група</th>
+                    <th>Дат. раѓ.</th>
+                    <th>Пол</th>
+                    <th>Брачен статус</th>
+                    <th>Датум на вработување</th>
+                    <th>Претходен стаж</th>
+                    <th>Стручна подготвеност</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                </tbody>
+                <tfoot>
+
+                </tfoot>
+            </table>
+        </div>
+
+
+
+    </div>
+    <script>
+        jQuery(document).ready(function() {
+            jQuery('.filter-covecki-resursi').tablesorter();
+            reload_covecki_resursi();
+            jQuery('.listacovecki').live('change',function(){
+                jQuery('.resursitbl').find("tr:gt(1)").remove();
+                var reden=1;
+                var oddel = jQuery('.ddoddel option:selected').val();
+                var pododdel = jQuery('.ddpododdel option:selected').val();
+                var smena = jQuery('.ddsmena option:selected').val();
+                var formaction = "/index.php/covecki_resursi/covecki/prebaruvanje_filter";
+                //   console.log(klient, status, nacin, formaction);
+                var data = {
+                    oddelid: oddel,
+                    pododdelid: pododdel,
+                    smenaid:smena
+                }
+                jQuery.ajax({
+                    url: formaction,
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function(response) {
+                        //console.log(response);
+                        jQuery(".resursitbl").find("tr:gt(1)").remove();
+                        var tr = jQuery('.resursitbl tr:last');
+                        tr.removeClass('hiderow');
+                        for ( var i = 0; i < response.length; i++ ) {
+                            var newrow = jQuery(tr).clone().insertAfter(tr);
+                            newrow.find('input[name=reden]').val(reden);
+                            newrow.find('input[name=ime]').val(response[i].ime);
+                            newrow.find('input[name=prezime]').val(response[i].prezime);
+                            newrow.find('input[name=brplatenspisok]').val(response[i].brPlatenSpisok);
+                            newrow.find('input[name=brLicnaKarta]').val(response[i].brLicnaKarta);
+                            newrow.find('input[name=firma]').val(response[i].firma_ime);
+                            newrow.find('input[name=oddel]').val(response[i].oddel);
+                            newrow.find('input[name=pododdel]').val(response[i].pododdel);
+                            newrow.find('input[name=grupa]').val(response[i].grupaID);
+                            newrow.find('input[name=datRag]').val(response[i].datRag);
+                            newrow.find('input[name=pol]').val(response[i].pol);
+                            newrow.find('input[name=brstatus]').val(response[i].brstatus);
+                            newrow.find('input[name=pocRabOdnos]').val(response[i].pocRabOdnos);
+                            newrow.find('input[name=prstaz]').val(response[i].prstaz);
+                            newrow.find('input[name=diplomi]').val(response[i].diplomi);
+                            reden=reden+1;
+                        }
+                        //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                        tr.addClass('hiderow');
+                    }
+                });
+            });
+            jQuery(".baraj").live("click", function () {
+                if (jQuery(".filtermenu").hasClass("prikazano")) {
+                    jQuery(".filtermenu").hide(500);
+                    jQuery(".filtermenu").removeClass("prikazano");
+                } else {
+                    jQuery(".filtermenu").show(500);
+                    jQuery(".filtermenu").addClass("prikazano");
+                }
+            });
+        });
+        function reload_covecki_resursi(){
+            jQuery.ajax({
+                url:"/index.php/covecki_resursi/covecki/getVraboteni",
+                type:'POST',
+                data:{},
+                dataType:'json',
+                success:function (response) {
+
+                    jQuery(".filter-covecki-resursi tbody").html('');
+                    var reden=1;
+                    //      jQuery(".grupi tbody").html('');
+                    //    jQuery(".konta tbody").html('');
+                    jQuery.each(response, function (index, item) {
+                        console.log(response);
+                        jQuery(".filter-covecki-resursi tbody").append(('<tr vrabotenid="' + item.id + '">' +
+                                '<td>' +
+                                '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>'+
+                                '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>'+
+                                '</td>' +
+                                '<td>' + reden + '</td>' +
+                                '<td>' + item.ime + '</td>' +
+                                '<td>' + item.prezime + '</td>' +
+                                '<td>' + item.broj_platen_spisok + '</td>' +
+                                '<td>' + item.broj_licna_karta + '</td>' +
+                                '<td></td>' +
+                                '<td></td>' +
+                                '<td></td>' +
+                                '<td>' + item.smenska_grupa + '</td>' +
+                                '<td>' + item.datum_ragjanje + '</td>' +
+                                '<td>' + item.pol + '</td>' +
+                                '<td>' + item.bracen_status + '</td>' +
+                                '<td>' + item.pocetok_raboten_odnos + '</td>' +
+                                '<td>' + item.prethoden_staz + '</td>' +
+                                '<td></td>' +
+
+
+                                '</tr>'));
+                        reden=reden+1;
+                    });
+
+                    jQuery(".filter-covecki-resursi").trigger("update");
+                }
+            });
+        }
+
+    </script>

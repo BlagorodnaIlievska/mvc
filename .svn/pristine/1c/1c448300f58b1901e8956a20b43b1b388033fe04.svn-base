@@ -1,0 +1,60 @@
+<button type="button" value="" class="button bnovdogovor"><span>Нов договор</span></button>
+<div class="stavka">
+    <p class="naslovvleznifakturi" > ( <span class="vkupnostavki">0</span> ) <span class="status">Договори</span></p>
+    <div class="predtabela">
+        <table class="tdogovori" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="ac deletedogovor"></th>
+                <th class="ac editdogovor"></th>
+
+                <th class="broj_tender">Број на тендер</th>
+                <th class="datum_tender">Датум на тендер</th>
+                <th class="vid_postapka">Вид постапка</th>
+                <th class="broj_dogovor">Број на дог.</th>
+                <th class="datum_sklucuvanje">Датум на скл. на дог.</th>
+                <th class="datum_istekuvanje">Датум на ист. на дог.</th>
+                <th class="klient">Клиент</th>
+                <th class="zabeleska">Забелешка</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='hiderow trow' klientid="" fakturaid="">
+                <td class="deletedogovor"><img width="15" height="15" alt="" src="/images/delete.png"></td>
+                <td class="editdogovor"><img width="15" height="15" alt=""
+                                             src="/images/edit.png"></td>
+
+                <td class="brojt"></td>
+                <td class="datumt"></td>
+                <td class="vid"></td>
+                <td class="brojd"></td>
+                <td class="datums"></td>
+                <td class="datumi"></td>
+                <td class="kl"></td>
+
+                <td class="zab"></td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<script>
+    jQuery(document).ready(function () {
+        dogovori_napolnilista();
+        jQuery('.bnovdogovor').click(function () {
+            nov_dogovor();
+        });
+        jQuery('.tdogovori .deletedogovor').live('click',function () {
+                      //console.log(jQuery(this).parent().attr('dogovorid'));
+                      delete_dogovor(jQuery(this).parent().attr('dogovorid'))
+        } );
+
+        jQuery('.tdogovori .editdogovor').live('click',function () {
+            //console.log(jQuery(this).parent().attr('dogovorid'));
+            izmeni_dogovor(jQuery(this).parent().attr('dogovorid'))
+        } );
+    });
+</script>

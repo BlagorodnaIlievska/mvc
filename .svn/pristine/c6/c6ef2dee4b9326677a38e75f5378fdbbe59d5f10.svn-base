@@ -1,0 +1,49 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Ajax extends CI_Controller {
+
+
+    //  users - pocetok
+    public function checkUsername()  // proverka za username availability
+    {
+        $username = $this->input->post('username');
+        $this->load->model('users/ajax_model');
+        $query = $this->ajax_model->check_username($username);
+        echo $query;
+    }
+    //  users - kraj
+
+    //  fields_data - pocetok
+
+    function getFieldOdUser(){ //dynamic dropdown
+        $this->load->model('users/ajax_model');
+        $userId = $this->input->post('user_id');
+        $roleId = $this->ajax_model->get_role_user($userId);
+        $fields = $this->ajax_model->getFieldodUser($roleId);
+
+        echo json_encode($fields);
+    }
+    //  fields_data - kraj
+
+    //  test funkcii za dynamic dropdown - test za drzava/grad - pocetok
+    public function dynamic_dropdown()
+    {
+        $this->load->model('users/ajax_model');
+        $data['drzavi'] = $this->ajax_model->get_drzava_dropdown();
+        $data['gradovi'] = $this->ajax_model->get_grad_drzava_dropdown();
+
+        $data['main_content'] = 'users/admin/drzava_view';
+        $this->load->view('includes/template', $data);
+    }
+
+    function getGradOdDrzava(){
+        $this->load->model('users/ajax_model');
+        $drzavaId = $this->input->post('drzava');
+        $gradovi = $this->ajax_model->getGradodDrzava($drzavaId);
+        echo json_encode($gradovi);
+    }
+    //  test funkcii za dynamic dropdown - test za drzava/grad - kraj
+}
+
+
+

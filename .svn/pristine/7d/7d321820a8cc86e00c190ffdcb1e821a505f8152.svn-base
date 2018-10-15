@@ -1,0 +1,22 @@
+<div class="nov-sindikat">
+    <form action="/index.php/plata_podatoci/sindikat/create_sindikat" method="post">
+        <fieldset>
+            <legend>Нов синдикат</legend>
+            Назив:<br/>
+            <input type="text" name="naziv"/><br/>
+            Процент:<br/>
+            <input type="text" name="procent"/><br/>
+            Жиросметка:<br/>
+            <input type="text" name="zirosmetka"/><br/>
+            Подсметка:<br/>
+            <input type="text" name="podsmetka"/><br/>
+            Конто:<br/>
+            <input type="text" name="konto"/><br/>
+        </fieldset>
+        <br/>
+        <button type="button" class="button snimi-forma" izvrsi="sindikat_polnilista()" poraka_uspesno="Синдикатот е успешно снимен"
+                poraka_neuspesno="Грешка при снимање на синдикат">
+                <span>Сними</span></button>
+        <br/>
+    </form>
+</div>

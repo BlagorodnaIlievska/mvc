@@ -1,0 +1,54 @@
+<div class="pacienti-pregled-terapija">
+    <form class="pacienti-pregled-forma">
+        <input type="hidden" name="priem_id" value="<?php echo $_POST['priem_id'] ?>"/>
+        <div class="parametri-pregled-pacienti">
+            <div class="tabela-terapija predtabela" id="pregled_terapija">
+                <table class="terapija-tabela">
+                    <thead>
+                    <th>Бр</th>
+                    <th>Датум на преглед</th>
+                    <th>Лек</th>
+                    <th>Доза</th>
+                    <th>Апликација</th>
+                    <th>Период (Часа)</th>
+                    <th>Време</th>
+                    <th>Забелешка</th>
+                    </thead>
+                    <tbody>
+                    <?php if(is_array($terapija)){ ?>
+                        <?php $i=1; foreach($terapija as $ter): ?>
+                            <tr>
+                                <td class="redenbroj"><?= $i; ?></td>
+                                <td><?= $ter->pregled_datum ?></td>
+                                <td><?= $ter->lek ?></td>
+                                <td><?= $ter->doza ?></td>
+                                <td><?= $ter->aplikacija ?></td>
+                                <td><?= $ter->period ?></td>
+                                <td><?= $ter->vreme ?></td>
+                                <td><?= $ter->zabeleska ?></td>
+                                <td class="dbid hide"><input type="hidden" name="lekovi[<?= $i ?>][dbid]" value="<?= $ter->id; ?>" class="dbid" /></td>
+                            </tr>
+                            <?php $i++; ?>
+                        <?php endforeach; ?>
+                    <?php }; ?>
+                    </tbody>
+                </table>
+                <br/>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <br/><br/>
+<!--        <div class="footer-pregled-pacienti">-->
+<!--            <div class="actions-pregled-pacienti">-->
+<!--                <button type="button" class="button zacuvajpriemterapija"><span>Зачувај</span></button>-->
+<!--            </div>-->
+<!--        </div>-->
+    </form>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".zacuvajpriemterapija").click(function () {
+            lekuvanja_zacuvajpriemterapija(jQuery(this));
+        });
+    });
+</script>

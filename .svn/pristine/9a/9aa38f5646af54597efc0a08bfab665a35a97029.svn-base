@@ -1,0 +1,83 @@
+<p align="center">Магацин</p>
+<br/>
+<div>
+    <?php
+    if ($magacinIme === false) :
+    $bezvezevarx='0';
+    else:
+    ?>
+    <p>
+        <label>Магацин: </label><label><?php echo $magacinIme; ?></label>
+    </p>
+
+    <br/>
+
+    <?php endif; ?>
+    <div>
+        <p align="left">Картици :</p>
+        <table border="1" align="center">
+            <thead>
+            <tr>
+                <th class="sifra">Шифра</th>
+                <th class="katbroj">Кат. Број</th>
+                <th class="stavka">Ставка</th>
+                <th class="edmerka">ЕМ</th>
+                <th class="kolicina">Кол</th>
+                <th class="srcena">Ср. Цена</th>
+                <th class="vrednost">Вредност</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $redbr = 1;
+            foreach ($lager_lista as $lista) {
+
+                ?>
+                <tr>
+
+                    <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $lista['sifra2']; ?></td>
+                    <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $lista['katBroj']; ?></td>
+                    <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $lista['stavka']; ?></td>
+                    <?php
+                    if (array_key_exists('edmerka', $lista)) {
+                        ?>
+                        <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $lista['edmerka']; ?></td>
+                    <?php
+                    } else {
+                        ?>
+                        <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"></td>
+                    <?php } ?>
+                    <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $lista['kolicina']; ?></td>
+                    <?php
+                    if ($lista['srednacena'] > 0) {
+                        ?>
+                        <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $lista['srednacena']; ?></td>
+                        <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo((int)$lista['kolicina'] * (int)$lista['srednacena']); ?></td>
+                    <?php } else { ?>
+                        <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;">0</td>
+                        <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;">0</td>
+
+                    <?php } ?>
+
+
+                </tr>
+
+            <?php
+
+            }
+
+            ?>
+            </tbody>
+        </table>
+    </div>
+    <div style="float: left; width: 50%;" >
+
+        Примил <br>
+        _____________________________
+    </div>
+    <div style="float: right; width: 50%;">
+
+        Издал <br>
+        _____________________________
+    </div>
+</div>

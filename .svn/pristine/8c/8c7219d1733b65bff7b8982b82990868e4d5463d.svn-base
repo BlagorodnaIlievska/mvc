@@ -1,0 +1,132 @@
+<?php $pridruznik = array('0' => 'потребен е', '1' => 'не е потребен'); ?>
+<div class="nov-artikl-2 nov-interoddelenski-upat">
+<form action="/index.php/upati/upati/create_upat" method="post" accept-charset="UTF-8">
+    <input type="hidden" name="priem_id" value="<?php echo $priem_id ?>"/>
+
+        <div class="levo-2">
+            <input type="hidden" name="tip_upat" value="interoddelenski">
+            <ul>
+                <li>
+                    <input type="text" value="ЈЗУ Ургентни Клиники" disabled=""/>
+                    <br/>
+                    <label class="label-text">Назив на здравствена установа</label>
+                </li>
+                <li>
+                    <input type="text" name="rabotna_edinica_oddelenie" value="<?php echo $this->session->userdata('firma_ime') ?>" readonly=""/>
+                    <br>
+                    <label class="label-text">Работна единица - Одделение</label>
+                </li>
+                <li>
+                    <input type="text" name="mesto_na_zdr_ustanova">
+                    <br>
+                    <label class="label-text">Место</label>
+                </li>
+                <li>
+                    <label class="label-text">Број на лекарски дневник </label><input type="text" value="<?php echo $priem_id ?>" disabled="" class="sirina_100">
+                </li>
+            </ul>
+ </div>
+        <div class="desno-2">
+            <label class="text12 label-right">ФЗОМ Образец - ИОУ</label>
+            <ul>
+                <li><label class="text12">До</label></li>
+                <li>
+                    <input type="text" name="do_zdravstvena_ustanova">
+                    <br/>
+                    <label class="label-text">Назив на здравствена установа</label>
+                </li>
+                <li>
+                    <input type="text" name="do_rabotna_edinica_oddelenie">
+                    <br/>
+                    <label class="label-text">Работна единица - Одделение</label>
+                </li>
+                <li>
+                    <input type="text" name="mesto_na_zdr_ustanova">
+                    <br/>
+                    <label class="label-text">Место</label>
+                </li>
+            </ul>
+</div>
+    <div class="sredno-2">
+        <br>
+        <br>
+        <br>
+        <h3 class="center-2">
+            ИНТЕР - ОДДЕЛЕНСКИ УПАТ
+        </h3>
+        <br>
+        <br>
+        <div class="text-inside">
+
+            <ul>
+                <li>
+                    Се упатува на болничко лекување<br>
+                 <label>Презиме</label><input type="text" name="prezime" disabled="" class="imeprez">
+                 <label>Име на старател</label><input type="text" name="tatkovoime" disabled="" class="imeprez">
+                 <label>Име на осигуреното лице</label><input type="text" name="ime" disabled="" class="imeprez">
+                </li>
+                <li>
+                    <label>Адреса</label><input type="text" name="ulica" disabled="" class="ulica1">
+                </li>
+                <li>
+                   <label>Бр. на здравствена легитимација</label><input type="text" name="br_zdravstvena_legitimacija" disabled="" maxlength="12">
+                    <label>Единствен матичен број</label><input type="text" name="embr" disabled="" maxlength="13">
+                </li>
+                <li>
+                    <label>Единствен здравствен вр на осигуреникот</label><input type="text" name="ezbo" disabled="" maxlength="9">
+                </li>
+                <li>
+                    <label>Осигуреното лице е пријавено во здравствено осигурување во подрачна служба</label>
+                    <input type="text" name="fzo_podracna" disabled="" class="imeprez">
+                </li>
+                <li>
+                    <label>Основ на осигурување</label><input type="text" name="osnov_na_osiguruvanje" disabled="" maxlength="2" class="osnov-na-osiguruvanje">
+                    <label>Брoj на здравствен картон</label><input type="text" name="br_zdr_karton" disabled="" maxlength="7">
+                </li>
+                <li>
+                    <label>Дијагноза</label><textarea name="dijagnoza" rows="3"></textarea>
+                    <label>Шифра</label><input type="text" name="sifra_dijagnoza" maxlength="6">
+                </li>
+                <li>
+                    <label class="text1_levo">Придружник: </label>
+                    <select name="pridruznik" class="pridruznik">
+                        <?php foreach($pridruznik as $key => $val) { ?>
+                        <option value="<?= $key ?>"><?= $val ?></option>
+                        <?php } ?>
+                    </select>
+                </li>
+                <br>
+                <br>
+                <br>
+                <li class="krajno">
+                    <label>Во </label><input type="text" name="mesto">&nbsp;&nbsp;<input type="text" name="datum" value="<?php echo date('d-m-Y'); ?>"> <label>година</label>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    МП
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <label>Потпис и факсимил на лекарот</label>
+                        <input type="text" name="potpis" class="potpis-faksimil">
+
+                </li>
+            </ul>
+
+        </div>
+</div>
+
+    <div class="snimi-print-buttons">
+        <?php if($print == 2) { ?>
+        <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_interoddelenski_upat&id=" class="printlink" target="_blank" >
+            <button type="button" class="print"><span>Принт</span></button>
+        </a>
+        <?php } ?>
+        <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_interoddelenski_upat&id=" class="printlinkupati hide" target="_blank" >
+            <button type="button" class="print"><span>Принт</span></button>
+        </a>
+        <button type="button" class="button snimi-forma-upati" poraka_uspesno="успешно снимен"
+                poraka_neuspesno="Грешка при снимање"  izvrsi="lekuvanja_listasozapisi(lekuvanja_getaktiven_priemid())"
+                ><span>Сними</span></button>
+    </div>
+</form>
+</div>
+<script>
+    $('.datum').datepicker({dateFormat:'dd-mm-yy'});
+</script>

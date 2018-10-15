@@ -1,0 +1,56 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Ulogi extends CI_Controller{
+
+	function __construct()
+	{
+		parent::__construct();
+	}
+
+	public function lista(){
+		$this->load->view('korisnici/ulogi/lista');
+	}
+
+    public function popolnilista(){
+
+        $this->load->model('korisnici/ulogi_model');
+        $return = $this->ulogi_model->getUlogi();
+        echo json_encode($return);
+    }
+    public function izmeni(){
+        $this->load->model('korisnici/ulogi_model');
+        $this->load->model('start/start_model');
+        $uloga = $this->ulogi_model->getUloga($this->input->get('ulogi_id'));
+
+        $data['start_model'] = $this->start_model;
+        $data['uloga']      = $uloga;
+        $this->load->view('korisnici/ulogi/izmeni', $data);
+    }
+
+    public function update_uloga()
+    {
+        $this->load->model('korisnici/ulogi_model');
+        $this->ulogi_model->update_uloga();
+        echo "ok";
+    }
+
+    public function delete_uloga(){
+        $id = $this->input->get("ulogi_id");
+        $this->load->model('korisnici/ulogi_model');
+        $this->ulogi_model->delete_uloga($id);
+        echo "ok";
+    }
+    public function create_uloga()
+    {
+        $this->load->model('korisnici/ulogi_model');
+        $this->ulogi_model->create_uloga();
+        echo "ok";
+    }
+
+    public  function nova(){
+        $this->load->view('korisnici/ulogi/nova');
+    }
+
+
+}
+

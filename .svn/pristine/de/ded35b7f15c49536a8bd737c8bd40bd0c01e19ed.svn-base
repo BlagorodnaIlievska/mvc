@@ -1,0 +1,37 @@
+<div class="novkatalog">
+    <form action="/index.php/podatoci/katalog/update_katalog" method="post">
+        <fieldset>
+            <input type="hidden" name="id" value="<?php echo $katalog->id  ?>"/>
+			<?php if ($tip == "katalog") { ?>
+            <legend>Измени Каталог</legend>
+			<?php } ?>
+			<?php if ($tip == "podkatalog") { ?>
+            <legend>Измени ПодКаталог</legend>
+
+			<?php } ?>
+			<?php if ($tip == "podkatalog") { ?>
+            Главен Каталог Име:<br/>
+			<?php echo $glavenkatalog->ime ?><br/><br/>
+            Главен Каталог Шифра:<br/>
+			<?php echo $glavenkatalog->sifra ?><br/><br/>
+			<?php } ?>
+            Име:<br/>
+            <input type="text" name="ime" value="<?php echo $katalog->ime ?>"/><br/>
+            Шифра:<br/>
+            <input type="text" name="sifra" value="<?php echo $katalog->sifra ?>" /><br/>
+        </fieldset>
+        <br/>
+		<?php if ($tip == "katalog") { ?>
+        <button type="button" class="button snimi-forma" izvrsi="katalog_popolnilista()" poraka_uspesno="Каталогот е успешно изменет"
+                poraka_neuspesno="Грешка при снимање на каталог"
+                ><span>Сними</span></button>
+		<?php } else { ?>
+        <button type="button" class="button snimi-forma" izvrsi="katalog_popolnipodlista(<?php echo $glavenkatalog->id  ?>)"
+                poraka_uspesno="Каталогот е успешно изменет"
+                poraka_neuspesno="Грешка при снимање на каталог"
+                ><span>Сними</span></button>
+		<?php }   ?>
+        <br/>
+    </form>
+
+</div>

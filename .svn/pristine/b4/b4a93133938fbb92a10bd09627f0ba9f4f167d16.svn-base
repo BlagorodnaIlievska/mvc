@@ -1,0 +1,41 @@
+<div id="update_smetka_form">
+
+    <?php
+    if(isset($smetka)){
+
+        foreach($smetka as $row) {
+            $s0=$row->TZSID;
+            $s1=$row->tzsBroj;
+            $s2=$row->bankaID;
+            $s3=$row->MFID;
+            $s4=$row->oddelID;
+            $s5=$row->pododdelID;
+
+        }
+    }
+    ?>
+
+    <?php echo form_open('start/smetka/update_smetka');?>
+
+    <?php echo form_hidden('TZSID', $s0);?>
+
+    <?php echo form_label('Broj:', 'tzsBroj');?><br>
+
+    <?php echo form_input('tzsBroj', $s1, 'tzsBroj');?>
+    <? echo form_dropdown('bankaID',$banka,$s2);?>
+    <? echo form_dropdown('MFID',$firma,$s3);?>
+    <? echo form_dropdown('oddelID',$oddel,$s4);?>
+    <?echo form_dropdown('pododdelID',$pododdel,$s5);?>
+
+
+
+
+
+    <input type="button" value="Зачувај ги промените" class="ajaxsubmitform"><br>
+
+
+    <?php echo form_close(); ?>
+
+
+
+</div>

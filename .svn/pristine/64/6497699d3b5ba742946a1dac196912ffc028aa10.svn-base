@@ -1,0 +1,94 @@
+<div id="info_faktura_form">
+    <div class="logo-holder"></div>
+<img class="logo-print" src="images/jzulogo.png" />
+</div>
+    <div class="izleznafaktura-od">
+        ЈЗУ УК ЗА ТРАУМАТОЛОГИЈА, ОРТОПЕДСКИ БОЛЕСТИ, АНЕСТЕЗИЈА <br>
+        РЕАНИМАЦИЈА, ИНТЕНЗИВНОЛЕКУВАЊЕ И УРГЕНТЕН ЦЕНТАР СКОПЈЕ <br>
+        Ул: Водњанска 17, Скопје <br>
+        Работна единица/дејност: <?= $pod_oddel; ?> <br>
+        Жиросметка: 210-0901486587-03 <br>
+        Депонент: Стопанска Банка <br>
+        Даночен Број: 12598756978235
+        </div>
+<div class="izlezna-header">
+    <div class="izlezna-datum">
+        <label>Датум: </label><?= $faktura[0]->datum; ?> <br />
+        <label>По документ:</label> ИСП-66/13 <br />
+        <label>Број на лекување:</label> <?= $broj_lekuvanje; ?>
+    </div>
+    <div class="do-klient">
+        <label>До:</label>
+        <?= $faktura[0]->pacientIme . " " . $faktura[0]->pacientPrezime; ?>
+    </div>
+</div>
+    <h1>ФАКТУРА <?= $faktura[0]->textBroj; ?> </h1> <br>
+<div class="stavkipopistabeladiv">
+            <table class="tabela-stavki-popis" border="1" cellpadding="2">
+                <thead>
+                <tr>
+                    <th>РБ</th>
+                    <th>Шифра</th>
+                    <th>Ставка</th>
+                    <th>Кол</th>
+                    <th>ЕМ</th>
+                    <th>Цена</th>
+                    <th>Вкупно</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php $stavki = $faktura[0]->stavki; if(is_array($stavki)){ ?>
+                    <?php $i=1; foreach($stavki as $stavka): ?>
+                    <?php
+                        $ddv = $stavka->ddv;
+                        $vkupno = $stavka->kolicina*$stavka->cena;
+                    ?>
+                        <tr>
+                            <td class="redenbr"><?= $i; ?></td>
+                            <td class="sifra"><?= $stavka->sifra_paket; ?></td>
+                            <td class="stavka"><?= $stavka->stavka; ?></td>
+                            <td class="kolicina centar-print"><?= $stavka->kolicina; ?></td>
+                            <td class="edmerka centar-print"><?= $stavka->edMerkaIme; ?></td>
+                            <td class="cena desno-print"><?= $stavka->cena; ?></td>
+                            <td class="vkupno desno-print"><?= $stavka->iznos_participacija; ?></td>
+<!--                            <td class="vkupno desno-print">--><?//= $vkupno; ?><!--</td>-->
+                        </tr>
+                        <?php $i++; ?>
+                    <?php endforeach; ?>
+                <?php }; ?>
+                </tbody>
+            </table>
+</div>
+<div class="vkupno-izlez">
+    <label>Вкупно за наплата: </label>
+    <?= $faktura[0]->p_osnova; ?> ден.
+</div>
+<!--<div class="informacii_plakjanje">-->
+<!--    <label>Со зборови:</label>-->
+<!--    <input type="text" value="Илјада двесте и осумдесет денари" class="">-->
+<!--</div>-->
+<div class="informacii_plakjanje ">
+    <label>Рок на плаќање:</label>
+    <?= $faktura[0]->rokPlat;?> дена
+    </div>
+    <div class="informacii_plakjanje mestozapotpis">
+    <label>Краен датум: </label>
+    <?= $faktura[0]->rokDatum; ?>
+</div>
+
+<div class="potpis-izleznafaktura">
+    <label>Фактурирал</label> <br>
+    _______________________
+    </div>
+<div class="potpis-izleznafaktura">
+    <label>Одобрил</label><br>
+    _______________________
+</div>
+<div class="potpis-izleznafaktura">
+    <label>Примил</label><br>
+    _______________________
+</div>
+</div>
+<style type="text/css">
+    th {background-color: transparent !important;}
+</style>

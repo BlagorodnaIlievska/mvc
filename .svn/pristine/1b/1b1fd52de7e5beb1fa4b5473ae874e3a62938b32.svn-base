@@ -1,0 +1,19 @@
+<div id="izlez_roba_form">
+
+    <div id="izlez_roba" class="pop-menu-tabs">
+        <ul>
+            <li><?php echo anchor('materijalno/izlez/povratnica', 'Povratnica'); ?></li>
+            <li><?php echo anchor('materijalno/faktura/index', 'Nema Faktura'); ?></li>
+        </ul>
+    </div>
+
+</div>
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.pop-menu-tabs').tabs({
+            cache: true,
+            ajaxOptions: {
+                type: "POST"
+            }});
+    });
+</script>

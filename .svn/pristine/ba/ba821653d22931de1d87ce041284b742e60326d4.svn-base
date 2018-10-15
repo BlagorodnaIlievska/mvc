@@ -1,0 +1,6 @@
+<div id="edit_interna_roba_form" class="pop-menu-tabs">
+    <ul>
+        <li><a href="#interna">Интерна</a></li>
+    </ul>
+    <div id="interna"></div>
+</div>

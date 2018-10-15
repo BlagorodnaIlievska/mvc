@@ -1,0 +1,2914 @@
+<?php
+
+class Materijalno_model extends CI_Model
+{
+
+    public function artikl_dropdown()
+    {
+        $this->db->select('SID, S1Ime, sifra');
+        $this->db->from('s1');
+        $this->db->order_by('SID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[''] = '';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['SID']] = $row['S1Ime'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function create_artikl()
+    {
+        $data = array(
+            'sifra' => $this->input->post('sifra2'),
+            'katBroj' => $this->input->post('kat-broj') . "." . $this->input->post('kat-podbroj'),
+            'BarCode' => $this->input->post('barcode'),
+            'S1Ime' => $this->input->post('artikl'),
+            'SDDV' => $this->input->post('ddv'),
+            'Cen1' => $this->input->post('diler1'),
+            'Cen2' => $this->input->post('diler2'),
+            'Cen0' => $this->input->post('maloprodazna'),
+            'CeniSoDdv' => 1,
+            'EdMerka' => $this->input->post('edinicamerka'),
+            'SID0' => $this->input->post('kat-broj')
+        );
+
+        $insert = $this->db->insert('s1', $data);
+        return $insert;
+    }
+
+    public function create_katbroj()
+    {
+        $insert_data = array(
+            'SOID' => $this->input->post('new-katbroj'),
+            'SOIme' => $this->input->post('new-kat-ime'),
+            'lager' => 0
+        );
+
+        $insert = $this->db->insert('s0', $insert_data);
+        return $insert;
+    }
+
+    public function create_magacin()
+    {
+        $insert_data = array(
+            'magIme' => $this->input->post('magacin_name'),
+            'MFID' => 1,
+            'magTip' => $this->input->post('tip_magacin'),
+            'magLokacija' => $this->input->post('magacin_lokacija')
+        );
+
+        $insert = $this->db->insert('magacin', $insert_data);
+        return $insert;
+    }
+
+//    public function create_proizvoditel()
+//    {
+//        $insert_data = array(
+//            'markerIme' => $this->input->post('new-proizvoditel-ime')
+//        );
+//
+//        $insert = $this->db->insert('marker', $insert_data);
+//        return $insert;
+//    }
+
+    public function deletePriemnica($id)
+    {
+        $this->db->where('ID', $id);
+        $deleteDetali = $this->db->delete('det');
+
+        $this->db->where('ID', $id);
+        $delete = $this->db->delete('stavka');
+        return $delete;
+    }
+
+    public function deleteOtpisnica($id)
+    {
+        $this->db->where('ID', $id);
+        $deleteDetali = $this->db->delete('det');
+
+        $this->db->where('ID', $id);
+        $delete = $this->db->delete('stavka');
+        return $delete;
+    }
+
+
+    public function deleteInterni($id)
+    {
+        //prvo se brise internata ispratnica
+        $this->db->where('ID', $id);
+        $deleteDetali = $this->db->delete('det');
+
+        $this->db->where('ID', $id);
+        $delete = $this->db->delete('stavka');
+
+        //se brise soodvetnata interna priemnica
+        $this->db->select('ID');
+        $this->db->where('tip', 719);
+        $this->db->where('zaDokID', $id);
+        $query = $this->db->get('stavka');
+        $result = $query->result();
+        $brisi = $result[0]->ID;
+
+        $this->db->where('ID', $brisi);
+        $deleteDetali = $this->db->delete('det');
+
+        $this->db->where('ID', $brisi);
+        $this->db->delete('stavka');
+
+        return $delete;
+    }
+
+    public function deletePriemnicaDetali($id)
+    {
+        $this->db->where('detID', $id);
+        $delete = $this->db->delete('det');
+        return $delete;
+    }
+
+    public function edinicamerkaJquery()
+    {
+        $this->db->select('id, ime_dolgo');
+        $this->db->from('bis_edmerki');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        }
+        return $result;
+    }
+
+    public function edinicamerka_dropdown()
+    {
+        $this->db->select('edMerkaID, edMerkaSkr');
+        $this->db->from('edmerka');
+        $this->db->order_by('edMerkaID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            //$dropdown[''] = '';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['edMerkaID']] = $row['edMerkaSkr'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function getAllInterni()
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.zaDokID as faktura,
+                    stavka.komentar as zabeleska
+                    ');
+        $this->db->from('stavka');
+//        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->where('stavka.tip', 729);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+    }
+
+    public function getAllIzleznaRoba($klientid, $pogledid)
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.zaDokID as faktura,
+                    stavka.komentar as zabeleska,
+                    stavka.p_osnova as vkupno,
+                    stavka.n_osnova as magacinska,
+                    firma.ime as firmaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        if ($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+        if ($pogledid == 1) $this->db->where(array('stavka.zaDokID IS NOT NULL' => NULL));
+        if ($pogledid == 2) $this->db->where(array('stavka.zaDokID IS NULL' => NULL));
+        $this->db->where('stavka.tip', 720);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+    }
+
+    public function getAllPovratnici($klientid, $pogledid)
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.zaDokID as faktura,
+                    stavka.komentar as zabeleska,
+                    firma.ime as firmaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        if ($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+        if ($pogledid == 1) $this->db->where(array('stavka.zaDokID IS NOT NULL' => NULL));
+        if ($pogledid == 2) $this->db->where(array('stavka.zaDokID IS NULL' => NULL));
+        $this->db->where('stavka.tip', 715);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+    }
+
+    public function getAllVleznaRoba($klientid, $pogledid)
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.zaDokID as faktura,
+                    stavka.komentar as zabeleska,
+                    stavka.p_osnova as vkupno,
+                    stavka.n_osnova as magacinska,
+                    firma.ime as firmaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        if ($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+        if ($pogledid == 1) $this->db->where('stavka.zaDokID > 0');
+        if ($pogledid == 2) $this->db->where('stavka.zaDokID = 0');
+        $this->db->where('stavka.tip', 710);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+    }
+
+    public function getArtiklKartica($artiklid, $magacinid)
+    {
+        $this->db->select('
+                    det.kolicina as kolicina,
+                    det.cena as vleznacena,
+                    det.SRDCena as srednacena,
+                    det.sostojba as sostojba,
+                    stavka.tip as tip,
+                    stavka.datum as datum,
+                    stavka.textBroj as broj,
+                    firma.ime as firmaIme,
+                    bis_edmerki.ime_dolgo as edMerka
+                    ');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_edmerki', 'det.edinica_merka = bis_edmerki.id', 'left');
+        $this->db->where('det.SID', $artiklid);
+        $this->db->where('det.magacin', $magacinid);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else $result = false;
+
+        return $result;
+    }
+
+    public function getArtikli($stavka, $katbroj)
+    {
+        $this->db->select('
+                            s1.SID as sifra1,
+                            s1.sifra as sifra2,
+                            s1.katBroj as katBroj,
+                            s1.S1Ime as stavka,
+                            s1.SDDV as ddv
+                            ');
+        $this->db->from('s1');
+        if ($stavka) $this->db->like('s1.S1Ime', $stavka, 'both');
+        if ($katbroj) $this->db->like('s1.katBroj', $katbroj, 'both');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getFakturaByPriemnica($id)
+    {
+//        $materijalno = array(710, 715, 719, 720, 726, 729);
+//        $fakturi = array(10, 20);
+        $this->db->select('
+                    stavka2.ID as fakturaID,
+                    stavka2.datum as datum,
+                    stavka2.textBroj as brojfaktura,
+                    firma.ime as firmaIme
+                   ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('stavka as stavka2', 'stavka.zaDokID = stavka2.ID', 'right');
+        $this->db->where('stavka.ID', $id);
+        $query = $this->db->get();
+        if ($query->num_rows() == 1) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getFakturi($klientid, $tipid)
+    {
+        $materijalno = array(710, 715, 719, 720, 726, 729);
+        $fakturi = array(10, 20);
+        $this->db->select('
+                    stavka2.datum as datum,
+                    stavka2.textBroj as faktura,
+                    stavka2.p_osnova as cenafaktura,
+                    stavka2.komentar as zabeleska,
+                    stavka2.tip as tipfaktura,
+                    stavka.tip as tip,
+                    stavka.p_osnova as dokument,
+                    stavka.n_osnova as magacinska,
+                    firma.ime as firmaIme
+                   ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('stavka as stavka2', 'stavka.zaDokID = stavka2.ID', 'right');
+        if ($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+        if ($tipid == 0 || $tipid == 1) $this->db->where('firma.klTipID', $tipid);
+        $this->db->where_in('stavka.tip', $materijalno);
+        $this->db->where_in('stavka2.tip', $fakturi);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getFreeIzleznaRoba($filter_data = array())
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.zaDokID as faktura,
+                    stavka.komentar as zabeleska,
+                    stavka.p_osnova as vkupno,
+                    firma.ime as firmaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->where('stavka.tip', '720');
+        $this->db->where('stavka.zaDokID', '0');
+        if (count($filter_data) > 0) {
+            foreach ($filter_data as $colB => $valB) {
+                $this->db->where('stavka.' . $colB, $valB);
+            }
+        }
+//        $this->db->where(array('stavka.zaDokID IS NULL' => NULL));
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+    }
+
+    public function getFreeVleznaRoba($filter_data = array())
+    {
+
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.zaDokID as faktura,
+                    stavka.komentar as zabeleska,
+                    stavka.p_osnova as vkupno,
+                    firma.ime as firmaIme
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->where('stavka.tip', '710');
+        $this->db->where('stavka.zaDokID', '0');
+        if (count($filter_data) > 0) {
+            foreach ($filter_data as $colB => $valB) {
+                $this->db->where('stavka.' . $colB, $valB);
+            }
+        }
+//        $this->db->where(array('stavka.zaDokID IS NULL' => NULL));
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+    }
+
+    public function getInterniDetali($id)
+    {
+        $this->db->select('det.*, bis_edmerki.ime_dolgo as edMerka, bis_magacin.ime as magacinod, bis_magacin2.ime as magacinvo, s1.sifra as sifra');
+        $this->db->from('det');
+        $this->db->join('bis_edmerki', 'det.edinica_merka = bis_edmerki.id', 'left');
+        $this->db->join('bis_magacin', 'det.magacin = bis_magacin.id', 'left');
+        $this->db->join('bis_magacin as bis_magacin2', 'det.magacin_vo = bis_magacin2.id', 'left');
+        $this->db->join('s1', 'det.SID = s1.SID', 'left');
+        $this->db->where('det.ID', $id);
+        $this->db->order_by('det.detID');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+    public function getOtpisDetali($id)
+    {
+        $this->db->select('det.*, bis_edmerki.ime_dolgo as edMerka, bis_magacin.ime as magacinod, bis_magacin2.ime as magacinvo, s1.sifra as sifra');
+        $this->db->from('det');
+        $this->db->join('bis_edmerki', 'det.edinica_merka = bis_edmerki.id', 'left');
+        $this->db->join('bis_magacin', 'det.magacin = bis_magacin.id', 'left');
+        $this->db->join('bis_magacin as bis_magacin2', 'det.magacin_vo = bis_magacin2.id', 'left');
+        $this->db->join('s1', 'det.SID = s1.SID', 'left');
+        $this->db->where('det.ID', $id);
+        $this->db->order_by('det.detID');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function getIspratnici($klientid, $pogledid, $magacinid)
+    {
+        $this->db->distinct();
+        $this->db->select('
+                            stavka.*,
+                            firma.ime as firmaime,
+                            bis_pacienti.ime as pacientIme,
+                            bis_pacienti.tatkovoime as pacientTatkovoIme,
+                            bis_pacienti.prezime as pacientPrezime
+                         ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->join('det', 'stavka.ID = det.ID', 'left');
+        if ($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+        if ($pogledid == 1) $this->db->where('stavka.zaDokID > 0');
+        if ($pogledid == 2) $this->db->where('stavka.zaDokID = 0');
+        if ($magacinid > 0) $this->db->where('det.magacin', $magacinid);
+        $this->db->where('stavka.tip', 720);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        $return = $query->result();
+        $novreturn = '';
+        if ($query->num_rows > 0) {
+            foreach ($return as $priemnica) {
+                $priemnica->dokumenti = $this->getFakturiPoDokID($priemnica->zaDokID);
+                $novreturn[] = $priemnica;
+
+            }
+        }
+        return $novreturn;
+    }
+
+
+    public function getOtpisnici($klientid, $pogledid, $magacinid)
+    {
+        $this->db->distinct();
+        $this->db->select('
+                            stavka.*,
+                            firma.ime as firmaime,
+                            bis_pacienti.ime as pacientIme,
+                            bis_pacienti.tatkovoime as pacientTatkovoIme,
+                            bis_pacienti.prezime as pacientPrezime
+                         ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('bis_pacienti', 'stavka.pacient_id = bis_pacienti.id', 'left');
+        $this->db->join('det', 'stavka.ID = det.ID', 'left');
+        if ($klientid > 100) $this->db->where('stavka.firmaID', $klientid);
+        if ($pogledid > 100) $this->db->where('stavka.zaDokID > 0');
+//        if($pogledid == 1) $this->db->where('stavka.zaDokID > 0');
+//        if($pogledid == 2) $this->db->where('stavka.zaDokID = 0');
+        if ($magacinid > 0) $this->db->where('det.magacin', $magacinid);
+        $this->db->where('stavka.tip', 90);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        $return = $query->result();
+//        $novreturn='';
+//        if($query->num_rows > 0)
+//        {
+//            foreach($return as $priemnica){
+//                $priemnica->dokumenti=$this->getFakturiPoDokID($priemnica->zaDokID);
+//                $novreturn[]=$priemnica;
+//
+//            }
+//        }
+//        return $novreturn;
+        return $return;
+    }
+
+
+    public function getInterniIspratnici($klientid, $magacinid)
+    {
+        $this->db->distinct();
+        $this->db->select(' stavka.*,
+                            firma.ime as firmaime,
+                            bis_magacin.ime as magacin_od,
+                            bis_magacin2.ime as magacin_vo
+                          ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('det', 'stavka.ID = det.ID', 'left');
+        $this->db->join('bis_magacin', 'det.magacin = bis_magacin.id', 'left');
+        $this->db->join('bis_magacin as bis_magacin2', 'det.magacin_vo = bis_magacin2.id', 'left');
+        //if($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+        // if($pogledid == 1) $this->db->where('stavka.zaDokID > 0');
+        // if($pogledid == 2) $this->db->where('stavka.zaDokID = 0');
+        if ($magacinid > 0) $this->db->where('det.magacin', $magacinid);
+        if ($klientid > 0) $this->db->where('det.magacin_vo', $klientid);
+        $this->db->where('stavka.tip', 729);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        $return = $query->result();
+        $novreturn = '';
+        if ($query->num_rows > 0) {
+            foreach ($return as $priemnica) {
+                $priemnica->dokumenti = $this->getFakturiPoDokID($priemnica->zaDokID);
+                $novreturn[] = $priemnica;
+
+            }
+        }
+        return $novreturn;
+    }
+    public function getOtpisNaMaterijali($magacinid)
+    {
+        $this->db->distinct();
+        $this->db->select('stavka.*,
+
+                            bis_magacin.ime as magacin_vo
+
+                          ');
+        $this->db->from('stavka');
+      //  $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('det', 'stavka.ID = det.ID', 'left');
+        $this->db->join('bis_magacin', 'det.magacin_vo= bis_magacin.id', 'left');
+      //  $this->db->join('bis_magacin as bis_magacin2', 'det.magacin_vo = bis_magacin2.id', 'left');
+        //if($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+        // if($pogledid == 1) $this->db->where('stavka.zaDokID > 0');
+        // if($pogledid == 2) $this->db->where('stavka.zaDokID = 0');
+        if ($magacinid > 0) $this->db->where('det.magacin', $magacinid);
+       // if ($klientid > 0) $this->db->where('det.magacin_vo', $klientid);
+        $this->db->where('stavka.tip', 90);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+
+        if ($query->num_rows > 0) {
+          return $query->result();
+        }
+        else return false;
+    }
+
+    public function getInternaIspratnica_one($klientid, $magacinid, $id)
+    {
+        $this->db->distinct();
+        $this->db->select(' stavka.*,
+                            firma.ime as firmaime,
+                            bis_magacin.ime as magacin_od,
+                            bis_magacin2.ime as magacin_vo
+                          ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('det', 'stavka.ID = det.ID', 'left');
+        $this->db->join('bis_magacin', 'det.magacin = bis_magacin.id', 'left');
+        $this->db->join('bis_magacin as bis_magacin2', 'det.magacin_vo = bis_magacin2.id', 'left');
+        //if($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+        // if($pogledid == 1) $this->db->where('stavka.zaDokID > 0');
+        // if($pogledid == 2) $this->db->where('stavka.zaDokID = 0');
+        if ($magacinid > 0) $this->db->where('det.magacin', $magacinid);
+        if ($klientid > 0) $this->db->where('det.magacin_vo', $klientid);
+        $this->db->where('stavka.tip', 729);
+        $this->db->where('stavka.ID', $id);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        $return = $query->row();
+        $return->dokumenti = $this->getFakturiPoDokID($return->zaDokID);
+        $novreturn = '';
+        /* if($query->num_rows > 0)
+         {
+             foreach($return as $priemnica){
+                 $priemnica->dokumenti=$this->getFakturiPoDokID($priemnica->zaDokID);
+                 $novreturn[]=$priemnica;
+
+             }
+         }
+         return $novreturn;
+        */
+        return $return;
+    }
+    public function getOtpisMaterijali_one($magacinid, $id)
+    {
+        $this->db->distinct();
+        $this->db->select(' stavka.*,
+                            firma.ime as firmaime,
+                            bis_magacin.ime as magacin_od,
+                            bis_magacin2.ime as magacin_vo
+                          ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('det', 'stavka.ID = det.ID', 'left');
+        $this->db->join('bis_magacin', 'det.magacin = bis_magacin.id', 'left');
+        $this->db->join('bis_magacin as bis_magacin2', 'det.magacin_vo = bis_magacin2.id', 'left');
+        //if($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+        // if($pogledid == 1) $this->db->where('stavka.zaDokID > 0');
+        // if($pogledid == 2) $this->db->where('stavka.zaDokID = 0');
+        if ($magacinid > 0) $this->db->where('det.magacin', $magacinid);
+        //if ($klientid > 0) $this->db->where('det.magacin_vo', $klientid);
+        $this->db->where('stavka.tip', 90);
+        $this->db->where('stavka.ID', $id);
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        $return = $query->row();
+        $return->dokumenti = $this->getFakturiPoDokID($return->zaDokID);
+        $novreturn = '';
+        /* if($query->num_rows > 0)
+         {
+             foreach($return as $priemnica){
+                 $priemnica->dokumenti=$this->getFakturiPoDokID($priemnica->zaDokID);
+                 $novreturn[]=$priemnica;
+
+             }
+         }
+         return $novreturn;
+        */
+        return $return;
+    }
+
+
+    public function getIzleznaRobaDetali($id)
+    {
+        $this->db->select('
+                    det.SID as sifra,
+                    det.kolicina as kolicina,
+                    det.cena as vleznacena,
+                    det.edinica_merka as edMerkaID,
+                    det.SRDCena as srednaCena,
+                    s1.S1Ime as stavka,
+                    s1.sifra as sifra2,
+                    s1.katBroj as katBroj,
+                    bis_edmerki.ime_dolgo as edMerkaIme
+                    ');
+        $this->db->from('det');
+        $this->db->join('s1', 'det.SID = s1.SID', 'left');
+        $this->db->join('bis_edmerki', 'det.edinica_merka = bis_edmerki.id', 'left');
+        $this->db->where('det.ID', $id);
+        $this->db->order_by('det.detID');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getIzlezniFakturi($klientid, $tipid)
+    {
+        $materijalno = array(710, 715, 719, 720, 726, 729, 90);
+        $this->db->select('
+                    stavka2.datum as datum,
+                    stavka2.textBroj as faktura,
+                    stavka2.p_osnova as izleznafaktura,
+                    stavka2.komentar as zabeleska,
+                    stavka.tip as tip,
+                    stavka.n_osnova as magacinska,
+                    firma.ime as firmaIme
+                   ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('stavka as stavka2', 'stavka.zaDokID = stavka2.ID', 'right');
+        if ($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+        if ($tipid == 0 || $tipid == 1) $this->db->where('firma.klTipID', $tipid);
+        $this->db->where_in('stavka.tip', $materijalno);
+        $this->db->where('stavka2.tip', 20);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getKlientInfo($klientid)
+    {
+        $this->db->select('
+                    firma.adresa as adresa,
+                    firma.kontakt as kontakt,
+                    firma.phone1 as phone1,
+                    firma.phone2 as phone2,
+                    firma.phone3 as phone3
+
+                    ');
+        $this->db->from('firma');
+
+        $this->db->where('firmaID', $klientid);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows() == 1) {
+            $result = $query->result_array();
+        } else $result = false;
+
+        return $result;
+    }
+
+    public function getLekuvanjePotroseniMaterijali()
+    {
+
+        //NE FAKTURIRANI PRIEMI
+        $this->db->select("bis_pacienti_priem.id");
+        $this->db->where("bis_pacienti_priem.priem_status", 40);
+        $this->db->or_where("bis_pacienti_priem.priem_status", 0);
+        $this->db->from("bis_pacienti_priem");
+
+        $result = $this->db->get()->result();
+        $priemi = array();
+        foreach ($result as $row) {
+            $priemi[] = $row->id;
+        }
+        //  $priemi=implode(",",$priemi);
+        $this->db->select("*");
+        $this->db->where_in("priem_id", $priemi);
+
+        $this->db->from("bis_pregledi_paketi");
+        $resultpaketi = $this->db->get()->result();
+        // bis_debug($this->db->last_query(),'lastquery');
+        // bis_debug($resultpaketi,'$resultpaketi');
+        $potrosenipaketi = array();
+        $potrosenimaterijali = array();
+        foreach ($resultpaketi as $row2) {
+            $potrosenipaketi[$row2->paket_id] = $row2->kolicina;
+        }
+
+//        bis_debug($potrosenipaketi,'$potrosenipaketi1');
+        $this->db->select("*");
+        $this->db->where_in("priem_id", $priemi);
+
+        $this->db->from("bis_pregledi_paketi_2");
+        $resultpaketi = $this->db->get()->result();
+        foreach ($resultpaketi as $row2) {
+            if (isset($potrosenipaketi[$row2->paket_id])) {
+                $potrosenipaketi[$row2->paket_id] += $row2->kolicina;
+            } else {
+                $potrosenipaketi[$row2->paket_id] = $row2->kolicina;
+            }
+        }
+//        bis_debug($potrosenipaketi,'$potrosenipaketi2');
+        $this->db->select("*");
+        $this->db->where_in("priem_id", $priemi);
+
+        $this->db->from("bis_pregledi_paketi_dopolnitelni");
+        $resultpaketi = $this->db->get()->result();
+        foreach ($resultpaketi as $row2) {
+            if (isset($potrosenipaketi[$row2->paket_id])) {
+                $potrosenipaketi[$row2->paket_id] += $row2->kolicina;
+            } else {
+                $potrosenipaketi[$row2->paket_id] = $row2->kolicina;
+            }
+        }
+        //bis_debug($potrosenipaketi,'$potrosenipaketi3');
+
+
+        //POTROSENI MATERIJALI
+         $this->db->select_sum("kolicina");
+         $this->db->select("artikal_id");
+        $this->db->group_by('artikal_id');
+//        $this->db->where_in("priem_id", $priemi);
+         $this->db->where("fakturiran", 0);
+
+        $this->db->from("bis_pregledi_materijali");
+
+        $resultmaterijali = $this->db->get()->result();
+//         bis_debug($resultmaterijali);
+//        bis_debug($this->db->last_query());
+        foreach ($resultmaterijali as $row2) {
+
+            $potrosenimaterijali[$row2->artikal_id] = $row2->kolicina;
+
+        }
+        //bis_debug($potrosenimaterijali,'$potrosenimaterijali1');
+        bis_debug($potrosenimaterijali);
+        return $potrosenimaterijali;
+    }
+
+    public function getLagerLista($stavka, $datum, $magacin, $nacinnaprikaz = 1)
+    {
+        $vekeodzemeni=array();
+        $pozitiva = array(710, 719, 726);
+        $negativa = array(715, 720, 729, 90);
+        $this->db->select('
+                    det.kolicina as kolicina,
+                    det.SRDCena as srednacena,
+                    det.edinica_merka as edmerkaID,
+                    bis_edmerki.ime_dolgo as edmerka,
+                    s1.S1Ime as stavka,
+                    s1.SID as sifra,
+                    s1.sifra as sifra2,
+                    s1.katBroj as katBroj,
+                    s0.SOIme as grupa,
+                    stavka.tip as tip
+                   ');
+        $this->db->from('s1');
+        $this->db->join('det', 'det.SID = s1.SID', 'left');
+
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->join('bis_edmerki', 'det.edinica_merka = bis_edmerki.id', 'left');
+
+        $this->db->join('s0', 's1.SID0 = s0.SID0', 'left');
+        $this->db->join('bis_magacin', 'det.magacin = bis_magacin.id', 'left');
+        if ($stavka > 0) $this->db->where('det.SID', $stavka);
+        if ($magacin > 0) $this->db->where('det.magacin', $magacin);
+        $lagerlista = $query = $this->db->get()->result();
+        $arr = array();
+        $arrfull = array();
+        $lekuvanjamaterijali = $this->getLekuvanjePotroseniMaterijali();           //OVA VRAKJA SIFRA na ARTIKl i KOLICINA sto e potrosena vo LEKUVANJA
+       // print_r($lekuvanjamaterijali); die();
+        foreach ($lagerlista as $row) {
+            if (in_array($row->tip, $pozitiva)) {
+                if (isset($arr[$row->sifra])) {
+                    $arr[$row->sifra]['kolicina'] += $row->kolicina;
+                } else {
+                    $arr[$row->sifra]['kolicina'] = $row->kolicina;
+                }
+
+            } elseif (in_array($row->tip, $negativa)) {
+                if (isset($arr[$row->sifra])) {
+                    $arr[$row->sifra]['kolicina'] -= $row->kolicina;
+                } else {
+                    $arr[$row->sifra]['kolicina'] = $row->kolicina;
+                }
+
+            }
+            //ODEZEMANJA OD LEKUVANJA OD MATERIJALI
+                       // print_r($arr); die();
+                        //print_r($vekeodzemeni); die();
+
+         if ($nacinnaprikaz == 1 && !in_array($row->sifra,$vekeodzemeni)) {
+            if (isset($lekuvanjamaterijali[$row->sifra])) {
+                if (isset($arr[$row->sifra]))  {
+
+
+
+                  //  if (in_array($row->tip, $negativa)) {    //NE SE ISPOLNUVA USLOVOT , go dava tipot od priemnica
+                        $vekeodzemeni[]=$row->sifra;
+                        $arr[$row->sifra]['kolicina'] -= $lekuvanjamaterijali[$row->sifra];
+                   // }
+
+
+
+                }
+            }
+        }
+
+            $newrow = $this->toArray($row);
+            unset($newrow['kolicina']);
+            $arr[$row->sifra] = array_merge($arr[$row->sifra], $newrow);
+
+        }
+
+
+        foreach ($arr as $row) {
+            $arrfull[] = $row;
+        }
+        return $this->toArray($arrfull);
+    }
+
+    public function getLagerListaStara($stavka, $datum, $magacin, $nacinnaprikaz = 1)
+    {
+        $pozitiva = array(710, 719, 726);
+        $this->db->select('
+                    SUM(det.kolicina) as kolicina,
+                    det.SRDCena as srednacena,
+                    det.edinica_merka as edmerkaID,
+                    bis_edmerki.ime_dolgo as edmerka,
+                    s1.S1Ime as stavka,
+                    s1.SID as sifra,
+                    s1.sifra as sifra2,
+                    s1.katBroj as katBroj,
+                    s0.SOIme as grupa,
+                    stavka.tip as tip
+                   ');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->join('bis_edmerki', 'det.edinica_merka = bis_edmerki.id', 'left');
+        $this->db->join('s1', 'det.SID = s1.SID', 'left');
+        $this->db->join('s0', 's1.SID0 = s0.SID0', 'left');
+        $this->db->join('bis_magacin', 'det.magacin = bis_magacin.id', 'left');
+        if ($stavka > 0) $this->db->where('det.SID', $stavka);
+        if ($magacin > 0) $this->db->where('det.magacin', $magacin);
+//        if($magacin > 0) $this->db->where('bis_magacin.id', $magacin);
+        $this->db->where_in('stavka.tip', $pozitiva);
+        $this->db->group_by('det.SID');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = array();
+        }
+        // za negativa
+        $negativa = array(715, 720, 729, 90);
+        $this->db->select('
+                    SUM(det.kolicina) as kolicina,
+                    det.SRDCena as srednacena,
+                    s1.S1Ime as stavka,
+                    s1.SID as sifra,
+                    s1.sifra as sifra2,
+                    s1.katBroj as katBroj,
+                    s0.SOIme as grupa
+                   ');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->join('s1', 'det.SID = s1.SID', 'left');
+        $this->db->join('s0', 's1.SID0 = s0.SID0', 'left');
+        if ($stavka > 0) $this->db->where('det.SID', $stavka);
+        if ($magacin > 0) $this->db->where('det.magacin', $magacin);
+        $this->db->where_in('stavka.tip', $negativa);
+        $this->db->group_by('det.SID');
+        $query2 = $this->db->get();
+        if ($query2->num_rows() > 0) {
+            $result2 = $query2->result();
+
+        } else {
+            $result2 = array();
+        }
+        $resultx = $this->toArray($result);
+        $sodrzi = false;
+//        bis_debug($result2,'$result2');
+
+
+        foreach ($result2 as $key => $val) {
+            foreach ($resultx as $k => $v) {
+                $t1 = $val->sifra;
+                $pos = array_search($t1, $v);
+                if ($pos) {
+                    $newkol = $v['kolicina'] - $val->kolicina;
+                    $resultx[$k]['kolicina'] = '' . $newkol . '';
+                    $sodrzi = true;
+                }
+            }
+            if (!$sodrzi) $resultx[] = $this->toArray($val);
+            $pos = '';
+            $sodrzi = false;
+        }
+//        bis_debug($resultx,'$resultx');
+//        if ($nacinnaprikaz==1){
+//            $lekuvanjapotrosenimaterijali=$this->getLekuvanjePotroseniMaterijali();
+//            foreach($lekuvanjapotrosenimaterijali as $keyb=>$valb){
+//                $lekuvanjapotrosenimaterijali_wherein[]=$keyb;
+//            }
+//            $this->db->select('*');
+//            $this->db->where_in('SID',$lekuvanjapotrosenimaterijali_wherein);
+//            $resultb=$this->db->from('s1')->get()->result();
+//            bis_debug($resultb,'$resultb');
+//            foreach($resultb as $rowb){
+//                $rx_sodrzi=false();
+//                foreach($resultx as $keyx=>$rowx){
+//                    if ($rowx['sifra']=$rowb->SID ){
+//                        $rx_sodrzi=true;
+//                        $resultx[$keyx]['kolicina'] -= $lekuvanjapotrosenimaterijali[$rowb->SID];
+//                    }
+//                }
+//
+//
+//                if (!$rx_sodrzi) {
+//                    //DODADI MATERIJAL
+//                    $resultx[]=array('kolicina'=> $lekuvanjapotrosenimaterijali[$rowb->SID]);
+//                    $endx=end($resultx);
+//
+//                    $resultx[$endx]['srednacena'] = $rowb->srednacena ;
+//                    $resultx[$endx]['edmerkaID'] =  $rowb->edmerkaID;
+//                    $resultx[$endx]['edmerka'] =  $rowb->edmerka;
+//                    $resultx[$endx]['stavka'] = $rowb->stavka;
+//                    $resultx[$endx]['sifra'] =  $rowb->sifra;
+//                    $resultx[$endx]['sifra2'] =  $rowb->sifra2;
+//                    $resultx[$endx]['katBroj'] =  $rowb->katBroj;
+//                    $resultx[$endx]['grupa'] =  $rowb->grupa;
+//
+//
+//
+//
+//                }
+//
+//            }
+//
+//        }
+
+
+//        die();
+        return $resultx;
+    }
+
+
+    public function getLagerListaPrint($stavka, $magacin)
+    {
+        $datum=0;
+        return $this->getLagerLista($stavka,$datum, $magacin, $nacinnaprikaz = 1);
+
+        $pozitiva = array(710, 719, 726);
+        $this->db->select('
+                    SUM(det.kolicina) as kolicina,
+                    det.SRDCena as srednacena,
+                    det.edinica_merka as edmerkaID,
+                    bis_edmerki.ime_dolgo as edmerka,
+                    s1.S1Ime as stavka,
+                    s1.SID as sifra,
+                    s1.sifra as sifra2,
+                    s1.katBroj as katBroj,
+                    s0.SOIme as grupa
+                   ');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->join('bis_edmerki', 'det.edinica_merka = bis_edmerki.id', 'left');
+        $this->db->join('s1', 'det.SID = s1.SID', 'left');
+        $this->db->join('s0', 's1.SID0 = s0.SID0', 'left');
+        $this->db->join('bis_magacin', 'det.magacin = bis_magacin.id', 'left');
+        if ($stavka > 0) $this->db->where('det.SID', $stavka);
+        if ($magacin > 0) $this->db->where('det.magacin', $magacin);
+//        if($magacin > 0) $this->db->where('bis_magacin.id', $magacin);
+        $this->db->where_in('stavka.tip', $pozitiva);
+        $this->db->group_by('det.SID');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = array();
+        }
+        // za negativa
+        $negativa = array(715, 720, 729, 90);
+        $this->db->select('
+                    SUM(det.kolicina) as kolicina,
+                    det.SRDCena as srednacena,
+                    s1.S1Ime as stavka,
+                    s1.SID as sifra,
+                    s1.sifra as sifra2,
+                    s1.katBroj as katBroj,
+                    s0.SOIme as grupa
+                   ');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->join('s1', 'det.SID = s1.SID', 'left');
+        $this->db->join('s0', 's1.SID0 = s0.SID0', 'left');
+        if ($stavka > 0) $this->db->where('det.SID', $stavka);
+        if ($magacin > 0) $this->db->where('det.magacin', $magacin);
+        $this->db->where_in('stavka.tip', $negativa);
+        $this->db->group_by('det.SID');
+        $query2 = $this->db->get();
+        if ($query2->num_rows() > 0) {
+            $result2 = $query2->result();
+        } else {
+            $result2 = array();
+        }
+        $resultx = $this->toArray($result);
+        $sodrzi = false;
+        foreach ($result2 as $key => $val) {
+            foreach ($resultx as $k => $v) {
+                $t1 = $val->sifra;
+                $pos = array_search($t1, $v);
+                if ($pos) {
+                    $newkol = $v['kolicina'] - $val->kolicina;
+                    $resultx[$k]['kolicina'] = '' . $newkol . '';
+                    $sodrzi = true;
+                }
+            }
+            if (!$sodrzi) $resultx[] = $this->toArray($val);
+            $pos = '';
+            $sodrzi = false;
+        }
+//        die();
+        return $resultx;
+    }
+
+
+    public function getLagerLista2($katbroj, $datum)
+    {
+        $pozitiva = array(710, 719, 726, 715, 720, 729, 90);
+        $this->db->select('
+                    SUM(det.kolicina) as kolicina,
+                    det.SRDCena as srednacena,
+                    s1.S1Ime as stavka,
+                    s1.SID as sifra,
+                    s1.sifra as sifra2,
+                    s1.katBroj as katBroj,
+                    s0.SOIme as grupa
+                   ');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->join('s1', 'det.SID = s1.SID', 'left');
+        $this->db->join('s0', 's1.SID0 = s0.SID0', 'left');
+        if ($katbroj > 0) $this->db->where('s0.SOID', $katbroj);
+        $this->db->where_in('stavka.tip', $pozitiva);
+        $query = $this->db->get();
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+    }
+
+    public function getMaterijalno($klientid, $tipid)
+    {
+        $materijalno = array(710, 715, 719, 720, 726, 729, 90);
+        $this->db->select('
+                    stavka.datum as datum,
+                    stavka.tip as tip,
+                    stavka.textBroj as broj,
+                    stavka.p_osnova as priemnica,
+                    stavka.n_osnova as magacinska,
+                    stavka.zaDokID as zaDokID,
+                    stavka2.textBroj as faktura,
+                    firma.ime as firmaIme
+                   ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('stavka as stavka2', 'stavka.zaDokID = stavka2.ID', 'left');
+        if ($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+        if ($tipid == 0 || $tipid == 1) $this->db->where('firma.klTipID', $tipid);
+        $this->db->where_in('stavka.tip', $materijalno);
+        //$this->db->where_in('stavka.tip', $materijalno);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getNewBrojIspratnica($year)
+    {
+//        $query = $this->db->query('SELECT COUNT(ID) as count FROM stavka WHERE tip=720 AND YEAR(CAST(datum AS date))="$year"', FALSE);
+        $query = $this->db->query('SELECT COUNT(ID) as count FROM stavka WHERE tip=720 AND YEAR(CAST(datum AS date))=2013', FALSE);
+        foreach ($query->result() as $row) {
+            return $row->count;
+        }
+    }
+
+    public function getNewBrojPriemnica($year)
+    {
+        $query = $this->db->query('SELECT COUNT(ID) as count FROM stavka WHERE tip=710  AND YEAR(CAST(datum AS date))=2013', FALSE);
+        foreach ($query->result() as $row) {
+            return $row->count;
+        }
+    }
+
+    public function getPovratnicaDetali($id)
+    {
+        $this->db->select('
+                    det.SID as sifra,
+                    det.kolicina as kolicina,
+                    det.cena as cena,
+                    s1.S1Ime as stavka,
+                    s1.sifra as sifra2,
+                    s1.katBroj as katBroj
+                    ');
+        $this->db->from('det');
+        $this->db->join('s1', 'det.SID = s1.SID', 'left');
+        $this->db->where('det.ID', $id);
+        $this->db->order_by('det.detID');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function getPriemniciB($klientid, $pogledid, $magacinid)
+    {
+        if ($magacinid == 0) {
+            $this->db->distinct();
+            $this->db->select('stavka.*,firma.ime as firmaime');
+            $this->db->from('stavka');
+            $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+
+            if ($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+            if ($pogledid == 1) $this->db->where('stavka.zaDokID > 0');
+            if ($pogledid == 2) $this->db->where('stavka.zaDokID = 0');
+
+            $this->db->where('stavka.tip', 710);
+            $this->db->order_by('stavka.ID', "DESC");
+            $query = $this->db->get();
+            $return = $query->result();
+
+            $novreturn = '';
+            if ($query->num_rows > 0) {
+                foreach ($return as $priemnica) {
+                    $priemnica->dokumenti = $this->getFakturiPoDokID($priemnica->zaDokID);
+                    // $priemnica->MagacinIme = $this->getMagacinIme($magacinid);
+                    //print_r($priemnica->MagacinIme); die();
+                    $novreturn[] = $priemnica;
+
+                }
+            }
+        } else {
+            $this->db->distinct();
+            $this->db->select('stavka.*,firma.ime as firmaime, det.magacin as magacin_id');
+            $this->db->from('stavka');
+            $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+            $this->db->join('det', 'stavka.ID = det.ID', 'left');
+
+            if ($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+            if ($pogledid == 1) $this->db->where('stavka.zaDokID > 0');
+            if ($pogledid == 2) $this->db->where('stavka.zaDokID = 0');
+            if ($magacinid > 0) $this->db->where('det.magacin', $magacinid);
+            $this->db->where('stavka.tip', 710);
+            $this->db->order_by('stavka.ID');
+            $query = $this->db->get();
+            $return = $query->result();
+
+            $novreturn = '';
+            if ($query->num_rows > 0) {
+                foreach ($return as $priemnica) {
+                    $priemnica->dokumenti = $this->getFakturiPoDokID($priemnica->zaDokID);
+                    // $priemnica->MagacinIme = $this->getMagacinIme($magacinid);
+                    //print_r($priemnica->MagacinIme); die();
+                    $novreturn[] = $priemnica;
+
+                }
+            }
+
+
+        }
+        return $novreturn;
+    }
+
+    public function getFakturaBroj($priemnicaid)
+    {
+
+    }
+
+    public function getPriemnicaByID($id)
+    {
+        $this->db->select('
+            stavka.ID as id,
+            stavka.textBroj as broj,
+            stavka.datum as datum,
+            stavka.firmaID as komintent
+        ');
+        $this->db->from('stavka');
+        $this->db->where('ID', $id);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $result = '';
+            $tempresult = $query->result();
+            $result->priemnica = $tempresult[0];
+            $result->stavki = $this->getStavkiByPriemnica($id);
+        } else $result = false;
+        return $result;
+    }
+
+    public function getMagacinIme($magacinid)
+    {
+        $this->db->select('ime as magacin_ime');
+        $this->db->from('bis_magacin');
+        $this->db->where('id', $magacinid);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $result = $query->row('magacin_ime');
+        } else
+            $result = false;
+        return $result;
+    }
+
+
+    public function getFakturiPoDokID($id)
+    {
+        $this->db->select('stavka.*,firma.ime as firmaime');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->where('stavka.ID', $id);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function getPromet($klientid)
+    {
+        $pozitiva = array(710, 719, 726);
+        $this->db->select('
+                    SUM(det.kolicina) as kolicina,
+                    SUM(det.SRDCena*det.kolicina) as vrednostvlez,
+                    s1.S1Ime as stavka,
+                    s1.SID as sifra,
+                    s1.sifra as sifra2,
+                    s1.katBroj as katBroj,
+                    s0.SOIme as grupa
+                   ');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->join('s1', 'det.SID = s1.SID', 'left');
+        $this->db->join('s0', 's1.SID0 = s0.SID0', 'left');
+        if ($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+        //if($datum) $this->db->where('stavka.datum <=', $datum);
+        $this->db->where_in('stavka.tip', $pozitiva);
+        $this->db->group_by('det.SID');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = array();
+        }
+        // za negativa
+        $negativa = array(715, 720, 729);
+        $this->db->select('
+                    SUM(det.kolicina) as kolicina,
+                    SUM(det.SRDCena*det.kolicina) as vrednostizlez,
+                    s1.S1Ime as stavka,
+                    s1.SID as sifra,
+                    s1.sifra as sifra2,
+                    s1.katBroj as katBroj,
+                    s0.SOIme as grupa
+                   ');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->join('s1', 'det.SID = s1.SID', 'left');
+        $this->db->join('s0', 's1.SID0 = s0.SID0', 'left');
+        if ($klientid > 0) $this->db->where('stavka.firmaID', $klientid);
+        //if($datum) $this->db->where('stavka.datum <=', $datum);
+        $this->db->where_in('stavka.tip', $negativa);
+        $this->db->group_by('det.SID');
+        $query2 = $this->db->get();
+        if ($query2->num_rows() > 0) {
+            $result2 = $query2->result();
+        } else {
+            $result2 = array();
+        }
+        $resultx = $this->toArray($result);
+        $sodrzi = false;
+        foreach ($result2 as $key => $val) {
+            foreach ($resultx as $k => $v) {
+                $t1 = $val->sifra;
+                $pos = array_search($t1, $v);
+                if ($pos) {
+                    $resultx[$k]['kolicina2'] = $val->kolicina;
+                    $resultx[$k]['vrednostizlez'] = $val->vrednostizlez;
+                    $sodrzi = true;
+                }
+            }
+            if (!$sodrzi) $resultx[] = $this->toArray($val);
+            $pos = '';
+            $sodrzi = false;
+        }
+//        die();
+        return $resultx;
+    }
+
+    public function toArray($obj)
+    {
+        if (is_object($obj)) $obj = (array)$obj;
+        if (is_array($obj)) {
+            $new = array();
+            foreach ($obj as $key => $val) {
+                $new[$key] = self::toArray($val);
+            }
+        } else {
+            $new = $obj;
+        }
+        return $new;
+    }
+
+    public function getStavkiByPriemnica($id)
+    {
+        $this->db->distinct();
+        $this->db->select(" det.kolicina as kolicina,
+                            det.detID as dbid,
+                            det.stavka as stavka,
+                            det.SID as artikl_id,
+                            det.ID as priemnicaid,
+                            det.garanten_rok as garantenrok,
+                            det.upotreblivo_do as upotreblivodo,
+                            det.SerNo as seriskibroj,
+                            det.edinica_merka as edMerkaID,
+                            det.SRDCena as SRDCena,
+                            s1.sifra as sifra,
+                            s1.katBroj as katBroj,
+                            bis_edmerki.ime_dolgo as edMerka,
+                            bis_magacin.ime as magacin,
+                            stavka.textBroj as brojPriemnica,
+                            konta.id as kontoID,
+                            konta.sifra as kontoSifra
+                            ");
+        $this->db->from("det");
+        $this->db->join('s1', 's1.SID = det.SID', 'left');
+        $this->db->join('stavka', 'stavka.ID = det.ID', 'left');
+        $this->db->join('bis_magacin', 'bis_magacin.id = det.magacin', 'left');
+        $this->db->join('bis_edmerki', 'bis_edmerki.id = det.edinica_merka', 'left');
+        $this->db->join('konta', 'konta.id = s1.konto', 'left');
+        $this->db->where("det.ID", $id);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $result = $query->result();
+            return $result;
+        }
+    }
+
+    public function info_priemnica($id)
+    {
+        $this->db->distinct();
+        $this->db->select('stavka.*,firma.ime as firmaime');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('det', 'stavka.ID = det.ID', 'left');
+        $this->db->where('stavka.ID', $id);
+        $this->db->where('stavka.tip', 710);
+
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if ($query->num_rows() == 1) {
+            $return = $query->result();
+            $return[0]->stavki = $this->getStavkiByPriemnica($id);
+            $return[0]->dokumenti = $this->getFakturiPoDokID($return[0]->zaDokID);
+            return $return[0];
+        } else {
+            $return = false;
+            return $return;
+        }
+    }
+
+    public function info_ispratnica($id)
+    {
+        $this->db->distinct();
+        $this->db->select('stavka.*,firma.ime as firmaime');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('det', 'stavka.ID = det.ID', 'left');
+        $this->db->where('stavka.ID', $id);
+        $this->db->where('stavka.tip', 720);
+
+        $this->db->order_by('stavka.ID');
+        $query = $this->db->get();
+        if ($query->num_rows() == 1) {
+            $return = $query->result();
+            $return[0]->stavki = $this->getStavkiByPriemnica($id);
+            $return[0]->dokumenti = $this->getFakturiPoDokID($return[0]->zaDokID);
+            return $return[0];
+        } else {
+            $return = false;
+            return $return;
+        }
+    }
+
+    public function getVleznaRoba($id)
+    {
+        $this->db->select('
+                    stavka.ID as dbid,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.zaDokID as faktura,
+                    stavka.komentar as zabeleska,
+                    stavka.p_osnova as vkupnacena,
+                    stavka.vrska_dokumenti as vrskadokumenti,
+                    firma.firmaID as firmaID,
+
+                    firma.ime as firmaIme
+
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+
+        $this->db->where('stavka.ID', $id);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows == 1) {
+            return $query->result();
+        }
+    }
+
+    public function getVleznaRobaDetali($id)
+    {
+        $this->db->select('
+                    det.detID as dbid,
+                    det.SID as sifra,
+                    det.kolicina as kolicina,
+                    det.cena as vleznacena,
+                    det.edinica_merka as edMerkaID,
+                    det.DDV as ddv,
+                    det.garanten_rok as garantenRok,
+                    det.upotreblivo_do as upotreblivoDo,
+                    det.SerNo as seriskiBroj,
+                    bis_edmerki.ime_dolgo as edMerkaIme,
+                    s1.S1Ime as stavka,
+                    s1.sifra as sifra2,
+                    s1.katBroj as katBroj,
+                    s1.konto as kontoID,
+                    konta.sifra as konto
+                    ');
+        $this->db->from('det');
+        $this->db->join('s1', 'det.SID = s1.SID', 'left');
+        $this->db->join('bis_edmerki', 'det.edinica_merka = bis_edmerki.id', 'left');
+        $this->db->join('konta', 's1.konto = konta.id', 'left');
+        $this->db->where('det.ID', $id);
+        $this->db->order_by('det.detID');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function get_artikl_data($sifraId)
+    {
+        $this->db->select('SID, S1Ime, katBroj, sifra');
+        $this->db->from('s1');
+        $this->db->where('SID', $sifraId);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows() == 1) {
+            $result = $query->result_array();
+        } else $result = false;
+
+        return $result;
+    }
+
+//    public function grupa_dropdown()
+//    {
+//        $this->db->select('grupaID, grupaIme');
+//        $this->db->from('grupa');
+//        $this->db->order_by('grupaID');
+//        $query = $this->db->get();
+//        $dropdown = array();
+//        if ($query->num_rows() > 0) {
+//            $dropdown[''] = '';
+//            foreach ($query->result_array() as $row) {
+//                $dropdown[$row['grupaID']] = $row['grupaIme'];
+//            }
+//        }
+//        return $dropdown;
+//    }
+
+    public function katbroj2_dropdown()
+    {
+        $this->db->select('SID, S1Ime, katBroj');
+        $this->db->from('s1');
+        $this->db->order_by('SID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[''] = '';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['SID']] = $row['katBroj'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function katbroj_dropdown()
+    {
+        $this->db->select('SOID, SOIme');
+        $this->db->from('s0');
+        $this->db->order_by('SOID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[0] = 'Сите';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['SOID']] = $row['SOIme'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function klient_dropdown()
+    {
+        $this->db->select('firmaID, ime');
+        $this->db->from('firma');
+        $this->db->order_by('ime');
+        $query = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[''] = '';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['firmaID']] = $row['firmaID'].' . '.$row['ime'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function klient_site_dropdown()
+    {
+        $this->db->select('firmaID, ime');
+        $this->db->from('firma');
+        $this->db->order_by('ime');
+        $query = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown['0'] = 'Сите';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['firmaID']] = $row['firmaID'].' '.$row['ime'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function magacinJquery()
+    {
+        $this->db->select('id, ime');
+        $this->db->from('bis_magacin');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        }
+        return $result;
+    }
+
+    public function magacin_dropdown()
+    {
+        $this->db->select('id, ime');
+        $this->db->from('bis_magacin');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[''] = 'Сите';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['id']] = $row['ime'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function novInterenTransfer()
+    {
+        $insert_data = array(
+            'MFID' => 1,
+            'tip' => 729,
+            'datum' => $this->input->post('datum'),
+            'datum_zapis' => $this->input->post('datum'),
+            'datetime' => time(),
+            'sysDateCreated' => time(),
+            'intBroj' => $this->input->post('arhivskibrojint'),
+            'arhIntBroj' => $this->input->post('arhivskibrojint'),
+            'arhTextBroj' => $this->input->post('arhivskibroj'),
+            'textBroj' => $this->input->post('arhivskibroj'),
+            'firmaID' => 0,
+            'komentar' => $this->input->post('zabeleska'),
+            'rokDatum' => $this->input->post('datum')
+        );
+
+        $insert = $this->db->insert('stavka', $insert_data);
+        if ($insert) $id = $this->db->insert_id();
+        else $id = false;
+
+        $insert_data2 = array(
+            'MFID' => 1,
+            'tip' => 719,
+            'datum' => $this->input->post('datum'),
+            'datum_zapis' => $this->input->post('datum'),
+            'datetime' => time(),
+            'sysDateCreated' => time(),
+            'intBroj' => $this->input->post('arhivskibrojint'),
+            'arhIntBroj' => $this->input->post('arhivskibrojint'),
+            'arhTextBroj' => $this->input->post('arhivskibroj'),
+            'textBroj' => $this->input->post('arhivskibroj'),
+            'zaDokID' => $id,
+            'firmaID' => 0,
+            'komentar' => $this->input->post('zabeleska'),
+            'rokDatum' => $this->input->post('datum')
+        );
+
+        $insert2 = $this->db->insert('stavka', $insert_data2);
+        if ($insert2) $id2 = $this->db->insert_id();
+        else $id2 = false;
+
+        $insert1_update = array(
+            'zaDokID' => $id2
+        );
+        $this->db->where('id', $id);
+        $update = $this->db->update('stavka', $insert1_update);
+
+        $magacinOd = $this->input->post('magacin_od');
+        $magacinVo = $this->input->post('magacin_vo');
+        $stavka = $this->input->post('stavka');
+        foreach ($stavka as $index => $value) {
+            $new_sifra = $this->input->post('SID');
+            $new_stavka = $this->input->post('stavka');
+            $new_edmerka = $this->input->post('edmerkaid');
+            $new_kolicina = $this->input->post('kolicina');
+            $new_garantenrok = $this->input->post('garantenrok');
+            $new_upotreblivodo = $this->input->post('upotreblivodo');
+            $new_seriskibroj = $this->input->post('seriskibroj');
+            $sostojba = $this->sostojbaArtiklMagacin($new_sifra[$index], $magacinOd);
+            $novasostojba = $sostojba - $new_kolicina[$index];
+            $srednacena = $this->getLastSrednaCenaArtikl($new_sifra[$index], $id);
+            $detali_data = array(
+                'ID' => $id,
+                'SID' => $new_sifra[$index],
+                'stavka' => $new_stavka[$index],
+                'edinica_merka' => $new_edmerka[$index],
+                'magacin' => $magacinOd,
+                'magacin_vo' => $magacinVo,
+                'kolicina' => $new_kolicina[$index],
+                'sostojba' => $novasostojba,
+                'SRDCena' => $srednacena,
+                'garanten_rok' => $new_garantenrok[$index],
+                'upotreblivo_do' => $new_upotreblivodo[$index],
+                'SerNo' => $new_seriskibroj[$index]
+            );
+            $detali = $this->db->insert('det', $detali_data);
+            if ($detali) $detaliid = $this->db->insert_id();
+        }
+
+        foreach ($stavka as $index => $value) {
+            $new_sifra = $this->input->post('SID');
+            $new_stavka = $this->input->post('stavka');
+            $new_edmerka = $this->input->post('edmerkaid');
+            $new_kolicina = $this->input->post('kolicina');
+            $new_garantenrok = $this->input->post('garantenrok');
+            $new_upotreblivodo = $this->input->post('upotreblivodo');
+            $new_seriskibroj = $this->input->post('seriskibroj');
+            $sostojba = $this->sostojbaArtiklMagacin($new_sifra[$index], $magacinVo);
+            $novasostojba = $sostojba + $new_kolicina[$index];
+            $srednacena = $this->getLastSrednaCenaArtikl($new_sifra[$index], $id2);
+            $detali_data = array(
+                'ID' => $id2,
+                'SID' => $new_sifra[$index],
+                'stavka' => $new_stavka[$index],
+                'edinica_merka' => $new_edmerka[$index],
+                'magacin' => $magacinVo,
+                'SinkID' => $detaliid,
+                'kolicina' => $new_kolicina[$index],
+                'sostojba' => $novasostojba,
+                'SRDCena' => $srednacena,
+                'garanten_rok' => $new_garantenrok[$index],
+                'upotreblivo_do' => $new_upotreblivodo[$index],
+                'SerNo' => $new_seriskibroj[$index]
+            );
+            $detali = $this->db->insert('det', $detali_data);
+        }
+
+        if ($insert) {
+            $lastbroj = $this->getLastIspratnicaBroj();
+            $newbroj = $lastbroj + 1;
+            $this->incrementIspratnicaBroj($newbroj);
+        }
+
+        return $id;
+    }
+
+    public function novaIspratnica()
+    {
+        $vrzanifaktura = $this->input->post('faktura_id');
+        if ($vrzanifaktura > 0) {
+            $insert_data = array(
+                'MFID' => 1,
+                'tip' => 720,
+                'datum' => $this->input->post('datum'),
+                'datum_zapis' => $this->input->post('datum'),
+                'datetime' => time(),
+                'sysDateCreated' => time(),
+                'intBroj' => $this->input->post('arhivskibrojint'),
+                'arhIntBroj' => $this->input->post('arhivskibrojint'),
+                'arhTextBroj' => $this->input->post('arhivskibroj'),
+                'textBroj' => $this->input->post('arhivskibroj'),
+                'firmaID' => $this->input->post('klient'),
+                'zaDokID' => $vrzanifaktura,
+                'vrska_dokumenti' => $this->input->post('vrskadokumenti'),
+                'komentar' => $this->input->post('zabeleska')
+            );
+        } else {
+            $insert_data = array(
+                'MFID' => 1,
+                'tip' => 720,
+                'datum' => $this->input->post('datum'),
+                'datum_zapis' => $this->input->post('datum'),
+                'datetime' => time(),
+                'sysDateCreated' => time(),
+                'intBroj' => $this->input->post('arhivskibrojint'),
+                'arhIntBroj' => $this->input->post('arhivskibrojint'),
+                'arhTextBroj' => $this->input->post('arhivskibroj'),
+                'textBroj' => $this->input->post('arhivskibroj'),
+                'firmaID' => $this->input->post('klient'),
+                'komentar' => $this->input->post('zabeleska')
+            );
+        }
+
+        $insert = $this->db->insert('stavka', $insert_data);
+        if ($insert) $id = $this->db->insert_id();
+        else $id = false;
+
+        $stavka = $this->input->post('stavka');
+        foreach ($stavka as $index => $value) {
+            $new_sifra = $this->input->post('SID');
+            $new_stavka = $this->input->post('stavka');
+            $new_edmerka = $this->input->post('edmerkaid');
+            $new_magacin = $this->input->post('magacin');
+            $new_kolicina = $this->input->post('kolicina');
+            $new_garantenrok = $this->input->post('garantenrok');
+            $new_upotreblivodo = $this->input->post('upotreblivodo');
+            $new_seriskibroj = $this->input->post('seriskibroj');
+            $sostojba = $this->sostojbaArtiklMagacin($new_sifra[$index], $new_magacin[$index]);
+            $novasostojba = $sostojba - $new_kolicina[$index];
+//            $srednacena = $this->getLastSrednaCenaArtikl($new_sifra[$index], $id);
+            $detali_data = array(
+                'ID' => $id,
+                'SID' => $new_sifra[$index],
+                'stavka' => $new_stavka[$index],
+                'edinica_merka' => $new_edmerka[$index],
+                'magacin' => $new_magacin[$index],
+                'sostojba' => $novasostojba,
+                //'SRDCena' => $srednacena,
+                'kolicina' => $new_kolicina[$index],
+                'garanten_rok' => $new_garantenrok[$index],
+                'upotreblivo_do' => bis_convert_date_mk_to_usa($new_upotreblivodo[$index]),
+                'SerNo' => $new_seriskibroj[$index]
+            );
+            $detali = $this->db->insert('det', $detali_data);
+        }
+
+        if ($insert) {
+            $lastbroj = $this->getLastIspratnicaBroj();
+            $newbroj = $lastbroj + 1;
+            $this->incrementIspratnicaBroj($newbroj);
+        }
+
+        return $id;
+    }
+
+
+    public function novaOtpisnica()
+    {
+//        $vrzanifaktura = $this->input->post('faktura_id');
+//        if($vrzanifaktura > 0)
+//        {
+//            $insert_data = array(
+//                'MFID' => 1,
+//                'tip' => 720,
+//                'datum' => $this->input->post('datum'),
+//                'intBroj' => $this->input->post('arhivskibrojint'),
+//                'arhIntBroj' => $this->input->post('arhivskibrojint'),
+//                'arhTextBroj' => $this->input->post('arhivskibroj'),
+//                'textBroj' => $this->input->post('arhivskibroj'),
+//                'ZSID' => 1,
+//                'firmaID' => $this->input->post('klient'),
+//                'zaDokID' => $vrzanifaktura,
+//                'vrska_dokumenti'=>$this->input->post('vrskadokumenti'),
+//                'komentar' => $this->input->post('zabeleska')
+//            );
+//        }
+//        else
+        // {
+        $insert_data = array(
+            'MFID' => 1,
+            'tip' => 90,
+            'datum' => $this->input->post('datum'),
+            'intBroj' => $this->input->post('arhivskibrojint'),
+            'arhIntBroj' => $this->input->post('arhivskibrojint'),
+            'arhTextBroj' => $this->input->post('arhivskibroj'),
+            'textBroj' => $this->input->post('arhivskibroj'),
+            'ZSID' => 1,
+            // 'firmaID' => $this->input->post('klient'),
+            'komentar' => $this->input->post('zabeleska')
+        );
+        //  }
+        $insert = $this->db->insert('stavka', $insert_data);
+        if ($insert) $id = $this->db->insert_id();
+        else $id = false;
+
+        $stavka = $this->input->post('stavka');
+
+        foreach ($stavka as $index => $value) {
+            $new_sifra = $this->input->post('SID');
+
+            $new_stavka = $this->input->post('stavka');
+            $new_edmerka = $this->input->post('edmerkaid');
+            $new_magacin = $this->input->post('magacin');
+            $new_kolicina = $this->input->post('kolicina');
+            //   $new_garantenrok = $this->input->post('garantenrok');
+//            $new_upotreblivodo = $this->input->post('upotreblivodo');
+            $new_seriskibroj = $this->input->post('seriskibroj');
+            //    $new_srd_cena = $this->input->post('srd_cena');
+            $new_cena = $this->input->post('cena');
+            $new_ddv = $this->input->post('ddv');
+            $new_kontoid = $this->input->post('konto');
+            $sostojba = $this->sostojbaArtiklMagacin($new_sifra[$index], $new_magacin[$index]);
+            $novasostojba = $sostojba - $new_kolicina[$index];
+            $srednacena = $this->getLastSrednaCenaArtikl($new_sifra[$index], $id);
+            $detali_data = array(
+                'ID' => $id,
+                'SID' => $new_sifra[$index],
+                'stavka' => $new_stavka[$index],
+                'edinica_merka' => $new_edmerka[$index],
+                'magacin' => $new_magacin[$index],
+                'sostojba' => $novasostojba,
+                'cena' => $new_cena[$index],
+                'DDV' => $new_ddv[$index],
+                'SRDCena' => $srednacena,
+                'kolicina' => $new_kolicina[$index],
+                'magacin_vo'=>$this->input->post('magacin_vo'),
+//                'garanten_rok' => $new_garantenrok[$index],
+//                'upotreblivo_do' => $new_upotreblivodo[$index],
+                'SerNo' => $new_seriskibroj[$index],
+                'konto' => $new_kontoid[$index]
+
+            );
+            $detali = $this->db->insert('det', $detali_data);
+        }
+
+        if ($insert) {
+            $lastbroj = $this->getLastOtpisnicaBroj();
+            $newbroj = $lastbroj + 1;
+            $this->incrementOtpisnicaBroj($newbroj);
+        }
+
+        return $id;
+    }
+
+
+    public function getLastSrednaCenaArtikl($artiklid, $stavkaid)
+    {
+        $this->db->select('
+                    MAX(det.detID) as detID
+                    ');
+        $this->db->from('det');
+        $this->db->where('det.SID', $artiklid);
+        $this->db->where('det.ID !=', $stavkaid);
+        $query = $this->db->get();
+        $result = $query->result();
+        $detID = $result[0]->detID;
+
+        if ($detID) {
+            $this->db->select('
+                    SRDCena as srednacena
+                    ');
+            $this->db->from('det');
+            $this->db->where('detID', $detID);
+            $query = $this->db->get();
+            $result = $query->result();
+            return $result[0]->srednacena;
+        } else {
+            return 0;
+        }
+
+    }
+
+    public function getLastIspratnicaBroj()
+    {
+        $this->db->select('broj');
+        $this->db->from('autoincrement');
+        $this->db->where('id', '4');
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0]->broj;
+    }
+
+    public function getLastOtpisnicaBroj()
+    {
+        $this->db->select('broj');
+        $this->db->from('autoincrement');
+        $this->db->where('id', '9');
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0]->broj;
+    }
+
+    public function getLastOtpisnicaMatBroj()
+    {
+        $this->db->select('broj');
+        $this->db->from('autoincrement');
+        $this->db->where('id', '9');
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0]->broj;
+    }
+
+
+    public function incrementIspratnicaBroj($newbroj)
+    {
+        $newbroj = array(
+            'broj' => $newbroj
+        );
+        $this->db->where('id', '4');
+        $query = $this->db->update('autoincrement', $newbroj);
+        return $query;
+    }
+
+    public function incrementOtpisnicaBroj($newbroj)
+    {
+        $newbroj = array(
+            'broj' => $newbroj
+        );
+        $this->db->where('id', '9');
+        $query = $this->db->update('autoincrement', $newbroj);
+        return $query;
+    }
+
+    public function novaPovratnica()
+    {
+        $insert_data = array(
+            'MFID' => 1,
+            'tip' => 715,
+            'datum' => $this->input->post('datum'),
+            //'datDen' => $this->input->post('datum'),
+            'intBroj' => 0,
+            'arhIntBroj' => 0,
+            'textBroj' => $this->input->post('broj'),
+            'z_uplata' => 0,
+            'ZSID' => 1,
+            'firmaID' => $this->input->post('klient'),
+            'p_osnova' => 0,
+            'p_ddv ' => 0,
+            'p_vkupno' => 0,
+            //'rokDatum' => today,
+            'n_osnova' => $this->input->post('vleznavkupnacena'),
+            'nacinID ' => 0,
+            'zaKlientID' => 0,
+            'sysChangerID' => 0,
+//            'p_osnova_0' => 0,
+//            'p_osnova_A' => 0,
+//            'p_osnova_B' => 0,
+//            'p_ddv_A' => 0,
+//            'p_ddv_B' => 0,
+//            'kurs' => 1,
+            'valutaID' => $this->input->post('valuta_options')
+        );
+
+        $insert = $this->db->insert('stavka', $insert_data);
+        if ($insert) $id = $this->db->insert_id();
+        else $id = false;
+
+        $stavka = $this->input->post('tstavka');
+        foreach ($stavka as $index => $value) {
+            $new_sifra = $this->input->post('tsifra');
+            $new_cena = $this->input->post('tvleznacena');
+            //$new_cena_srd = $this->input->post('tsoddv');
+            $new_kolicina = $this->input->post('tkolicina');
+            $detali_data = array(
+                'ID' => $id,
+                'SID' => $new_sifra[$index],
+                'cena' => $new_cena[$index],
+                'SRDCena' => $new_cena[$index], //tuka treba dorabotka za srdCena
+                'kolicina' => $new_kolicina[$index]
+            );
+            $detali = $this->db->insert('det', $detali_data);
+        }
+
+        return $id;
+    }
+
+    public function novaPriemnica()
+    {
+        $vrzanifaktura = $this->input->post('faktura_id');
+        if ($vrzanifaktura > 0) {
+            $insert_data = array(
+                'MFID' => 1,
+                'tip' => 710,
+                'datum' => $this->input->post('datum'),
+                'datum_zapis' => $this->input->post('datum'),
+                'datetime' => time(),
+                'sysDateCreated' => time(),
+                'datum_povrzuvanje' => date("Y-m-d"),
+                'intBroj' => $this->input->post('arhivskibrojint'),
+                'arhTextBroj' => $this->input->post('arhivskibroj'),
+                'arhIntBroj' => $this->input->post('arhivskibrojint'),
+                'textBroj' => $this->input->post('broj'),
+                'firmaID' => $this->input->post('klient'),
+                'zaDokID' => $vrzanifaktura,
+                'vrska_dokumenti' => $this->input->post('vrskadokumenti'),
+                'komentar' => $this->input->post('zabeleska')
+            );
+            $flag = true;
+        } else {
+            $insert_data = array(
+                'MFID' => 1,
+                'tip' => 710,
+                'datum' => $this->input->post('datum'),
+                'datum_zapis' => $this->input->post('datum'),
+                'datetime' => time(),
+                'sysDateCreated' => time(),
+                'intBroj' => $this->input->post('arhivskibrojint'),
+                'arhTextBroj' => $this->input->post('arhivskibroj'),
+                'arhIntBroj' => $this->input->post('arhivskibrojint'),
+                'textBroj' => $this->input->post('broj'),
+                'firmaID' => $this->input->post('klient'),
+                'komentar' => $this->input->post('zabeleska')
+            );
+            $flag = false;
+        }
+
+        $insert = $this->db->insert('stavka', $insert_data);
+        if ($insert) $id = $this->db->insert_id();
+        else $id = false;
+
+        $stavka = $this->input->post('stavka');
+        foreach ($stavka as $index => $value) {
+            $new_sifra = $this->input->post('SID');
+            $new_stavka = $this->input->post('stavka');
+            $new_edmerka = $this->input->post('edmerkaid');
+            $new_magacin = $this->input->post('magacin');
+            $new_kolicina = $this->input->post('kolicina');
+            $new_cena = $this->input->post('cena');
+            $new_ddv = $this->input->post('ddv');
+            $new_garantenrok = $this->input->post('garantenrok');
+            $new_upotreblivodo = $this->input->post('upotreblivodo');
+            $new_seriskibroj = $this->input->post('seriskibroj');
+            $presmetaj_sredna = $this->input->post('presmetaj_sredna');
+            $sostojba = $this->sostojbaArtiklmagacin($new_sifra[$index], $new_magacin[$index]);
+            $novasostojba = $sostojba + $new_kolicina[$index];
+            if ($vrzanifaktura > 0) {
+                $date_srednacena = time();
+//                $posledni = $this->presmetajKarticaArtikl($new_sifra[$index], $id);
+                $posledna_srednacena_data = $this->getArtiklPoslednaSrednaCena($new_sifra[$index], $new_magacin[$index]);
+                $posledna_srednacena = $posledna_srednacena_data->sredna_cena;
+                $posledna_sostojba = $this->getArtiklSostojbaSoSrednaCena($new_sifra[$index], $new_magacin[$index]);
+
+                $nova = $new_kolicina[$index] * $new_cena[$index];
+                $stara = $posledna_sostojba * $posledna_srednacena;
+
+                $nova_sostojba_artikl = $new_kolicina[$index] + $posledna_sostojba;
+                $novasrednacena = ($nova + $stara) / $nova_sostojba_artikl;
+            } else {
+                $novasrednacena = 0;
+                $date_srednacena = 0;
+            }
+            $detali_data = array(
+                'ID' => $id,
+                'SID' => $new_sifra[$index],
+                'stavka' => $new_stavka[$index],
+                'edinica_merka' => $new_edmerka[$index],
+                'magacin' => $new_magacin[$index],
+                'kolicina' => $new_kolicina[$index],
+                'cena' => $new_cena[$index],
+                'DDV' => $new_ddv[$index],
+                'sostojba' => $novasostojba,
+                'SRDCena' => $novasrednacena,
+                'datetime_presmetka_sredna_cena' => $date_srednacena,
+                'garanten_rok' => $new_garantenrok[$index],
+                'upotreblivo_do' => bis_convert_date_mk_to_usa($new_upotreblivodo[$index]),
+                'SerNo' => $new_seriskibroj[$index]
+            );
+            $detali = $this->db->insert('det', $detali_data);
+        }
+
+        if ($insert) {
+            $lastbroj = $this->getLastPriemnicaBroj();
+            $newbroj = $lastbroj + 1;
+            $this->incrementPriemnicaBroj($newbroj);
+        }
+        return $id;
+    }
+
+    public function sostojbaArtikl($artiklid)
+    {
+        $vlez = array(710, 719);
+        $izlez = array(720, 729, 90);
+        $this->db->select('SUM(det.kolicina) as vlez');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->where_in('stavka.tip', $vlez);
+        $this->db->where('det.SID', $artiklid);
+        $query = $this->db->get();
+        $resultvlez = $query->result();
+        $vlez = $resultvlez[0]->vlez;
+
+        $this->db->select('SUM(det.kolicina) as izlez');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->where_in('stavka.tip', $izlez);
+        $this->db->where('det.SID', $artiklid);
+        $query = $this->db->get();
+        $resultizlez = $query->result();
+        $izlez = $resultizlez[0]->izlez;
+        $sostojba = $vlez - $izlez;
+        return $sostojba;
+    }
+
+    public function presmetajKarticaArtikl($artiklid, $stavkaid)
+    {
+        $this->db->select('
+                    MAX(det.detID) as detID
+                    ');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->where('det.SID', $artiklid);
+        $this->db->where('stavka.zaDokID >', '0');
+        $this->db->where('stavka.tip', '710');
+        $this->db->where('det.ID !=', $stavkaid);
+        $query = $this->db->get();
+        $result = $query->result();
+        $detID = $result[0]->detID;
+
+        if ($detID) {
+            $this->db->select('
+                    det.kolicina as kolicina,
+                    det.SRDCena as srednacena,
+                    stavka.zaDokID as faktura
+                    ');
+            $this->db->from('det');
+            $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+            $this->db->where('det.detID', $detID);
+            $query = $this->db->get();
+            $result = $query->result();
+            $faktura = $result[0]->faktura;
+            return $result[0];
+        } else {
+            return false;
+        }
+
+    }
+
+    public function getArtiklSostojbaSoSrednaCena($artikl, $magacin)
+    {
+        $vlez = array(710, 719);
+        $izlez = array(720, 729, 90);
+        $this->db->select('SUM(det.kolicina) as vlez');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->where_in('stavka.tip', $vlez);
+        $this->db->where('det.SID', $artikl);
+        $this->db->where('det.magacin', $magacin);
+        $this->db->where('det.SRDCena >', 0);
+        $query = $this->db->get();
+        $resultvlez = $query->result();
+        $vlez = $resultvlez[0]->vlez;
+
+        $this->db->select('SUM(det.kolicina) as izlez');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->where_in('stavka.tip', $izlez);
+        $this->db->where('det.SID', $artikl);
+        $this->db->where('det.magacin', $magacin);
+        $this->db->where('det.SRDCena >', 0);
+        $query = $this->db->get();
+        $resultizlez = $query->result();
+        $izlez = $resultizlez[0]->izlez;
+        $sostojba = $vlez - $izlez;
+
+        return $sostojba;
+    }
+
+    public function getArtiklPoslednaSrednaCena($artikl, $magacin)
+    {
+        $this->db->select('
+                    MAX(datetime_presmetka_sredna_cena) as datum
+                    ');
+        $this->db->from('det');
+        $this->db->where('SID', $artikl);
+        $this->db->where('magacin', $magacin);
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+            $result = $query->result();
+            $datum = $result[0]->datum;
+        } else $datum = 0;
+
+        if ($datum > 0) {
+            $this->db->select('
+                    SRDCena as sredna_cena
+                    ');
+            $this->db->from('det');
+            $this->db->where('datetime_presmetka_sredna_cena', $datum);
+            $query = $this->db->get();
+            if ($query->num_rows > 0) {
+                $result = $query->result();
+                return $result[0];
+            } else return 0;
+        } else return 0;
+    }
+
+    public function getLastPriemnicaBroj()
+    {
+        $this->db->select('broj');
+        $this->db->from('autoincrement');
+        $this->db->where('id', '3');
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result[0]->broj;
+    }
+
+    public function incrementPriemnicaBroj($newbroj)
+    {
+        $newbroj = array(
+            'broj' => $newbroj
+        );
+        $this->db->where('id', '3');
+        $query = $this->db->update('autoincrement', $newbroj);
+        return $query;
+    }
+
+    public function proizvoditel_dropdown()
+    {
+        $this->db->select('markerID, markerIme');
+        $this->db->from('marker');
+        $this->db->order_by('markerID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[0] = '';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['markerID']] = $row['markerIme'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function proveri_vlezna_faktura($brojfaktura)
+    {
+        $niza = array(10, 20);
+        $this->db->select('
+                    stavka.ID as zaDokID,
+                    stavka.textBroj as textBroj,
+                    stavka.datum as datum,
+                    stavka.firmaID as firmaID,
+                    stavka.p_vkupno as p_vkupno,
+                    stavka.p_osnova as p_osnova,
+                    stavka.p_ddv as p_ddv,
+                    stavka.komentar as zabeleska,
+                    firma.ime as firmaIme,
+                    stavkadetali.stavka as stavka,
+                    stavkadetali.kolicina as kolicina,
+                    s1.katBroj as katBroj
+                    ');
+        $this->db->from('stavka');
+        $this->db->join('firma', 'stavka.firmaID = firma.firmaID', 'left');
+        $this->db->join('stavkadetali', 'stavka.ID = stavkadetali.ID', 'left');
+        $this->db->join('s1', 'stavkadetali.SID = s1.SID', 'left');
+        $this->db->where_in('stavka.tip', $niza);
+        $this->db->like('stavka.textBroj', $brojfaktura, 'both');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function sifra2_dropdown()
+    {
+        $this->db->select('SID, S1Ime, sifra');
+        $this->db->from('s1');
+        $this->db->order_by('SID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[''] = '';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['SID']] = $row['sifra'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function sifra_dropdown()
+    {
+        $this->db->select('SID, S1Ime');
+        $this->db->from('s1');
+        $this->db->order_by('SID');
+        $query = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[''] = '';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['SID']] = $row['SID'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function updateIspratnica($id)
+    {
+        $vrzanifaktura = $this->input->post('faktura_id');
+        if ($vrzanifaktura > 0) {
+            $update_data = array(
+                'datum' => $this->input->post('datum'),
+                'firmaID' => $this->input->post('klient'),
+                'sysDateChanged' => time(),
+                'zaDokID' => $vrzanifaktura,
+                'komentar' => $this->input->post('zabeleska')
+            );
+        } else {
+            $update_data = array(
+                'datum' => $this->input->post('datum'),
+                'firmaID' => $this->input->post('klient'),
+                'sysDateChanged' => time(),
+                'komentar' => $this->input->post('zabeleska')
+            );
+        }
+        $this->db->where('ID', $id);
+        $update = $this->db->update('stavka', $update_data);
+
+        $stavka = $this->input->post('stavka');
+        foreach ($stavka as $index => $value) {
+            $delete_stavka = $this->input->post('brisistavka');
+            $detal = $this->input->post('dbid');
+            $detalid = $detal[$index];
+
+            $new_sifra = $this->input->post('SID');
+            $new_stavka = $this->input->post('stavka');
+            $new_edmerka = $this->input->post('edmerkaid');
+            $new_magacin = $this->input->post('magacin');
+            $new_kolicina = $this->input->post('kolicina');
+            $new_garantenrok = $this->input->post('garantenrok');
+            $new_upotreblivodo = $this->input->post('upotreblivodo');
+            $new_seriskibroj = $this->input->post('seriskibroj');
+
+            $detali_data = array(
+                'ID' => $id,
+                'SID' => $new_sifra[$index],
+                'stavka' => $new_stavka[$index],
+                'edinica_merka' => $new_edmerka[$index],
+                'magacin' => $new_magacin[$index],
+                'kolicina' => $new_kolicina[$index],
+                'garanten_rok' => $new_garantenrok[$index],
+                'upotreblivo_do' => bis_convert_date_mk_to_usa($new_upotreblivodo[$index]),
+                'SerNo' => $new_seriskibroj[$index]
+            );
+
+            if (isset($delete_stavka[$index])) {
+                if ($delete_stavka[$index] == 1) {
+                    $this->db->where('detID', $detalid);
+                    $this->db->delete('det');
+                } else {
+                    $artikl_info = $this->getArtiklInfoById($detalid);
+                    $prev_sostojba = $artikl_info->sostojba;
+                    $prev_kolicina = $artikl_info->kolicina;
+                    $novasostojba = $prev_sostojba + $prev_kolicina - $new_kolicina[$index];
+                    $detali_data['sostojba'] = $novasostojba;
+
+                    $this->db->where('detID', $detalid);
+                    $this->db->update('det', $detali_data);
+                }
+            } else {
+                $sostojba = $this->sostojbaArtiklMagacin($new_sifra[$index], $new_magacin[$index]);
+                $novasostojba = $sostojba - $new_kolicina[$index];
+                $detali_data['sostojba'] = $novasostojba;
+
+                $this->db->insert('det', $detali_data);
+            }
+        }
+
+        return $id;
+    }
+
+
+    public function updateOtpisnica($id)
+    {
+//        $vrzanifaktura = $this->input->post('faktura_id');
+//        if($vrzanifaktura > 0)
+//        {
+//            $update_data = array(
+//                'datum' => $this->input->post('datum'),
+//                'firmaID' => $this->input->post('klient'),
+//                'zaDokID' => $vrzanifaktura,
+//                'komentar' => $this->input->post('zabeleska')
+//            );
+//        }
+        //  else
+        //  {
+        $update_data = array(
+            'datum' => $this->input->post('datum'),
+            // 'firmaID' => $this->input->post('klient'),
+            'komentar' => $this->input->post('zabeleska')
+        );
+        //   }
+        $this->db->where('ID', $id);
+        $update = $this->db->update('stavka', $update_data);
+
+        $stavka = $this->input->post('stavka');
+        foreach ($stavka as $index => $value) {
+            $delete_stavka = $this->input->post('brisistavka');
+            $detal = $this->input->post('dbid');
+            $detalid = $detal[$index];
+            if ($delete_stavka[$index] == 1) {
+                $this->db->where('detID', $detalid);
+                $this->db->delete('det');
+            } else {
+                $new_sifra = $this->input->post('SID');
+                $new_stavka = $this->input->post('stavka');
+                $new_edmerka = $this->input->post('edmerkaid');
+                $new_magacin = $this->input->post('magacin');
+                $new_kolicina = $this->input->post('kolicina');
+//                $new_garantenrok = $this->input->post('garantenrok');
+//                $new_upotreblivodo = $this->input->post('upotreblivodo');
+                //   $new_srd_cena = $this->input->post('srd_cena');
+                $new_seriskibroj = $this->input->post('seriskibroj');
+                $new_konto = $this->input->post('kontoid');
+                $new_ddv = $this->input->post('ddv');
+                $sostojba = $this->sostojbaArtiklMagacin($new_sifra[$index], $new_magacin[$index]);
+
+
+                $novasostojba = $sostojba - $new_kolicina[$index];
+                $srednacena = $this->getLastSrednaCenaArtikl($new_sifra[$index], $id);
+                $detali_data = array(
+                    'ID' => $id,
+                    'SID' => $new_sifra[$index],
+                    'stavka' => $new_stavka[$index],
+                    'edinica_merka' => $new_edmerka[$index],
+                    'magacin' => $new_magacin[$index],
+                    'sostojba' => $novasostojba,
+                    'SRDCena' => $srednacena,
+                    'kolicina' => $new_kolicina[$index],
+//                    'garanten_rok' => $new_garantenrok[$index],
+//                    'upotreblivo_do' => $new_upotreblivodo[$index],
+                    //  'SRDCena' => $new_srd_cena[$index],
+                    'SerNo' => $new_seriskibroj[$index],
+                    'konto' => $new_konto[$index],
+                    'ddv' => $new_ddv[$index]
+                );
+                if ($detalid > 0) {
+                    $this->db->where('detID', $detalid);
+                    $detali = $this->db->update('det', $detali_data);
+                } else $detali = $this->db->insert('det', $detali_data);
+            }
+        }
+
+        return $id;
+    }
+
+
+    public function updatePriemnica($id)
+    {
+        $vrzanifaktura = $this->input->post('faktura_id');
+        if ($vrzanifaktura > 0) {
+            $update_data = array(
+                'datum' => $this->input->post('datum'),
+                'textBroj' => $this->input->post('broj'),
+                'sysDateChanged' => time(),
+                'datum_povrzuvanje' => date("Y-m-d"),
+                'firmaID' => $this->input->post('klient'),
+                'zaDokID' => $vrzanifaktura,
+                'komentar' => $this->input->post('zabeleska')
+            );
+        } else {
+            $update_data = array(
+                'datum' => $this->input->post('datum'),
+                'textBroj' => $this->input->post('broj'),
+                'sysDateChanged' => time(),
+                'firmaID' => $this->input->post('klient'),
+                'komentar' => $this->input->post('zabeleska')
+            );
+        }
+        $this->db->where('ID', $id);
+        $update = $this->db->update('stavka', $update_data);
+
+        $stavka = $this->input->post('stavka');
+        foreach ($stavka as $index => $value) {
+            $delete_stavka = $this->input->post('brisistavka');
+            $detal = $this->input->post('dbid');
+
+            $new_sifra = $this->input->post('SID');
+            $new_stavka = $this->input->post('stavka');
+            $new_edmerka = $this->input->post('edmerkaid');
+            $new_magacin = $this->input->post('magacin');
+            $new_kolicina = $this->input->post('kolicina');
+            $new_garantenrok = $this->input->post('garantenrok');
+            $new_upotreblivodo = $this->input->post('upotreblivodo');
+            $new_seriskibroj = $this->input->post('seriskibroj');
+
+            $srednacena = $this->getLastSrednaCenaArtikl($new_sifra[$index], $id);
+            $detali_data = array(
+                'ID' => $id,
+                'SID' => $new_sifra[$index],
+                'stavka' => $new_stavka[$index],
+                'edinica_merka' => $new_edmerka[$index],
+                'magacin' => $new_magacin[$index],
+                'SRDCena' => $srednacena,
+                'kolicina' => $new_kolicina[$index],
+                'garanten_rok' => $new_garantenrok[$index],
+                'upotreblivo_do' => bis_convert_date_mk_to_usa($new_upotreblivodo[$index]),
+                'SerNo' => $new_seriskibroj[$index]
+            );
+
+            if (isset($detal[$index])) $detalid = $detal[$index];
+            else $detalid = 0;
+
+            if (isset($delete_stavka[$index])) {
+                if ($delete_stavka[$index] == 1) {
+                    $this->db->where('detID', $detalid);
+                    $this->db->delete('det');
+                } else {
+                    $artikl_info = $this->getArtiklInfoById($detalid);
+                    $prev_sostojba = $artikl_info->sostojba;
+                    $prev_kolicina = $artikl_info->kolicina;
+                    $novasostojba = $prev_sostojba - $prev_kolicina + $new_kolicina[$index];
+                    $detali_data['sostojba'] = $novasostojba;
+
+                    $this->db->where('detID', $detalid);
+                    $this->db->update('det', $detali_data);
+                }
+            } else {
+                $sostojba = $this->sostojbaArtiklMagacin($new_sifra[$index], $new_magacin[$index]);
+                $novasostojba = $sostojba + $new_kolicina[$index];
+                $detali_data['sostojba'] = $novasostojba;
+
+                $this->db->insert('det', $detali_data);
+            }
+        }
+
+        return $id;
+    }
+
+    public function updateInterenTransfer($id, $priemnica)
+    {
+        $update_data_isp = array(
+            'datum' => bis_convert_date_mk_to_usa($this->input->post('datum')),
+            'komentar' => $this->input->post('zabeleska')
+        );
+        $this->db->where('ID', $id);
+        $this->db->where('tip', '729');
+        $this->db->update('stavka', $update_data_isp);
+
+        $update_data_pri = array(
+            'datum' => bis_convert_date_mk_to_usa($this->input->post('datum')),
+            'komentar' => $this->input->post('zabeleska')
+        );
+        $this->db->where('ID', $priemnica);
+        $this->db->where('tip', '719');
+        $this->db->update('stavka', $update_data_pri);
+
+        $magacinOd = $this->input->post('magacin_od');
+        $magacinVo = $this->input->post('magacin_vo');
+        $stavka = $this->input->post('stavka');
+        foreach ($stavka as $index => $value) {
+            $delete_stavka = $this->input->post('brisistavka');
+            $detal = $this->input->post('dbid');
+            $detalid = $detal[$index];
+            if ($delete_stavka[$index] == 1) {
+                $this->db->where('detID', $detalid);
+                $this->db->delete('det');
+            } else {
+                $new_sifra = $this->input->post('SID');
+                $new_stavka = $this->input->post('stavka');
+                $new_edmerka = $this->input->post('edmerkaid');
+                $new_kolicina = $this->input->post('kolicina');
+                $new_garantenrok = $this->input->post('garantenrok');
+                $new_upotreblivodo = $this->input->post('upotreblivodo');
+                $new_seriskibroj = $this->input->post('seriskibroj');
+                $sostojba = $this->sostojbaArtiklMagacinUpdate($new_sifra[$index], $magacinOd, $detalid);
+                $novasostojba = $sostojba - $new_kolicina[$index];
+                $srednacena = $this->getLastSrednaCenaArtikl($new_sifra[$index], $id);
+                $detali_data_isp = array(
+                    'ID' => $id,
+                    'SID' => $new_sifra[$index],
+                    'stavka' => $new_stavka[$index],
+                    'edinica_merka' => $new_edmerka[$index],
+                    'magacin' => $magacinOd,
+                    'magacin_vo' => $magacinVo,
+                    'sostojba' => $novasostojba,
+                    'SRDCena' => $srednacena,
+                    'kolicina' => $new_kolicina[$index],
+                    'garanten_rok' => $new_garantenrok[$index],
+                    'upotreblivo_do' => bis_convert_date_mk_to_usa($new_upotreblivodo[$index]),
+                    'SerNo' => $new_seriskibroj[$index]
+                );
+                if ($detalid > 0) {
+                    $this->db->where('detID', $detalid);
+                    $this->db->update('det', $detali_data_isp);
+                } else $this->db->insert('det', $detali_data_isp);
+                //za soodvetnata interna priemnica
+                $interna_pri = $this->zemiSoodvetnaInternaPriemnica($detalid);
+                $sostojba2 = $this->sostojbaArtiklMagacinUpdate($new_sifra[$index], $magacinVo, $interna_pri);
+                $novasostojba2 = $sostojba2 - $new_kolicina[$index];
+                $srednacena2 = $this->getLastSrednaCenaArtikl($new_sifra[$index], $priemnica);
+                $detali_data_pri = array(
+                    'ID' => $priemnica,
+                    'SID' => $new_sifra[$index],
+                    'stavka' => $new_stavka[$index],
+                    'edinica_merka' => $new_edmerka[$index],
+                    'magacin' => $magacinVo,
+                    'sostojba' => $novasostojba2,
+                    'SRDCena' => $srednacena2,
+                    'kolicina' => $new_kolicina[$index],
+                    'garanten_rok' => $new_garantenrok[$index],
+                    'upotreblivo_do' => bis_convert_date_mk_to_usa($new_upotreblivodo[$index]),
+                    'SerNo' => $new_seriskibroj[$index]
+                );
+                if ($detalid > 0) {
+                    $this->db->where('detID', $interna_pri);
+                    $this->db->update('det', $detali_data_pri);
+                } else $this->db->insert('det', $detali_data_pri);
+            }
+        }
+
+        return $id;
+    }
+
+    public function zemiSoodvetnaInternaPriemnica($id)
+    {
+        $this->db->select('detID');
+        $this->db->from('det');
+        $this->db->where('SinkID', $id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            return $result[0]->detID;
+        }
+    }
+
+    public function proveriLagerMagacin($artikl, $magacin)
+    {
+        $this->db->select('MAX(detID) as detID');
+        $this->db->from('det');
+        $this->db->where('SID', $artikl);
+        $this->db->where('magacin', $magacin);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+            $detID = $result[0]->detID;
+
+            $this->db->select('sostojba');
+            $this->db->from('det');
+            $this->db->where('detID', $detID);
+            $query2 = $this->db->get();
+            $result2 = $query2->result();
+            return $result2[0]->sostojba;
+        }
+    }
+
+    public function getArtiklInfoById($id)
+    {
+        $this->db->select('kolicina, sostojba');
+        $this->db->from('det');
+        $this->db->where('detID', $id);
+        $query = $this->db->get();
+
+        $result = $query->result();
+        return $result[0];
+    }
+
+    public function sostojbaArtiklMagacin($artikl, $magacin)
+    {
+        $vlez = array(710, 719);
+        $izlez = array(720, 729, 90);
+        $this->db->select('SUM(det.kolicina) as vlez');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->where_in('stavka.tip', $vlez);
+        $this->db->where('det.SID', $artikl);
+        $this->db->where('det.magacin', $magacin);
+        $query = $this->db->get();
+        $resultvlez = $query->result();
+        $vlez = $resultvlez[0]->vlez;
+
+        $this->db->select('SUM(det.kolicina) as izlez');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->where_in('stavka.tip', $izlez);
+        $this->db->where('det.SID', $artikl);
+        $this->db->where('det.magacin', $magacin);
+        $query = $this->db->get();
+        $resultizlez = $query->result();
+        $izlez = $resultizlez[0]->izlez;
+        $sostojba = $vlez - $izlez;
+        return $sostojba;
+    }
+
+    public function sostojbaArtiklMagacinUpdate($artikl, $magacin, $id)
+    {
+        $vlez = array(710, 719);
+        $izlez = array(720, 729, 90);
+        $this->db->select('SUM(det.kolicina) as vlez');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->where_in('stavka.tip', $vlez);
+        $this->db->where('det.SID', $artikl);
+        $this->db->where('det.magacin', $magacin);
+        $this->db->where('det.detID !=', $id);
+        $query = $this->db->get();
+        $resultvlez = $query->result();
+        $vlez = $resultvlez[0]->vlez;
+
+        $this->db->select('SUM(det.kolicina) as izlez');
+        $this->db->from('det');
+        $this->db->join('stavka', 'det.ID = stavka.ID', 'left');
+        $this->db->where_in('stavka.tip', $izlez);
+        $this->db->where('det.SID', $artikl);
+        $this->db->where('det.magacin', $magacin);
+        $this->db->where('det.detID !=', $id);
+        $query = $this->db->get();
+        $resultizlez = $query->result();
+        $izlez = $resultizlez[0]->izlez;
+        $sostojba = $vlez - $izlez;
+        return $sostojba;
+
+    }
+
+    public function getVlezniIzlezniKolicini($id,$magacin,$period1,$period2)
+    {
+
+        $this->db->select_sum('det.kolicina');
+      //  $this->db->select('det.SID, det.stavka,det.detID');
+        $this->db->from('det');
+        $this->db->where('stavka.tip',710);
+        if($magacin!=0)$this->db->where('det.magacin',$magacin);
+        $this->db->where('det.SID',$id);
+        $this->db->where('stavka.datum >',bis_convert_date_mk_to_usa($period1));
+        $this->db->where('stavka.datum <=',bis_convert_date_mk_to_usa($period2));
+
+        $this->db->join('stavka','stavka.ID=det.ID');
+        $query = $this->db->get();
+
+            $res= $query->result();
+           if(isset($res[0]) && !empty($res[0])&& $res[0]!=null) return $res[0];
+           else return 0;
+
+    }
+
+    public function samoIzlezniKolicini($id,$magacin,$period1,$period2)
+    {
+        $this->db->select_sum('det.kolicina');
+      //  $this->db->select('det.SID');
+
+        $this->db->from('det');
+        $this->db->where('stavka.tip',720);
+        if($magacin!=0)$this->db->where('det.magacin',$magacin);
+        $this->db->where('det.SID',$id);
+        $this->db->where('stavka.datum >',bis_convert_date_mk_to_usa($period1));
+        $this->db->where('stavka.datum <=',bis_convert_date_mk_to_usa($period2));
+        $this->db->join('stavka','stavka.ID=det.ID');
+
+
+        $query = $this->db->get();
+
+        $res= $query->result();
+
+        if(isset($res[0]) && !empty($res[0]) && $res[0]!=null) return $res[0];
+        else return 0;
+
+    }
+    public function zemiVlezIzlez(){
+        $period2 = date("d-m-Y");
+        $period1=date("01-01-2013");
+        $this->db->select('s1.SID, s1.S1Ime,s1.sifra');
+        $this->db->from('s1');
+        $query= $this->db->get();
+        $result=$query->result();
+        for($i=0;$i< count($result); $i++){
+
+          $pole[$i]['izlez']=$this->samoIzlezniKolicini($result[$i]->SID,0,$period1,$period2);
+          $pole[$i]['vlez']=$this->getVlezniIzlezniKolicini($result[$i]->SID,0,$period1,$period2);
+          $pole[$i]['SID']=$result[$i]->SID;
+          $pole[$i]['sifra']=$result[$i]->sifra;
+          $pole[$i]['stavka']=$result[$i]->S1Ime;
+        }
+        return $pole;
+    }
+    public function prebaruvanje($magacin,$artikl,$period1,$period2){
+        $this->db->select('s1.SID, s1.S1Ime,s1.sifra');
+        $this->db->from('s1');
+       if($artikl!=0)
+       {
+           $this->db->where('s1.SID',$artikl);
+
+           $query= $this->db->get();
+
+           $result=$query->result();
+           if($query->num_rows()>0) {
+               for($i=0;$i< count($result); $i++)
+               {
+
+                   $pole[$i]['izlez']=$this->samoIzlezniKolicini($artikl,$magacin,$period1,$period2);
+                   $pole[$i]['vlez']=$this->getVlezniIzlezniKolicini($artikl,$magacin,$period1,$period2);
+                   $pole[$i]['SID']=$result[$i]->SID;
+                   $pole[$i]['sifra']=$result[$i]->sifra;
+                   $pole[$i]['stavka']=$result[$i]->S1Ime;
+               }
+               return $pole;
+           }
+           else return false;
+       }
+        else {
+            $this->db->limit(1000);
+            $query= $this->db->get();
+
+            $result=$query->result();
+            if($query->num_rows()>0) {
+                for($i=0;$i< count($result); $i++)
+                {
+
+                    $pole[$i]['izlez']=$this->samoIzlezniKolicini($result[$i]->SID,$magacin,$period1,$period2);
+                    $pole[$i]['vlez']=$this->getVlezniIzlezniKolicini($result[$i]->SID,$magacin,$period1,$period2);
+                    $pole[$i]['SID']=$result[$i]->SID;
+                    $pole[$i]['sifra']=$result[$i]->sifra;
+                    $pole[$i]['stavka']=$result[$i]->S1Ime;
+                }
+                return $pole;
+            }
+            else return false;
+        }
+
+
+    }
+
+
+}

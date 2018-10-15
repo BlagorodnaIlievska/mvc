@@ -1,0 +1,20 @@
+input.broj{  width:20px;}
+
+.tabela-kasalista  {
+    float: left;
+}
+input.priliv{  width:80px;}
+input.odliv{  width:80px;}
+
+.kasatabela .predtabela , .preglednakasa .predtabela {max-height: 345px !important;}
+.filter-kasa select {margin-left: 5px;}
+.filter-kasa {margin-top: 5px;}
+.sos {text-align: right;}
+
+.print_td{
+    padding-left: 5px;
+
+}
+
+
+

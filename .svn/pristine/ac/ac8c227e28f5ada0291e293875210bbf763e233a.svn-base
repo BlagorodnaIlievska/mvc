@@ -1,0 +1,16 @@
+<div class="nov-kreditor">
+    <form action="/index.php/plata_podatoci/kreditori/create_kreditori" method="post">
+        <fieldset>
+            <legend>Нов кредитор</legend>
+            Назив:<br/>
+            <input type="text" name="naziv"/><br/>
+            Жиросметка:<br/>
+            <input type="text" name="zirosmetka"/><br/>
+        </fieldset>
+        <br/>
+        <button type="button" class="button snimi-forma" izvrsi="kreditori_polnilista()" poraka_uspesno="Кредиторот е успешно снимен"
+                poraka_neuspesno="Грешка при снимање на кредитор">
+                <span>Сними</span></button>
+        <br/>
+    </form>
+</div>

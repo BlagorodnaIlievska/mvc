@@ -1,0 +1,102 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Fields extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+    }
+
+    public function new_field()
+    {
+        $this->load->model('users/membership_model');
+        $data['roles'] = $this->membership_model->get_roles_dropdown();
+        $this->load->view('users/fields/fields_form', $data);
+    }
+
+    public function create_field()
+    {
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('field_name', 'Field Name', 'trim|required');
+        $this->form_validation->set_rules('field_type', 'Field Type', 'trim|required');
+        $this->form_validation->set_rules('field_label', 'Field Label', 'trim|required');
+
+        if($this->form_validation->run() == FALSE)
+        {
+            $this->new_field();
+        }
+        else
+        {
+            $this->load->model('users/fields_model');
+            if($query = $this->fields_model->create_field())
+            {
+                $data['main_content'] = 'users/fields/field_successful';
+                $this->load->view('includes/template', $data);
+            }
+            else
+            {
+                $this->load->view('users/fields/fields_form');
+            }
+        }
+    }
+
+    public function view_fields()
+    {
+        $this->load->model('users/fields_model');
+        $this->load->model('users/joins_model');
+        //$query = $this->fields_model->getAll();  // ova e za da se zeme se od fields tabelata
+        $query = $this->joins_model->join_fields_roles();  // join na fields i roles tabelite
+
+        $data['fields'] = $query;
+        $this->load->view('users/fields/edit_fields_form', $data);
+    }
+
+    public function delete_field(){
+
+        $this->load->model('users/fields_model');
+        $this->fields_model->delete_field();
+        $this->view_fields();
+    }
+
+    public function edit_field(){
+
+        $this->load->model('users/fields_model');
+        $query = $this->fields_model->edit_field();
+
+        $this->load->model('users/membership_model');
+        $data['roles'] = $this->membership_model->get_roles_dropdown();
+        $data['main_content'] = 'users/fields/update_fields_form';
+        $data['fields'] = $query;
+        $this->load->view('includes/template', $data);
+        $this->view_fields();
+    }
+
+    public function update_field(){
+
+        $this->load->model('users/fields_model');
+        $query = $this->fields_model->update_field();
+
+        if($query)
+        {
+            echo "Field updated successfully";
+        }
+        else
+        {
+            echo "No row was found ... Please try again.";
+        }
+        $this->view_fields();
+    }
+
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+
+}

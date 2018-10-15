@@ -1,0 +1,244 @@
+
+<div>
+    <?php
+$pol=array(
+    '0'=>'maski',
+    '1'=>'zenski'
+);
+
+    echo form_open('pacienti/pacienti/create_pacient');
+
+
+
+    ?><br><br>
+   <fieldset class="slika">
+
+   </fieldset>
+   <fieldset class='pod'>
+      <?  echo form_label('Ime na pacient:', 'ime');
+          echo form_input('ime','', 'id="ime"');
+          echo br();
+          echo form_label('Tatkovo ime:', 'tatkovoIme');
+          echo form_input('tatkovoIme','', 'id="tatkovoIme"');
+          echo br();
+          echo form_label('Prezime:', 'prezime');
+          echo form_input('prezime','', 'id="prezime"');
+      ?>
+   </fieldset>
+  <fieldset class="datum">
+  <?    echo form_label('Pacient ID:', 'PID');
+      echo form_input('PID','', 'id="PID"');
+      echo br();
+      echo form_label('Datum na ragjanje:', 'datRag');
+      echo form_input('datRag','', 'id="datRag"');
+      echo br();
+      echo form_label('Pol: ', 'pol');
+      echo form_dropdown('pol', $pol, 'id="pol"');?>
+  </fieldset>
+  <fieldset class="mbr">
+   <?  echo form_label('EMBR:', 'embr');
+      echo form_input('embr','', 'id="embr"');
+      echo br();
+      echo form_label('EZBO:', 'ezbo');
+      echo form_input('ezbo','', 'id="ezbo"');?>
+  </fieldset>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <p align='center'>Podatoci za kontakt</p>
+
+        <fieldset class="mesto_na_ziveenje">
+            <legend>Adresa na ziveenje</legend><br>
+            <div class="">
+                Ulica: <input type="text" class="ulica" name="ulica">
+                Broj: <input type="text" class="broj" name="broj">
+                Naseleno mesto: <input type="text" class="naselenoMesto" name="naselenoMesto">
+                Opstina: <input type="text" class="opstina" name="opstina">
+                Drzava: <input type="text" class="drzava" name="drzava">
+                Nacionalnost: <input type="text" class="nacionalnost" name="nacionalnost">
+            </div>
+        </fieldset>
+        <fieldset class="rabotodavac">
+            <legend>Rabotodavac</legend><br>
+            <div class="">
+                Rabotodavac: <input type="text" class="rabotodavac" name="rabotodavac">
+                Naseleno mesto: <input type="text" class="naselenoRab" name="naselenoRab">
+                Sifra na dejnost: <input type="text" class="sifraDejnost" name="sifraDejnost">
+                Registarski broj: <input type="text" class="regBroj" name="regBroj">
+                Rabotno mesto: <input type="text" class="rabMesto" name="rabMesto">
+
+            </div>
+        </fieldset>
+        <fieldset class="kontakt">
+            <legend>Kontakt informacii</legend><br>
+            <div class="">
+                Telefon: <input type="text" class="telefon" name="telefon">
+                Mobilen1: <input type="text" class="mobilen1" name="mobilen1">
+                Mobilen2: <input type="text" class="mobilen2" name="mobilen2">
+                Blizok za kontakt: <input type="text" class="blizokZaKontakt" name="blizokZaKontakt">
+
+            </div>
+        </fieldset>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <p align='center'>Podatoci za osiguruvanje</p>
+    <fieldset class="participacija">
+        <legend>Participacija</legend><br>
+        <div class="">
+            Osloboden od participacija: <input type="checkbox" class="par" name="oslobodenOdPar">
+            Pricina: <input type="text" class="pricina" name="pricina">
+            Broj na resenie: <input type="text" class="resenie" name="resenie">
+
+        </div>
+    </fieldset>
+    <fieldset class="osiguruvanje">
+        <legend>Osiguruvanje</legend><br>
+        <div class="">
+            Tip na osiguruvanje: <input type="text" class="tipNaOsig" name="tipNaOsig">
+            Osnov osiguruv: <input type="text" class="osnovNaOsig" name="osnovNaOsig">
+            FZO Podracna: <input type="text" class="fzoPodracna" name="fzoPodracna">
+
+        </div>
+    </fieldset>
+    <fieldset class="nositel_na_osig">
+        <legend>Nositel na osiguruvannje</legend><br>
+        <div class="">
+            Ime: <input type="text" class="imeNaOsigurenik" name="imeNaOsigurenik">
+            Prezime: <input type="text" class="prezimeNaOsigurenik" name="prezimeNaOsigurenik">
+            EMBG: <input type="text" class="embrNaOsigurenik" name="embrNaOsigurenik">
+            Osnov: <input type="text" class="osnovOsigurenik" name="osnovOsigurenik">
+
+        </div>
+        <legend>Stranski osigurenik na teret na FZOM</legend><br>
+        <div class="">
+            Sifra na zemja: <input type="text" class="sifraZemja" name="sifraZemja">
+            Zemja: <input type="text" class="stranskaZemja" name="stranskaZemja">
+            Br. Osiguruvanje: <input type="text" class="stranstvoBrOsiguruvanje" name="stranstvoBrOsiguruvanje">
+            EHIS: <input type="text" class="ehis" name="ehis">
+
+        </div>
+    </fieldset>
+    <fieldset class="zabeleskazapacient">
+        <legend>Zabeleska za pacientot</legend><br>
+        <div class="">
+            Zabeleska: <input type="text" class="zabeleskazapacient" name="zabeleska">
+        </div>
+    </fieldset>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <fieldset class="krvodaritel">
+        <legend>Krvodaritel</legend><br>
+        <div class="">
+            Krvodaritel: <input type="checkbox" class="krvodaritel" name="krvodaritel">
+            Broj na krvodaritel : <input type="text" class="brNaKrvodaritel" name="brNaKrvodaritel">
+            Krvna grupa: <input type="text" class="krvnaGrupa" name="krvnaGrupa">
+            Rh : <input type="text" class="rhFaktor" name="rhFaktor">
+
+        </div>
+    </fieldset>
+    <fieldset class="alergii">
+        <legend>Alergii</legend><br>
+        <div class="">
+            Alergii: <input type="text" class="alergii" name="alergii">
+            Hronicni zaboluvanja : <input type="text" class="hronicni|Zaboluvanja" name="hronicniZaboluvanja">
+            Deformiteti: <input type="text" class="deformiteti" name="deformiteti">
+
+        </div>
+     </fieldset>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+        <input type="button" value="Snimi" class="ajaxcreateform" align='left'><br>
+
+
+
+
+
+    <?php
+
+    echo validation_errors('<p class="error">');
+
+    echo form_close();
+
+    ?>
+
+
+</div>
+
+
+
+
+
+
+
+

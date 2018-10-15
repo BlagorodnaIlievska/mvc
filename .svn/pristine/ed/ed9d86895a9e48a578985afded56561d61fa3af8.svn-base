@@ -1,0 +1,84 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Lager_lista extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function create_magacin()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->materijalno_model->create_magacin();
+    }
+
+    public function getLagerLista()
+    {
+        $magacin = $this->input->post('magacin');
+        $stavka = $this->input->post('grupaid');
+        $datum = $this->input->post('datum');
+        $nacinnaprikaz = $this->input->post('nacinnaprikaz') ;
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getLagerLista($stavka, $datum, $magacin,$nacinnaprikaz);
+        $this->materijalno_model->getLekuvanjePotroseniMaterijali();
+        echo json_encode($query);
+    }
+    public function printLagerLista()
+    {
+        $magacin = $this->input->get('magacin');
+        $stavka = $this->input->get('grupaid');
+       // $datum = $this->input->post('datum');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getLagerListaPrint($stavka, $magacin);
+        $data['lager_lista'] = $query;
+        $data['magacinIme'] = $this->materijalno_model->getMagacinIme($magacin);
+        $data['main_content'] = 'materijalno/pecatenje/pecati_magacin_lagerlista';
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+    }
+
+    public function getPromet()
+    {
+        $klientid = $this->input->post('klientid');
+        //$datum = $this->input->post('datum');
+        $this->load->model('materijalno/materijalno_model');
+        $query = $this->materijalno_model->getPromet($klientid);
+        echo json_encode($query);
+    }
+
+    public function menu()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $this->load->model('start/start_model');
+        $data['magacini'] = $this->start_model->getMagacini();
+        $data['artikli']=$this->artikl_model->getAll();
+        $data['grupa'] = $this->materijalno_model->katbroj_dropdown();
+        $this->load->view('materijalno/lager_lista/menu_form', $data);
+    }
+
+    public function new_magacin()
+    {
+        $this->load->view('materijalno/lager_lista/magacin_form');
+    }
+
+    public function pecati_lista(){
+        $this->load->helper('to_pdf');
+        $this->load->model('materijalno/materijalno_model');
+        $pdfgrupaid=$this->input->post('pdfgrupaid');
+        $pdfdatum=$this->input->post('pdfdatum');
+
+
+        $q = $this->materijalno_model->getLagerLista($pdfgrupaid, $pdfdatum);
+        //print_r($q); die();
+        $data['q']=$q;
+        $html = $this->load->view('materijalno/pecatenje/pecati_lista', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+
+        write_file('name', $data);
+    }
+}

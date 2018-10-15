@@ -1,0 +1,119 @@
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+class Trezor extends CI_Controller
+{
+
+    /**
+     *
+     */
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model("trezor/trezor_model");
+        $this->load->model("start/start_model");
+        $this->load->helper('download');
+    }
+
+    /**
+     *
+     */
+    function downloadkuc($id)
+    {
+        $this->trezor_model->loadKUC($id);
+        $data = $this->trezor_model->generateKUC();
+//        $data = iconv("UTF-8", "Windows-1251", $data);
+       // echo $data;
+         force_download( $this->trezor_model->filename, $data);
+    }
+
+    public function menu()
+    {
+        $this->load->view('trezor/pratki');
+    }
+
+    public function popolni_pratki()
+    {
+
+        echo json_encode($this->trezor_model->getPratki());
+    }
+
+    public function popolni_pratki_podatoci()
+    {
+        $id = $this->input->post('id');
+        echo json_encode($this->trezor_model->getPratkaPodatoci($id));
+    }
+
+    public function insertPratka()
+    {
+        $data = $this->input->post();
+        $this->trezor_model->insertPratka($data);
+
+        echo "ok";
+    }
+    public function newPratkaView(){
+        $this->load->view("trezor/nova_pratka");
+    }
+    public function updatePratkaView($id){
+        $data['db']=$this->trezor_model->getPratka($id);
+        $this->load->view("trezor/update_pratka",$data);
+    }
+    public function updatePratka($id)
+    {
+        $data = $this->input->post();
+        $this->trezor_model->updatePratka($id, $data);
+        echo "ok";
+    }
+    public function deletePratka($id)
+    {
+        $this->trezor_model->deletePratka($id);
+        echo "ok";
+    }
+    public function newPratkaPodatokView(){
+        $data['pratka_id'] = $this->input->post("pratka_id");
+        $data['neplateni_vf']= $this->vlezni_fakturi_model->getNeplateniVlezniFakturi();
+        $data['vfmod'] = $this->vlezni_fakturi_model;
+        $data['trezor_model']=$this->trezor_model;
+        $firma= $this->start_model->getFirma(40);
+        $data['edb']=$firma[0]->danocenbroj;
+        $data['zirosmetki']=$this->start_model->getZirosmetki();
+
+        $this->load->view("trezor/nova_pratka_podatok", $data);
+    }
+    public function newPratkaPodatokViewAjax(){
+        $data['pratka_id'] = $this->input->post("pratka_id");
+        $data['neplateni_vf']= $this->vlezni_fakturi_model->getNeplateniVlezniFakturiBojan($this->input->post());
+       // print_r($data['neplateni_vf']) ; die();
+        $data['vfmod'] = $this->vlezni_fakturi_model;
+        $data['trezor_model']=$this->trezor_model;
+        $data['zirosmetki']=$this->start_model->getZirosmetki();
+        //print_r($data); die();
+        $this->load->view("trezor/nova_pratka_podatok_ajax", $data);
+    }
+    public function insertPratkaPodatok()
+    {
+        $data = $this->input->post();
+
+        $this->trezor_model->insertPratkaPodatok($data);
+
+        echo "ok";
+    }
+    public function editPratkaPodatokView($id)
+    {
+        $podatoci = $this->trezor_model->getPratkaPodatociToEdit($id);
+//        bis_debug($podatoci, "podatoci");
+        $data['podatoci'] = $podatoci;
+        $this->load->view("trezor/edit_pratka_podatok",$data);
+    }
+    public function updatePratkaPodatok()
+    {
+        $data = $this->input->post();
+        $this->trezor_model->updatePratkaPodatok($data);
+        echo "ok";
+    }
+    public function deletePratkaPodatok($id)
+    {
+        $query = $this->trezor_model->deletePratkaPodatok($id);
+        echo json_encode($query);
+    }
+
+}

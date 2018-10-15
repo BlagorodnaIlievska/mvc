@@ -1,0 +1,40 @@
+<div class="smena-glavnalista">
+    <div class="smenalista">
+        <?php if (bis_check_access('sistemsko_podesuvanje_bolnicko_rabotenje_smenski_grupi_nvoa_smenska_grupa_button')): ?>
+            <div class="buttoncontainer">
+                <button class="button" onclick="smenska_grupa_nov()">Нова сменска група</button>
+            </div>
+            <?php endif ?>
+        <div class="predtabela">
+        <table class="tabela-smenalista">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Име</th>
+                <th>Број</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        smenska_grupa_popolnilista();
+        jQuery(".tabela-smenalista").tablesorter();
+
+        jQuery(".tabela-smenalista tbody tr").live('click', function () {
+            jQuery(".tabela-smenalista tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+        jQuery(".tabela-smenalista .edit-tr").live('click', function () {
+            smenska_grupa_izmeni(jQuery(this).parent().parent().attr('smenaid'));
+        });
+        jQuery(".tabela-smenalista .delete-tr").live('click', function () {
+            smenska_grupa_delete(jQuery(this).parent().parent().attr('smenaid'));
+        });
+
+    });
+</script>

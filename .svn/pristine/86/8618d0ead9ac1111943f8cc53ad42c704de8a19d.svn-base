@@ -1,0 +1,35 @@
+<div id="edit_roles_form">
+
+<h2>Roles</h2>
+
+<?php
+$delete = img(array(
+    'src' => 'images/delete.png',
+    'width' => '15',
+    'height' => '15',
+));
+$edit = img(array(
+    'src' => 'images/edit.png',
+    'width' => '15',
+    'height' => '15',
+));
+?>
+
+<table class="tabela" border="1" cellspacing="2" cellpadding="2">
+    <tr>
+        <th></th>
+        <th>Name</th>
+    </tr>
+
+<?php if(isset($roles)): foreach($roles as $row){
+
+    echo "<tr>";
+    echo "<td>". anchor("users/roles/delete_role/$row->id?ajax=1", $delete, array('class' => 'delete-tr')) . " "
+               . anchor("users/roles/edit_role/$row->id?ajax=1", $edit, array('class' => 'edit-tr')) . "</td>";
+    echo "<td>" . $row->name . "</td>";
+}
+    ?>
+    </table>
+    <?php endif; ?>
+
+</div>

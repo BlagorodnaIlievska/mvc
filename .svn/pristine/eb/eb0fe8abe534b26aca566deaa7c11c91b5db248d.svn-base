@@ -1,0 +1,14 @@
+
+    <div id="index-javni" class="main-menu-tabs">
+        <ul>
+
+            <li><a href="/index.php/javni_nabavki/javni_nabavki/dogovori">Договори</a></li>
+
+
+            <li><a href="/index.php/javni_nabavki/javni_nabavki/baranja">Барања</a></li>
+
+            <li><a href="/index.php/javni_nabavki/javni_nabavki/dogovor_baranje">Излезни листи</a></li>
+
+        </ul>
+    </div>
+

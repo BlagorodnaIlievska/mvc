@@ -1,0 +1,225 @@
+<?php //if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Covecki extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('covecki_resursi/covecki_resursi_model');
+        $this->load->model('smenska_grupa/smena_model');
+    }
+
+    public function vraboteni_prikazi()
+    {
+        $data['vraboten'] =$this->covecki_resursi_model->getVraboten($this->input->get('id'));
+        $data['firma']    =$this->covecki_resursi_model->get_firmi();
+        $data['oddel']    =$this->covecki_resursi_model->get_oddeli();
+        $data['pododdel'] =$this->covecki_resursi_model->get_pododdeli();
+
+        $data['smena']    =$this->smena_model->smena_dropdown();
+
+        $data['id']       =$this->input->get('id') ;
+
+
+
+        $this->load->view('covecki_resursi/prikaz', $data);
+    }
+
+    public function nov_resurs()
+    {
+        $this->load->view('covecki_resursi/nov_form');
+    }
+
+    public function create_resurs()
+    {
+            if($query = $this->covecki_resursi_model->create_resurs())
+            {
+                $data['main_content'] = 'covecki_resursi/covecki_resursi_successful';
+                $this->load->view('includes/template', $data);
+            }
+            else
+            {
+                $this->load->view('covecki_resursi/nov_form');
+            }
+    }
+
+    public function view_covecki()
+    {
+        //$this->load->model('pacienti/pacienti_model');
+        //$query = $this->pacienti_model->getAllPacienti();
+
+        $this->load->view('covecki_resursi/covecki_form');
+    }
+
+    public function filter()
+    {
+        $data['firma']   =$this->covecki_resursi_model->get_firmi();
+        $data['oddel']   =$this->covecki_resursi_model->get_oddeli();
+        $data['pododdel']=$this->covecki_resursi_model->get_pododdeli();
+
+        $this->load->view('covecki_resursi/covecki_form', $data);
+    }
+
+    public function getVraboteni()
+    {
+        echo json_encode($this->covecki_resursi_model->getVraboteniBojan());
+    }
+
+    public function create_vraboten()
+    {
+        if ($query = $this->covecki_resursi_model->create_vraboten())
+        {
+            echo "ok";
+        }
+        else
+        {
+            echo "error";
+        }
+    }
+
+    public function baraj()
+    {
+        $this->load->model('start/start_model');
+
+        $data['oddel']    =$this->start_model->get_oddel();
+        $data['pododdel'] =$this->start_model->get_pododdel();
+
+        $data['resurs']   =$this->covecki_resursi_model->getAll_resursi();
+
+        $this->load->view('covecki_resursi/baraj_form', $data);
+    }
+
+    public function izmeni_vraboten()
+    {
+        $vraboten=$this->covecki_resursi_model->getVraboten($this->input->get('id'));
+
+        $data['vraboten']           = $vraboten;
+        $data['firma']              = $this->covecki_resursi_model->get_firmi();
+        $data['oddel']              = $this->covecki_resursi_model->get_oddeli();
+        $data['pododdel']           = $this->covecki_resursi_model->get_pododdeli();
+        $data['pododdels_in_oddel'] = $this->covecki_resursi_model->get_pododdeli_in_oddel($vraboten[0]->oddel);
+        $data['banki']              = $this->covecki_resursi_model->getBanki();
+        $data['klasifikacija']      = $this->covecki_resursi_model->get_klasifikacii();
+        $data['smena']              = $this->smena_model->smena_dropdown();
+        $data['id']                 = $this->input->get('id');
+
+        $this->load->view('covecki_resursi/izmeni', $data);
+
+    }
+
+    public function all_pododdels(){
+        echo json_encode($this->covecki_resursi_model->get_pododdeli());
+    }
+
+    public function update_vraboten()
+    {
+        $query = $this->covecki_resursi_model->update_vraboten();
+        if ($query) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+
+    public function nov()
+    {
+        $data['firma']         =$this->covecki_resursi_model->get_firmi();
+        $data['oddel']         =$this->covecki_resursi_model->get_oddeli();
+        $data['pododdel']      =$this->covecki_resursi_model->get_pododdeli();
+        $data['banki']         =$this->covecki_resursi_model->getBanki();
+        $data['klasifikacija'] =$this->covecki_resursi_model->get_klasifikacii();
+
+        $data['smena']         =$this->smena_model->smena_dropdown();
+
+
+        $this->load->view('covecki_resursi/nov_form', $data);
+    }
+
+    public function prebaruvanje_filter()
+    {
+        $oddelid    = $this->input->post('oddelid');
+        $pododdelid = $this->input->post('pododdelid');
+        $smenaid    = $this->input->post('smenaid');
+
+        echo json_encode($this->covecki_resursi_model->prebaruvajFilter($oddelid,$pododdelid,$smenaid));
+
+    }
+
+    public function delete_pacient()
+    {
+        $this->load->model('pacienti/pacienti_model');
+        $this->pacienti_model->delete_pacient();
+        $this->view_pacient();
+    }
+
+    public function edit_pacient()
+    {
+        $this->load->model('pacienti/pacienti_model');
+
+        $data['pacient'] = $this->pacienti_model->edit_pacient();
+
+
+        $data['main_content'] = 'pacienti/update_pacient_form';
+        $this->load->view('includes/template', $data);
+        $this->view_pacient();
+    }
+
+    public function lista()
+    {
+
+        if (count($this->input->post()) > 0) {
+            //print_r($this->input->post());
+          //  print_r($this->input->post('oddel')); die();
+                $result = $this->covecki_resursi_model->getVraboteniBojan($this->input->post());
+          // print_r($result); die();
+        } else {
+            $result = $this->covecki_resursi_model->getVraboteniBojan();
+        }
+        echo json_encode($result);
+
+    }
+
+   public function pododdeli()
+   {
+     echo json_encode($this->covecki_resursi_model->get_pododdeli_in_oddel($this->input->get('oddel_id')));
+   }
+
+    public function update_pacient()
+    {
+        $this->load->model('pacienti/pacienti_model');
+        $query = $this->pacienti_model->update_pacient();
+        if($query)
+        {
+            echo "Field updated successfully";
+        }
+        else
+        {
+            echo "No row was found ... Please try again.";
+        }
+        $this->view_pacient();
+    }
+
+    public function update()
+    {
+        $this->load->model('pacienti/pacienti_model');
+        $data['pacient'] = $this->pacienti_model->edit_pacient2($this->input->get('id'));
+        $this->load->view('pacienti/update_pacient_form', $data);
+        $this->view_pacient();
+    }
+
+    public function delete_vraboten()
+    {
+        $this->covecki_resursi_model->delete_vraboten($this->input->get('vrabotenid'));
+        echo "ok";
+    }
+
+    public function print_covecki_resursi()
+    {
+        $vraboteni = (array)$this->covecki_resursi_model->getVraboteni_all();
+//        bis_debug($vraboteni,'Kveri');
+        $data['main_content'] = 'covecki_resursi/probenfajl';
+        $data['vraboteni']= $vraboteni;
+        $html=$this->load->view('includes/print_template', $data,true);
+        echo bis_fill_input_values($html,$vraboteni);
+    }
+}

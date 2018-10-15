@@ -1,0 +1,160 @@
+
+<div class="izjava-container">
+    <form action="/index.php/upati/upati/create_izjava_soglasnost" method="post">
+    <div class="izjava-heder">
+        <img class="display"  style="width: 100%;display: none;" height="130" alt="" src="/images/jzulogo.png">
+        <img  style="width: 100%;" height="130" alt="" src="images/jzulogo.png">
+
+        <div class="jzu-email" ><b>Email : jzuuktoarilucskopje@gmail.com</b></div>
+    </div>
+    <div class="linija"></div>
+    <div class="oe-firma"><label>ОЕ</label><input type="text" name="vo_organizaciona_edinica" style="white-space: nowrap;margin-left: 20px;" value="<?php echo $this->session->userdata('firma_ime') ?>" readonly=""/>
+
+    </div>
+    <input type="hidden" name="priem_id" value="<?php echo $priem_id ?>" />
+    <input type="hidden" name="tip" value="izjava_za_soglasnost">
+    <div class="naslov_izjava_soglasnost">ИЗЈАВА ЗА СОГЛАСНОСТ</div>
+    <div class="podnaslov_izjava_soglasnost">НА ОПРЕДЕЛЕНА МЕДИЦИНСКА ИНТЕРВЕНЦИЈА</div>
+    <div class="podnaslov_dodatok">врз основа на член 14 став 3 од Законот за заштита на правата на пациентите<br/>
+    ("Службен весник на Република Македонија" бр.82/08)
+    </div>
+    <div class="izjava_sodrzina">
+
+       <ul>
+           <li class="prvasodrzina-soglasnost">
+              <p><b>I. Основни податоци за пациентот</b></p>
+                   <span class="zaproredspan">1.Име и презиме</span> <input type="text" name="ime" disabled=""/> <input type="text" name="prezime" disabled=""/><br/>
+                   <span class="zaproredspan">2.Датум и место на раѓање</span><input type="text" name="datum_na_raganje" disabled=""/> <input type="text" name="mesto_raganje" disabled=""/><br/>
+                   <span class="zaproredspan">3.Медицинско досие бр.</span><input type="text" name="dosie_br" value="<?php echo $priem_id ?>" disabled=""><br/>
+           </li>
+           <li class="vtorasodrzina-soglasnost">
+              <p><b>II. Податоци за медицинската интервенција</b></p>
+              <span class="zaproredspan">4.Краток опис на медицинската интервенција:</span>
+              <textarea name="opis_medicinska_intervencija" rows="5" style="width: 100%;"></textarea>
+           </li>
+          <li class="tretasodrzina-soglasnost">
+              <p><b>III. Изјава за согласност за медоцинска интервенција од точка II.4</b></p>
+              <p>5. Изјавувам под потполна и чиста свест и разбитање за медицинската интервенција опишана во точка
+                          II.4 а врз основа на потполна информација за очекуваните позитивни резултати и можните компликации од интервенцијата,
+                          дадена од страна на здравствениот работник потпишан на оваа изјава и без присила, дека <b>СЕ СОГЛАСУВАМ</b> да се изврши медицинската
+                          интервенција од точка II.4 :</p>
+
+                  <textarea name="izjava_za_soglasnost_za_med_intrv" rows="5" style="width: 100%;"></textarea>
+          </li>
+      <li>
+<div style="float: left;width: 250px;">
+    <div style="text-align: left;">
+        Здравствен работник<br/>
+        <input type="text" name="zdr_rabotnik_potpis">
+    </div>
+    <br>
+    <div style="text-align: left">
+        Во <input style="white-space: nowrap;" type="text" name="mesto" value="ЈЗУ Ургентни Клиники" readonly="">
+        <br>
+        (здравствена установа)
+    </div>
+    <div style="text-align: left">
+        На датум <input type="text" name="datum" class="datum" value="<?php echo date('d-m-Y'); ?>"><input type="hidden" name="vreme" value="<?php echo date('H:i');?>"><br>
+
+    </div>
+</div>
+        <div style="float: right; width: 200px;">
+            <div style="text-align: center">
+                Пациент<br/>
+                <input width="100%" style="text-align: center;" type="text" name="korisnik_na_usluga_potpis_pacient">
+                <br/>
+                (М.П. на ЗУ)
+            </div>
+        </div>
+        <div style="clear: both"></div>
+    </div>
+
+        <div class="addstavka floatright">
+            <?php if($print == 2) { ?>
+            <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_izjava_soglasnost&id=" class="printlink" target="_blank" >
+                <button type="button" class="print"><span>Принт</span></button>
+            </a>
+            <?php } ?>
+            <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_izjava_soglasnost&id=" class="printlinkupati hide" target="_blank" >
+                <button type="button" class="print"><span>Принт</span></button>
+            </a>
+            <button type="button" class="button snimi-forma-upati"  poraka_uspesno="успешно снимен"
+                    poraka_neuspesno="Грешка при снимање"  izvrsi="lekuvanja_listasozapisi(lekuvanja_getaktiven_priemid())"
+                    ><span>Сними</span></button>
+
+        </div>
+        </li>
+        </ul>
+</form>
+</div>
+<script>
+    jQuery('.datum').datepicker();
+    jQuery('.datum2').datepicker();
+</script>
+<style>
+    .izjava-container{ text-align: left; width: 1000px; }
+    .linija{ width: 100%;
+        border: 2px solid #000000;
+        margin-left: 50px}
+    .naslov_izjava_soglasnost{
+        margin-left: 50px;
+        padding-top: 20px;
+        width: 100%; height: 50px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        letter-spacing: 2px;
+ }
+    .podnaslov_izjava_soglasnost{
+        margin-left: 50px;
+
+        width: 100%; height: 20px;
+        text-align: center; font-size: 16px; font-weight: bold;
+        letter-spacing: 1px;
+    }
+    .podnaslov_dodatok{
+        margin-left: 50px;
+
+        width: 100%; height: 50px;
+        text-align: center; font-size: 11px;
+    }
+
+    .izjava-heder{text-align: center;}
+    .izjavasoglasnost-leva-kolona{
+        width: 69%;
+        border: none;
+        float: left;
+        text-align: left;
+    }
+    .izjavasoglasnost-leva-kolona-new{
+        width: 100%;
+        border: none;
+
+        text-align: left;
+    }
+    .izjava-desna-podkolona-new{
+        width: 59%;
+        border: none;
+        float: left;
+        text-align: left;
+    }
+    .izjava-desna-podkolona-new1{
+        width: 89%;
+        border: none;
+        float: left;
+        text-align: left;
+    }
+    .zaproredspan1{
+        display: block;
+        margin-bottom: 8px;
+        margin-top: 3px;
+        text-align: justify;
+
+    }
+
+    .podtocki{
+        padding-left: 30px; padding-top: 20px;
+        text-align: left;
+        text-decoration: underline;
+    }
+</style>

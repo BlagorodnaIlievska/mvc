@@ -1,0 +1,284 @@
+$(document).ready(function () {
+    var userId = '';
+    var smena = 0;
+    var mesec = $('#month option:selected').val();
+    var a = $('#month option:selected').parent().html();
+    var domEl = '';
+    var dsmena = '';
+    var izbrisiId = '';
+    var vreme = '';
+    var aktivnost = '';
+    var predmet = '';
+    $('#month option').each(function() {
+        if($(this).is(':selected')){
+            $(this).addClass('selected');
+        }
+    })
+
+    $('.dSmena').each(function() {
+        if($(this).is(':checked')){
+            $(this).click();
+        }
+    })
+
+    $("#smena option:first").attr('selected','selected');
+
+    $('.smena').each(function() {
+        if($(this).is(':selected')){
+            domEl = $(this).get(0);
+        }
+    })
+    $('.span1 #smena').live("change", function() {
+        //alert('test');
+        smena = $(this).val();
+        domEl = $(this).get(0);
+        var data = {
+            mesec: mesec,
+            smena:smena
+        }
+        if(mesec != '0'){
+            $.ajax({
+                type: "POST",
+                url: '/index.php/planiranje/nov_plan/iminjaSporedSmeni',
+                data: data,
+                success: function(data){
+                    $("#result").html(data);
+                }
+            });
+        }else{
+            alert('Ве молиме изберете месец.')
+        }
+    })
+
+    $('.span1 #month').live("change",function() {
+        mesec = $(this).val();
+        var data = {
+            mesec: mesec,
+            smena:smena
+        }
+        $.ajax({
+            type: "POST",
+            url: '/index.php/planiranje/nov_plan/iminjaSporedSmeni',
+            data: data,
+            success: function(data){
+                $("#result").html(data);
+            }
+        });
+    })
+    var thehtml = '';
+    var thetxt = '';
+    var dayNo = '';
+
+    jQuery('.smeni-poime tbody tr td').live("click",function(){
+        var clicked = jQuery(this);
+        var row = jQuery(this).closest("tr");
+        userId = row.attr("user_id");
+        jQuery(".smeni-poime tbody tr td").removeClass("active");
+        clicked.addClass("active");
+        var date = $(this).children('input').next().val();
+        dayNo = $(this).children('input').next().next().val();
+        thehtml = $(this).children('p');
+        thetxt = $(this).children('p').text();
+        var formurl = "/index.php/planiranje/nov_plan/pregled";
+        jQuery.ajax({
+            url: formurl,
+            type: 'POST',
+            data: {
+                userId: userId,
+                date:date
+//                value: thetxt,
+//                dayNo:dayNo,
+//                mesec:mesec
+            },
+            success: function (response) {
+                var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+                jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                jQuery('div.' + tempdialog).html(response);
+                jQuery('div.' + tempdialog).dialog({
+                    autoOpen: true,
+                    width: "auto",
+                    position: [20, 20],
+                    modal: true,
+                    title: "",
+                    close: function (event, ui) {
+                        // Remove the dialog elements
+                        // Note: this will put the original div element in the dom
+                        jQuery(this).dialog("destroy");
+                        // Remove the left over element (the original div element)
+                        jQuery(this).remove();
+                    }
+                });
+                jQuery(".tabela-artikli").trigger("update");
+                var smenaVal = $.trim(thetxt);
+                if(smenaVal != ''){
+                    $('.tabelaAkt').css("display", "block");
+                }
+                $('.dSmena').each(function() {
+                    if($(this).is(':checked')){
+                        $(this).click();
+                    }
+                })
+            }
+        });
+    })
+
+    $('.dSmena').live("click",function(){
+       // domEl = $(this).get(0);
+        $(this).each(function() {
+            $(this).removeClass('selected');
+        })
+        $(this).addClass('selected');
+        dsmena = $(this).val();
+        var smenaVal = $.trim(dsmena);
+        if(dsmena != '0'){
+            $('.tabelaAkt').css("display", "block");
+        }else{
+            $('.tabelaAkt').css("display", "none");
+        }
+    })
+
+    $('.saveButton').live("click",function(){
+        var thisbutton=jQuery(this);
+        if($('.tabelaAkt').is(":visible")){
+            var vis = 1;
+            var data = {
+                visible:vis,
+                vreme:vreme,
+                aktivnost:aktivnost,
+                predmet:predmet,
+                smena:dsmena,
+                userId:userId,
+                dayNo:dayNo,
+                mesec:mesec
+            }
+        }else{
+            var data = {
+                smena:dsmena,
+                userId:userId,
+                dayNo:dayNo,
+                mesec: mesec
+            }
+        }
+        $.ajax({
+            type: "POST",
+            url: '/index.php/planiranje/nov_plan/addSmena',
+            data: data,
+            success: function(data){
+                if(dsmena == '1'){
+                    dsmena = 'С1';
+                }else if(dsmena == '2'){
+                    dsmena = 'С2';
+                }else if(dsmena == '3'){
+                    dsmena = 'С3';
+                }
+                else if(dsmena == '4'){
+                    dsmena = 'Д1';
+                }
+                else if(dsmena == '5'){
+                    dsmena = 'Д2';
+                }
+                else if(dsmena == '0'){
+                    dsmena = '';
+                }
+                vreme = '';
+                aktivnost = '';
+                predmet = '';
+                $(thehtml).html(dsmena);
+                // Remove the left over element (the original div element)
+                thisbutton.closest(".ui-dialog").remove();
+                domEl.click();
+            }
+        });
+    })
+
+    $('.okButton').live("click",function(){
+        var thisOk=jQuery(this);
+        vreme = jQuery(".novaAkt #vreme").val();
+        var vreme_do = jQuery(".novaAkt .vreme_do").val();
+        var hour = '^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$';
+        if ($.trim(vreme).match(hour) != null) {
+            aktivnost = jQuery(".novaAkt #aktivnost").val();
+            var mesto = jQuery(".novaAkt #predmet").val();
+            var pacient = jQuery(".novaAkt .pacient").val();
+            var vis = 1;
+            var data = {
+                visible:vis,
+                vreme:vreme,
+                vreme_do:vreme_do,
+                aktivnost:aktivnost,
+                mesto:mesto,
+                smena:dsmena,
+                userId:userId,
+                dayNo:dayNo,
+                mesec:mesec,
+                pacient: pacient
+            }
+            console.log(data);
+            $.ajax({
+                type: "POST",
+                url: '/index.php/planiranje/nov_plan/addSmenaaa',
+                data: data,
+                success: function(data){
+                    if(dsmena == '1'){
+                        dsmena = 'С1';
+                    }else if(dsmena == '2'){
+                        dsmena = 'С2';
+                    }else if(dsmena == '3'){
+                        dsmena = 'С3';
+                    }
+                    else if(dsmena == '4'){
+                        dsmena = 'Д1';
+                    }
+                    else if(dsmena == '5'){
+                        dsmena = 'Д2';
+                    }
+                    else if(dsmena == '0'){
+                        dsmena = '';
+                    }
+                    $(thehtml).html(dsmena);
+                    var divs = $(thisOk).parent('div');
+                    var redovi = jQuery(".planovi-tabela tbody tr").length;
+                    redovi = 1 * redovi + 1;
+                    jQuery(".planovi-tabela tbody").append('<tr>' +
+                        '<td>' + redovi + '</td>' +
+                        '<td>'+ vreme +'</td>' +
+                        '<td>'+ aktivnost +'</td>' +
+                        '<td>'+ mesto +'</td>' +
+                        '</tr>');
+                    //$(divs).prev().append("<table><tr><td></td><td>"+vreme+"</td><td>"+aktivnost+"</td><td>"+predmet+"</td></tr></table>");
+                    vreme = '';
+                    aktivnost = '';
+                    predmet = '';
+                    $("#vreme").val("");
+                    $("#aktivnost").val("");
+                    $("#predmet").val("");
+                    $('.aktivTab').show();
+                }
+            });
+        }else{
+            alert("Ве молиме внесете време во 00:00 формат.");
+        }
+    })
+
+    $('.dodadiButton').live("click",function(){
+        $(this).hide();
+        $('.novaAkt').css("display", "block");
+    })
+
+    $('.izbrisiButton').live("click",function(){
+        izbrisiId = $(this).attr('title');
+        var par = $(this).parent('td');
+        var tr = par.parent();
+        var data = {
+            id: izbrisiId
+        }
+        $.ajax({
+            type: "POST",
+            url: '/index.php/planiranje/nov_plan/deletePlan',
+            data: data,
+            success: function(data){
+                $(tr).remove();
+            }
+        });
+    })
+});

@@ -1,0 +1,117 @@
+function  mesecni_parametri_polnilista()
+{
+    var formurl = "/index.php/plati/mesecni_parametri/polnilista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+            var redenbroj = 1;
+            jQuery(".tabela-mesecni-parametri tbody").html('');
+            jQuery.each(response, function (index, item) {
+                jQuery(".tabela-mesecni-parametri tbody").append(('<tr mesecen_parametar_id="' + item.id + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                    '</td>' +
+                    '<td class="id">' + redenbroj + '</td>' +
+                    '<td class="naziv">' + item.mesec + '</td>' +
+                    '<td class="zirosmetka">' + item.godina + '</td>' +
+                    '<td class="max_broj_na_casovi">' + item.max_broj_casovi + '</td>' +
+                    '<td class="bruto_prosecen_licen_dohod text-right">' + formatnumbermkd(item.bruto_prosecen_licen_dohod) + '</td>' +
+                    '</tr>'
+                    ));
+                redenbroj = 1*redenbroj + 1*1;
+            });
+            jQuery(".tabela-mesecni-parametri").trigger("update");
+        }
+    });
+}
+function mesecen_parametar_nov(mesec, godina) {
+    var data = {
+        mesec: mesec,
+        godina: godina
+    }
+    var formurl = "/index.php/plati/mesecni_parametri/nov_mesecen_parametar";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data: data,
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нов месечен параметар",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function mesecen_parametar_izmeni(mesecen_parametar_id) {
+    var formurl = "/index.php/plati/mesecni_parametri/izmeni";
+    var data = {  id: mesecen_parametar_id  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени месечен параметар",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function mesecen_parametar_delete(mesecen_parametar_id){
+    var r=confirm("Избриши месечен параметар");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/plati/mesecni_parametri/delete_mesecen_parametar";
+            var data = {  id: mesecen_parametar_id  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    mesecni_parametri_polnilista();
+                }
+            });
+        }
+    }
+}
+function proveri_mesecen_parametar(mesec, godina) {
+    var data = {
+        mesec: mesec,
+        godina: godina
+    }
+    var formurl = "/index.php/plati/mesecni_parametri/proveri_mesecen_parametar";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+            if(response == 1)  alert("Веќе има внесено параметри за овој месец !!!");
+            else  mesecen_parametar_nov(mesec, godina);
+        }
+    });
+}

@@ -1,0 +1,15 @@
+<iframe class="moeosigiframe"></iframe>
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery('iframe.moeosigiframe').css("height", 600)
+            .css("width", 800)
+            .attr("src","https://moeosiguruvanje.fzo.org.mk/")
+            .load(function() {
+              //  jQuery('iframe.moeosigiframe').find("head").append('<scr' + 'ipt type="text/javascript" src="http://bis.server4.bointsoft.com/js/fzomoeosig.js"></scr' + 'ipt>');
+                jQuery('iframe.moeosigiframe').closest(".ui-dialog").css("width",800).css("height",600);
+                jQuery('iframe.moeosigiframe').closest(".ui-dialog .ui-dialog-content").css("overflow","hidden");
+            });
+
+    });
+</script>

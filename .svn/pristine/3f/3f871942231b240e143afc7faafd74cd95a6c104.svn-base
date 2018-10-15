@@ -1,0 +1,132 @@
+<div class="zapis-za-priem-container" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
+     xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
+     xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+    <form method="post" action="/index.php/upati/upati/create_zapis_za_priem">
+        <input type="hidden" name="priem_id" value="<?php echo $priem_id ?>" />
+    <div class="izjava-heder">
+        <img  style="display: none;width: 100%;" class="display" height="130" alt="" src="/images/jzulogo.png">
+        <img style="width: 100%;" height="130" alt="" src="images/jzulogo.png">
+        <div style="width: 900px; margin-left: 50px; text-align: center; font-weight: bold; ">Email : jzuuktoarilucskopje@gmail.com</div>
+    </div>
+    <div class="linija"></div>
+   <div class="naslov_zapis">Запис за прием на болниот</div>
+   <div class="izjava_sodrzina">
+    За користење на повиско стандард за здравствени услуги во болничка здравствена заштита<br/> во ОЕ Клиника &nbsp;
+       <input type="text" name="vo_organizaciona_edinica" class="upat" value="<?php echo $this->session->userdata('firma_ime') ?>" readonly=""/>
+       <p>
+       <div class="zapis-leva-kolona">
+<!--           <input type="hidden" name="tip" value="zapis_za_priem">-->
+           <div class="zapis-leva-podkolona">
+               Од:<br/><br/>
+               <p><span>1. Име (татково име) и презиме на болниот:</span>
+               <input type="text" name="ime" disabled="" /> <input type="text" name="tatkovoime" disabled="" /> <input type="text" name="prezime" disabled="" /><br></p>
+               <p><span>2. Име на татко и мајка:</span><input type="text" name="tatkovoime" disabled="" /> <input type="text" name="ime_na_majka" /> <br></p>
+               <p><span>3. Возраст:</span><input type="text" name="pacient_vozrast" value="" />
+               <span>занимање:</span><input type="text" name="zanimanje" disabled="" />
+               <span>брачна состојба:</span><input type="text" name="bracna_sostojba" value="" /><br></p>
+               <p><span>4. Местожителство, место:</span><input type="text" name="grad" disabled="" />
+               <span>(улица и број): </span><input type="text" name="ulica" disabled="" /><input type="text" name="broj_na_kuka" disabled="" /></p>
+               <p><span>5. Упатен во болница од: </span><input type="text" name="zdravstvena_ustanova" disabled="" /></p>
+               <p><span>6. Примен во болница на (дата): </span><input type="text" style="width: 80px;" name="priem_datum" disabled="" />
+               <span>во саатот: </span><input style="width: 80px;" type="text" name="priem_vreme" disabled="" />
+               <span>на: </span><input type="text" name="oddelenie" disabled="" /><br>
+               <span>како ИТЕН случај или сличајот не е ИТЕН: </span><input type="text" name="iten_slucaj" value="" /><br></p>
+               <p><span>7. Амбулантна дијагноза: </span><input type="text" name="ambulantna_dijagnoza" value="" /><br></p>
+               <p><span>8. Дадена прва помош и каква: </span> <br> <textarea style="overflow-y:scroll;resize: none;width: 100%;" name="prva_pomos"></textarea><br></p>
+               <p><span>9. Потпис на службеното лице кој го сместил болниот во одделението: </span><input type="text" disabled="" /><br></p>
+               <p>10. Забелешка на лекарот кој го примил болниот: <span><input style="width: 200px;" name="zabeleska_na_lekar" /></span><br></p>
+               <span>Број </span><input type="text" disabled="" />
+           </div>
+       </div>
+       </p>
+       <div style="clear: both"></div>
+
+       <p class="izjava-leva-podkolona-pacient">
+          <b> Скопје, <input type="text" name="datum" class="datum" value="<?php echo date('d-m-Y'); ?>" readonly=""><input type="hidden" name="vreme" value="<?php echo date('H:i');?>"></b>
+           <span class="zaproredspan">ш-310970166</span>
+       </p>
+       <p style="text-align: right;"><b>Потпис на лекарот кој го примил болниот</b></p>
+       <p style="margin-left: 475px;margin-top: 10px;text-align: right;"><input style="width: 270px;" type="text" /></p>
+   </div>
+        <div class="addstavka floatright">
+            <?php if($print == 2) { ?>
+            <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_zapis_za_priem&id=" class="printlink" target="_blank" >
+                <button type="button" class="print"><span>Принт</span></button>
+            </a>
+            <?php } ?>
+            <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_zapis_za_priem&id=" class="printlinkupati hide" target="_blank" >
+                <button type="button" class="print"><span>Принт</span></button>
+            </a>
+            <button type="button" class="button snimi-forma-upati" poraka_uspesno="успешно снимен"
+                    poraka_neuspesno="Грешка при снимање"  izvrsi="lekuvanja_listasozapisi(lekuvanja_getaktiven_priemid())"
+                    ><span>Сними</span></button>
+
+        </div>
+    </form>
+</div>
+
+
+
+<script>
+    jQuery(document).ready(function(){
+        jQuery('#datum2').datepicker();
+    });
+
+</script>
+<style>
+        .izjava-container{ text-align: left; width: 1000px;}
+        .linija{ width: 100%;
+            border: 2px solid #000000;
+        }
+
+        .naslov_izjava{
+            padding-top: 40px;
+            width: 100%; height: 70px;
+            text-align: center;
+            font-size: 20px;
+      font-weight: bold;
+          letter-spacing: 3px;
+
+        }
+
+        .izjava-heder{text-align: center;}
+        .izjava-leva-kolona{
+            width: 70%;
+            border: none;
+            float: left;
+            text-align: left;
+        }
+        .izjava-leva-podkolona-pacient{
+            width: 49%;
+            border: none;
+            float: left;
+            text-align: left;
+        }
+        .izjava-desna-podkolona-pacient{
+            width: 49%;
+            border: none;
+            float: right;
+            text-align: left;
+        }
+        .izjava-leva-podkolona{
+            width: 20%;
+            border: none;
+            float: left;
+            text-align: left;
+        }
+        .izjava-desna-podkolona{
+            width: 79%;
+            border: none;
+            float: right;
+            text-align: left;
+        }
+        .zaproredspan{
+            display: block;
+            margin-bottom: 8px;
+            margin-top: 3px;
+        }
+        .cena12{
+            display: inline-block;
+            margin-left: 50px;
+        }
+</style>

@@ -1,0 +1,19 @@
+<div id="index" class="main-menu-tabs">
+    <ul>
+        <li><a href="/index.php/kartici/menu/kartica_klient">Картица за клиент</a></li>
+<!--        <li><a href="/index.php/kartici/menu/pregled_klienti">Преглед на клиенти</a></li>-->
+<!--        <li><a href="/index.php/kartici/menu/promet">Промет</a></li>-->
+<!--        <li><a href="/index.php/kartici/menu/dospeanost">Доспеаност</a></li>-->
+
+</ul>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.main-menu-tabs').tabs({
+            cache: true,
+            ajaxOptions: {
+                type: "POST"
+            }});
+    });
+</script>

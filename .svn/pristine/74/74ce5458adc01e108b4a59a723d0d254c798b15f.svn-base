@@ -1,0 +1,49 @@
+<div id="update_grad_form">
+
+
+
+
+
+    <?php
+    if(isset($grad)){
+
+        foreach($grad as $row) {
+
+            $g0=$row->GradID;
+            $g1=$row->GradIme;
+            $g2=$row->PostBroj;
+            $g3=$row->Drzava;
+
+        }
+    }
+    ?>
+
+
+
+    <h1>Град</h1>
+
+    <?php echo form_open('podatoci/grad/update_grad');?>
+
+    <?php echo form_hidden('GradID', $g0);?>
+
+    <?php echo form_label('Име на град:', 'GradIme');?><br>
+
+    <?php echo form_input('GradIme', $g1, 'GradIme');?>
+
+    <?php echo form_label('Поштенски број:', 'PostBroj');?><br>
+
+    <?php echo form_input('PostBroj', $g2, 'PostBroj');?>
+
+    <?php echo form_label('Држава:', 'Drzava');?><br>
+
+    <?php echo form_input('Drzava', $g3, 'Drzava');?>
+
+    <input type="button" value="Промени" class="ajaxsubmitform"><br>
+
+
+
+    <?php echo form_close(); ?>
+
+
+
+</div>

@@ -1,0 +1,41 @@
+<div id="new_katbroj_form">
+
+    <div class="katbroj">
+        <?php
+        echo form_open('materijalno/priemnica/create_katbroj');
+        echo form_label('Kat. Broj:', 'new-katbroj');
+        echo form_input('new-katbroj','');
+        echo form_label('Ime:', 'new-kat-ime');
+        echo form_input('new-kat-ime','');
+        ?>
+        <input type="button" value="Submit" class="novkatbroj"><br>
+        <?php
+        echo form_close();
+        ?>
+    </div><br>
+
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.novkatbroj').live('click',function(){
+            var formaction=jQuery(this).parent().attr('action');
+            var formmethod=jQuery(this).parent().attr('method');
+            var dialogid=jQuery(this).parent().parent().parent().parent();
+            //alert(jQuery(this).parent().serialize());
+            jQuery.ajax({
+                type: "post",
+                url: formaction,
+                data: jQuery(this).parent().serialize(),
+                success:  function(data){
+                    //alert('success');
+                    dialogid.dialog("destroy").remove();
+                    //var tabs = jQuery('.sub-menu-tabs');
+                    //var selected = tabs.tabs('option', 'selected');
+                    //jQuery(".sub-menu-tabs").tabs('load',selected);
+
+                }
+            });
+        });
+    });
+</script>

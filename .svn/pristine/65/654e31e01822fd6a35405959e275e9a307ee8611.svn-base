@@ -1,0 +1,230 @@
+<div class="pacienti-priem-lista" id="pacienti-shalter-lista-id">
+    <ul>
+        <li><a class="" href="#shalter-zavrsenipriemi">Завршени лекувања</a></li>
+        <li><a class="" href="#shalter-fondovskilekuvanja">Лекувања со партиципација</a></li>
+    </ul>
+    <div class="pacienti-priem-lista-aktivni" id="shalter-zavrsenipriemi">
+        <div class="buttoncontainer">
+            <br/>
+            <input type="text" class="todaydate hide" />
+            <button class="button cmd-button-barajshalter" type="button"><span>Барај</span></button>
+            <button class="button button-fakturirajpriem" type="button"><span>Фактурирај Лекување</span></button>
+            <button class="button cmd-zatvori-lekuvanje" type="button"><span>Затвори Лекување</span></button>
+            <button class="button cmd-vrati-lekuvanje" type="button"><span>Врати Лекување</span></button>
+            <table class="shaltertabelastatusi shaltertabelastatusi-legenda">
+                <tbody>
+                <tr>
+                    <td class="aktivni_priemi"></td>
+                    <td>Активни лекувања</td>
+                    <td class="zatvoreni_priemi"></td>
+                    <td>Затворени лекувања</td>
+                    <td class="fakturirani_priemi"></td>
+                    <td>Фактурирани лекувања</td>
+                    <td class="plateni_priemi"></td>
+                    <td>Платени лекувања</td>
+                </tr>
+                </tbody>
+            </table>
+            <br/> <br/>
+        </div>
+        <!--        //site 0-->
+        <!--        //fakturirani 50-->
+        <!--        //ne fakturirani 40-->
+        <div class="shalterbarajdiv hidden">
+            <form class="shalterbarajform">
+                <select name="priem_status">
+                    <option value="0" selected="selected">Сите</option>
+                    <option value="50">Фактурирани</option>
+                    <option value="40">Не фактурирани</option>
+                </select>
+            </form>
+        </div>
+        <div class="pacienti-shalter-lista-aktivni">
+            <p class="naslovshalter"> ( <span class="vkupnostavki">0</span> ) <span class="status">Лекувања</span></p>
+            <div class="predtabela">
+                <table class="pacienti-shalter-lista-aktivni-tabela shaltertabelastatusi">
+                    <thead>
+                    <th class="action"></th>
+                    <th class="broj-lekuvanje">Број на лекување</th>
+                    <th class="status-lekuvanja">&nbsp;&nbsp;</th>
+                    <th class="datum">Датум</th>
+                    <th class="vreme">Време</th>
+                    <th class="vaznost-upat">Упат</th>
+                    <th class="pacient">Пациент ( Име, Татково Име, Презиме )</th>
+                    <th class="roden">Роден/а на</th>
+                    <th class="broj-legitimacija">Бр. Легитимација</th>
+                    <th class="oddel">Оддел</th>
+                    <th class="tip">Тип</th>
+                    <th class="tip-na-osiguruvanje">Тип на осигурување</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="pacienti-shalter-lista-fakturi">
+            <p class="naslovfakturi"> ( <span class="vkupnostavki">0</span> ) <span class="status">Фактури</span></p>
+            <div class="predtabela">
+                <table class="pacienti-shalter-lista-fakturi-tabela">
+                    <thead>
+                    <th class="action"></th>
+                    <th class="redenbroj">РБ</th>
+                    <th class="broj">Број</th>
+                    <th class="datum">Датум</th>
+                    <th class="komitent">Коминтент</th>
+                    <th class="osnovica">Основица</th>
+                    <th class="valuta">Валута</th>
+                    <th class="platena">Платена</th>
+                    <th class="oddel">Оддел</th>
+                    <th class="faktura-za">Фактура за</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="pacienti-pregledi-lista">
+            <p class="naslovzapisi"> <span class="status">Записи</span></p>
+            <div class="predtabela">
+                <table class="pacienti-pregledi-lista-tabela">
+                    <thead>
+                    <th class="action"></th>
+                    <th class="dokument">Документ</th>
+                    <th class="datum">Датум</th>
+                    <th class="vreme">Време</th>
+                    <th class="opis">Опис</th>
+                    <th class="izgotvil">Изготвил</th>
+                    <th class="oddel">Оддел</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="shalter-fondovskilekuvanja" class="shalter-fondovski_lekuvanja">
+        <?php include('lekuvanja/fondovski_lekuvanja.php') ?>
+        <div class="clear"></div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".pacienti-shalter-lista-aktivni-tabela").tablesorter();
+        jQuery("#pacienti-shalter-lista-id").tabs();
+        jQuery(".pacienti-shalter-lista-fakturi").hide();
+        jQuery(".pacienti-pregledi-lista").hide();
+        jQuery('.todaydate').datepicker({dateFormat:'dd-mm-yy'});
+        jQuery('.todaydate').datepicker('setDate', new Date());
+
+        lekuvanja_shalter_priemi();
+
+        jQuery(".pacienti-shalter-lista-aktivni-tabela tbody tr").live('click', function () {
+            jQuery('.pacienti-shalter-lista-fakturi-tabela tbody').html('');
+            jQuery(".pacienti-shalter-lista-aktivni-tabela tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+            if(jQuery(this).closest("tr").attr("priem_status") == 50)
+            {
+                jQuery(".pacienti-shalter-lista-fakturi").show();
+                jQuery.when(get_info_fakturi_za_priem(jQuery(this).closest("tr").attr("priem_id")))
+                       .done(function(res){
+                        if (res != null) {
+                            var vkupnofakturi = 0;
+                            var fakturi = res[0].faktura_id;
+//                            console.log(fakturi);
+//                            if(fakturi.length > 1) var niza = fakturi.split(",");
+                            if(fakturi.indexOf(",") === -1)
+                            {
+                                get_if_info(fakturi);
+                                vkupnofakturi = 1;
+                            }
+                            else
+                            {
+                                var niza = fakturi.split(",");
+                                jQuery.each(niza, function (index, item) {
+                                    vkupnofakturi += 1*1;
+                                    console.log(item);
+                                    get_if_info(item);
+                                });
+                            }
+                            jQuery(".naslovfakturi .vkupnostavki").html(vkupnofakturi);
+                        }
+                });
+            }
+            else jQuery(".pacienti-shalter-lista-fakturi").hide();
+//            if(jQuery(this).closest("tr").attr("priem_status") == 40)
+//            {
+//                jQuery(".pacienti-pregledi-lista").show();
+//                lekuvanja_listasozapisi(jQuery(this).closest("tr").attr("priem_id"));
+//            }
+//            else jQuery(".pacienti-pregledi-lista").hide();
+        });
+//        lekuvanja_shalter_fakturi();
+        jQuery(".pacienti-shalter-lista-fakturirani-tabela tbody tr").live('click', function () {
+            jQuery(".pacienti-shalter-lista-fakturirani-tabela tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+            lekuvanja_lista_pregledi(jQuery(this).attr("priem_id"));
+        });
+        jQuery(".button-fakturirajpriem").click(function () {
+            var priem_id = jQuery(".pacienti-shalter-lista-aktivni-tabela tbody tr.active").attr("priem_id");
+
+            if (jQuery(".pacienti-shalter-lista-aktivni-tabela tbody tr.active").length == 0) {
+                alert("Ве молиме одберете прием за фактурирање");
+                return false;
+            }
+            if (jQuery(".pacienti-shalter-lista-aktivni-tabela tbody tr.active").attr("priem_status") == 0) {
+                alert("За да фактурирате треба прво да го затворите лекувањето !!!");
+                return false;
+            }
+            if(lekuvanja_proveri_dali_ima_za_fakturiranje(priem_id) == 1)
+            {
+                alert("Ова лекување е фактурирано !!!");
+                return false;
+            }
+            if (jQuery(".pacienti-shalter-lista-aktivni-tabela tbody tr.active").attr("priem_status") == 50) {
+                alert("Ова лекување е фактурирано !!!");
+                return false;
+            }
+            var ask = confirm("Дали сакате да креирате пресметка:\n" +
+                jQuery(".pacienti-shalter-lista-aktivni-tabela tbody tr.active td:first-child + * + * + *").html());
+            if (ask == true)  fakturiranje_prikazi_informacii(priem_id);
+        });
+        jQuery(".button-printajfaktura").click(function () {
+            if (jQuery(".pacienti-shalter-lista-fakturirani-tabela tbody tr.active").length == 0) {
+                alert("Ве молиме одберете фактурa за принтање");
+                return false;
+            }
+            var ask = confirm("Дали сте сигурни да исппринтате фактура за:\n" +
+                jQuery(".pacienti-shalter-lista-fakturirani-tabela tbody tr.active td:first-child + * + * + *").html())
+            if (ask == true) {
+                lekuvanja_shalter_fakturaprint(jQuery(".pacienti-shalter-lista-fakturirani-tabela tbody tr.active").attr("priem_id"));
+            }
+        });
+        jQuery(".cmd-button-barajshalter").live("click", function () {
+            jQuery('.shalterbarajdiv').toggleClass('hidden');
+        });
+        jQuery(".cmd-zatvori-lekuvanje").live("click", function () {
+            if (shalter_getaktiven_priemid() > 0) {
+                lekuvanja_zatvorilekuvanje(shalter_getaktiven_priemid());
+            } else {
+                alert("Ве молиме одберете лекување");
+            }
+        });
+        jQuery(".cmd-vrati-lekuvanje").live("click", function () {
+            var priem_status = jQuery(".pacienti-shalter-lista-aktivni-tabela tbody tr.active").attr("priem_status");
+            if (shalter_getaktiven_priemid() > 0) {
+                if (priem_status == 40) {
+                    lekuvanja_vratilekuvanje(shalter_getaktiven_priemid());
+                }
+                else {
+                    alert("Ве молиме изберете затворено лекување");
+                }
+            }
+            else {
+                alert("Ве молиме одберете лекување");
+            }
+        });
+        jQuery(".shalterbarajform select").change(function () {
+            lekuvanja_shalter_priemi();
+        });
+    });
+</script>

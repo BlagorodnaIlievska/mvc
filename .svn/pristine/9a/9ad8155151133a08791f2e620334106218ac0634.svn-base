@@ -1,0 +1,10 @@
+<div id="vnesi_roba_form" class="pop-menu-tabs">
+    <ul>
+        <li><a href="#ispratnica">Испратница</a></li>
+        <!--            <li><a href="#faktura">Фактура</a></li>-->
+        <!--            <li>--><?php //echo anchor('materijalno/kalkulacija/index', 'Калкулација'); ?><!--</li>-->
+    </ul>
+    <div id="ispratnica"></div>
+    <!--        <div id="faktura"></div>-->
+    <!--        <div id="priemnici"></div>-->
+</div>

@@ -1,0 +1,27 @@
+.korisnicilista .korisniciosnova {
+    /*width: 480px;*/
+    float: left;
+}
+.korisnicilista .korisniciatributi {
+    width: 450px;
+    float: left;
+    margin-left: 15px;
+}
+.korisnicilista .korisniciosnova table tbody tr td:first-child {
+    width: 36px;
+}
+.korisnici-novkorisnik .korisnici-osvnovniinformacii {
+    float: left;
+    width: 200px;
+}
+.korisnici-novkorisnik .korisnici-vnesiatributi {
+    float: left;
+    width: 450px;
+    margin-left: 15px;
+}
+.clear {
+    clear: both;
+}
+.listakorisnici .buttoncontainer {
+    margin-bottom: 10px;
+}

@@ -1,0 +1,210 @@
+<div class="baranje-form">
+    <?php echo form_open('javni_nabavki/javni_nabavki/updateBaranje'); ?>
+    <div class="f-od-dobavuvac broj">
+        <input type="hidden" class="fakturaid" name="fakturaid" value="<?= $baranje[0]->id; ?>">
+        <label>Коминтент:</label>
+        <?php echo form_dropdown('klient', $klient, $baranje[0]->klient, 'class="baranjeklient"'); ?>
+        <img class="dodadiklient" width="15" height="15" alt="" src="/images/add.png">
+
+    </div>
+    <br>
+    <div class="f-od-dobavuvac broj">
+        <label>Се однесува за договор број:</label>
+        <?php if(isset($baranje[0]->dogovor_id))echo form_dropdown('broj_dogovor', $dogovor,$baranje[0]->dogovor_id, 'class="dogovorbroj"');
+        else echo form_dropdown('broj_dogovor', $dogovor,'', 'class="dogovorbroj"'); ?>
+
+
+    </div>
+    <br>
+    <br>
+    <div class="f-od-dobavuvac broj">
+        <?php
+        echo form_label('Број на барање', 'broj_baranje');
+        echo form_input('broj_baranje',$baranje[0]->broj_baranje, 'class="broj_baranje"');
+        ?>
+    </div>
+    <br>
+    <br>
+    <div class="f-od-dobavuvac broj">
+        <?php
+        echo form_label('Датум на барање', 'datum_baranje');
+        echo form_input('datum_baranje', $baranje[0]->datum_baranje, 'class="datum_baranje"');
+        ?>
+    </div>
+    <p style="text-align: center"> ПРЕДМЕТ : Барање за месец  <input type="text" style="width: 30px;" name="baranje_mesec" value="<?echo $baranje[0]->baranje_mesec;?>"></p>
+    <div class="f-od-dobavuvac broj">
+        <input type="text" name="predmet_baranje"  style="width: 700px;" class="predmet_baranje" value="<?=$baranje[0]->predmet_baranje;?>">
+    </div>
+    <fieldset>
+        <legend>Врска со документи</legend>
+        <div class="vrska-so-dokumenti clearboth">
+            <div class="dogovor-proekt-kopcinja">
+
+                <button type="button" class="button vrskadogovori"
+                        formaction="/index.php/javni_nabavki/javni_nabavki/povrzi_dogovor">
+                    <span>Поврзи Договор</span></button>
+                <!--    <button type="button" class="novapriemnica button"
+                            formaction="/index.php/vlezni_fakturi/faktura/fakturaPriemnica">
+                        <span>Нова Приемница</span></button>  -->
+            </div>
+            <div class="dodadeni-priemnici">
+                <span class="dodadenipriemnici"></span>
+                <input type="hidden" class="vrskadokumenti" name="vrskadokumenti">
+                <input type="hidden" class="priemnica_id" name="priemnica_id">
+            </div>
+
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Ставки во барањето</legend>
+        <table class="stavki-baranje" border="1" cellpadding="2" id="baranje">
+            <thead>
+            <tr>
+                <th class="rb"></th>
+                <th class="rb" style="width: 20px;">РБ</th>
+                <th class="sifra">Шифра</th>
+                <th class="stavka">Ставка</th>
+                <th class="kolicinad"  style="width: 80px">Количина од дог.</th>
+                <th class="kolicinap"  style="width: 80px">Побарана количина</th>
+                <th class="kolicinao"  style="width: 80px">Останува</th>
+                <th class="hideartikl hide"></th>
+
+            </tr>
+            </thead>
+            <tbody>
+                <tr class='hiderow trow'>
+
+                <td class="brisi"><img width="15" height="15" alt="" src="/images/delete.png"></td>
+                <td class="rb"></td>
+                <td class="sif"></td>
+                <td class="stav"></td>
+                <td class="kold"></td>
+                <td class="kolp"></td>
+                <td class="kolo"></td>
+                <td class="id"></td>
+
+              </tr>
+            </tbody>
+        </table>
+        <input type="hidden" class="proverka" value="0">
+        <!--    <div class="addstavka floatleft">
+                <button type="button" class="add button"><span>Додади ставка</span>
+                </button>
+           </div>
+            <div class="addstavka floatleft">
+                <button type="button" class="dodadiusluga button"><span>Додади услуга</span></button>
+            </div>      -->
+
+    </fieldset>
+    <div class="otkazi-snimi-novafak">
+        <div class="snimi">
+            <div class="submitclosebutton">
+                <button type="button" class="submitclosebaranje button"><span>Зачувај</span></button>
+
+
+
+            </div>
+        </div>
+        <div class="drugo">
+            <div class="otkazibutton">
+                <button type="button" class="otkazibaranje button"><span>Откажи</span></button>
+            </div>
+        </div>
+    </div>
+    <?php
+    echo form_close();
+    ?>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery('.stavki-baranje .brisi').live('click',function () {
+
+            delete_stavka_baranje(jQuery(this).parent().attr('id'),jQuery(this).parent().attr('baranje_id'));
+        } );
+        jQuery('.stavki-baranje').tablesorter();
+        jQuery('.baranjeklient').combobox();
+        jQuery('.dogovorbroj').combobox();
+        jQuery('.datum_baranje').datepicker();
+        jQuery('.datum_baranje').datepicker('setDate', new Date());
+        jQuery('.dodadiklient').click(function (e) {
+            var formaction = "/index.php/podatoci/klienti/nov";
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: 1100,
+                close: function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }}).load(formaction);
+            e.preventDefault();
+        });
+        var dbid = jQuery('.fakturaid').val();
+        zemi_detali_baranje(dbid);
+
+
+        jQuery('.vrskadogovori').click(function (e) {
+            klient=jQuery('.baranjeklient option:selected').val();
+            dogovorid= jQuery('.dogovorbroj option:selected').val();
+            //console.log(klient);
+            var data={klient:klient, dogovorid:dogovorid}
+            console.log(data);
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                data: data,
+
+                width: 1100,
+                close: function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }}).load(jQuery(this).attr('formaction'));
+            e.preventDefault();
+        });
+        jQuery(".stavki-baranje tbody tr .kolicinap").live('blur', function () {
+            var temp = jQuery(this);
+            var currentrow = temp.closest('tr');
+            // console.log(currentrow);
+            var kolicinap = currentrow.find("input.kolicinap").val();
+            var kolicinad= currentrow.find("input.kolicinad").val();
+            currentrow.find("input.kolicinao").val(kolicinad-kolicinap);
+        });
+        jQuery('.otkazibaranje').click(function () {
+            destroyparentdialog(jQuery(this));
+        });
+        jQuery('.submitclosebaranje').click(function () {
+
+            var ovakopce = jQuery(this);
+            ovakopce.attr("disabled", "disabled");
+
+            var formaction = jQuery(this).parent().parent().parent().parent().attr('action');
+
+            var index = 1;
+            //   jQuery('.stavki-baranje tbody tr:last').remove();
+            jQuery(".stavki-baranje tbody tr.detali").each(function () {
+                jQuery(this).find('td').each(function () {
+                    var curr = jQuery(this);
+
+                    var name = jQuery(this).find("input").attr('name');
+
+                    var newname = name + "[" + index + "]";
+
+                    jQuery(this).find("input").attr('name', newname);
+
+                })
+                index = parseInt(index) + 1;
+            });
+            jQuery.ajax({
+                type: "post",
+                url: formaction,
+                data: jQuery(this).parent().parent().parent().parent().serialize(),
+                success: function (response) {
+//                if(ovakopce.hasClass("pecati-faktura")) pecati_vf(response);
+                    baranja_napolnilista();
+                    destroyparentdialog(ovakopce);
+                }
+            });
+        });
+    });
+</script>

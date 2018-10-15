@@ -1,0 +1,18 @@
+<div class="izmeni-kreditor">
+    <form action="/index.php/plata_podatoci/kreditori/update_kreditori" method="post">
+        <fieldset>
+            <input type="hidden" name="id" value="<?php echo $kreditor->id  ?>"/>
+            <legend>Измени кредитор</legend>
+            Назив:<br/>
+            <input type="text" name="naziv" value="<?php echo $kreditor->naziv ?>"/><br/>
+            Жиросметка:<br/>
+            <input type="text" name="zirosmetka" value="<?php echo $kreditor->zirosmetka ?>"/><br/>
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="kreditori_polnilista()" poraka_uspesno="Успешно изменетo"
+                poraka_neuspesno="Грешка при снимање"
+                ><span>Сними</span></button>
+        <br/>
+    </form>
+</div>

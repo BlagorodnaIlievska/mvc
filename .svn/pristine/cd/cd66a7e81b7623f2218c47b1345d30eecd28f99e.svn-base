@@ -1,0 +1,166 @@
+<div class="izlez-form-ministerstvo content-area">
+
+    <?php
+    $valuta_options = array(
+        '0' => 'DEN',
+        '1' => 'EUR',
+        '2' => 'USD'
+    );
+    $status_options = array('' => 'Site', '1' => 'Ne plateni', '2' => 'Plateni');
+    $nacin_options  = array('3' => 'Site', '0' => 'virmanski', '1' => 'vo gotovo', '2' => 'kompenzacija');
+    echo form_open('izlezni_fakturi/pregled_izlezni/nova_faktura');
+    ?>
+    <div class="vleznifak-top">
+        <a href="" target="_blank" class="cmd-printlink-izlezni-min">
+            <button type="button" class="print"><span>Принт</span></button>
+        </a>
+        <a href="/index.php/xml/generate/ministerstvo">
+            <button type="button" class="button"><span>Генерирај XML фактура министерство</span></button>
+        </a>
+    </div>
+    <div class="filtermenu" style="display: none;">
+        <div class="filter-vleznifak">
+            <span>Период од:</span>
+            <input type="text" class="periodod pregledvlezna" name="periodod"/>
+            <span style="margin: 0 5px;">до:</span>
+            <input type="text" class="perioddo pregledvlezna" name="perioddo"/>
+        </div>
+        <div class="filter-vleznifak">
+            <label>Број:</label>
+            <input type="text" class="filterbrojfaktura pregledvlezna" name="filterbrojfaktura"
+                   formaction="/index.php/vlezni_fakturi/faktura/search_vlezna_faktura">
+        </div>
+        <div class="filter-vleznifak">
+            <?php
+            echo form_label('Коминтент: ', 'klient');
+            echo form_dropdown('klient', $klient, '', 'class="ddklient pregledvlezna"');
+            ?>
+        </div>
+        <div class="filter-vleznifak">
+            <?php
+            echo form_label('Пациент: ', 'pacient');
+            echo form_dropdown('pacient', $pacienti, '', 'class="ddpacient pregledvlezna"');
+            ?>
+        </div>
+        <div class="filter-vleznifak status-ui">
+            <?php
+            echo form_label('Статус:', 'status_options');
+            echo form_dropdown('status_options', $status_options, '', 'class="ddstatus pregledvlezna"');
+            ?>
+        </div>
+        <?php echo form_close(); ?>
+    </div>
+
+    <div class="izlezni-fakturi">
+    </div>
+    <div class="stavka">
+        <p class="naslovizleznifakturi" > ( <span class="vkupnostavki">0</span> ) Фактури за Министерство</p>
+        <div class="predtabela">
+            <table class="tizleznifakturi" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+<!--                    <th class="ac"></th>-->
+<!--                    <th class="ac"></th>-->
+                    <th class="ac"></th>
+                    <th class="broj">Број</th>
+                    <th class="datum">Датум</th>
+                    <th class="klient">Коминтент</th>
+                    <th class="osnova">Основица</th>
+                    <th class="valuta">Валута</th>
+<!--                    <th>Врзани Документи</th>-->
+                    <th>Оддел</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class='hiderow trow' fakturaid="">
+<!--                    <td class="deletefaktura1"><img width="15" height="15" alt="" src="/images/delete.png"></td>-->
+<!--                    <td class="editfaktura1"><img width="15" height="15" alt="" src="/images/edit.png"></td>-->
+                    <td class="infofaktura1"><img width="15" height="15" alt="" src="/images/information.png"></td>
+                    <td class="broj"></td>
+                    <td class="datum"></td>
+                    <td class="klient"></td>
+                    <td class="osnova"></td>
+                    <td class="valuta"></td>
+<!--                    <td class="zabeleska"></td>-->
+                    <td class="odel"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <table class="sumiranje">
+            <tfoot>
+            <tr>
+<!--                <td class="ac"></td>-->
+<!--                <td class="ac"></td>-->
+                <td class="ac"></td>
+                <td class="broj"></td>
+                <td class="datum"></td>
+                <td class="vkupnolabel">Вкупно:</td>
+                <td class="osnovasum"></td>
+                <td></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="stavkadetail">
+        <p class="naslov" > ( <span class="vkupnostavki">0</span> ) Фактури по документот - Детално</p>
+        <div class="predtabela">
+            <table class="tstavkadetail" border="1" cellspacing="2" cellpadding="2">
+                <thead>
+                <tr>
+                    <th class="ac"></th>
+                    <th class="redenbr">РБ</th>
+                    <th class="broj">Број</th>
+                    <th class="datum">Датум</th>
+                    <th class="klient">Коминтент</th>
+                    <th class="osnova">Основица</th>
+                    <th class="valuta">Валута</th>
+                    <th>Оддел</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class='hiderow trow' fakturaid="">
+                    <td class="infofaktura"><img width="15" height="15" alt="" src="/images/information.png"></td>
+                    <td class="redenbroj"></td>
+                    <td class="broj"></td>
+                    <td class="datum"></td>
+                    <td class="klient"></td>
+                    <td class="osnova"></td>
+                    <td class="valuta"></td>
+                    <td class="odel"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+function izlezni_fakturi_min_getSelektirana(){
+    if ( jQuery(".tizleznifakturi tbody tr.active").attr("fakturaid") > 0 ) {
+        return jQuery(".tizleznifakturi tbody tr.active").attr("fakturaid") ;
+    } else {
+        return 0;
+    }
+}
+jQuery(document).ready(function () {
+    jQuery('.periodod').datepicker({dateFormat:'yy-mm-dd'});
+    jQuery('.perioddo').datepicker({dateFormat:'yy-mm-dd'});
+
+    jQuery('.ddstatus, .ddklient, .ddpacient').combobox();
+    jQuery(".tizleznifakturi").tablesorter();
+    jQuery(".tstavkadetail").tablesorter();
+
+    if_ministerstvo_napolnilista();
+    jQuery(".cmd-printlink-izlezni-min").click(function(e){
+        if (izlezni_fakturi_min_getSelektirana()>0){
+            console.log(izlezni_fakturi_min_getSelektirana());
+            jQuery(".cmd-printlink-izlezni-min").attr("href","/index.php/print/pdf?view=/index.php/izlezni_fakturi/faktura/print_izlezna_faktura_min&id="+izlezni_fakturi_min_getSelektirana());
+        } else {
+            alert("Ве молиме одберете фактура");
+            e.preventDefault();
+            return false;
+        }
+    });
+});
+</script>

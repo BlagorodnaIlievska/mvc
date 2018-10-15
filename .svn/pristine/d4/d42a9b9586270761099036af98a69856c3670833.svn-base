@@ -1,0 +1,37 @@
+<div style="text-align: center; margin-bottom: 30px">Преглед на готовина</div>
+<div class="tab-gotovina">
+    <p class="naslovgotovina" > ( <span class="vkupnostavki"><?php echo count($gotovini, COUNT_NORMAL); ?></span> )  Готовина</p>
+    <?php
+    $vkupno = 0;
+    ?>
+    <div class="predtabela">
+        <table class="t-gotovina" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th>Каса</th>
+                <th class="sostojba">Состојба</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach($gotovini as $gotovina){ ?>
+            <tr>
+                <td class="kasa"><?php echo $gotovina->kasaIme; ?></td>
+                <td class="sostojba"><?php echo $gotovina->suma; ?></td>
+            </tr>
+                <?php
+            $vkupno += $gotovina->suma;
+            } ?>
+            </tbody>
+        </table>
+    </div>
+    <table class="sumiranje">
+        <tfoot>
+        <tr>
+            <td colspan="1">Вкупно:&nbsp;&nbsp;&nbsp;
+                </td>
+            <td class="vkupno"><?php  echo $vkupno; ?></td>
+        </tr>
+        </tfoot>
+    </table>
+
+</div>

@@ -1,0 +1,83 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Specifikacija extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+    public function index()
+{
+    $this->load->model('materijalno/materijalno_model');
+    $this->load->model('podatoci/artikl_model');
+    $this->load->model('finansiski_plan/plan_model');
+    $this->load->model('start/start_model');
+    $zabranetimagacini=$this->session->userdata('magacini');
+    $data['magacini'] = $this->start_model->getMagacini();
+    $data['artikli']=$this->artikl_model->getAll_limitirano($zabranetimagacini);
+    $data['dozvoleni_magacini']=$this->start_model->getDozvoleniMagacini();
+    $this->load->view('materijalno/specifikacija/index',$data);
+}
+    public function index_izlez()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/artikl_model');
+        $this->load->model('finansiski_plan/plan_model');
+        $this->load->model('start/start_model');
+        $zabranetimagacini=$this->session->userdata('magacini');
+        $data['magacini'] = $this->start_model->getMagacini();
+        $data['artikli']=$this->artikl_model->getAll_limitirano($zabranetimagacini);
+        $data['dozvoleni_magacini']=$this->start_model->getDozvoleniMagacini();
+        $this->load->view('materijalno/specifikacija/index_izlez',$data);
+    }
+    public function polnilista()
+    {
+        $this->load->model('materijalno/materijalno_model');
+       // $this->materiajlno_model->getVlezniIzlezniKolicini();
+        $return = $this->materijalno_model->zemiVlezIzlez();
+       //$return = $this->materijalno_model->samoIzlezniKolicini(3859);
+      // print_r($return); die();
+        echo json_encode($return);
+    }
+    public function prebaruvanje()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $magacin=$this->input->post('magacin');
+        $artikl=$this->input->post('artikl');
+        $period1=$this->input->post('period1');
+        $period2=$this->input->post('period2');
+        $query=$this->materijalno_model->prebaruvanje($magacin,$artikl,$period1,$period2);
+       // print_r($query); die();
+        echo json_encode($query);
+    }
+    public function prebaruvanje_izlez()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('podatoci/artikl_model');
+        $magacin=$this->input->post('magacin');
+        $magacinvo=$this->input->post('magacinvo');
+        $artikl=$this->input->post('artikl');
+        $period1=$this->input->post('period1');
+        $period2=$this->input->post('period2');
+        $zabranetimagacini=$this->session->userdata('magacini');
+        $query=$this->materijalno_model-> prebaruvanje_izlez($magacin,$magacinvo,$artikl,$period1,$period2);
+         print_r($query); die();
+        echo json_encode($query);
+    }
+    public function pecati_specifikacija(){
+        $this->load->model('materijalno/materijalno_model');
+        $magacin= $this->input->get('magacin');
+        $artikl=$this->input->get('artikl');
+        $period1=$this->input->get('period1');
+        $period2=$this->input->get('period2');
+        $query=$this->materijalno_model->prebaruvanje($magacin,$artikl,$period1,$period2);
+
+        $data['specifikacija']=$query;
+     //   print_r($data['specifikacija']);   die();
+        $data['main_content'] = 'materijalno/pecatenje/pecati_specifikacija';
+
+        $html = $this->load->view('includes/print_template', $data, true);
+        echo bis_fill_input_values($html, $data);
+
+    }
+}

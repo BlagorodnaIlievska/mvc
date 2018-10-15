@@ -1,0 +1,75 @@
+<div class="lekar-glavnalista">
+    <div class="lekarlista">
+        <div class="konto-novokonto">
+<? echo form_label('Конто: ', ' konto');
+echo form_dropdown('konto',$konto,'','class="konto-promena promena"');
+ ?>
+       </div>
+    <div class="konto-novokonto">
+       <?
+echo form_label('Коминтент: ', ' komintent');
+echo form_dropdown('komintent',$komintent,'','class="komintent-promena promena"');
+?>
+        </div>
+    </br>
+        <br>
+        <br>
+        <p class="naslovnalozi-promena"> Преглед</p>
+        <div class="predtabela">
+            <table class="kontalista-promena">
+                <thead>
+                <tr>
+                    <th class="pregled-po-konto">Конто</th>
+                    <th class="opis-na-konto" >Опис на конто</th>
+                    <th class="komintent-konto" >Коминтент</th>
+                    <th class="dolzi-konto">Должи</th>
+                    <th class="pobaruva-konto" >Побарува</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                <td>Салдо</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="saldo-konto text-right"></td>
+                </tfoot>
+            </table>
+
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+
+        jQuery(".kontalista-promena").tablesorter();
+       jQuery(".konto-promena").combobox();
+        jQuery(".komintent-promena").combobox();
+        promena_na_konta();
+        jQuery('.ui-combobox-input').live("keyup", function () {
+            var ovakopce = jQuery(this);
+            var div = ovakopce.closest("div");
+            var klasa = div.find("select").attr("class");
+            if(klasa == "konto-promena promena") {
+                var konto = ovakopce.val();
+              //  console.log("konto: ", konto);
+                promena_samo_na_konto(konto);
+            }
+       //     else if(klasa=="komintent-promena promena"){
+              //  var komintnet=ovakopce.val();
+             //   console.log(komintnet);
+              //  promena_samo_na_komintent(komintnet);
+
+           // }
+        });
+        jQuery('.promena').live('change', function(){
+                 var konto=jQuery('.konto-promena option:selected').val();
+                 var komintent=jQuery('.komintent-promena option:selected').val();
+              // console.log(konto,komintent);
+                promena_spored_dvata_atributi(konto,komintent);
+
+        });
+
+    } );
+</script>

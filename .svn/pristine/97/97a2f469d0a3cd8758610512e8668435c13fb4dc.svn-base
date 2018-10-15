@@ -1,0 +1,42 @@
+<div id="edit_fields_form">
+
+    <h2>Fields</h2>
+
+    <?php
+    $delete = img(array(
+        'src' => 'images/delete.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    ?>
+
+<table class="tabela" border="1" cellspacing="2" cellpadding="2">
+    <tr>
+        <th></th>
+        <th>Role</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Label</th>
+    </tr>
+
+    <?php if(isset($fields)): foreach($fields->result() as $row){
+
+    echo "<tr>";
+    echo "<td>". anchor("users/fields/delete_field/$row->id", $delete, array('class' => 'delete-tr')) . " "
+               . anchor("users/fields/edit_field/$row->id?ajax=1", $edit, array('class' => 'edit-tr')) . "</td>";
+    echo "<td>" . $row->role_name . "</td>";
+    echo "<td>" . $row->name . "</td>";
+    echo "<td>" . $row->type . "</td>";
+    echo "<td>" . $row->label . "</td>";
+}
+    ?>
+    </table>
+
+    <?php endif; ?>
+
+</div>

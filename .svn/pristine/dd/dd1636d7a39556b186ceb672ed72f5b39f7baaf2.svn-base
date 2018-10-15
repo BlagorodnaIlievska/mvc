@@ -1,0 +1,117 @@
+.naslovizleznifakturi {background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;padding: 1px;margin: 5px 0 0 0;}
+div.f-od-dobavuvac span.arhivskibroj {line-height: 1.7; margin-left: 5px;}
+.dodadeni-ispratnici {clear: both;}
+
+.detali .sumiranje.sumfakturi td {overflow: hidden;}
+.detali .sumiranje.sumfakturi {table-layout: fixed;}
+
+.detali .sumiranje.sumfakturi .datum {width: 80px;display: none;}
+.detali .sumiranje.sumfakturi .vkupnolabel {width: 80px;}
+.detali .sumiranje.sumfakturi .vkupnovkupno {width: 114px;}
+
+.faktura-ministerstvo-form .f-od-dobavuvac.datum {width: 165px; margin-top: 0;}
+.faktura-fzom-form .f-od-dobavuvac.datum {width: 165px; margin-top: 0;}
+
+.fzomfaktura {table-layout: fixed;}
+.fzomfaktura td {overflow: hidden;}
+.fzomfaktura td input {width: 100%;}
+.fzomfaktura th.delete {width: 16px;}
+.fzomfaktura th.redenbr {width: 38px;}
+.fzomfaktura th.sifra {width: 160px;}
+.fzomfaktura th.naziv {width:auto;}
+.fzomfaktura th.kolicina {width: 170px;}
+.fzomfaktura th.ref-cena {width: 115px;}
+.fzomfaktura th.vkupno {width: 115px;}
+.t-right , .t-right input {text-align: right;}
+fieldset.ceni label {float: left;line-height: 1.6;width: 350px;}
+fieldset.ceni .inlineceni {margin-bottom: 3px;text-align: right;}
+.prikaz table.sumiranje.sumklienti td.vkupnovkupno {padding-right: 20px;}
+.perioddatum {margin-left: 10px;}
+.periodkonto label:last-child {margin-left: 10px;}
+.pacient-pk {margin-left: 10px;}
+.vleznifak-top .baraj.button {margin: 0px;}
+.filter-dospeanost .pacient {margin-left: 10px;}
+input.datum {margin-left: 0 !important;}
+
+.izlez-form-fzom .sumiranje td.ac {width: 14px !important;}
+.izlez-form-fzom .sumiranje td.broj {width: 89px;}
+.izlez-form-fzom .sumiranje td.datum {width: 104px;}
+.izlez-form-fzom .sumiranje td.vkupnolabel {}
+.izlez-form-fzom .sumiranje td.osnovasum {}
+
+.izlez-form-fzom table.tizleznifakturi th.broj {width: 75px;}
+.izlez-form-fzom table.tizleznifakturi th.datum {width: 90px;}
+.izlez-form-fzom table.sumiranje .ac {width: 20px;}
+.izlez-form-fzom table.sumiranje .vkupnolabel {width: 414px !important;}
+.izlez-form-fzom table.sumiranje .osnovasum {width: 145px !important;}
+.izlez-form-fzom table.tizleznifakturi .osnova {width: 131px !important;}
+
+
+.izlez-form-fzom table.tstavkadetail .redenbr {width: 50px;}
+.izlez-form-fzom table.tstavkadetail .broj {width: 85px;}
+.izlez-form-fzom table.tstavkadetail .klient {width: 300px;}
+.izlez-form-fzom table.tstavkadetail .osnova {width: 130px;}
+.izlez-form-fzom table.tstavkadetail .valuta {width: 45px;}
+
+.izlez-form .stavka .sumiranje .deletefaktura ,
+.izlez-form .stavka .sumiranje .editfaktura ,
+.izlez-form .stavka .sumiranje .infofaktura {width: 14px;}
+.izlez-form .stavka .sumiranje .broj {width: 79px;}
+.izlez-form .stavka .sumiranje .datum {width: 89px;}
+.izlez-form .stavka .sumiranje .osnovasum {width: 125px !important;}
+
+.izleznidospeanost .sumiranje.sumdenes .vkupnolabel ,
+.izleznidospeanost .sumiranje.sumidnina .vkupnolabel ,
+.izleznidospeanost .sumiranje.summinato .vkupnolabel {width: 230px !important;}
+.izleznidospeanost .sumiranje.sumdenes .vkupnovkupno {width: 130px !important;}
+
+.izlez-form-ministerstvo .tizleznifakturi th.broj {width: 80px;}
+.izlez-form-ministerstvo .tizleznifakturi th.datum {width: 90px;}
+
+.izlez-form-ministerstvo .sumiranje .ac {width: 14px;}
+.izlez-form-ministerstvo .sumiranje .broj {width: 94px}
+.izlez-form-ministerstvo .sumiranje .datum {width: 104px;}
+.izlez-form-ministerstvo .sumiranje .vkupnolabel {width: 198px;}
+.izlez-form-ministerstvo .sumiranje .osnovasum {width: 125px;}
+
+.izlez-form-ministerstvo .tstavkadetail th.redenbr {width: 25px;}
+.izlez-form-ministerstvo .tstavkadetail th.broj {width: 100px;}
+.izlez-form-ministerstvo .tstavkadetail th.osnova {width: 100px;}
+.izlez-form-ministerstvo .tstavkadetail th.klient {width: 300px ;}
+
+.info-faktura-fzom-form .f-od-dobavuvac.datum {margin-top: 0;}
+.reset-baraj {clear: both;}
+.datumnovaizlezna {margin-top: -17px !important;}
+.izlezni-novafakturatabela {margin-top: 5px;}
+.tstavki-infofzomfaktura {table-layout: fixed;}
+.tstavki-infofzomfaktura td {overflow: hidden;}
+
+.tstavki-infofzomfaktura th.redenbr {width: 30px;}
+.tstavki-infofzomfaktura th.sifra {width: 145px;}
+.tstavki-infofzomfaktura th.kolicina {width: 165px;}
+.tstavki-infofzomfaktura th.naziv {width: auto;}
+.tstavki-infofzomfaktura th.ref-cena {width: 120px;}
+.tstavki-infofzomfaktura th.vkupno {width: 120px;}
+
+.tstavki-infofzomfaktura td.cena,
+.tstavki-infofzomfaktura td.vkupno {text-align: right;}
+.tstavki-infofzomfaktura td:first-child + * + * + *  {text-align: right;}
+
+/*Izlezni Fakturi - Pregled Izlezni - Izlezni FZOM*/
+
+.izlez-form-fzom .tizleznifakturi .datum-od.tablesorter-header {width: 75px;}
+.izlez-form-fzom .tizleznifakturi .datum-do.tablesorter-header {width: 75px;}
+.faktura-fzom-form .filter-fzom-period {float: left;}
+.faktura-fzom-form .filter-fzom-komintent {float: left; margin-left: 50px;}
+.naslov-oddeli {background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;padding: 1px;margin: 5px 0 0 0;}
+.stavkadetail .tstavkadetail th.redenbr {width: 25px !important;}
+.stavkadetail .tstavkadetail th.broj-faktura {width: 110px;}
+.stavkadetail .tstavkadetail th.broj-lekuvanje {width: 120px;}
+.stavkadetail .tstavkadetail th.datum {width: 75px;}
+.stavkadetail .tstavkadetail th.klient {width: 200px !important;}
+.stavkadetail .tstavkadetail th.referentna-cena {width: 120px;}
+.stavkadetail .tstavkadetail th.participacija {text-align: left !important; width: 105px;}
+.stavkadetail .tstavkadetail th.naplata-za-fzom {width: 125px;}
+.stavkadetail .tstavkadetail th.valuta {width: 50px;}
+
+.tabela-fzom-oddeli th.ac {width: 30px;}

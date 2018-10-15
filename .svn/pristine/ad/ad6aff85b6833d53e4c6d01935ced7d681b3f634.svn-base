@@ -1,0 +1,70 @@
+<html>
+<head>
+</head>
+<body>
+
+<p align='center'>Pregled na lista uplati-isplati</p>
+
+<table  border='1'   width='150' height='60' align='center'>
+    <tr>
+        <th>No.</th>
+        <th>Tip</th>
+        <th>Datum</th>
+        <th>Broj</th>
+        <th>Prihod</th>
+        <th>Rashod</th>
+        <th>Grupa</th>
+        <th>Zabeleska</th>
+    </tr>
+
+    <?php
+    $reden=1;
+
+    if(isset($q)){
+        foreach($q as $row){
+
+            echo "<tr>" ;
+
+            echo "<td width='20'>" . $reden . "</td>";
+            if($row->tip==40 || $row->tip==50){  echo "<td width='80'>Ziro</td>";}
+            elseif($row->tip==540 || $row->tip==550){echo "<td width='80'>Kasa</td>";}
+            elseif(!(isset($row->tip))){  echo "<td width='80'></td>";}
+            echo "<td width='80'>" . $row->datum. "</td>";
+            echo "<td width='80'>" . $row->textBroj. "</td>";
+            if($row->tipID==1)
+            {
+                echo "<td width='80'>" . $row->uplata. "</td>";
+                echo "<td width='80'></td>";
+            }
+            if($row->tipID==2){
+                echo "<td width='80'></td>";
+                echo "<td width='80'>" . $row->uplata. "</td>";
+            }
+
+            echo "<td width='80'>" . $row->tipIme. "</td>";
+            echo "<td width='80'>" . $row->zabeleska. "</td>";
+
+
+
+
+            echo " </tr>";
+            $reden=$reden+1;
+
+        }
+    }
+    else {echo 'Vo momentov nema kasi';}
+    ?>
+
+</table>
+<br>
+<br>
+<br>
+<!--<p class="doleLevo">
+    <?//echo 'Osnova vkupno  :'.$o;?>
+    <br>
+    <?//echo 'Ddv vkupno :'.$d;?>
+    <br>
+    <? //echo 'Vkupno :'.$v;?>
+</p>-->
+</body>
+</html>

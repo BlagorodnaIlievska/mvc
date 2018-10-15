@@ -1,0 +1,238 @@
+function korisnici_proveridalipostoi(korisnik) {
+    if (jQuery(korisnik).val().length > 3) {
+        var data = {  username: jQuery(korisnik).val()  }
+        jQuery('.checkUser').addClass('preloader');
+        var korisnikproveriurl = "/index.php/korisnici/korisnici/korisnikpostoi";
+        jQuery.ajax({
+            url: korisnikproveriurl,
+            type: 'POST',
+            data: data,
+            success: function (response) {
+                jQuery('.checkUser').removeClass('preloader');
+                if (response == 'ok') {
+                    jQuery('.checkUser').removeClass('not_available').addClass('available');
+                } else {
+                    jQuery('.checkUser').removeClass('available').addClass('not_available');
+                }
+            }
+        });
+    } else {
+        jQuery('.checkUser').removeClass('available').addClass('not_available');
+    }
+}
+function korisnici_edit(com, grid) {
+    var korisnik_id = bis_getAktivenKorisnik();
+    if (!korisnik_id > 0 ){
+        popupmessage('Ве молиме одберете корисник');
+        return false;
+    }
+
+    var formurl = "/index.php/korisnici/korisnici/izmeni_korisnik";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: {id: korisnik_id},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                title: "Измени корисник",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            jQuery(".korisnici-korisnikpostoi").change(function () {
+                korisnici_proveridalipostoi(jQuery(this));
+            });
+            jQuery(".korisnici-korisnikpostoi").keyup(function () {
+                korisnici_proveridalipostoi(jQuery(this));
+            });
+            jQuery(".korisnici-vnesiatributi-tabela").tablesorter();
+        }
+    });
+}
+function korisnici_delete(com, grid) {
+    var conf = confirm('Delete ' + $('.trSelected', grid).length + ' items?')
+    if (conf) {
+        $.each($('.trSelected', grid),
+            function (key, value) {
+                $.get('example4.php', { Delete: value.firstChild.innerText}
+                    , function () {
+                        // when ajax returns (callback), update the grid to refresh the data
+                        $(".tabela-korisnici").flexReload();
+                    });
+            });
+    }
+}
+function korisnici_nov() {
+
+    var formurl = "/index.php/korisnici/korisnici/nov_korisnik";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: {},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: "auto",
+                position: "center",
+                title: "Нов корисник",
+                close: function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            jQuery(".korisnici-korisnikpostoi").change(function () {
+                korisnici_proveridalipostoi(jQuery(this));
+            });
+            jQuery(".korisnici-korisnikpostoi").keyup(function () {
+                korisnici_proveridalipostoi(jQuery(this));
+            });
+            jQuery(".korisnici-vnesiatributi-tabela").tablesorter();
+
+
+        }
+    });
+}
+function korisnici_napolnilista() {
+    var formurl = "/index.php/korisnici/korisnici/napolnilista";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: {},
+        dataType: 'json',
+        success: function (response) {
+            jQuery(".korisnicilista .tabela-osnova tbody").html('');
+            jQuery.each(response, function (index, item) {
+
+                jQuery(".korisnicilista .tabela-osnova tbody").append(('<tr korisnikid="' + item.id + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                    '</td>' +
+                    '<td>' + item.username + '</td>' +
+                    '<td>' + item.email + '</td>' +
+                    '<td>' + item.covecki_resursi_id + '</td>' +
+
+                    '</tr>'));
+            });
+            jQuery(".tabela-osnova").trigger("update");
+        }
+    });
+}
+function korisnici_prikazikorisnik(korisnikid) {
+    return;
+    var formurl = "/index.php/korisnici/korisnici/prikazi_korisnik";
+    var data = {  id: korisnikid  }
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+
+            jQuery(".korisniciatributi .tabela-atributi tbody").html('');
+            jQuery.each(response, function (index, item) {
+                if (typeof item.atributi != "undefined") {
+
+
+                    jQuery.each(item.atributi, function (index2, item2) {
+
+                        jQuery(".korisniciatributi .tabela-atributi tbody").append(('<tr uid="' + item2.uid + '">' +
+
+                            '<td>' + item2.naslov + '</td>' +
+                            '<td>' + item2.vrednost + '</td>' +
+
+                            '</tr>'));
+
+
+                    });
+                }
+
+            });
+            jQuery(".tabela-atributi").trigger("update");
+
+        }
+    });
+}
+
+function bis_getAktivenKorisnik() {
+    var returnx = jQuery(".korisniciosnova .trSelected td[abbr=id] div").html();
+    if (returnx != "undefined" || typeof returnx != "undefined") {
+        return returnx;
+    } else {
+        return 0;
+    }
+}
+function bis_korisniciReload(){
+    jQuery(".tabela-korisnici").flexReload();
+}
+function bis_korisniciLista()
+{
+
+    jQuery(".tabela-korisnici").flexigrid({
+        url: '/index.php/korisnici/korisnici/napolnilista',
+        dataType: 'json',
+        colModel : [
+            {display: 'Корисничко име', name : 'username', width : 180, sortable : true, align: 'center'},
+            {display: 'E-Mail', name : 'email', width : 200, sortable : true, align: 'left'},
+//                {display: 'Printable Name', name : 'printable_name', width : 120, sortable : true, align: 'left'},
+            {display: 'ID', name : 'id', width : 10, sortable : true, align: 'left', hide: true},
+//                {display: 'Number Code', name : 'numcode', width : 80, sortable : true, align: 'right'}
+        ],
+
+        buttons : [ {
+            name : 'Нов',
+            bclass : 'add',
+            onpress : korisnici_nov
+        }
+            ,
+            {
+                name : 'Измени',
+                bclass : 'edit',
+                onpress : korisnici_edit
+            }
+            ,
+            {
+                name : 'Избриши',
+                bclass : 'delete',
+                onpress : korisnici_delete
+            }
+            ,
+            {
+                separator : true
+            }
+        ],
+        searchitems : [
+            {display: 'Корисничко име', name : 'username', isdefault: true},
+            {display: 'E-Mail', name : 'email'}
+        ],
+        sortname: "id",
+        sortorder: "desc",
+        usepager: true,
+        title: 'Корисници',
+        useRp: true,
+        rp: 15,
+        showTableToggleBtn: true,
+//            width: 1024,
+//            onSubmit: addFormData,
+        height: 200
+
+    });
+}

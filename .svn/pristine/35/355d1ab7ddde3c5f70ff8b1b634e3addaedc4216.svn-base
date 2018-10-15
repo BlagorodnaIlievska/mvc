@@ -1,0 +1,87 @@
+<div class="nov-artikl nov-obrazec-s">
+<form action="/index.php/upati/upati/create_obrazec" method="post">
+    <input type="hidden" name="priem_id" value="<?php echo $priem_id ?>"/>
+<div class="obrazecc">
+<p class="zbor">ОБРАЗЕЦ - С</p>
+    <input type="hidden" name="tip" value="obrazec_s">
+    <div class="naslov">
+        <input type="text" class="input_linii" maxlength="37" style="width: 350px" value="ЈЗУ Ургентни Клиники" disabled=""><br/>
+        <span class="smotano">(назив на здравствената установа)</span><br/>
+
+        <h4 style="text-align: left">ДО<br> ФОНД ЗА ЗДРАВСТВЕНО ОСИГУРУВАЊЕ<br> НА МАКЕДОНИЈА<br>
+            ПОДРАЧНА СЛУЖБА<input type="text" name="fzo_podracna" class="input_linii" width="100px" maxlength="15"></h4>
+    <br/>
+        <h4 style="text-align: left">ПРЕДМЕТ: <i>Пријава за сообраќајна незгода</i></h4><br>
+        <input type="hidden" name="predmet" value="Пријава за сообраќајна незгода">
+    </div>
+    <div class="predmet">
+
+        На ден <input type="text" name="datum" class="input_linii" value="<?php echo date('d-m-Y'); ?>"><input type="hidden" name="vreme" value="<?php echo date('H:i'); ?>"> во нашата здравствена установа е примен на лекување
+        осигуреникот <input type="text" name="ime" disabled="" class="input_linii" style="width: 60px">
+        <input type="text" name="tatkovoime" disabled="" class="input_linii" style="width: 60px">
+        <input type="text" name="prezime" disabled="" class="input_linii" style="width: 100px">од <input type="text" name="ulica" class="input_linii" disabled="" width="50px">,
+        <input type="text" name="grad" class="input_linii" disabled="" width="50px"><input type="text" name="drzava" class="input_linii" disabled="" width="50px">
+        со број на здравствена легитимација <input type="text" name="br_zdravstvena_legitimacija" class="input_linii" disabled="" maxlength="14">
+    и единствен матичен број <input type="text" name="embg" maxlength="13" class="input_linii" disabled=""> кој има претрпено телесна повреда со дијагноза: <textarea name="dijagnoza" rows="3" style="width: 500px; vertical-align: middle" maxlength="140"></textarea> .<br>
+    Повредата е предизвикана како последица на сообраќајна незгода предизвикана од моторно возило со регистарски број <input type="text" name="vozilo_regist_br" class="input_linii" maxlength="17">
+    управувано од (име)<input type="text" name="ime_sopstv_vozilo" class="input_linii" style="width: 250px" maxlength="30">&nbsp;&nbsp;(презиме)<input type="text" name="prezime_sopstv_vozilo" class="input_linii" style="width: 250px" maxlength="30">.<br>
+    Осигуреникот во нашата установа беше задржан на лекување од <input type="text" name="datum_lekuvanje_od" class="input_linii datum"> до <input type="text" name="datum_lekuvanje_do" class="input_linii datum">
+    и за лекување на осигуреникот направени се трошоци во износ од <input type="text" name="iznos_den" class="input_linii" maxlength="10"> денари за што доставуваме оригинал фактура.<br>
+    <i>Прилог:I</i>
+    </div>
+    <p style="text-align: center; font-weight: bold">М.П.</p>
+    <p style="text-align: right">Потпис на овластено лице,<br><input type="text" name="potpis_ovlasten" class="input_linii" style="width: 200px" maxlength="20"></p>
+
+</div>
+    <div class="addstavka floatright">
+        <?php if($print == 2) { ?>
+        <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_obrazec_c&id=" class="printlink" target="_blank" >
+            <button type="button" class="print"><span>Принт</span></button>
+        </a>
+        <?php } ?>
+        <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_obrazec_c&id=" class="printlinkupati hide" target="_blank" >
+            <button type="button" class="print"><span>Принт</span></button>
+        </a>
+        <button type="button" class="button snimi-forma-upati" poraka_uspesno="успешно снимен"
+                poraka_neuspesno="Грешка при снимање"  izvrsi="lekuvanja_listasozapisi(lekuvanja_getaktiven_priemid())"
+                ><span>Сними</span></button>
+
+    </div>
+</form>
+    </div>
+    <script>
+        jQuery('.datum').datepicker({dateFormat:'yy-mm-dd'});
+
+    </script>
+    <style>
+        .obrazecc{
+            margin-top: 20px; margin-left: 70px; margin-right: 70px; margin-bottom: 20px;
+        }
+        .zbor{
+            text-align: right;
+
+        }
+        .naslov{
+            background-color: #ffffff;
+            width: 500px;
+        }
+        .predmet{
+            text-align: justify;
+            line-height: 300%;
+            width: 600px;
+
+        }
+        .input_linii{
+           border-left: none;
+            border-right: none;
+            border-top: none;
+            border-bottom-style: dashed;
+
+        }
+.smotano{
+    display: block;
+    text-align: center;
+    width: 350px
+;
+}
+    </style>

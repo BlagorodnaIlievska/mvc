@@ -1,0 +1,77 @@
+<?php
+?>
+<div class="povrzi-dogovor">
+
+
+<fieldset>
+    <legend>Договори</legend>
+    <div class="tabela">
+        <table class="vnesenidogovori" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th></th>
+
+                <th>Број на тендер</th>
+                <th>Датум на тендер</th>
+                <th>Вид постапка</th>
+                <th>Број на дог.</th>
+                <th>Датум на скл. на дог.</th>
+                <th>Датум на ист. на дог.</th>
+                <th>Клиент</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='hiderow trow'>
+                <td> <input type='checkbox' class='povrzi' name='povrzi' /></td>
+
+                <td class="brojt"></td>
+                <td class="datumt"></td>
+                <td class="vid"></td>
+                <td class="brojd"></td>
+                <td class="datumd"></td>
+                <td class="datumi"></td>
+                <td class="klient"></td>
+            </tr>
+            </tbody>
+        </table>
+        <button class="dodadipriemnici button" ><span>Копирај и поврзи</span></button>
+        <input type="hidden" class="klient-dogovor" value="<?php echo $klient;?>">
+    </div>
+</fieldset>
+</div>
+<script>
+    jQuery(document).ready(function() {
+                  var rb=1;
+        jQuery.ajax({
+            url: "/index.php/javni_nabavki/javni_nabavki/getDogovori",
+            type: 'POST',
+            data:{ klient: jQuery(".klient-dogovor").val() },
+            dataType: 'json',
+            success: function(response) {
+                //console.log(response);
+                if(response)
+                {
+                    jQuery(".vnesenidogovori").find("tr:gt(1)").remove();
+                    var tr = jQuery('.vnesenidogovori tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+
+                        newrow.find('.brojt').text(response[i].broj_tender);
+                        newrow.find('.datumt').text(response[i].datum_tender);
+                        newrow.find('.vid').text(response[i].vid_postapka);
+                        newrow.find('.brojd').text(response[i].broj_dogovor);
+                        newrow.find('.datums').text(response[i].datum_sklucuvanje_dogovor);
+                        newrow.find('.datumi').text(response[i].datum_istekuvanje_dogovor);
+                        newrow.find('.klient').text(response[i].klient);
+
+                    }
+                    rb++;
+                    tr.addClass('hiderow');
+                    jQuery(".vnesenidogovori").trigger("update");
+                }
+            }
+        });
+    });
+
+</script>

@@ -1,0 +1,45 @@
+<button type="button" value="" class="button bnovobaranje"><span>Ново барање</span></button>
+<div class="stavka2">
+    <p class="naslovvleznifakturi" > ( <span class="vkupnostavki">0</span> ) <span class="status">Барања</span></p>
+    <div class="predtabela2">
+        <table class="tbaranja" border="1" cellspacing="2" cellpadding="2">
+            <thead style="height: 30px;">
+            <tr>
+                <th class="ac deletebaranje"></th>
+                <th class="ac editbaranje"></th>
+
+                <th class="broj_baranje">Број на барање</th>
+                <th class="datum_baranje">Датум на барање</th>
+                <th class="baranje_mesec">Барање за месец.</th>
+                <th class="predmet_baranje">Предмет на барањето</th>
+                <th class="klient">Клиент</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr class='hiderow trow' id="">
+                <td class="deletebaranje"><img width="15" height="15" alt="" src="/images/delete.png"></td>
+                <td class="editbaranje"><img width="15" height="15" alt=""
+                                             src="/images/edit.png"></td>
+
+                <td class="brojb"></td>
+                <td class="datumb"></td>
+                <td class="baranjem"></td>
+                <td class="baranjep"></td>
+                <td class="kl"></td>
+
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<script>
+    jQuery(document).ready(function () {
+        baranja_napolnilista();
+        jQuery('.bnovobaranje').click(function () {
+            novo_baranje();
+        });
+    });
+</script>

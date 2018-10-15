@@ -1,0 +1,108 @@
+<div class="transfer-form">
+    <form action="/index.php/materijalno/interni/novInterenTransfer" class="interen-transfer-form">
+    <div class="left1">
+        <label>Broj</label>
+        <input type='text' class='broj big' name="broj">
+        <label for="datum">Datum</label>
+        <input type="text" name="datum" id="datum"><br>
+        <label for="barcode">Barcode</label>
+        <input type="text" name="barcode" id="barcode" readonly><br>
+    </div>
+    <div class="right1">
+        <?php
+        echo form_label('Magacin: ', 'magacin');
+        echo form_dropdown('magacin', $magacin);
+        echo br();
+        echo form_label('Vo: ', 'magacin2');
+        echo form_dropdown('magacin2', $magacin);
+        //echo form_dropdown('cenovnik', $cenovnik);
+        ?>
+    </div>
+    <div class="addstavka">
+        <input type="button" value="Dodadi stavka" class="addtr button" formaction="/index.php/materijalno/priemnica/novaStavka">
+    </div>
+    <table class="tpriemnica" border="1" cellspacing="2" cellpadding="2">
+        <caption>Stavki vo dokumentot - detalno</caption>
+        <tr>
+            <th></th>
+            <th>No.</th>
+            <th>Sifra</th>
+            <th>Sifra 2</th>
+            <th>Kat. Broj</th>
+            <th>Stavka</th>
+            <th>Kol</th>
+            <th>EM</th>
+            <th>Cena</th>
+            <th>Vkupno</th>
+        </tr>
+        <?php
+        echo "<tr class='detali trow'>";
+        echo "<td>" . $delete . "</td>";
+        echo "<td> <input type='text' class='number small' name='tnumber' readonly> </td>";
+        echo "<td> <input type='text' class='sifra medium' name='tsifra'> </td>";
+        echo "<td> <input type='text' class='sifra2 medium' name='tsifra2'> </td>";
+        echo "<td> <input type='text' class='katbroj medium' name='tkatbroj'> </td>";
+        echo "<td> <input type='text' class='stavka big' name='tstavka'> </td>";
+        echo "<td> <input type='text' class='kolicina small' name='tkolicina'> </td>";
+        echo "<td> <input type='text' class='edicinamerka small' name='tedmerka' readonly> </td>";
+        echo "<td> <input type='text' class='cena medium' name='tcena' readonly> </td>";
+        echo "<td> <input type='text' class='vkupno medium' name='tvkupno' readonly> </td>";
+        echo "</tr>";
+        ?>
+    </table>
+    <div class="submitbutton">
+        <input type="button" value="Snimi" class="submitpriemnica button">
+    </div>
+    <div class="vkupno">
+        <label>Vkupno Kolicina</label>
+        <input type='text' class='vkupnokolicina big' name="vkupnokolicina" readonly>
+        <label>Vkupna Cena</label>
+        <input type='text' class='vkupnacena big' name="vkupnacena" readonly>
+        <label>Vlezna Vkupna Cena</label>
+        <input type='text' class='vleznavkupnacena big' name="vleznavkupnacena">
+    </div>
+    </form>
+</div>
+
+<script>
+    jQuery(document).ready(function () {
+        jQuery('#datum').datepicker();
+        jQuery('.submitpriemnica').click(function () {
+            var formaction = jQuery(this).closest("form").attr('action');
+            var dialogid = jQuery(this).parent().parent().parent().parent();
+            var index = 1;
+            jQuery('.tpriemnica tr:last').remove();
+            jQuery("tr.detali").each(function () {
+                jQuery(this).find('td').each(function () {
+                    var name = jQuery(this).find("input").attr('name');
+                    var newname = name + "[" + index + "]";
+                    jQuery(this).find("input").attr('name', newname);
+                })
+                index = parseInt(index) + 1;
+            });
+            var zacuvajkopce = jQuery(this);
+            jQuery.ajax({
+                type: "post",
+                url: formaction,
+                data: jQuery(this).closest("form").serialize(),
+                success: function (response) {
+                    console.log(response);
+                    destroyparentdialog(zacuvajkopce);
+                }
+            });
+        });
+        jQuery('.addtr').live('click', function () {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true, width: 800}).load(jQuery(this).attr('formaction'));
+        });
+        jQuery(".deletetr").live('click', function () {
+            var trow = jQuery(this).closest('tr');
+            var trowclass = trow.attr('class');
+            if ((!trow.is(":last-child"))) {
+                trow.remove();
+            }
+        });
+    });
+</script>

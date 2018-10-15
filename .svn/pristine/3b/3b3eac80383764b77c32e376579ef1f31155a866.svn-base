@@ -1,0 +1,174 @@
+<div id="edit_pacient_form">
+    <?php
+    $delete = img(array(
+        'src' => 'images/delete.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $pol=array(
+        '0'=>'машки',
+        '1'=>'женски'
+    );
+    echo form_open('');?>
+    <fieldset class='podatoci'>
+<?
+     echo form_label('Име:', 'ime');?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   <?  echo form_input('ime','','class="ddime listapacienti"');?>&nbsp;&nbsp;&nbsp;
+
+ <?   echo form_label('Пациент ID :', 'pacientID');
+    echo form_input('pacientID','','class="ddpacientid listapacienti"');?>&nbsp;&nbsp;&nbsp;
+  <?  echo form_label('ЕМБГ :', 'embr');
+    echo form_input('embr','','class="ddembr listapacienti"');
+    echo br();
+    echo form_label('Татково име:', 'tatkovoIme');
+    echo form_input('tatkovoIme','','class="ddtatkovo listapacienti"');?>&nbsp;&nbsp;&nbsp;
+  <?  echo form_label('Датум раѓ:', 'datRag');?>&nbsp;
+  <?  echo form_input('datRag','','class="dddatum listapacienti"');?>&nbsp;&nbsp;&nbsp;
+ <?   echo form_label('ЕЗБО :', 'ezbo');
+    echo form_input('ezbo','','class="ddezbo listapacienti"');
+    echo br();
+    echo form_label('Презиме:', 'prezime');?>&nbsp;&nbsp;&nbsp;
+  <?  echo form_input('prezime','','class="ddprezime listapacienti"');?>&nbsp;&nbsp;&nbsp;
+   <? echo form_label('Пол:', 'pol');?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   <? echo form_dropdown('pol',$pol,'','class="ddpol listapacienti"');
+        echo br();
+    ?>
+        </fieldset>
+
+
+<div>
+    <button type="button" value="" class="pacientbutton button bnovafak"><span>Нов пациент</span></button>
+
+<table class="pacienttbl" border="1" cellspacing="2" cellpadding="2">
+    <tr>
+
+        <td></td>
+        <td></td>
+        <td>Име</td>
+        <td>Татково име</td>
+        <td>Презиме</td>
+        <td>БЗД </td>
+        <td>ЕМБР</td>
+        <td>Адреса</td>
+        <td>Број</td>
+        <td>Населено место</td>
+        <td>Општина</td>
+        <td>Држава</td>
+    </tr>
+
+    <?php if(isset($pacient)): foreach($pacient as $row){
+
+    echo "<tr>";
+    echo "<td>". anchor("pacienti/pacienti/delete_pacient/$row->pacientID", $delete, array('class' => 'delete-tr')) . " "
+        . anchor("pacienti/pacienti/edit_pacient/$row->pacientID?ajax=1", $edit, array('class' => 'edit-tr')) . "</td>";
+    echo "<td> <input type='hidden' class='id' name='id' value='$row->pacientID' ></td>";
+    echo "<td> <input type='text' class='ime' name='ime' value='$row->ime' ></td>";
+     echo "<td> <input type='text' class='tatkovoIme' name='tatkovoIme' value='$row->tatkovoIme'></td>";
+    echo "<td> <input type='text' class='prezime' name='prezime' value='$row->prezime'></td>";
+    echo "<td> <input type='text' class='ezbo' name='bzd' value='$row->ezbo' ></td>";
+    echo "<td> <input type='text' class='embr' name='embr' value='$row->embr' ></td>";
+
+    echo "<td> <input type='text' class='ulica' name='ulica' value='$row->ulica' ></td>";
+    echo "<td> <input type='text' class='broj' name='broj' value='$row->broj' ></td>";
+    echo "<td> <input type='text' class='naselenoMesto' name='naselenoMesto' value='$row->naselenoMesto' ></td>";
+
+    echo "<td> <input type='text' class='opstina' name='opstina' value='$row->opstina' ></td>";
+    echo "<td> <input type='text' class='drzava' name='drzava' value='$row->drzava' ></td>";
+
+
+}
+    ?>
+    </table>
+ </div>
+
+    <?php endif; ?>
+
+
+
+</div>
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.pacientbutton').click(function()
+        {
+            var formaction="/index.php/pacienti/pacienti/new_pacient";
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({ autoOpen: true, width: 1100 }).load(formaction);
+        });
+        jQuery('.pacienttbl tr').live("dblclick", function(){
+            var id = jQuery(this).find('.id').val();
+            //console.log(id);
+            var formaction= "/index.php/pacienti/pacienti/update?id=" + id;
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({
+                autoOpen: true,
+                width: 1100,
+                close: function(event, ui){
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+                //buttons:{ "Close": function() { jQuery(this).dialog('destroy'); } }
+            }).load(formaction);
+        });
+        jQuery('.listapacienti').live('change',function(){
+
+           jQuery(".pacienttbl").find("tr:gt(1)").remove();
+            var ime = jQuery('.ddime').val();
+            var pacientid = jQuery('.ddpacientid').val();
+            var embr = jQuery('.ddembr').val();
+            var tatkovo = jQuery('.ddtatkovo').val();
+            var datrag = jQuery('.dddatum').val();
+            var ezbo = jQuery('.ddezbo').val();
+            var prezime = jQuery('.ddprezime').val();
+         var pol = jQuery('.ddpol option:selected').val();
+            var formaction = "/index.php/pacienti/pacienti/prebaruvaj";
+        // console.log(ime,pacientid,embr,tatkovo,datrag,ezbo,prezime);
+            var data = {
+                imeid: ime,
+                pacientid: pacientid,
+                embrid: embr,
+                tatkovo: tatkovo,
+                datrag:datrag,
+                ezboid:ezbo,
+                prezimeid:prezime,
+                polid:pol
+            }
+            jQuery.ajax({
+                url: formaction,
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                   console.log(response);
+                    var tr = jQuery('.pacienttbl tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('.ime').val(response[i].ime);
+                        newrow.find('.tatkovoIme').val(response[i].tatkovoIme);
+                        newrow.find('.prezime').val(response[i].prezime);
+                        newrow.find('.ezbo').val(response[i].ezbo);
+                        newrow.find('.embr').val(response[i].embr);
+                        newrow.find('.ulica').val(response[i].ulica);
+                        newrow.find('.broj').val(response[i].broj);
+                        newrow.find('.naselenoMesto').val(response[i].naselenoMesto);
+                        newrow.find('.opstina').val(response[i].opstina);
+                        newrow.find('.drzava').val(response[i].drzava);
+                    }
+                    //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                    tr.addClass('hiderow');
+                }
+            });
+        });
+
+    });
+</script>

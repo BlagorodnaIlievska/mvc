@@ -1,0 +1,184 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+
+
+class Proizvoditel extends CI_Controller{
+
+
+
+    function __construct()
+    {
+
+        parent::__construct();
+
+        //$this->is_logged_in();
+
+    }
+
+    public function getAll(){
+        $this->load->model('podatoci/proizvoditel_model');
+        $query = $this->proizvoditel_model->getAll();
+        echo json_encode($query);
+    }
+
+    public function new_proizvoditel()
+    {
+        //  $this->load->model('users/membership_model');
+        // $data['roles'] = $this->membership_model->get_roles_dropdown();
+
+        $this->load->view('podatoci/proizvoditel/proizvoditel_form');
+
+    }
+
+
+
+    public function create_proizvoditel()
+
+    {
+
+        $this->load->library('form_validation');
+
+        $this->form_validation->set_rules('markerIme', 'Ime na proizvoditel', 'trim|required');
+
+
+
+        if($this->form_validation->run() == FALSE)
+
+        {
+
+            $this->new_proizvoditel();
+
+        }
+
+        else
+
+        {
+
+            $this->load->model('podatoci/proizvoditel_model');
+
+            if($query = $this->proizvoditel_model->create_proizvoditel())
+
+            {
+
+                $data['main_content'] = 'podatoci/proizvoditel/proizvoditel_successful';
+
+                $this->load->view('includes/template', $data);
+
+            }
+
+            else
+
+            {
+
+                $this->load->view('podatoci/proizvoditel/proizvoditel_form');
+
+            }
+
+        }
+
+    }
+
+
+
+    public function view_proizvoditel()
+    {
+        $this->load->model('podatoci/proizvoditel_model');
+        $query = $this->proizvoditel_model->getAll();
+        $data['proizvoditel'] = $query;
+        $this->load->view('podatoci/proizvoditel/edit_proizvoditel_form', $data);
+    }
+
+
+
+    public function delete_proizvoditel(){
+
+
+
+        $this->load->model('podatoci/proizvoditel_model');
+
+        $this->proizvoditel_model->delete_proizvoditel();
+
+        $this->view_proizvoditel();
+
+    }
+
+
+
+    public function edit_proizvoditel(){
+
+
+
+        $this->load->model('podatoci/proizvoditel_model');
+
+
+        $query = $this->proizvoditel_model->edit_proizvoditel();
+
+
+
+        $data['main_content'] = 'podatoci/proizvoditel/update_proizvoditel_form';
+
+        $data['proizvoditel'] = $query;
+
+        $this->load->view('includes/template', $data);
+
+        $this->view_proizvoditel();
+
+    }
+
+
+
+    public function update_proizvoditel(){
+
+
+
+        $this->load->model('podatoci/proizvoditel_model');
+
+        $query = $this->proizvoditel_model->update_proizvoditel();
+
+
+
+        if($query)
+
+        {
+
+            echo "Field updated successfully";
+
+        }
+
+        else
+
+        {
+
+            echo "No row was found ... Please try again.";
+
+        }
+
+        $this->view_proizvoditel();
+
+    }
+
+
+
+    public function is_logged_in()
+
+    {
+
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+
+        {
+
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+
+            die();
+
+        }
+
+    }
+
+
+
+}

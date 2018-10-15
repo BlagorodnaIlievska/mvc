@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <title>БИС - Болнички Информациони Системи</title>
+    <style type="text/css" media="all">
+        input {
+            font-family: verdana; margin: 0;padding: 0;
+        }
+    </style>
+</head>
+<body  style="font-family: verdana; margin: 0;padding: 0;" >
+<p>
+    <span style="display: none"> зџцвбнмасдфгхјклчќжљњертѕуиопшѓЗЏЦВБНМАСДФГХЈКЛЧЌЖЉЊЕРТЅУИОПШЃ</span>
+    Пример1: Тест Тест Тест <br/>
+<?php echo $primer1 ?>
+    <br/>
+    <input type="text" value="зџцвбнмасдфгхјклчќжљњертѕуиопшѓ" />
+    <br/>
+
+</p>
+</body>

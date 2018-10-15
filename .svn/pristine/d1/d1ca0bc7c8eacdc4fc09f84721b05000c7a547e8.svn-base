@@ -1,0 +1,266 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Pregled_izlezni extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function menu()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $this->load->view('izlezni_fakturi/pregled_izlezni/menu_form', $data);
+    }
+
+    public function pecati_faktura(){
+
+    $this->load->helper('to_pdf');
+    $id = $this->input->get('id');
+    $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+    $this->load->model('materijalno/materijalno_model');
+    $q=$this->izlezni_fakturi_model->editIzleznaFaktura($id);
+
+    $query = $this->izlezni_fakturi_model->getIzleznaDetali($id);
+    $data['q']=$q;
+    $data['id'] = $id;
+    $data['query'] = $query;
+    // page info here, db calls, etc.
+    $html = $this->load->view('izlezni_fakturi/pecatenje/faktura_pecati', $data, true);
+    pdf_create($html, 'filename')
+        or
+        $data = pdf_create($html, '', false);
+    write_file('name', $data);
+    //if you want to write it to disk and/or send it as an attachment
+
+}
+    public function pecati_site_izlezni(){
+
+        $this->load->helper('to_pdf');
+        $id = $this->input->get('id');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+
+        $q=$this->izlezni_fakturi_model->site_izlezni();
+
+        //$query = $this->vlezni_fakturi_model->getVleznaDetali($id);
+        $data['q']=$q;
+        //  $data['id'] = $id;
+        // $data['query'] = $query;
+        // page info here, db calls, etc.
+        $html = $this->load->view('izlezni_fakturi/pecatenje/pecati_site_izlezni', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+        //if you want to write it to disk and/or send it as an attachment
+
+    }
+    public function detalenPregled()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('kartici/kartici_model');
+        $this->load->model('pacienti/pacienti_model');
+        $data['klient'] = $this->materijalno_model->klient_site_dropdown();
+        $data['pacienti'] = $this->pacienti_model->pacienti_site_dropdown();
+        //$data['komercijalist'] = $this->kartici_model->komercijalist_dropdown();
+        $this->load->view('izlezni_fakturi/pregled_izlezni/detalen_pregled_form', $data);
+    }
+    public function pregledIzlezniFzom()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('pacienti/pacienti_model');
+        $data['klient'] = $this->materijalno_model->klient_site_dropdown();
+        $data['pacienti'] = $this->pacienti_model->pacienti_site_dropdown();
+        $this->load->view('izlezni_fakturi/pregled_izlezni/pregled_izlezni_fzom', $data);
+    }
+    public function pregledIzlezniMinisterstvo()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('pacienti/pacienti_model');
+        $data['klient'] = $this->materijalno_model->klient_site_dropdown();
+        $data['pacienti'] = $this->pacienti_model->pacienti_site_dropdown();
+        $this->load->view('izlezni_fakturi/pregled_izlezni/pregled_izlezni_ministerstvo', $data);
+    }
+    public function site_izlezni()
+    {
+        // $brojfaktura = $this->input->post('brojfaktura');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->site_izlezni();
+        echo json_encode($query);
+    }
+    public function site_fzom()
+    {
+        // $brojfaktura = $this->input->post('brojfaktura');
+        // $firmaid     = $this->input->post('firmaid');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->site_fzom();
+        echo json_encode($query);
+    }
+    public function grupenPregled()
+    {
+        $this->load->model('materijalno/materijalno_model');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $data['klient'] = $this->materijalno_model->klient_dropdown();
+        $data['fak']=$this->izlezni_fakturi_model->site_izlezni();
+        $this->load->view('izlezni_fakturi/pregled_izlezni/grupen_pregled_form', $data);
+    }
+
+    public function getIzlezniFakturi()
+    {
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->getIzlezniFakturi();
+        echo json_encode($query);
+    }
+
+    public function getNeplateniIzlezniFakturi()
+    {
+        $brojfaktura = $this->input->post('brojfaktura');
+        $firmaid = $this->input->post('firmaid');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->getNeplateniIzlezniFakturi($brojfaktura, $firmaid);
+        echo json_encode($query);
+    }
+
+    public function getIzleznaDetali()
+    {
+        $id = $this->input->post('dbid');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->getIzleznaDetali($id);
+//        bis_debug($query, "Izlezna Detali");
+        echo json_encode($query);
+    }
+
+    public function getIzleznaPaketDetali()
+    {
+        $id = $this->input->post('dbid');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->getIzleznaPaketDetali($id);
+        echo json_encode($query);
+    }
+
+    public function nova_faktura()
+    {
+        $this->load->view('izlezni_fakturi/pregled_izlezni/vnesi_faktura_form');
+    }
+
+    public function novaFakturaFzom()
+    {
+        $this->load->view('izlezni_fakturi/pregled_izlezni/vnesi_faktura_fzom');
+    }
+
+    public function novaFakturaMinisterstvo()
+    {
+        $this->load->view('izlezni_fakturi/pregled_izlezni/vnesi_faktura_ministerstvo');
+    }
+
+    public function pregled()
+    {
+        $klientid    = $this->input->post('klientid');
+        $pacientid    = $this->input->post('pacientid');
+        $statusid    = $this->input->post('statusid');
+        $period1     = $this->input->post('period1');
+        $period2     = $this->input->post('period2');
+        $brojfaktura = $this->input->post('brojfaktura');
+        $status      = $this->input->post('status');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->getPregled($klientid, $pacientid, $statusid, $period1, $period2, $brojfaktura);
+        echo json_encode($query);
+    }
+
+    public function create_faktura()
+    {
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->create_faktura();
+        echo json_encode($query);
+    }
+
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+
+    public function baraj(){
+        $this->load->view('izlezni_fakturi/pregled_izlezni/baraj_form');
+    }
+
+    public function editIzleznaFaktura()
+    {
+        $data['id'] = $this->input->get('id');
+        $this->load->view('izlezni_fakturi/pregled_izlezni/edit_faktura_form', $data);
+    }
+
+    public function infoFakturaFzom()
+    {
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->getFakturaFzom($this->input->get('id'));
+//        bis_debug($query, "Query");
+        $data['faktura'] = $query;
+        $data['faktura_stavki'] = $query->stavki;
+        $this->load->view('izlezni_fakturi/faktura/info_faktura_fzom');
+    }
+
+    public function infoFakturaMinisterstvo()
+    {
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->getFakturaFzom($this->input->get('id'));
+//        bis_debug($query, "Query");
+        $data['faktura'] = $query;
+        $data['faktura_stavki'] = $query->stavki;
+        $this->load->view('izlezni_fakturi/faktura/info_faktura_ministerstvo', $data);
+    }
+
+    public function editIzleznaFakturaPaket()
+    {
+        $data['id'] = $this->input->get('id');
+        $this->load->view('izlezni_fakturi/pregled_izlezni/edit_faktura_paket', $data);
+    }
+
+    public function baraj_status()
+    {
+        $filterid = $this->input->post('filterid');
+        $statid = $this->input->post('statusid');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->getStatus($statid,$filterid);
+        echo json_encode($query);
+    }
+    public function napolniIzlezniFakturiFzom()
+    {
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->napolniIzlezniFakturiFzom();
+//        bis_debug($query, "Query");
+        echo json_encode($query);
+    }
+    public function prikaziIzlezniFakturiZaFzom()
+    {
+        $fakturaid = $this->input->post('fakturaid');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->prikaziIzlezniFakturiZaFzom($fakturaid);
+//        bis_debug($query, "Query");
+        echo json_encode($query);
+    }
+    public function prikaziIzlezniFakturiZaFzomPoOddelPododdel()
+    {
+        $fakturaid = $this->input->post('fakturaid');
+        $oddel = $this->input->post('oddelid');
+        $pododdel = $this->input->post('pododdelid');
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->prikaziIzlezniFakturiZaFzomPoOddelPododdel($fakturaid,$oddel, $pododdel);
+        bis_debug($query, "Query");
+        echo json_encode($query);
+    }
+    public function napolniIzlezniFakturiMinisterstvo()
+    {
+        $this->load->model('izlezni_fakturi/izlezni_fakturi_model');
+        $query = $this->izlezni_fakturi_model->napolniIzlezniFakturiMinisterstvo();
+//        bis_debug($query, "Query");
+        echo json_encode($query);
+    }
+}

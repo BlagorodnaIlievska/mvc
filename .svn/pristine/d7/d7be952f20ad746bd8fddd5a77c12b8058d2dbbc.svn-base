@@ -1,0 +1,37 @@
+<div id="update_proizvoditel_form">
+
+
+
+    <?php
+    if(isset($proizvoditel)){
+
+        foreach($proizvoditel as $row) {
+
+            $p0=$row->markerID;
+            $p1=$row->markerIme;
+
+        }
+    }
+    ?>
+
+
+
+    <h1>Производител</h1>
+
+    <?php echo form_open('podatoci/proizvoditel/update_proizvoditel');?>
+
+    <?php echo form_hidden('markerID', $p0);?>
+
+    <?php echo form_label('Име на маркер:', 'markerIme');?><br>
+
+    <?php echo form_input('markerIme', $p1, 'markerIme');?>
+
+    <input type="button" value="Промени" class="ajaxsubmitform"><br>
+
+
+
+    <?php echo form_close(); ?>
+
+
+
+</div>

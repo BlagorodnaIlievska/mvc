@@ -1,0 +1,267 @@
+<div class="faktura-form">
+
+    <?php
+    $primena_options = array(
+        '0' => 'ne znam',
+        '1' => 'ne e primena',
+        '2' => 'primena'
+    );
+    $platena_options = array(
+        '10' => 'platena',
+        '6'  => 'ne e platena',
+        '2'  =>'ne znam'
+
+    );
+    $valuta_options=array(
+        '0'=> 'DEN',
+        '1'=>'EUR',
+        '2'=>'USD'
+    ) ;
+    $nacin_options=array(
+        '0'=>'virmanski',
+        '1'=>'vo gotovo',
+        '2'=>'kompenzacija'
+    );
+
+    echo form_open('profakturi/profaktura/create_faktura');
+    echo "<div class='gorelevo'> ";
+    echo "<div class=\"label-select \"> ";
+    echo form_label('Broj:', 'broj');
+    echo form_input('broj','', 'class="fakturabroj"');
+    echo "</div> ";
+
+    ?>
+    <div class="label-select">
+        <label>Datum :</label>
+        <input type="text" name="datum" class="fakturadatum">
+    </div>
+    <?php
+//    echo "<div class=\"label-select \"> ";
+//    echo form_label('Za Klient:','zaklient');
+//    echo form_dropdown('zaklient',$klient);
+//    echo "</div> ";
+
+    echo "<div class=\"label-select \"> ";
+    echo form_label('Arhiva:', 'arhiva');
+    echo form_input('arhiva','');
+    echo "</div> ";
+    echo "</div> ";
+
+    echo "<div class=\"label-select \"> ";
+    echo form_label('Klient: ', 'klient' );
+    echo form_dropdown('klient', $klient, '', 'class="fakturaklient"');
+    echo "</div> ";
+
+    ?>
+    <?php
+    $delete = img(array(
+        'src' => 'images/delete.png',
+        'width' => '15',
+        'height' => '15',
+        'class' => 'delete'
+    ));
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15',
+    ));
+    $add = img(array(
+        'src' => 'images/add.png',
+        'width' => '15',
+        'height' => '15',
+        'class' => 'add',
+        'formaction' => '/index.php/profakturi/profaktura/dodaj_stavka'
+    ));
+    echo "<br>";
+    ?>
+
+    <table class="tstavki" border="1" cellspacing="2" cellpadding="2" id="faktura">
+        <tr>
+            <th></th>
+            <th>No.</th>
+            <th>Kat. Broj</th>
+            <th>Stavka</th>
+            <th>Kol</th>
+            <th>EM</th>
+            <th>bez ddv</th>
+            <th>so ddv</th>
+            <th>%DDV</th>
+            <th>Vkupno</th>
+            <th>vk. ddv</th>
+            <th>VKUPNO</th>
+        </tr>
+        <?php
+        echo "<tr>";
+        echo "<td>". $delete . " " . $add ."</td>";
+        echo "<td> <input type='text' class='number small' name='tbroj'></td>";
+        echo "<td> <input type='text' class='kat-broj medium' name='tkatbroj'></td>";
+        echo "<td> <input type='text' class='stavka big' name='tstavka'></td>";
+        echo '<td> <input type="text" class="kolicina medium" name="tkolicina"></td>';
+        echo "<td> <input type='text' class='edicinamerka medium' name='tedmerka'></td>";
+        echo "<td> <input type='text' class='bezddv medium' name='tbezddv'></td>";
+        echo "<td> <input type='text' class='soddv medium' name='tsoddv'></td>";
+        echo "<td> <input type='text' class='ddv small' name='tddv'></td>";
+        echo "<td> <input type='text' class='vkupno1 medium' name='tvkupno1'></td>";
+        echo "<td> <input type='text' class='vkupnoddv medium'  name='tvkupnoddv'></td>";
+        echo "<td> <input type='text' class='vkupno2 medium'name='tvkupno2'></td>";
+        echo "</tr>";
+        ?>
+    </table>
+    <!-- <div class="vkupno-kol">
+        <label>Vkupno kolicina:</label> <input type="text" id="vkupnokolicina">
+    </div> -->
+    <div class="vleznidole">
+        <?php
+        echo "<div class=\"label-select \"> ";
+        echo form_label('Primena?','primena_options');
+        echo form_dropdown('primena_options',$primena_options);
+        echo "</div> ";
+
+        echo "<div class=\"label-select \"> ";
+        echo form_label('Platena?','platena_options');
+        echo form_dropdown('platena_options',$platena_options);
+        echo "</div> ";
+
+        echo "<div class=\"label-select \"> ";
+        echo form_label('nacin:','nacin_options');
+        echo form_dropdown('nacin_options',$nacin_options);
+        echo "</div> ";
+
+        echo "<div class='label-select'>";
+        echo "<label for='rok' >Rok</label>";
+        echo "<input type='text' name='rok' id='rok'>";
+        echo "</div>";
+
+        echo "<div class=\"label-select \"> ";
+        echo form_label('valuta:','valuta_options');
+        echo form_dropdown('valuta_options',$valuta_options);
+        echo "</div> ";
+
+        echo "<div class=\"label-select \"> ";
+        echo form_label('Grupa:','grupa');
+        echo form_dropdown('grupa',$grupa);
+        echo "</div> ";
+        ?>
+    </div>
+    <fieldset class="ceni">
+        <legend>Za naplata</legend><br>
+        <?php
+        echo form_label('Osnova:', 'osnova');
+        echo form_input('osnova','','class="osnova"');
+        echo form_label('DDV:', 'ddv2');
+        echo form_input('ddv2','','class="ddv2"');
+        echo form_label('Vkupno:', 'vkupnose');
+        echo form_input('vkupnose','','class="vkupnose"');
+        ?>
+    </fieldset>
+    <div class="submitbutton">
+        <input type="button" value="Snimi" class="submitfaktura button">
+    </div>
+
+</div>
+<?php
+echo form_close();
+?>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.fakturadatum').datepicker({dateFormat:'yy-mm-dd'});
+        jQuery('#rok').datepicker({dateFormat:'yy-mm-dd'});
+        jQuery('.add').live('click',function(e)
+        {
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({
+                autoOpen: true, width: 1100}).load(jQuery(this).attr('formaction'));
+            e.preventDefault();
+        });
+        jQuery(".delete").live('click', function() {
+            var trow = jQuery(this).closest('tr');
+            var id = trow.find('input[name=dbid]').val();
+            //console.log(id);
+            var formaction= "/index.php/kasa/menu/deleteStavkaKasa?id=" + id;
+            var deletedata = { id : id }
+            jQuery.ajax({
+                url: "/index.php/kasa/menu/deleteStavkaKasa",
+                type: 'POST',
+                data: deletedata,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    var tabs = jQuery('.main-menu-tabs');
+                    var selected = tabs.tabs('option', 'selected');
+                    jQuery(".main-menu-tabs").tabs('load',selected);
+                }
+            });
+        });
+        //jQuery(".kolicina").blur(function(){
+        jQuery(".kolicina").live('blur',function(){
+            var kolicina=jQuery(this);
+            if(kolicina.val()) presmetajSuma(kolicina);
+        });
+        jQuery(".bezddv").live('blur', function(){
+            var sumabezddv=jQuery(this);
+            if(sumabezddv.val()) presmetajSuma(sumabezddv);
+        });
+        function presmetajSuma(param)
+        {
+            //var osnova = 0, ddv = 0, vkupno = 0;
+            var osnova = parseInt(jQuery('.osnova').val());
+            var ddv = parseInt(jQuery('.ddv2').val());
+            var vkupno = parseInt(jQuery('.vkupnose').val());
+            if(jQuery('.osnova').val()) osnova = jQuery('.osnova').val();
+            else osnova = 0;
+            if(jQuery('.ddv2').val()) ddv = jQuery('.ddv2').val();
+            else ddv = 0;
+            if(jQuery('.vkupnose').val()) vkupno = jQuery('.vkupnose').val();
+            else vkupno = 0;
+            var currentrow = param.closest('tr');
+            var kolicina = currentrow.find(".kolicina").val();
+            var cenabezddv = currentrow.find(".bezddv").val();
+            var ddv = currentrow.find(".ddv").val();
+            var vkupnobezddv = kolicina * cenabezddv;
+            var cenasoddv = parseInt(cenabezddv) + parseInt((cenabezddv*ddv)/100);
+            var vkupnoddv = parseInt((vkupnobezddv*ddv)/100);
+            var vkupnosoddv = parseInt(vkupnobezddv) + parseInt(vkupnoddv);
+            currentrow.find(".vkupno1").val(vkupnobezddv);
+            currentrow.find(".soddv").val(cenasoddv);
+            currentrow.find(".vkupnoddv").val(vkupnoddv);
+            currentrow.find(".vkupno2").val(vkupnosoddv);
+            var newosnova = parseInt(osnova) + parseInt(vkupnobezddv);
+            var newddv = parseInt(ddv) + parseInt(vkupnoddv);
+            var newvkupno = parseInt(vkupno) + parseInt(vkupnosoddv);
+            jQuery('.osnova').val(newosnova);
+            jQuery('.ddv2').val(newddv);
+            jQuery('.vkupnose').val(newvkupno);
+        }
+        jQuery('.submitfaktura').live('click',function(){
+            var formaction=jQuery(this).parent().parent().attr('action');
+            //var dialogid=jQuery(this).parent().parent().parent();
+            jQuery.ajax({
+                type: "post",
+                url: formaction,
+                data: jQuery(this).parent().parent().serialize(),
+                success:  function(response){
+                    //console.log(response);
+//                    var currentrow = jQuery(this);
+                    //jQuery(".tabela").find("tr:gt(1)").remove();
+                    var lasttr = jQuery('.tvleznifakturi tr:last');
+                    lasttr.removeClass('hiderow');
+                    var newrow = jQuery(lasttr).clone().insertBefore(lasttr);
+                    newrow.find('input[name=dbid]').val(response);
+                    newrow.find('input[name=broj]').val(jQuery('.fakturabroj').val());
+                    newrow.find('input[name=datum]').val(jQuery('.fakturadatum').val());
+                    newrow.find('input[name=klientid]').val(jQuery('.fakturaklient').val());
+                    newrow.find('input[name=klient]').val(jQuery('.fakturaklient option:selected').text());
+                    newrow.find('input[name=osnova]').val(jQuery('.osnova').val());
+                    newrow.find('input[name=ddv]').val(jQuery('.ddv2').val());
+                    newrow.find('input[name=vkupno]').val(jQuery('.vkupnose').val());
+                    //jQuery('#faktura tr:last').addClass('hiderow');
+                    //var dialogid=jQuery(this).parent().parent().parent().parent();
+                    //dialogid.dialog("destroy").remove();
+                    lasttr.addClass('hiderow');
+                }
+            });
+        });
+    });
+</script>

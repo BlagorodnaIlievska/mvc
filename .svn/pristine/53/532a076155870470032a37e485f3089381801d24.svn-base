@@ -1,0 +1,85 @@
+
+
+<div class="pecatenje" xmlns="http://www.w3.org/1999/html">
+    <p align="left">Требовање :</p>
+
+    <br/><br/>
+    <table style="margin-left: 15px;">
+
+        <tr><td style="width: 100px;">Број : </td><td><? echo $otpis->textBroj;?></td>
+            <td style="width: 100px;">Магацин во : </td><td><? echo $otpis->magacin_vo;?></td>
+        </tr>
+        <tr><td >Датум : </td><td><? echo $otpis->datum;?></td>
+
+
+        </tr>
+
+
+        <tr><td>Забелешка : </td><td><? echo $otpis->komentar;?></td></tr>
+
+    </table><br/><br/><br/><br/>
+
+
+    <div>
+        <p align="left">Ставки во документот - детално :</p><br/><br/><br/>
+        <table border="1" align="center">
+            <thead>
+            <tr>
+                <th class="broj">Број</th>
+                <th class="sifra">Шифра</th>
+                <th class="katbroj">Кат.Број</th>
+                <th class="stavka">Ставка</th>
+                <th class="kolicina">Кол</th>
+                <th class="em">ЕМ</th>
+                <th class="magacin">Магацин</th>
+                <th class="garantenrok">Гарантен рок</th>
+                <th class="upotreblivodo">Употребливо до</th>
+                <th class="serbr">Сер. Бр.</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $redbr = 1;
+
+            foreach($stavkiom as $stavka){
+//
+//                ?>
+         <tr>
+                <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $redbr; ?></td>
+                <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $stavka->sifra; ?></td>
+                <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $stavka->katBroj; ?></td>
+                <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $stavka->stavka; ?></td>
+                <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $stavka->kolicina; ?></td>
+                <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $stavka->edMerka; ?></td>
+                <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $stavka->magacinod; ?></td>
+                <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><?echo $stavka->garanten_rok; ?></td>
+                <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $stavka->upotreblivo_do; ?></td>
+                <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px"><?echo $stavka->SerNo; ?></td>
+
+       </tr>
+
+<?php
+                $redbr +=1;
+         }
+
+            ?>
+
+          </tbody>
+    </table>
+ </div>
+    <br>
+    <br>
+    <div style="float: left; width: 50%;" >
+
+        Примил <br>
+        _____________________________
+    </div>
+    <div style="float: right; width: 50%;">
+
+        Издал <br>
+        _____________________________
+    </div>
+
+
+
+</div>

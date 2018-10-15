@@ -1,0 +1,180 @@
+<div class="novodlivpriliv" xmlns="http://www.w3.org/1999/html">
+    <form action="/index.php/kasi/kasi/create_nov_odliv_priliv" method="post">
+        <fieldset>
+            <legend>Нов одлив/прилив</legend>
+            <span class="kasa_ime"><?= $kasaIme ?></span><br />
+            Коминтент :<br/>
+            <select name="firmaID" class="firmaid">
+                <option value="0"></option>
+                <?php foreach ($klientimodel->getKlienti() as $klient) { ?>
+                <option value="<?php  echo $klient->firmaID  ?>"><?php  echo $klient->ime  ?>  </option>
+                <?php } ?>
+            </select><br/>
+            <label>Број: </label>
+            <span class="arhivskibroj"></span>
+            <input type="hidden" name="broj" class="fakturabroj">
+            <input type="hidden" name="arhivskibrojint" class="arhivskibrojint">     <br>
+            <? $d=date("d-m-Y");?>
+             Датум : <br/>
+            <input type="text" name="datum" class="datum1 big" value=<? echo $d;?> > <br>
+            <label>Одлив</label>  <br>
+            <input type="text" name="odliv" class="odliv1 medium">  <br>
+            <label>Прилив</label>  <br>
+            <input type="text" name="priliv" class="priliv1 medium">   <br>
+            <div class="nov-odliv-priliv">
+                <label>Повикувачки број: </label>
+                <input type="checkbox" name="s-kasa" class="s-kasa" disabled="true" formaction="/index.php/kasi/kasi/povrzi_postoecka"> - Уплата по фактура
+                <input type="hidden" name="zadokument" class="zadokument">
+                <input type="text" name="s-brojfaktura" class="s-brojfaktura" disabled="true">
+            </div><br />
+            <div class="konto-novokonto">
+            <?   echo form_label('Конто: ', ' tipID');
+                 echo form_dropdown('tipID',$konto,'','class="tipID"');?></br>
+            </div>
+            <div class="grupiranje-namena">
+            <label>Намена</label><br>
+            <textarea style="overflow-y:scroll;resize: none;" class="namena" name="namena"></textarea><br />
+            <label>Забелешка</label><br>
+            <textarea style="overflow-y:scroll;resize: none;" class="zabeleska" name="zabeleska"></textarea>
+            <input type="hidden" name="prenesena_sostojba" class="sost big" value=<? echo $prenesena_sostojba;?> /> <br>
+            <input type="hidden" name="kasaid" class="kasaidbroj big" value=<? echo $kasaid;?> /> <br>
+            </div>
+        </fieldset>
+        <br/>
+
+        <button type="button" class="kasa-snimi button" izvrsi="odliv_priliv_popolnilista()" poraka_uspesno=" успешно снимен"
+                poraka_neuspesno="Грешка при снимање "
+                ><span>Сними</span></button>
+        <br/>
+    </form>
+
+</div>
+<script>
+    function proveri_komintent_kasa(){
+        var komintent = jQuery('.firmaid option:selected').val();
+       console.log(komintent);
+        if(komintent == 0) return 0;
+        else return 1;
+    }
+    function proveri_priliv_odliv(){
+        var priliv = jQuery(".priliv1").val();
+        var odliv = jQuery(".odliv1").val();
+       console.log(odliv);
+        console.log(priliv);
+        if(priliv==0 && odliv==0){
+
+                return 0;
+        }else return 1;
+
+    }
+    jQuery(".kasa-snimi").live("click",function () {
+        var odliv = jQuery(".odliv1").val();
+        var priliv = jQuery(".priliv1").val();
+        if(odliv.length > 0) jQuery(".odliv1").val(formatbrojjs(odliv));
+        if(priliv.length > 0) jQuery(".priliv1").val(formatbrojjs(priliv));
+        if(proveri_komintent_kasa()==0) return alert("Изберете коминтент!!!");
+        if(proveri_priliv_odliv()==0)  return alert("Внесете прилив/одлив!");
+        var forma = jQuery(this).closest("form");
+        var formaction = forma.attr('action');
+        var formmethod = forma.attr('method');
+        var izvrsi = jQuery(this).attr('izvrsi');
+
+        if (forma.attr('enctype') == 'multipart/form-data' ) {
+            forma.submit();
+        } else {
+            var poraka_uspesno = jQuery(this).attr('poraka_uspesno');
+            var poraka_neuspesno = jQuery(this).attr('poraka_neuspesno');
+            jQuery.ajax({
+                type:formmethod,
+                url:formaction,
+                data:decodeURIComponent(jQuery(this).closest("form").serialize()),
+                success:function (data) {
+                    if (jQuery.trim(data) == "ok")
+                    {
+                        if (poraka_uspesno != "undefined" || typeof poraka_uspesno != "undefined")
+                        {
+                            popupmessage(poraka_uspesno);
+                        }
+                    }
+                    else
+                    {
+                        if (poraka_neuspesno != "undefined" || typeof poraka_neuspesno != "undefined")
+                        {
+                            popupmessage(poraka_neuspesno);
+                        }
+                    }
+                }
+            });
+        }
+        if (izvrsi != "" || izvrsi != "undefined")
+        {
+            eval(izvrsi);
+        }
+        if (jQuery(this).attr('zatvori_forma') != 0)
+        {
+            destroyparentdialog(jQuery(this));
+        }
+
+    });
+    jQuery(document).ready(function() {
+
+        jQuery('.firmaid').combobox();
+          // var kasaid=jQuery('.kasaidbroj').val();
+        jQuery('.tipID').combobox();
+        var kasaid = jQuery('.ddkasa option:selected').val();
+
+        getNewKasaBroj(kasaid);
+
+        jQuery('.datum1').datepicker({dateFormat:'yy-mm-dd'});
+        jQuery('.odliv1').blur(function(){
+            var elem = jQuery(this);
+            var odliv = elem.val();
+            if( odliv.length >= 1 )
+            {
+                jQuery('.priliv1').val("");
+                jQuery('.s-kasa').attr("disabled", false);
+                jQuery('.s-brojfaktura').attr("disabled", false);
+                elem.val(odliv);
+            }
+        });
+        jQuery('.priliv1').blur(function(){
+            var elem = jQuery(this);
+            var priliv = elem.val();
+            if( priliv.length >= 1 )
+            {
+                jQuery('.odliv1').val("");
+                jQuery('.s-kasa').attr("disabled", false);
+                jQuery('.s-brojfaktura').attr("disabled", false);
+                elem.val(priliv);
+            }
+        });
+        jQuery('.s-kasa').click(function(){
+            if(jQuery('.s-kasa').is(":checked"))
+            {
+                var formaction=jQuery(this).attr('formaction');
+                var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+                jQuery.ajax({
+                    url:formaction,
+                    success:function (response) {
+                        var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+                        jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                        jQuery("." + tempdialog).html(response);
+                        jQuery('div.' + tempdialog).dialog({
+                            autoOpen:true,
+                            width:"auto",
+                            //position:[20, 20],
+                            position:"center",
+                            modal:true,
+                            //dialogClass: 'dialogsotabovi',
+                            title:"Поврзи фактура",
+                            close:function (event, ui) {
+                                jQuery(this).dialog("destroy");
+                                jQuery(this).remove();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>

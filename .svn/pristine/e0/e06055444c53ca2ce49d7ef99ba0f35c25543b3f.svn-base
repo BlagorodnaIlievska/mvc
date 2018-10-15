@@ -1,0 +1,48 @@
+
+
+
+
+<fieldset>
+
+
+
+
+
+    <?php
+
+    echo form_open('podatoci/edmerka/create_edmerka');
+
+
+
+    ?><br><br>
+
+    <?php
+    echo form_label('Скратено име','edMerkaSkr');
+    echo form_input('edMerkaSkr', '');echo br();
+    echo form_label('Долго име','edMerkaDlg');?> &nbsp;&nbsp;&nbsp;&nbsp;
+  <?  echo form_input('edMerkaDlg', '');echo br();
+
+    //echo form_input('field_label', set_value('field_label', 'Field Label'));
+
+    // echo form_submit('submit', 'Submit');
+
+    ?>
+
+
+    <input type="button" class="ajaxcreateform button" value="Додади"><br />
+
+
+
+    <?php
+
+    echo validation_errors('<p class="error">');
+
+    echo form_close();
+
+    ?>
+
+
+
+
+
+</fieldset>

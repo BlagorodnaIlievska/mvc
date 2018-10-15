@@ -1,0 +1,310 @@
+function pacienti_aktiven(){
+    if (jQuery(".pacienti-lista-tabela tbody tr.active").attr("pacient_id")>0) {
+        return jQuery(".pacienti-lista-tabela tbody tr.active").attr("pacient_id");
+    } else {
+        return 0;
+    }
+}
+function pacienti_popolnilista(filterdata) {
+
+    if (typeof filterdata != "undefined") {
+        var data = filterdata;
+    } else {
+        var data = {};
+    }
+    var formurl = "/index.php/pacienti/pacienti/lista_test";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+            //  console.log(response);
+            jQuery(".pacienti-lista-tabela tbody").html('');
+            if (response != null) {
+                jQuery.each(response, function (index, item) {
+                    //console.log(item);
+                    jQuery(".pacienti-lista-tabela tbody").append(('<tr pacient_id="' + item.id + '">' +
+                        '<td>' +
+                        '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                        '<a class="info-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/information.png"></a>' +
+                        '</td>' +
+                        '<td>' + item.ime + '</td>' +
+                        '<td>' + item.tatkovoime + '</td>' +
+                        //    '<td><a href="' + item.slika + '" rel="lightbox" title="' + item.S1Ime + '"><img width="32" height="32px" src="' + item.slika + '" /></a></td>' +
+                        '<td>' + item.prezime + '</td>' +
+                        '<td>' + item.br_zdravstvena_legitimacija + '</td>' +
+                        '<td>' + item.datum_na_raganje + '</td>' +
+                        '<td>' + item.pol + '</td>' +
+                        '<td>' + item.embg + '</td>' +
+                        '<td>' + item.ezbo + '</td>' +
+                        '</tr>'
+                        ));
+                });
+            }
+            jQuery(".pacienti-lista-tabela").trigger("update");
+        }
+    });
+}
+function pacienti_nov(data) {
+    var formurl = "/index.php/pacienti/pacienti/nov";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+
+        success: function (response) {
+
+            if (response == "vekepostoi") {
+                alert("Веке постои пациент со ист матичен број");
+            } else {
+                pacienti_popolnilista(data);
+            }
+        }
+    });
+}
+function pacienti_popolnilistasotimeout() {
+    pacienti_popolnilista(jQuery(".pacient-filter-nov-forma").serialize());
+}
+function pacienti_izbrisi(id) {
+
+    var formurl = "/index.php/pacienti/pacienti/izbrisi";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: id},
+
+        success: function (response) {
+
+            pacienti_popolnilista(jQuery(".pacient-filter-nov-forma").serialize());
+        }
+    });
+}
+function pacienti_popolni_priemlista(id) {
+    var formurl = "/index.php/pacienti/pacienti/getPacient";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: id},
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            jQuery('.podatoci-za-kontakt input, .podatoci-za-kontakt select, .podatoci-za-kontakt textarea').val('');
+            jQuery('.pacient-filter-nov-forma input, .pacient-filter-nov-forma select, .pacient-filter-nov-forma textarea').val('');
+            if (response != null) {
+                jQuery.each(response, function (index, item) {
+                    //console.log(index + ":" + item);
+                    jQuery('.podatoci-za-kontakt [name="' + index + '"]').val(item);
+                    jQuery('.pacient-filter-nov-forma [name="' + index + '"]').val(item);
+                });
+            }
+
+            jQuery('.podatoci-za-priemkajdoktor-form [name="pacient_id"]').val(response.id);
+            jQuery('.podatoci-za-osig-form [name="pacient_id"]').val(response.id);
+//            console.log(response.id);
+            jQuery(".pacienti-lista-tabela").trigger("update");
+
+        }
+    });
+}
+function pacienti_popolni_priemlista_osig(id) {
+    var formurl = "/index.php/pacienti/pacienti/getPacientOsig";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: {id: id},
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            jQuery('.podatoci-za-osig-form input:not(.pacientidstatic), .podatoci-za-osig-form select, .podatoci-za-osig-form textarea').val('');
+            if (response != null) {
+                jQuery.each(response, function (index, item) {
+                    //console.log(index + ":" + item);
+                    //Ne treba da go updejtira pacient id bidejki ako go nema go resetira na nula
+                    if (index != "pacient_id") {
+                        jQuery('.podatoci-za-osig-form [name="' + index + '"]').val(item);
+                    }
+
+
+                });
+            }
+            jQuery(".pacienti-lista-tabela").trigger("update");
+
+        }
+    });
+}
+function pacienti_priemlista() {
+    var varreturn = true;
+    if(!jQuery(".firmadropdown option:selected").hasClass("firmaodel")){
+        alert("Ве молиме изберете оддел!!!");
+        varreturn = false;
+    }
+    if (jQuery(".pacienti-lista-tabela tbody tr").length != 1 && jQuery(".pacienti-lista-tabela tbody tr.active").length != 1) {
+        alert('Ве молиме одберете пациент');
+        varreturn = false;
+    } else {
+        if (jQuery(".pacienti-lista-tabela tbody tr.active").length == 1) {
+            pacienti_popolni_priemlista(jQuery(".pacienti-lista-tabela tbody tr.active").attr("pacient_id"));
+            pacienti_popolni_priemlista_osig(jQuery(".pacienti-lista-tabela tbody tr.active").attr("pacient_id"));
+        } else {
+            pacienti_popolni_priemlista(jQuery(".pacienti-lista-tabela tbody tr").attr("pacient_id"));
+            pacienti_popolni_priemlista_osig(jQuery(".pacienti-lista-tabela tbody tr").attr("pacient_id"));
+        }
+
+        jQuery(".vnesinovpacient").hide();
+        jQuery(".ispraznipolinja").hide();
+        jQuery(".pacienti-filter-nov input, .pacienti-filter-nov select").attr("readonly", "readonly");
+        //reset za priem kaj doktor
+        //jQuery('.podatoci-za-priemkajdoktor-form input:not(.pacientidstatic), .podatoci-za-priemkajdoktor-form select, .podatoci-za-priemkajdoktor-form textarea').val('');
+
+    }
+    return varreturn;
+}
+function pacienti_pacientinfo() {
+    var varreturn = true;
+    if (jQuery(".pacienti-lista-tabela tbody tr").length != 1 && jQuery(".pacienti-lista-tabela tbody tr.active").length != 1) {
+        alert('Ве молиме одберете пациент');
+        varreturn = false;
+    } else {
+        if (jQuery(".pacienti-lista-tabela tbody tr.active").length == 1) {
+
+        } else {
+
+        }
+    }
+
+    return varreturn;
+}
+function pacienti_listasopriemi() {
+    var varreturn = true;
+    if (jQuery(".pacienti-lista-tabela tbody tr").length != 1 && jQuery(".pacienti-lista-tabela tbody tr.active").length != 1) {
+        alert('Ве молиме одберете пациент');
+        varreturn = false;
+    } else {
+        if (jQuery(".pacienti-lista-tabela tbody tr.active").length == 1) {
+
+        } else {
+
+        }
+    }
+
+    return varreturn;
+}
+
+function vnesiPacientKontakt(){
+    return jQuery.ajax({
+                url: '/index.php/pacienti/pacienti/vnesiPacientKontakt',
+                type: 'POST',
+                data: jQuery('.podatoci-za-kontakt-form').serialize()
+            });
+}
+function vnesiPacientOsig(){
+    return jQuery.ajax({
+                url: '/index.php/pacienti/pacienti/vnesiPacientOsig',
+                type: 'POST',
+                dataType: 'json',
+                data: jQuery('.podatoci-za-osig-form').serialize()
+            });
+}
+function vnesiPacientPridruznik(){
+    return jQuery.ajax({
+                url: '/index.php/pacienti/pacienti/vnesiPacientPridruznik',
+                type: 'POST',
+                dataType: 'json',
+                data: jQuery('.podatoci-za-pridruznik-form').serialize()
+            });
+}
+function vnesiPacientPriem(){
+    return jQuery.ajax({
+                url: '/index.php/pacienti/pacienti/vnesiPacientPriem',
+                type: 'POST',
+                data: jQuery('.podatoci-za-priemkajdoktor-form').serialize()
+           });
+}
+
+function pacienti_priemsnimi() {
+    if(jQuery(".participacija-dropdown").val() == 0)
+    {
+        alert("Мора да изберете основ на осигурување!!!");
+        return;
+    }
+    vnesiPacientKontakt();
+    jQuery.when(vnesiPacientOsig(), vnesiPacientPridruznik()).done(function(res1, res2) {
+        jQuery(".pacientidosiguruvanje").val(res1[0]);
+        jQuery(".pacientidpridruznik").val(res2[0]);
+        vnesiPacientPriem();
+        pacienti_priemlista();
+        jQuery(".ispraznipolinja").click();
+        jQuery(".tabs-pacienti").tabs('select', 0);
+        alert('Успешно е направен прием');
+    });
+}
+function  getNewPriemBroj(){
+    var formaction = '/index.php/pacienti/pacienti/getLastPriemBroj';
+    jQuery.ajax({
+        url:formaction,
+        dataType: "json",
+        success:function (response) {
+            var lastbroj = response;
+            var newbroj = 1*lastbroj + 1;
+            var newbrojint = newbroj;
+            var prefix = 'LE';
+            var currentYear = (new Date).getFullYear();
+            var godina = ""+currentYear;
+            var YY = godina.substr(2,2);
+            if(lastbroj.toString().length == 0) newbroj= prefix + '0001' + '/' + YY;
+            if(lastbroj.toString().length == 1) newbroj= prefix + '000' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 2) newbroj= prefix + '00' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 3) newbroj= prefix + '0' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 4) newbroj= prefix + newbroj + '/' + YY;
+            jQuery('span.arhivskibroj').html(newbroj);
+            jQuery('input.pacient-priem_broj').val(newbroj);
+         //   jQuery('input.arhivskibrojint').val(newbrojint);
+//            console.log(newbroj);
+//            incrementVFBroj(newvfbroj);
+        }
+    });
+}
+function pacienti_priemupdate(elem) {
+    var priem_id = lekuvanja_getaktiven_priemid();
+    updatePacientKontakt();
+    jQuery.when(updatePacientOsig(), updatePacientPridruznik(priem_id)).done(function(res1, res2) {
+        updatePacientPriem();
+        destroyparentdialog(elem);
+        popupmessage('Успешно е изменет приемот');
+    });
+}
+function updatePacientKontakt(){
+    return jQuery.ajax({
+        url: '/index.php/pacienti/pacienti/updatePacientKontakt',
+        type: 'POST',
+        data: jQuery('.podatoci-za-kontakt-form').serialize()
+    });
+}
+function updatePacientOsig(){
+    return jQuery.ajax({
+        url: '/index.php/pacienti/pacienti/updatePacientOsig',
+        type: 'POST',
+        dataType: 'json',
+        data: jQuery('.podatoci-za-osig-form').serialize()
+    });
+}
+function updatePacientPridruznik(priem_id){
+    var data_array = jQuery('.podatoci-za-pridruznik-form').serializeArray();
+    data_array.push({ name:"priem_id", value:priem_id });
+//    console.log(data_array);
+    return jQuery.ajax({
+        url: '/index.php/pacienti/pacienti/updatePacientPridruznik',
+        type: 'POST',
+        dataType: 'json',
+        data: data_array
+    });
+}
+function updatePacientPriem(){
+    return jQuery.ajax({
+        url: '/index.php/pacienti/pacienti/updatePacientPriem',
+        type: 'POST',
+        data: jQuery('.podatoci-za-priemkajdoktor-form').serialize()
+    });
+}

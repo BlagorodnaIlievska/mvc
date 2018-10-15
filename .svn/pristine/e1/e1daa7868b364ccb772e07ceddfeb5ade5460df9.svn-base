@@ -1,0 +1,49 @@
+<div id="update_katalog1_form">
+
+
+
+
+
+
+
+    <?php
+    if(isset($katalog1)){
+
+        foreach($katalog1 as $row) {
+
+            $ka0=$row->SID0;
+            $ka1=$row->SOIme;
+            $ka2=$row->SOID;
+
+
+        }
+    }
+    ?>
+
+
+
+    <h1>Каталошки број 1</h1>
+
+    <?php echo form_open('podatoci/katalog1/update_katalog1');?>
+
+    <?php echo form_hidden('SID0', $ka0);?>
+
+    <?php echo form_label('Име на производ:', 'SOIme');?><br>
+
+    <?php echo form_input('SOIme', $ka1, 'SOIme');?>
+
+    <?php echo form_label('Каталошка шифра:', 'SOID');?><br>
+
+    <?php echo form_input('SOID', $ka2, 'SOID');?>
+
+
+
+    <input type="button" value="Промени" class="ajaxsubmitform"><br>
+
+
+
+    <?php echo form_close(); ?>
+
+
+
+</div>

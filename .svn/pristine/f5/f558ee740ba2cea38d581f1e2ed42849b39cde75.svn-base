@@ -1,0 +1,40 @@
+<div class="edmerka-glavnalista">
+    <div class="edmerkalista">
+        <div class="buttoncontainer">
+            <button class="button" onclick="edmerka_nov()">Нова единица мерка</button>
+        </div>
+        <table class="tabela-edmerkalista">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Скратено име</th>
+                <th>Долго име</th>
+
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+
+        </table>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        edmerka_popolnilista();
+        jQuery(".tabela-edmerkalista").tablesorter();
+
+        jQuery(".tabela-edmerkalista tbody tr").live('click', function () {
+            jQuery(".tabela-edmerkalista tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+
+        });
+        jQuery(".tabela-edmerkalista .edit-tr").live('click', function () {
+            edmerka_izmeni(jQuery(this).parent().parent().attr('edmerka_id'));
+        });
+        jQuery(".tabela-edmerkalista .delete-tr").live('click', function () {
+            edmerka_delete(jQuery(this).parent().parent().attr('edmerka_id'));
+        });
+
+    });
+</script>

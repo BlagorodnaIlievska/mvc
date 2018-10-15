@@ -1,0 +1,153 @@
+<div>
+    <div class="raporti-filter">
+        <?php
+        echo form_open('materijalno/raporti/search');
+
+        echo form_label('Магацин: ', 'magacin');
+        echo form_dropdown('magacin', $magacin );
+        ?>
+        <!--    <input type="button" value="Дефинирај нов магацин" class="magacinbutton button" formaction="/index.php/materijalno/lager_lista/new_magacin">-->
+        <?php
+
+        echo form_label('Клиент: ', 'klient');
+        echo form_dropdown('klient', $klient, '', 'class="klient1 searchraporti"');
+        $options = array(
+            '2' => 'Сите',
+            '0' => 'А',
+            '1' => 'Б'
+        );
+        echo form_label('Тип: ', 'tip');
+        echo form_dropdown('tip', $options, 2, 'class="tip searchraporti"');
+        echo form_close();
+        ?>
+    </div>
+    <div class="predtabela">
+    <table class="rapizleznifakturi" border="1" cellspacing="2" cellpadding="2">
+        <tr>
+            <th class="datum">Датум</th>
+            <th class="faktura">Фактура</th>
+            <th class="klient">Клиент</th>
+            <th class="izlezfak">Излез. Фал.</th>
+            <th class="broj">Бр.</th>
+            <th class="magacinska">Магацинска</th>
+            <th class="razlika">Разлика</th>
+            <th class="zabeleska">Забелешка</th>
+        </tr>
+        <?php
+        echo "<tr class='hiderow'>";
+        echo "<td> <input type='text' class='datum medium' readonly> </td>";
+        echo "<td> <input type='text' class='faktura medium' readonly> </td>";
+        echo "<td> <input type='text' class='klient big' readonly> </td>";
+        echo "<td> <input type='text' class='izleznafaktura medium' readonly> </td>";
+        echo "<td> <input type='text' class='number small' readonly> </td>";
+        echo "<td> <input type='text' class='magacinska medium' readonly> </td>";
+        echo "<td> <input type='text' class='razlika medium' readonly> </td>";
+        echo "<td> <input type='text' class='zabeleska big' readonly> </td>";
+        echo "</tr>";
+        ?>
+    </table>
+</div>
+    </div>
+
+<script>
+    jQuery(document).ready(function() {
+        var data = {
+            klientid: 0,
+            tipid: 2
+        }
+        jQuery.ajax({
+            url: "/index.php/materijalno/raporti/getIzlezniFakturi",
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(response) {
+                //console.log(response);
+                jQuery(".rapizleznifakturi").find("tr:gt(1)").remove();
+                var tr = jQuery('.rapizleznifakturi tr:last');
+                tr.removeClass('hiderow');
+                for ( var i = 0; i < response.length; i++ ) {
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.find('.datum').val(response[i].datum);
+                    newrow.find('.izleznafaktura').val(response[i].izleznafaktura);
+                    newrow.find('.klient').val(response[i].firmaIme);
+                    newrow.find('.faktura').val(response[i].faktura);
+                    newrow.find('.zabeleska').val(response[i].zabeleska);
+                    newrow.find('.magacinska').val(response[i].magacinska);
+                    newrow.find('.razlika').val(parseInt(response[i].izleznafaktura) - parseInt(response[i].magacinska));
+//                    if(response[i].tip == 710)
+//                    {
+//                        newrow.find('.dokument').val("Pri. " + response[i].broj);
+//                        newrow.find('.priemnica').val(response[i].priemnica);
+//                    }
+//                    if(response[i].tip == 720)
+//                    {
+//                        newrow.find('.dokument').val("Isp. " + response[i].broj);
+//                    }
+//                    if(response[i].tip == 715)
+//                    {
+//                        newrow.find('.dokument').val("So Pov. br " + response[i].broj);
+//                    }
+//                    if(response[i].tip == 719)
+//                    {
+//                        newrow.find('.dokument').val("So Int. Pri. br " + response[i].broj);
+//                    }
+//                    if(response[i].tip == 729)
+//                    {
+//                        newrow.find('.dokument').val("So Int. Isp. br " + response[i].broj);
+//                    }
+                }
+                tr.addClass('hiderow');
+            }
+        });
+        jQuery('.searchraporti').live('change',function(){
+            var klientid = jQuery('.klient1 option:selected').val();
+            var tipid = jQuery('.tip option:selected').val();
+            var data = {
+                klientid: klientid,
+                tipid: tipid
+            }
+            jQuery.ajax({
+                url: "/index.php/materijalno/raporti/getIzlezniFakturi",
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    jQuery(".rapizleznifakturi").find("tr:gt(1)").remove();
+                    var tr = jQuery('.rapizleznifakturi tr:last');
+                    tr.removeClass('hiderow');
+                    for ( var i = 0; i < response.length; i++ ) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('.datum').val(response[i].datum);
+                        newrow.find('.vleznafaktura').val(response[i].vleznafaktura);
+                        newrow.find('.klient').val(response[i].firmaIme);
+                        newrow.find('.faktura').val(response[i].faktura);
+                        newrow.find('.zabeleska').val(response[i].zabeleska);
+//                        if(response[i].tip == 710)
+//                        {
+//                            newrow.find('.dokument').val("Pri. " + response[i].broj);
+//                            newrow.find('.priemnica').val(response[i].priemnica);
+//                        }
+//                        if(response[i].tip == 720)
+//                        {
+//                            newrow.find('.dokument').val("Isp. " + response[i].broj);
+//                        }
+//                        if(response[i].tip == 715)
+//                        {
+//                            newrow.find('.dokument').val("So Pov. br " + response[i].broj);
+//                        }
+//                        if(response[i].tip == 719)
+//                        {
+//                            newrow.find('.dokument').val("So Int. Pri. br " + response[i].broj);
+//                        }
+//                        if(response[i].tip == 729)
+//                        {
+//                            newrow.find('.dokument').val("So Int. Isp. br " + response[i].broj);
+//                        }
+                    }
+                    tr.addClass('hiderow');
+                }
+            });
+        });
+    });
+</script>

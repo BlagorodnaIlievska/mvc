@@ -1,0 +1,190 @@
+<div class="pecatenje-index-form">
+    <div class="pecatenje-parametri">
+        <form class="pecatenje-form">
+            <label class="label-oddel">Оддел</label>
+            <select class="pecatenje-za-oddel">
+                <?php foreach($oddeli as $key => $val){ ?>
+                    <option value="<?= $key; ?>"><?= $val; ?></option>
+                <?php } ?>
+            </select>
+            <label class="label-mesec">Месец</label>
+            <select class="pecatenje-za-mesec">
+                <?php foreach($meseci as $key => $val){ ?>
+                    <option value="<?= $key; ?>"><?= $val; ?></option>
+                <?php } ?>
+            </select>
+            <label class="label-godina">Година</label>
+            <select class="pecatenje-za-godina">
+                <option value="0"></option>
+                <?php foreach($godini as $key => $val){ ?>
+                    <option value="<?= $val; ?>"><?= $val; ?></option>
+                <?php } ?>
+            </select>
+        </form>
+    </div>
+    <div class="pecatenje-buttons">
+        <div class="print-vlezni-podatoci pecati-plata-buttons">
+            <a href="" target="_blank" class="printlink-pecatenje-plata-vlezni-podatoci">
+                <button type="button" class="print"><span>Печати влезни податоци</span></button>
+            </a>
+        </div>
+        <div class="print-kontrolen-list pecati-plata-buttons">
+            <a href="" target="_blank" class="printlink-pecatenje-plata-kontrolen-list">
+                <button type="button" class="print"><span>Печати контролен лист</span></button>
+            </a>
+        </div>
+        <div class="print-platen-spisok pecati-plata-buttons">
+            <a href="" target="_blank" class="printlink-pecatenje-plata-platen-spisok">
+                <button type="button" class="print"><span>Печати платен список</span></button>
+            </a>
+        </div>
+        <div class="print-rekapitular-1 pecati-plata-buttons">
+            <a href="" target="_blank" class="printlink-pecatenje-plata-rekapitular-1">
+                <button type="button" class="print"><span>Печати рекапитулар 1</span></button>
+            </a>
+        </div>
+        <div class="print-rekapitular-2 pecati-plata-buttons">
+            <a href="" target="_blank" class="printlink-pecatenje-plata-rekapitular-2">
+                <button type="button" class="print"><span>Печати рекапитулар 2</span></button>
+            </a>
+        </div>
+        <div class="print-rekapitular-2 pecati-plata-buttons">
+            <a href="" target="_blank" class="printlink-pecatenje-plata-rekapitular-3">
+                <button type="button" class="print"><span>Печати рекапитулар 3</span></button>
+            </a>
+        </div>
+        <div class="print-rekapitular-2 pecati-plata-buttons">
+            <a href="" target="_blank" class="generate-mpin">
+                <button type="button" class="button"><span>Превземи МПИН</span></button>
+            </a>
+        </div>
+        <div class="print-rekapitular-2 pecati-plata-buttons">
+            <a href="" target="_blank" class="generate-trezorsko">
+                <button type="button" class="button"><span>Превземи Плати Трезор</span></button>
+            </a>
+        </div>
+
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function() {
+        function pecatenje_plati_parametri(){
+            var oddel = jQuery(".pecatenje-za-oddel").val();
+            var mesec = jQuery(".pecatenje-za-mesec").val();
+            var godina = jQuery(".pecatenje-za-godina").val();
+            if(oddel>0 && mesec>0 && godina>0) return 1;
+            else return 0;
+        }
+        function pecatenje_plati_parametri_rekapitulari(){
+            var oddel = jQuery(".pecatenje-za-oddel").val();
+            var mesec = jQuery(".pecatenje-za-mesec").val();
+            var godina = jQuery(".pecatenje-za-godina").val();
+            if(mesec>0 && godina>0) return 1;
+            else return 0;
+        }
+        jQuery(".pecatenje-index-form .printlink-pecatenje-plata-vlezni-podatoci").click(function(e){
+            if (pecatenje_plati_parametri() == 1){
+                var oddel = jQuery(".pecatenje-za-oddel").val();
+                var mesec = jQuery(".pecatenje-za-mesec").val();
+                var godina = jQuery(".pecatenje-za-godina").val();
+                var link_href = "/index.php/print/pdf?view=/index.php/plati/plati/plati_vlezni_podatoci_pdf&landscape&oddel="+oddel+"&mesec="+mesec+"&godina="+godina;
+                jQuery(".printlink-pecatenje-plata-vlezni-podatoci").attr("href",link_href);
+            } else {
+                alert("Ве молиме одберете ги сите параметри!!!");
+                e.preventDefault();
+                return false;
+            }
+        });
+        jQuery(".pecatenje-index-form .printlink-pecatenje-plata-kontrolen-list").click(function(e){
+            if (pecatenje_plati_parametri() == 1){
+                var oddel = jQuery(".pecatenje-za-oddel").val();
+                var mesec = jQuery(".pecatenje-za-mesec").val();
+                var godina = jQuery(".pecatenje-za-godina").val();
+                var link_href = "/index.php/print/pdf?view=/index.php/plati/plati/plati_kontrolen_list_pdf&landscape&oddel="+oddel+"&mesec="+mesec+"&godina="+godina;
+                jQuery(".printlink-pecatenje-plata-kontrolen-list").attr("href",link_href);
+            } else {
+                alert("Ве молиме одберете ги сите параметри!!!");
+                e.preventDefault();
+                return false;
+            }
+        });
+        jQuery(".pecatenje-index-form .printlink-pecatenje-plata-platen-spisok").click(function(e){
+            if (pecatenje_plati_parametri() == 1){
+                var oddel = jQuery(".pecatenje-za-oddel").val();
+                var mesec = jQuery(".pecatenje-za-mesec").val();
+                var godina = jQuery(".pecatenje-za-godina").val();
+                var link_href = "/index.php/print/pdf?view=/index.php/plati/plati/plati_platen_spisok_pdf&landscape&oddel="+oddel+"&mesec="+mesec+"&godina="+godina;
+                jQuery(".printlink-pecatenje-plata-platen-spisok").attr("href",link_href);
+            } else {
+                alert("Ве молиме одберете ги сите параметри!!!");
+                e.preventDefault();
+                return false;
+            }
+        });
+        jQuery(".pecatenje-index-form .printlink-pecatenje-plata-rekapitular-1").click(function(e){
+            if (pecatenje_plati_parametri_rekapitulari() == 1){
+                var oddel = jQuery(".pecatenje-za-oddel").val();
+                var mesec = jQuery(".pecatenje-za-mesec").val();
+                var godina = jQuery(".pecatenje-za-godina").val();
+                var link_href = "/index.php/print/pdf?view=/index.php/plati/plati/plati_rekapitular_1_pdf&oddel="+oddel+"&mesec="+mesec+"&godina="+godina;
+                jQuery(".printlink-pecatenje-plata-rekapitular-1").attr("href",link_href);
+            } else {
+                alert("Ве молиме одберете ги сите параметри!!!");
+                e.preventDefault();
+                return false;
+            }
+        });
+        jQuery(".pecatenje-index-form .printlink-pecatenje-plata-rekapitular-2").click(function(e){
+            if (pecatenje_plati_parametri_rekapitulari() == 1){
+                var oddel = jQuery(".pecatenje-za-oddel").val();
+                var mesec = jQuery(".pecatenje-za-mesec").val();
+                var godina = jQuery(".pecatenje-za-godina").val();
+                var link_href = "/index.php/print/pdf?view=/index.php/plati/plati/plati_rekapitular_vkalkulirani_casovi&oddel="+oddel+"&mesec="+mesec+"&godina="+godina;
+                jQuery(".printlink-pecatenje-plata-rekapitular-2").attr("href",link_href);
+            } else {
+                alert("Ве молиме одберете ги сите параметри!!!");
+                e.preventDefault();
+                return false;
+            }
+        });
+        jQuery(".pecatenje-index-form .printlink-pecatenje-plata-rekapitular-3").click(function(e){
+            if (pecatenje_plati_parametri_rekapitulari() == 1){
+                var oddel = jQuery(".pecatenje-za-oddel").val();
+                var mesec = jQuery(".pecatenje-za-mesec").val();
+                var godina = jQuery(".pecatenje-za-godina").val();
+                var link_href = "/index.php/print/pdf?view=/index.php/plati/plati/plati_rekapitular_3&oddel="+oddel+"&mesec="+mesec+"&godina="+godina;
+                jQuery(".printlink-pecatenje-plata-rekapitular-3").attr("href",link_href);
+            } else {
+                alert("Ве молиме одберете ги сите параметри!!!");
+                e.preventDefault();
+                return false;
+            }
+        });
+        jQuery(".pecatenje-index-form .generate-mpin").click(function(e){
+            if (pecatenje_plati_parametri_rekapitulari() == 1){
+                var oddel = jQuery(".pecatenje-za-oddel").val();
+                var mesec = jQuery(".pecatenje-za-mesec").val();
+                var godina = jQuery(".pecatenje-za-godina").val();
+                var link_href = "/index.php/plati/platimpin/getPlatiMPIN/"+mesec+"/"+godina;
+                jQuery(".generate-mpin").attr("href",link_href);
+            } else {
+                alert("Ве молиме одберете ги сите параметри!!!");
+                e.preventDefault();
+                return false;
+            }
+        });
+        jQuery(".pecatenje-index-form .generate-trezorsko").click(function(e){
+            if (pecatenje_plati_parametri_rekapitulari() == 1){
+                var oddel = jQuery(".pecatenje-za-oddel").val();
+                var mesec = jQuery(".pecatenje-za-mesec").val();
+                var godina = jQuery(".pecatenje-za-godina").val();
+                var link_href = "/index.php/plati/platimpin/getPlatiTREZOR/"+mesec+"/"+godina;
+                jQuery(".generate-trezorsko").attr("href",link_href);
+            } else {
+                alert("Ве молиме одберете ги сите параметри!!!");
+                e.preventDefault();
+                return false;
+            }
+        });
+    });
+</script>

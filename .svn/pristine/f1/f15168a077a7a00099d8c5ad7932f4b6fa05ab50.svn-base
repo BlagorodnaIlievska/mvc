@@ -1,0 +1,67 @@
+<div class="pregled-kasa-glavnalista">
+
+    <div class="pregledkasa">
+        <div class="buttoncontainer">
+            <?php if (bis_check_access('kasa_pregled_na_kasa_pecati')): ?>
+            <span class="print" style="margin-top: 10px"> <?php echo anchor('', 'Печати'); ?></span>
+            <?php endif ?>
+    <?php if (bis_check_access('kasa_pregled_na_kasa_baraj')): ?>
+            <button type="button" value="" class="baraj button" style="margin-top: 10px"><span>Барај</span></button>
+            <?php endif ?>
+        </div>
+        <div class="filtermenupregledkasa" style="display: none; margin-top: 10px">
+                <div class="filter-pregledkasa" >
+                    <?
+                    if (bis_check_access('kasa_pregled_na_kasa_filter_po_kasa')):
+                    echo   form_label('Каса: ','kasa');
+                    echo    form_dropdown('kasa',$kasa,'','class="ddkasapregled pregledkasa"');
+                    endif;
+                    ?>
+                </div>
+            </div>
+        </div>
+    <div class="preglednakasa">
+        <p class="naslovpreglednakasa" > ( <span class="vkupnostavki">0</span> ) Преглед на каса</p>
+        <div class="predtabela">
+        <table class="tabela-pregledkasa">
+            <thead>
+            <tr>
+                <th class="kasa">Каса</th>
+                <th class="datum">Датум</th>
+                <th class="broj">Број</th>
+                <th class="klient">Клиент</th>
+                <th class="odliv">Одлив</th>
+                <th class="priliv">Прилив</th>
+                <th class="zabeleska">Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery('.pregledkasa.ddklient').combobox();
+            pregledkasa_popolnilista();
+            jQuery(".tabela-pregledkasa").tablesorter();
+        jQuery(".baraj").live("click", function () {
+            if (jQuery(".filtermenupregledkasa").hasClass("prikazano")) {
+                jQuery(".filtermenupregledkasa").hide(500);
+                jQuery(".filtermenupregledkasa").removeClass("prikazano");
+            } else {
+                jQuery(".filtermenupregledkasa").show(500);
+                jQuery(".filtermenupregledkasa").addClass("prikazano");
+            }
+        });
+        jQuery('.pregledkasa').live('change', function () {
+            jQuery(".tabela-pregledkasa").find("tr:gt(1)").remove();
+            var kasaid = jQuery('.ddkasapregled option:selected').val();
+            var klientid=jQuery('.ddklient option:selected').val();
+
+            pregled_na_kasa_prebaruvanje(klientid,kasaid);
+        });
+    });
+</script>

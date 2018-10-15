@@ -1,0 +1,62 @@
+<?php  if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class Lekari extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+    }
+
+    public function nov()
+    {
+        $this->load->view('site_lekari/nov');
+    }
+
+    public function izmeni()
+    {
+        $this->load->model('site_lekari/lekar_model');
+        $lekar = $this->lekar_model->getLekar($this->input->get("id"));
+      //  print_r($lekar); die();
+        $data['lekar']= $lekar;
+        $this->load->view('site_lekari/izmeni', $data);
+    }
+
+    public function lista()
+    {
+        $this->load->view('site_lekari/lista');
+    }
+
+    public function popolnilista()
+    {
+        //$data['main_content'] = 'podatoci/katalog/popolnilista';
+        $this->load->model('site_lekari/lekar_model');
+        $return = $this->lekar_model->getLekari();
+        echo json_encode($return);
+    }
+
+    public function create_lekar()
+    {
+        $this->load->model('site_lekari/lekar_model');
+        $this->lekar_model->create_lekar();
+        echo "ok";
+    }
+
+    public function update_lekar()
+    {
+        $this->load->model('site_lekari/lekar_model');
+        $this->lekar_model->update_lekar();
+        echo "ok";
+    }
+
+    public function delete_lekar()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('site_lekari/lekar_model');
+        $this->lekar_model->delete_lekar($id);
+        echo "ok";
+    }
+}

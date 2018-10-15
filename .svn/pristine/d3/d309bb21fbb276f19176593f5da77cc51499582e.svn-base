@@ -1,0 +1,140 @@
+
+function site_lekari_nov() {
+
+    var formurl = "/index.php/site_lekari/lekari/nov";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нов",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+            //  jQuery(".korisnici-korisnikpostoi").change(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            // });
+            // jQuery(".korisnici-korisnikpostoi").keyup(function () {
+            //     korisnici_proveridalipostoi(jQuery(this));
+            //  });
+            //   jQuery(".tabela-artikli").trigger("update");
+
+
+        }
+    });
+}
+function site_lekari_popolnilista() {
+    var formurl = "/index.php/site_lekari/lekari/popolnilista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+            //  console.log(response);
+            jQuery(".tabela-lekarlista tbody").html('');
+            jQuery.each(response, function (index, item) {
+                //  console.log(item);
+                jQuery(".tabela-lekarlista tbody").append(('<tr lekarid="' + item.id + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                    '</td>' +
+                    '<td>'+ item.id+'</td>' +
+                    '<td>'+ item.arhivski_broj+'</td>' +
+                    '<td>'+ item.danocen_broj+'</td>' +
+                    '<td>'+ item.sifra_zu+'</td>' +
+                    '<td>'+ item.zdravstvena_ustanova+'</td>' +
+                    '<td>'+ item.rabotna_edinica+'</td>' +
+                    '<td>'+ item.dejnost+'</td>' +
+                    '<td>'+ item.specijalnosti+'</td>' +
+                    '<td>'+ item.adresa+'</td>' +
+                    '<td>'+ item.mesto+'</td>' +
+                    '<td>'+ item.faksimil+'</td>' +
+                    '<td>'+ item.ime+'</td>' +
+                    '<td>'+ item.prezime+'</td>' +
+                    '<td>'+ item.validen_od+'</td>' +
+                    '<td>'+ item.validen_do+'</td>' +
+                    '<td>'+ item.clen_na_tim+'</td>' +
+                    '<td>'+ item.ime_zamena+'</td>' +
+                    '<td>'+ item.prezime_zamena+'</td>' +
+                    '<td>'+ item.faksimil_zamena+'</td>' +
+                    '<td>'+ item.opis+'</td>' +
+                    '<td>'+ item.validen_od_zamena+'</td>' +
+                    '<td>'+ item.validen_do_zamena+'</td>' +
+                    '</tr>'
+                    ));
+            });
+            jQuery(".tabela-lekarlista").trigger("update");
+        }
+    });
+}
+
+
+function site_lekari_izmeni(lekarid) {
+    var formurl = "/index.php/site_lekari/lekari/izmeni";
+    var data = {  id:lekarid  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени ",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+
+}
+
+function site_lekari_delete(lekarid){
+    var r=confirm("Избриши");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/site_lekari/lekari/delete_lekar";
+            var data = {  id:lekarid  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    site_lekari_popolnilista();
+                }
+            });
+
+        }
+    }
+
+}
+

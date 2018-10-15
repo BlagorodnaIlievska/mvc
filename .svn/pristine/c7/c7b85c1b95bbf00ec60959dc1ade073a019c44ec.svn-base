@@ -1,0 +1,470 @@
+<?php
+
+/**
+ * Class Platimpin_model
+ */
+class Platimpin_model extends CI_Model
+{
+    /**
+     * @var
+     */
+    var $mesec;
+    /**
+     * @var
+     */
+    var $godina;
+
+
+    var $platavrednosti;
+
+    var $mesecniparametri;
+    var $pridonesi;
+    var $firma;
+    var $firma_id=40;
+    /**
+     *
+     */
+    public function loadPodatoci()
+    {
+        $this->platavrednosti = $this->db
+            ->select(' plata.*, `covecki_resursi`.`transakciska_smetka`,`bis_mesecni_parametri`.`id`, `bis_mesecni_parametri`.`mesec`, `bis_mesecni_parametri`.`godina`, `bis_mesecni_parametri`.`max_broj_casovi`, `bis_mesecni_parametri`.`broj_denovi_mesec`, `bis_mesecni_parametri`.`vrednost_na_bod`, `bis_mesecni_parametri`.`casovi_prethoden_mesec`, `bis_mesecni_parametri`.`limit_bruto_plati`, `bis_mesecni_parametri`.`neto_hranarina`, `bis_mesecni_parametri`.`max_minat_trud_mazi`, `bis_mesecni_parametri`.`max_minat_trud_zeni`, `bis_mesecni_parametri`.`sindikalna_clanarina`, `bis_mesecni_parametri`.`minat_trud_mazi`, `bis_mesecni_parametri`.`minat_trud_zeni`, `bis_mesecni_parametri`.`boleduvanje_1`, `bis_mesecni_parametri`.`boleduvanje_2`, `bis_mesecni_parametri`.`boleduvanje_3`, `bis_mesecni_parametri`.`tezina_na_rabota`, `bis_mesecni_parametri`.`ne_normirani_casovi`, `bis_mesecni_parametri`.`smensko_rabotenje`, `bis_mesecni_parametri`.`noken_trud`, `bis_mesecni_parametri`.`drzavni_praznici`, `bis_mesecni_parametri`.`dezurstvo_1`, `bis_mesecni_parametri`.`dezurstvo_2`, `bis_mesecni_parametri`.`prekuvremena_rabota_1`, `bis_mesecni_parametri`.`prekuvremena_rabota_2`, `bis_mesecni_parametri`.`prekuvremena_rabota_3`, `bis_mesecni_parametri`.`prinuden_odmor`, `bis_mesecni_parametri`.`procent_na_zaem`, `bis_mesecni_parametri`.`plateno_otsustvo`, `bis_mesecni_parametri`.`min_za_zdravstvo`, `bis_mesecni_parametri`.`min_za_penzisko`, `bis_mesecni_parametri`.`bruto_prosecen_licen_dohod`, `bis_mesecni_parametri`.`osloboduvanje_personalen_danok`, `bis_mesecni_parametri`.`granicna_suma_personalen_danok`, `bis_mesecni_parametri`.`broj_na_presmetka`, `covecki_resursi`.`ime`, `covecki_resursi`.`broj_platen_spisok`, `covecki_resursi`.`bruto_plata`, `covecki_resursi`.`prezime`, `covecki_resursi`.`rabotno_mesto`, `covecki_resursi`.`klasifikacija`, `covecki_resursi`.`zirosmetka`, `covecki_resursi`.`banka_id`, `covecki_resursi`.`embg`, `covecki_resursi`.`nacionalna_pripadnost`, `covecki_resursi`.`broj_licna_karta`, `covecki_resursi`.`datum_ragjanje`, `covecki_resursi`.`mesto_ragjanje`, `covecki_resursi`.`pol`, `covecki_resursi`.`bracen_status`, `covecki_resursi`.`pocetok_raboten_odnos`, `covecki_resursi`.`kraj_raboten_odnos`, `covecki_resursi`.`kraj_dogovor_vrab`, `covecki_resursi`.`praven_osnov`, `covecki_resursi`.`broj_licenca`, `covecki_resursi`.`vazi_od`, `covecki_resursi`.`vazi_do`, `covecki_resursi`.`broj_faksimil`, `covecki_resursi`.`staz`, `covecki_resursi`.`firma`, `covecki_resursi`.`uloga`, `covecki_resursi`.`prethoden_staz`, `covecki_resursi`.`oddel`, `covecki_resursi`.`smena`, `covecki_resursi`.`vkupno_staz`, `covecki_resursi`.`pododdel`, `covecki_resursi`.`smenska_grupa`, `covecki_resursi`.`ld_osnovica`, `covecki_resursi`.`obrazovanie`, `covecki_resursi`.`diplomi`, `covecki_resursi`.`slika`, `covecki_resursi`.`clen_na_sindikat`, `covecki_resursi`.`koef_zdravstvo`, `covecki_resursi`.`osiguruvanje`, `covecki_resursi`.`clen_lekarska_komora`, `covecki_resursi`.`profesor_medicinski_fakultet`, `covecki_resursi`.`koef_slozenost`, `covecki_resursi`.`koef_uslovi_na_rabota`, `covecki_resursi`.`koef_rakovodno_mesto`, `covecki_resursi`.`koef_staz`, `covecki_resursi`.`status_vraboten`, `covecki_resursi`.`sifra_opstina`, `covecki_resursi`.`transakciska_smetka` ')->from('plata')
+            ->join('covecki_resursi', "plata.covecki_resursi_id=covecki_resursi.id")
+            ->join('bis_mesecni_parametri', " plata.mesec=bis_mesecni_parametri.mesec AND plata.godina=bis_mesecni_parametri.godina ")
+            ->where('plata.mesec', $this->mesec)
+            ->where('plata.godina', $this->godina)
+
+            ->get()
+            ->result();
+
+    }
+    public function toArray($obj)
+    {
+        if (is_object($obj)) $obj = (array)$obj;
+        if (is_array($obj)) {
+            $new = array();
+            foreach ($obj as $key => $val) {
+                $new[$key] = self::toArray($val);
+            }
+        } else {
+            $new = $obj;
+        }
+        return $new;
+    }
+    public function loadPridonesi()
+    {
+
+       $tmpvar= $this->db
+            ->select('*')
+            ->from('bis_pridonesi')
+            ->get()
+            ->result();
+        foreach($tmpvar as $key=>$val){
+            $this->pridonesi[$val->id]=$this->toArray($val);
+        }
+    }
+    public function loadMesecniParametri()
+    {
+
+    $tmpvar  = $this->db
+            ->select('*')
+            ->from('bis_mesecni_parametri')
+            ->where('mesec',$this->mesec)
+            ->where('godina',$this->godina)
+            ->get()
+            ->result();
+        $this->mesecniparametri =$tmpvar[0];
+    }
+
+    public function loadFrima()
+    {
+
+    $tmpvar  = $this->db
+            ->select('bis_firmi.*, bis_gradovi.ime as grad, bis_gradovi.postenski_br as postenski_br')
+            ->from('bis_firmi')
+            ->where('bis_firmi.id',$this->firma_id)
+            ->join('bis_gradovi','bis_firmi.grad_id=bis_gradovi.id')
+            ->get()
+            ->result();
+        $this->firma =$tmpvar[0];
+    }
+
+
+
+    /**
+     *
+     */
+    public function generateMPIN()
+    {
+
+        $mpinsite = array();
+        $prvred=array();
+        $vtorred=array();
+        $tretred=array();
+//        1	bis_mesecni_parametri.bruto_prosecen_licen_dohod
+        $prvred[]= $this->mesecniparametri->bruto_prosecen_licen_dohod;
+
+//2	bis_pridonesi.stapka( id=7)
+        $prvred[]= $this->pridonesi[7]['stapka'];
+//3	bis_pridonesi.stapka(id=1)
+        $prvred[]= $this->pridonesi[1]['stapka'];
+//4	bis_mesecni_parametri.max_broj_casovi
+        $prvred[]= $this->mesecniparametri->max_broj_casovi;
+//5	bis_pridonesi.stapka(id=3)
+        $prvred[]= $this->pridonesi[3]['stapka'];
+//6	bis_pridonesi.stapka(id=4)
+        $prvred[]= $this->pridonesi[4]['stapka'];
+//7	bis_pridonesi.stapka(id=5)
+        $prvred[]= $this->pridonesi[5]['stapka'];
+//8	1
+        $prvred[]= 1;
+//9	празно
+        $prvred[]= '';
+//10	празно
+        $prvred[]= '';
+//11	празно
+        $prvred[]= '';
+//12	празно
+        $prvred[]= '';
+//13	bis_pridonesi.stapka id 6
+        $prvred[]= $this->pridonesi[6]['stapka'];
+//14	0
+        $prvred[]= '';
+//15	0
+        $prvred[]= '';
+//16	0
+        $prvred[]= '';
+//17	0
+        $prvred[]= '';
+        $prvred[]= '';
+//18	bis_mesecni_parametri.mesec
+        $vtorred[]= $this->mesecniparametri->mesec;
+//19	bis_mesecni_parametri.godina
+        $vtorred[]= $this->mesecniparametri->godina;
+//20	101
+        $vtorred[]= 101;
+//21	110
+        $vtorred[]=110;
+        $vtorred[]='';
+//22	bis_firmi.danocenbroj( paren_id=0 I parent_oddel_id)
+        $tretred[]= $this->firma->danocenbroj;
+//23	bis_firmi.embs
+        $tretred[]= $this->firma->embs;
+//24	bis_firmi.ime
+        $tretred[]=$this->firma->ime ;
+//25	02
+        $tretred[]= '02';
+//26	bis_firmi.telefon( paren_id=0 I parent_oddel_id)
+        $tretred[]= $this->firma->telefon;
+//27	bis_firmi.faks( paren_id=0 I parent_oddel_id)
+        $tretred[]= $this->firma->faks;
+//28	bis_firmi.adresa
+        $tretred[]= $this->firma->adresa;
+//29	17
+        $tretred[]= 17;
+//30	bis_gradovi.ime preku bis_firmi.grad_id
+        $tretred[]= $this->firma->grad;
+//31	bis_gradovi.ime preku bis_firmi.grad_id
+        $tretred[]= $this->firma->grad;
+//32	182
+        $tretred[]=182;
+//33	bis_gradovi.postenski_br
+        $tretred[]= $this->firma->postenski_br;
+//34	Goran Dojcinoski
+        $korisnik= $this->session->userdata('korisnik');
+        $tretred[]=$korisnik->ime ." " .$korisnik->prezime;
+//35	bis_firmi.telefon( paren_id=0 I parent_oddel_id)
+        $tretred[]= $this->firma->telefon;
+//36	prazno
+        $tretred[]= '';
+        $tretred[]= '';
+
+//
+//
+
+        $mpinsite[]=implode(";",$prvred);
+        $mpinsite[]=implode(";",$vtorred);
+
+        $mpinsite[]=implode(";",$tretred);
+
+        foreach ($this->platavrednosti as $platakey => $plata) {
+            $mpin = array();
+            // reden broj
+            $mpin[] = $platakey;
+//        2	covecki_resursi.embg
+            $mpin[] = $plata->embg;
+//3	covecki_resursi.prezime
+            $mpin[] = $plata->prezime;
+//4	covecki_resursi.ime
+            $mpin[] = $plata->ime;
+//5	050
+            $mpin[] = '050';
+//6	406100
+            $mpin[] = '406100';
+//7	covecki_resursi.sifra_opstina
+            $mpin[] = $plata->sifra_opstina;
+//8	bis_mesecni_parametri.broj_denovi_mesec
+            $mpin[] = $plata->broj_denovi_mesec;
+//9	bis_mesecni_parametri.max_broj_casovi
+            $mpin[] = $plata->max_broj_casovi;
+//10	00
+            $mpin[] = '00';
+//11	000
+            $mpin[] = $plata->prekuvremena_rabota_1;
+//12	plata.neto_plata_so_zadrski
+            $mpin[] = $plata->neto_plata_so_zadrski;
+//13	prazno
+            $mpin[] = '';
+//14	prazno
+            $mpin[] = '';
+//15	0.00
+            $mpin[] = '0.00';
+//16	bis_mesecni_parametri.godina
+            $mpin[] = $plata->godina;
+//17	plata.bruto_plata
+            $mpin[] = $plata->bruto_plata;
+//18	plata.pridones_za_pio
+            $mpin[] = $plata->pridones_za_pio;
+//19	0.00
+            $mpin[] = '0.00';
+//20	plata.pridones_za_zdravstvo
+            $mpin[] = $plata->pridones_za_zdravstvo;
+//21	0.00
+            $mpin[] = '0.00';
+//22	plata.dop_pridones_za_zdravstvo
+            $mpin[] = $plata->dop_pridones_za_zdravstvo;
+//23	0.00
+            $mpin[] = '0.00';
+//24	plata.pridones_za_vrabotuvanje
+            $mpin[] = $plata->pridones_za_vrabotuvanje;
+//25	0.00
+            $mpin[] = '0.00';
+//26	plata.personalen_danok_na_dohod
+            $mpin[] = $plata->personalen_danok_na_dohod;
+//27	(0050 , a ako e prof. 0047) ili ako (!empty(bis_vraboteni_mesecni_promeni.prekuvremena_rabota_1)) se stava 0041
+            $mpin[] =( empty($plata->prekuvremena_rabota_1) ? ($plata->profesor_medicinski_fakultet == 1 ? '0047' : '0050') : '0041' ) ;
+//28	prazno
+            $mpin[] = '';
+//29	prazno
+            $mpin[] = '';
+//30	prazno
+            $mpin[] = '';
+//31	prazno
+            $mpin[] = '';
+//32	prazno
+            $mpin[] = '';
+//33	0.00
+            $mpin[] = '0.00';
+//34	0.00
+            $mpin[] = '0.00';
+//35	0.00
+            $mpin[] = '0.00';
+//36	if(!empty(bis_vraboteni_mesecni_promeni.boleduvanje_nad_30_denovi)) se stava 128
+            $mpin[] = (!empty($plata->boleduvanje_nad_30_denovi) ? 128 : '');
+//37	if(!empty(bis_vraboteni_mesecni_promeni.boleduvanje_nad_30_denovi)) se stava bis_vraboteni_mesecni_promeni.boleduvanje_nad_30_denovi
+            $mpin[] = (!empty($plata->boleduvanje_nad_30_denovi) ? $plata->boleduvanje_nad_30_denovi : '');
+//38	if(plata.bruto_plata==0) prosek od poslednite 6 plata.neto_so_zadrski
+            $mpin[] = ($plata->bruto_plata == 0 ? $plata->neto_so_zadrski : '');
+//39	prazno
+            $mpin[] = '';
+//40	prazno
+//            ako pocnal od ovoj mesec da raboti se stava denot koga pocnal ,, covecki_resursi.pocetok_raboten_odnos
+
+            $mpin[] = ($this->mesec==$plata->pocetok_raboten_odnos ? $plata->pocetok_raboten_odnos : '');
+//41	prazno
+//            ako prestanal od ovoj mesec da raboti se stava denot koga prestanal ,, covecki_resursi.kraj_dogovor_vrab
+
+            $mpin[] = ($this->mesec==$plata->kraj_dogovor_vrab ? $plata->kraj_dogovor_vrab : '');
+//42	prazno
+//            ako pocnal da raboti od ovoj mesec sifra 1, ako prestanal da raboti sifra 2
+
+            $mpin[] = ($this->mesec==$plata->pocetok_raboten_odnos ? 1 : 2);
+//43	1
+            $mpin[] = '1';
+//44	plata.neto_plata_so_zadrski
+            $mpin[] = $plata->neto_plata_so_zadrski;
+//45	plata.neto_plata
+            $mpin[] = $plata->neto_plata;
+//46	covecki_resursi.transkaciska_smetka
+            $mpin[] = $plata->zirosmetka;
+            $mpin[] ='';
+            $mpinsite[] = implode(";", $mpin);
+        }
+        return implode("\n", $mpinsite);
+    }
+
+    /**
+     *
+     */
+    public function generateTrezorPlati()
+    {
+        $kucdata = "1";
+        $kucdata .= substr('KUCFZO', 0, 6);
+        //$kucdata .= $this->formatdatum($this->datum);
+        //DATUM
+        $kucdata .= $this->godina .$this->mesec .date("d");
+
+        $brojnapodatoci = count($this->rows);
+        $kucdata .= str_pad($this->ciklus, 7, "0") + $brojnapodatoci;
+
+
+        $kontrolenzbir = 0;
+        $personalendanok=0;
+        $dopolnitelnozdravstvo=0;
+        $uplatazavrabotuvanje=0;
+        $uplatazazdravstvo=0;
+        $uplatazapio=0;
+        foreach ($this->platavrednosti as $row) {
+
+            $personalendanok +=1;
+            $dopolnitelnozdravstvo +=1;
+            $uplatazavrabotuvanje +=1;
+            $uplatazazdravstvo +=1;
+            $uplatazapio+=1;
+            $kontrolenzbir += ($row->neto_plata + $uplatazapio +$uplatazazdravstvo+$uplatazavrabotuvanje+$dopolnitelnozdravstvo+$personalendanok);
+     }
+        $kontrolenzbir = explode(".", number_format($kontrolenzbir, 2, ".", ""));
+
+        $kucdata .= '+';
+        $kucdata .= str_pad($kontrolenzbir[0], "15", "0", STR_PAD_LEFT);
+        $kucdata .= ',' . $kontrolenzbir[1];
+        $kucdata .= "\r\n";
+
+        $kucdata .= 2000001;
+        $kucdata .= '100000000066005';
+        $kucdata .= '660250014073747';
+        $kucdata .= '401310';
+        $kucdata .= '00';
+        $kucdata .= str_pad('9102013064061080333900', "70", " ", STR_PAD_RIGHT);
+        $kucdata .= str_pad('0', "6", '0', STR_PAD_LEFT);
+        $kucdata .= "+";
+        $kucdata .= str_pad(number_format($personalendanok, 5, ",", ""), "21", "0", STR_PAD_LEFT);
+        $kucdata .= str_pad('100000000063095',15,' ',STR_PAD_RIGHT);
+        $kucdata .= str_pad('Персонален Данок од Плата',70, ' ', STR_PAD_RIGHT);
+        $kucdata .= str_pad('84011601242', "15", " ", STR_PAD_RIGHT);
+        $kucdata .= str_pad('711111', "6", "0", STR_PAD_RIGHT);
+        $kucdata .= str_pad('10', "2", "0", STR_PAD_LEFT);
+        $kucdata .= str_pad($this->mesec.'-'.$this->godina, "24", " ", STR_PAD_RIGHT);
+        $kucdata .= str_pad('76', "2", "0", STR_PAD_RIGHT);
+        $kucdata .= '2';
+        $kucdata .= str_pad('4080010514566', "13", " ", STR_PAD_RIGHT);
+        $kucdata .= "\r\n";
+
+        $kucdata .= 2000002;
+        $kucdata .= '100000000066005';
+        $kucdata .= '660250014073747';
+        $kucdata .= '402220';
+        $kucdata .= '00';
+        $kucdata .= str_pad('9102013064061080333900', "70", " ", STR_PAD_RIGHT);
+        $kucdata .= str_pad('0', "6", '0', STR_PAD_LEFT);
+        $kucdata .= "+";
+        $kucdata .= str_pad(number_format($dopolnitelnozdravstvo, 5, ",", ""), "21", "0", STR_PAD_LEFT);
+        $kucdata .= str_pad('100000000063095',15,' ',STR_PAD_RIGHT);
+        $kucdata .= str_pad('DOPOLNITELNO ZDRAVSTVO',70, ' ', STR_PAD_RIGHT);
+        $kucdata .= str_pad('84318200016', "15", " ", STR_PAD_RIGHT);
+        $kucdata .= str_pad('712211', "6", "0", STR_PAD_RIGHT);
+        $kucdata .= str_pad('00', "2", "0", STR_PAD_LEFT);
+        $kucdata .= str_pad($this->mesec.'-'.$this->godina, "24", " ", STR_PAD_RIGHT);
+        $kucdata .= str_pad('76', "2", "0", STR_PAD_RIGHT);
+        $kucdata .= '2';
+        $kucdata .= str_pad('4080010514566', "13", " ", STR_PAD_RIGHT);
+        $kucdata .= "\r\n";
+
+        $kucdata .= 2000003;
+        $kucdata .= '100000000066005';
+        $kucdata .= '660250014073747';
+        $kucdata .= '402310';
+        $kucdata .= '00';
+        $kucdata .= str_pad('9102013064061080333900', "70", " ", STR_PAD_RIGHT);
+        $kucdata .= str_pad('0', "6", '0', STR_PAD_LEFT);
+        $kucdata .= "+";
+        $kucdata .= str_pad(number_format($uplatazavrabotuvanje, 5, ",", ""), "21", "0", STR_PAD_LEFT);
+        $kucdata .= str_pad('100000000063095',15,' ',STR_PAD_RIGHT);
+        $kucdata .= str_pad('UPLATA ZA VRABOTUVAWE',70, ' ', STR_PAD_RIGHT);
+        $kucdata .= str_pad('84318200768', "15", " ", STR_PAD_RIGHT);
+        $kucdata .= str_pad('712311', "6", "0", STR_PAD_RIGHT);
+        $kucdata .= str_pad('00', "2", "0", STR_PAD_LEFT);
+        $kucdata .= str_pad($this->mesec.'-'.$this->godina, "24", " ", STR_PAD_RIGHT);
+        $kucdata .= str_pad('76', "2", "0", STR_PAD_RIGHT);
+        $kucdata .= '2';
+        $kucdata .= str_pad('4080010514566', "13", " ", STR_PAD_RIGHT);
+        $kucdata .= "\r\n";
+
+        $kucdata .= 2000004;
+        $kucdata .= '100000000066005';
+        $kucdata .= '660250014073747';
+        $kucdata .= '402210';
+        $kucdata .= '00';
+        $kucdata .= str_pad('9102013064061080333900', "70", " ", STR_PAD_RIGHT);
+        $kucdata .= str_pad('0', "6", '0', STR_PAD_LEFT);
+        $kucdata .= "+";
+        $kucdata .= str_pad(number_format($uplatazazdravstvo, 5, ",", ""), "21", "0", STR_PAD_LEFT);
+        $kucdata .= str_pad('100000000063095',15,' ',STR_PAD_RIGHT);
+        $kucdata .= str_pad('UPLATA ZA ZDRAVSTVO',70, ' ', STR_PAD_RIGHT);
+        $kucdata .= str_pad('84318200037', "15", " ", STR_PAD_RIGHT);
+        $kucdata .= str_pad('712213', "6", "0", STR_PAD_RIGHT);
+        $kucdata .= str_pad('00', "2", "0", STR_PAD_LEFT);
+        $kucdata .= str_pad($this->mesec.'-'.$this->godina, "24", " ", STR_PAD_RIGHT);
+        $kucdata .= str_pad('76', "2", "0", STR_PAD_RIGHT);
+        $kucdata .= '2';
+        $kucdata .= str_pad('4080010514566', "13", " ", STR_PAD_RIGHT);
+        $kucdata .= "\r\n";
+
+        $kucdata .= 2000005;
+        $kucdata .= '100000000066005';
+        $kucdata .= '660250014073747';
+        $kucdata .= '402110';
+        $kucdata .= '00';
+        $kucdata .= str_pad('9102013064061080333900', "70", " ", STR_PAD_RIGHT);
+        $kucdata .= str_pad('0', "6", '0', STR_PAD_LEFT);
+        $kucdata .= "+";
+        $kucdata .= str_pad(number_format($uplatazapio, 5, ",", ""), "21", "0", STR_PAD_LEFT);
+        $kucdata .= str_pad('100000000063095',15,' ',STR_PAD_RIGHT);
+        $kucdata .= str_pad('UPLATA ZA PIO',70, ' ', STR_PAD_RIGHT);
+        $kucdata .= str_pad('84318200149', "15", " ", STR_PAD_RIGHT);
+        $kucdata .= str_pad('712113', "6", "0", STR_PAD_RIGHT);
+        $kucdata .= str_pad('00', "2", "0", STR_PAD_LEFT);
+        $kucdata .= str_pad($this->mesec.'-'.$this->godina, "24", " ", STR_PAD_RIGHT);
+        $kucdata .= str_pad('76', "2", "0", STR_PAD_RIGHT);
+        $kucdata .= '2';
+        $kucdata .= str_pad('4080010514566', "13", " ", STR_PAD_RIGHT);
+        $kucdata .= "\r\n";
+
+
+        $i = 6;
+        foreach ($this->platavrednosti as $row) {
+            $imeprezime=$row->ime. " " . $row->prezime;
+            $kucdata .= 2000000 + $i;
+            $kucdata .= '100000000066005';
+            $kucdata .= '660250014073747';
+            $kucdata .= '401130';
+            $kucdata .= '00';
+            $kucdata .= str_pad('9102013064061080333900', "70", " ", STR_PAD_RIGHT);
+            $kucdata .= str_pad('0', "6", '0', STR_PAD_LEFT);
+            $kucdata .= "+";
+            $kucdata .= str_pad(number_format($row->neto_plata, 5, ",", ""), "21", "0", STR_PAD_LEFT);
+            $kucdata .= str_pad($row->zirosmetka,15,' ',STR_PAD_RIGHT);
+            $kucdata .= str_pad($imeprezime,70, ' ', STR_PAD_RIGHT);
+            $kucdata .= str_pad('0', "15", " ", STR_PAD_RIGHT);
+            $kucdata .= str_pad('0', "6", "0", STR_PAD_RIGHT);
+            $kucdata .= str_pad('0', "2", "0", STR_PAD_LEFT);
+            $kucdata .= str_pad('101', "24", " ", STR_PAD_RIGHT);
+            $kucdata .= str_pad('92', "2", "0", STR_PAD_RIGHT);
+            $kucdata .= '2';
+            $kucdata .= str_pad($row->embg, "13", " ", STR_PAD_RIGHT);
+
+            $i++;
+            $kucdata .= "\r\n";
+        }
+
+
+        return $kucdata;
+    }
+
+    /**
+     *
+     */
+    public function generateTrezorKrediti()
+    {
+
+    }
+}

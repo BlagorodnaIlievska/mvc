@@ -1,0 +1,1595 @@
+<div id="result" class="container-fluid">
+<?php if(isset($smenskiK) && ($smenskiK != array())){ ?>
+    <div class="row-fluid noprint ligneInfos">
+        <?php if(isset($smenskiK) && ($smenskiK != array())){ ?>
+            <table id="tabPlanning " class="smeni-poime" border="0"  cellspacing="0">
+            <thead>
+                <tr>
+                    <th class="imepr-plan">Име/Презиме</th>
+                        <?php
+                        if(isset($month) && ($month != '')){
+                            date_default_timezone_set('Europe/Skopje');
+                            //setlocale(LC_ALL, 'Portuguese_Portugal.1252');
+                            $days = cal_days_in_month(CAL_GREGORIAN, $month, 2013);
+                            $days = $days+1;
+                            for($i = 1; $i < $days; $i++){
+                                $date = '2013/'.$month.'/'.$i;
+                                //$date = $i.'/'.$month.'/2013';
+
+                                $weekday = date('D', strtotime($date)); // note: first arg to date() is lower-case L
+                                //echo $weekday;
+                                ?>
+                                <th class="denoviHead">
+                                    <?php echo $i; ?>
+                                    <br/>
+                                    <?php
+                                    switch ($weekday) {
+                                        case 'Mon':
+                                            echo "По";
+                                            break;
+                                        case 'Tue':
+                                            echo "Вт";
+                                            break;
+                                        case 'Wed':
+                                            echo "Ср";
+                                            break;
+                                        case 'Thu':
+                                            echo "Че";
+                                            break;
+                                        case 'Fri':
+                                            echo "Пе";
+                                            break;
+                                        case 'Sat':
+                                            echo "Са";
+                                            break;
+                                        case 'Sun':
+                                            echo "Не";
+                                            break;
+                                    }
+                                    ?>
+                                </th>
+                                <?php
+                            }
+                        }
+                        ?>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            if(isset($smenskiK) && ($smenskiK != array())){
+                foreach($smenskiK as $ss){ ?>
+                                    <tr id="loadingLayerPersonnes" user_id="<?= $ss->id; ?>">
+                                        <td align="center" class="entete" nowrap="nowrap"><?php echo $ss->ime." ".$ss->prezime; ?></td>
+                                        <?php
+                                        if(isset($month) && ($month != '')){
+                                            date_default_timezone_set('Europe/Skopje');
+                                            //setlocale(LC_ALL, 'Portuguese_Portugal.1252');
+                                            $days = cal_days_in_month(CAL_GREGORIAN, $month, 2013);
+                                            $days = $days+1;
+                                            for($i = 1; $i < $days; $i++){
+                                                $date = '2013/'.$month.'/'.$i;
+                                                $weekday = date('D', strtotime($date)); // note: first arg to date() is lower-case L
+                                                if(($weekday == 'Sat') || ($weekday == 'Sun')){ ?>
+                                                    <td class="clickField weekend">
+                                                    <?php }
+                                                else{ ?>
+                                                <td class="clickField">
+                                                <?php } ?>
+                                                    <input type="hidden" class="userId" value="<?php echo $ss->id; ?>" />
+                                                    <input type="hidden" class="date" value="<?php echo $date; ?>" />
+                                                    <input type="hidden" class="dayNo" value="<?php echo $i; ?>" />
+                                                    <p class="smen">
+                                                        <?php
+                                                        foreach($ss->denovi as $denovi){
+                                                            bis_debug($denovi, "denovi");
+                                                            switch ($i) {
+                                                                case 1:
+                                                                    switch ($denovi->day1) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 2:
+                                                                   // echo $denovi->day2;
+                                                                    switch ($denovi->day2) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 3:
+                                                                    switch ($denovi->day3) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 4:
+                                                                    switch ($denovi->day4) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 5:
+                                                                    switch ($denovi->day5) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 6:
+                                                                    switch ($denovi->day6) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 7:
+                                                                    switch ($denovi->day7) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 8:
+                                                                    switch ($denovi->day8) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 9:
+                                                                    switch ($denovi->day9) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 10:
+                                                                    switch ($denovi->day10) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 11:
+                                                                    switch ($denovi->day11) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 12:
+                                                                    switch ($denovi->day12) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 13:
+                                                                    switch ($denovi->day13) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 14:
+                                                                    switch ($denovi->day14) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 15:
+                                                                    switch ($denovi->day15) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 16:
+                                                                    switch ($denovi->day16) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 17:
+                                                                    switch ($denovi->day17) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 18:
+                                                                    switch ($denovi->day18) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 19:
+                                                                    switch ($denovi->day19) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 20:
+                                                                    switch ($denovi->day20) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 21:
+                                                                    switch ($denovi->day21) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 22:
+                                                                    switch ($denovi->day22) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 23:
+                                                                    switch ($denovi->day23) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 24:
+                                                                    switch ($denovi->day24) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 25:
+                                                                    switch ($denovi->day25) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 26:
+                                                                    switch ($denovi->day26) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 27:
+                                                                    switch ($denovi->day27) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 28:
+                                                                    switch ($denovi->day28) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 29:
+                                                                    switch ($denovi->day29) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 30:
+                                                                    switch ($denovi->day30) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                                case 31:
+                                                                    switch ($denovi->day31) {
+                                                                        case 1:
+                                                                            echo "С1";
+                                                                            break;
+                                                                        case 2:
+                                                                            echo "С2";
+                                                                            break;
+                                                                        case 3:
+                                                                            echo "С3";
+                                                                            break;
+                                                                        case 4:
+                                                                            echo "Д1";
+                                                                            break;
+                                                                        case 5:
+                                                                            echo "Д2";
+                                                                            break;
+                                                                    }
+                                                                    break;
+                                                            }
+
+                                                        }
+                                                        /*switch ($ss->smena) {
+                                                            case 1:
+                                                                echo "С1";
+                                                                break;
+                                                            case 2:
+                                                                echo "С2";
+                                                                break;
+                                                            case 3:
+                                                                echo "С3";
+                                                                break;
+                                                            case 4:
+                                                                echo "Д1";
+                                                                break;
+                                                            case 5:
+                                                                echo "Д2";
+                                                                break;
+                                                        }*/
+                                                        ?>
+                                                    </p>
+                                                </td>
+                                                <?php
+                                            }
+                                            //end for days
+                                        }
+                                        ?>
+                                    </tr>
+                                    <?php
+                                }
+                            }
+                            ?>
+                </tbody>
+            </table>
+        <div class="smeni-tabela">
+            <table>
+                <tr>
+                    <th>С1</th>
+                    <th>С2</th>
+                    <th>С3</th>
+                    <th>Д1</th>
+                    <th>Д2</th>
+                    <th>Ч</th>
+                </tr>
+                <?php
+                if(isset($smenskiK) && ($smenskiK != array())){
+                    foreach($smenskiK as $ss){
+                        ?>
+                        <tr>
+                            <td>
+                                <?php
+                                $s1 = 0;
+                                foreach($ss->smenaDen as $smenaDen){
+                                    if($smenaDen->day1 == '1'){
+                                       $s1++;
+                                    }
+                                    if($smenaDen->day2 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day3 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day4 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day5 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day6 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day7 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day8 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day9 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day10 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day11 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day12 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day13 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day14 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day15 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day16 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day17 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day18 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day19 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day20 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day21 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day22 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day23 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day24 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day25 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day26 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day27 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day28 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day29 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day30 == '1'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day31 == '1'){
+                                        $s1++;
+                                    }
+                                    echo $s1;
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                $s2 = 0;
+                                foreach($ss->smenaDen as $smenaDen){
+                                    if($smenaDen->day1 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day2 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day3 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day4 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day5 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day6 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day7 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day8 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day9 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day10 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day11 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day12 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day13 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day14 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day15 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day16 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day17 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day18 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day19 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day20 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day21 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day22 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day23 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day24 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day25 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day26 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day27 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day28 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day29 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day30 == '2'){
+                                        $s2++;
+                                    }
+                                    if($smenaDen->day31 == '2'){
+                                        $s2++;
+                                    }
+                                    echo $s2;
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                $s3 = 0;
+                                foreach($ss->smenaDen as $smenaDen){
+                                    if($smenaDen->day1 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day2 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day3 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day4 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day5 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day6 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day7 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day8 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day9 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day10 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day11 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day12 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day13 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day14 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day15 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day16 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day17 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day18 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day19 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day20 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day21 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day22 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day23 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day24 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day25 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day26 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day27 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day28 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day29 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day30 == '3'){
+                                        $s3++;
+                                    }
+                                    if($smenaDen->day31 == '3'){
+                                        $s3++;
+                                    }
+                                    echo $s3;
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                $s4 = 0;
+                                foreach($ss->smenaDen as $smenaDen){
+                                    if($smenaDen->day1 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day2 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day3 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day4 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day5 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day6 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day7 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day8 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day9 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day10 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day11 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day12 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day13 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day14 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day15 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day16 == '4'){
+                                        $s1++;
+                                    }
+                                    if($smenaDen->day17 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day18 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day19 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day20 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day21 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day22 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day23 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day24 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day25 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day26 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day27 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day28 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day29 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day30 == '4'){
+                                        $s4++;
+                                    }
+                                    if($smenaDen->day31 == '4'){
+                                        $s4++;
+                                    }
+                                    echo $s4;
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                $s5 = 0;
+                                foreach($ss->smenaDen as $smenaDen){
+                                    if($smenaDen->day1 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day2 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day3 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day4 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day5 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day6 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day7 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day8 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day9 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day10 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day11 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day12 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day13 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day14 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day15 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day16 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day17 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day18 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day19 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day20 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day21 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day22 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day23 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day24 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day25 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day26 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day27 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day28 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day29 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day30 == '5'){
+                                        $s5++;
+                                    }
+                                    if($smenaDen->day31 == '5'){
+                                        $s5++;
+                                    }
+                                    echo $s5;
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                $sum = ($s1+$s2+$s3+$s4+$s5) * 8;
+                                echo $sum;
+                                ?>
+                            </td>
+                        </tr>
+                <?php
+                    }
+                }
+                ?>
+            </table>
+        </div>
+        <?php } ?>
+    </div>
+    <p class="naslov smenskagrupa-naslov">Сменска група</p>
+    <div class="row-fluid noprint ligneInfos smenskagrupa-tabela">
+        <?php if(isset($smena) && ($smena != '')){ ?>
+        <table id="tabPlanning1" border="0" cellpadding="0" cellspacing="0">
+            <tr style="display: none;">
+
+                <?php
+                if(isset($month) && ($month != '')){
+                    date_default_timezone_set('Europe/Skopje');
+                    //setlocale(LC_ALL, 'Portuguese_Portugal.1252');
+                    $days = cal_days_in_month(CAL_GREGORIAN, $month, 2013);
+                    $days = $days+1;
+                    for($i = 1; $i < $days; $i++){
+                        // $date = '2013/'.$month.'/'.$i;
+                        $date = $i.'/'.$month.'/2013';
+                        $weekday = date('D', strtotime($date)); // note: first arg to date() is lower-case L
+                        //echo $weekday;
+                        ?>
+                        <td style="display:none;">
+
+                        </td>
+                        <?php
+                    }
+                }
+                ?>
+            </tr>
+            <tr>
+                <th class="filterod-smeni">
+                    <?php
+                    switch ($smena) {
+                        case 0:
+                            echo "Сите";
+                            break;
+                        case 1:
+                            echo "Доктори";
+                            break;
+                        case 2:
+                            echo "Сестри";
+                            break;
+                        case 3:
+                            echo "Чистачки";
+                            break;
+                    }
+                    ?>
+                </th>
+                <?php
+                if(isset($month) && ($month != '')){
+                    date_default_timezone_set('Europe/Skopje');
+                    //setlocale(LC_ALL, 'Portuguese_Portugal.1252');
+                    $days3 = cal_days_in_month(CAL_GREGORIAN, $month, 2013);
+                    $days3 = $days3+1;
+                    for($l = 1; $l < $days3; $l++){
+                        $date3 = '2013/'.$month.'/'.$l;
+                        //$date = $i.'/'.$month.'/2013';
+                        $weekdayl = date('D', strtotime($date3)); // note: first arg to date() is lower-case L
+                        ?>
+                        <th class="denoviHead">
+                            <?php echo $l; ?>
+                            <br/>
+                            <?php
+                            switch ($weekdayl) {
+                                case 'Mon':
+                                    echo "По";
+                                    break;
+                                case 'Tue':
+                                    echo "Вт";
+                                    break;
+                                case 'Wed':
+                                    echo "Ср";
+                                    break;
+                                case 'Thu':
+                                    echo "Че";
+                                    break;
+                                case 'Fri':
+                                    echo "Пе";
+                                    break;
+                                case 'Sat':
+                                    echo "Са";
+                                    break;
+                                case 'Sun':
+                                    echo "Не";
+                                    break;
+                            }
+                            ?>
+                        </th>
+                        <?php
+                    }
+                    ?>
+                    <td style="display:none;">
+
+                    </td>
+                    <?php
+                }
+                ?>
+            </tr>
+            <?php for($u = 0; $u<5; $u++){ ?>
+                <tr>
+                    <td class="smenskagrupa">
+                        <?php
+                        if($u == '0'){
+                        echo "С1";
+                        } else if($u == '1'){
+                        echo "С2";
+                        } else if($u == '2'){
+                        echo "С3";
+                        } else if($u == '3'){
+                        echo "Д1";
+                        } else if($u == '4'){
+                        echo "Д2";
+                        }
+                    ?>
+                    </td>
+                    <?php
+                    if(isset($month) && ($month != '')){
+                     //   date_default_timezone_set('Europe/Skopje');
+                        //setlocale(LC_ALL, 'Portuguese_Portugal.1252');
+                       // $days = cal_days_in_month(CAL_GREGORIAN, $month, 2013);
+                      //  $days = $days+1;
+                        //for($i = 1; $i < $days; $i++){
+                            //$date = '2013/'.$month.'/'.$i;
+                            //$date = $i.'/'.$month.'/2013';
+                            //$weekday = date('D', strtotime($date)); // note: first arg to date() is lower-case L
+                            //echo $weekday;
+                            ?>
+                            <!--<td> -->
+                                <?php
+                        $first = date('D', mktime(0, 0, 0, $month, 1, '2013'));
+                                 if($u == '0'){
+                                     if($first == 'Mon'){
+                                         $cl = '1';
+                                     }
+                                     if($first == 'Tue'){
+                                         $cl = '2';
+                                     }
+                                     if($first == 'Wed'){
+                                         $cl = '3';
+                                     }
+                                     if($first == 'Thu'){
+                                         $cl = '4';
+                                     }
+                                     if($first == 'Fri'){
+                                         $cl = '5';
+                                     }
+                                     if($first == 'Sat'){
+                                         $cl = '6';
+                                     }
+                                     if($first == 'Sun'){
+                                         $cl = '7';
+                                     }
+
+                                     foreach($sumPrvaSmena as $prva){
+                                         if(($cl == '6') || ($cl == '7') || ($cl == '13') || ($cl == '14') || ($cl == '20') || ($cl == '21') || ($cl == '27') || ($cl == '28') || ($cl == '34') || ($cl == '35')){
+                                         ?>
+                                            <td class="dayfield weekend">
+                                        <?php
+                                     }else{
+                                         ?>
+                                            <td class="dayfield">
+                                        <?php } ?>
+                                            <?php echo $prva; ?>
+                                         </td>
+                                         <?php
+                                         $cl++;
+                                       //  $cll++;
+                                     }
+                                     if($first == 'Mon'){
+                                         $cl = 1;
+                                     }
+                                     if($first == 'Tue'){
+                                         $cl = 2;
+                                     }
+                                     if($first == 'Wed'){
+                                         $cl = 3;
+                                     }
+                                     if($first == 'Thu'){
+                                         $cl = 4;
+                                     }
+                                     if($first == 'Fri'){
+                                         $cl = 5;
+                                     }
+                                     if($first == 'Sat'){
+                                         $cl = '6';
+                                     }
+                                     if($first == 'Sun'){
+                                         $cl = '7';
+                                     }
+                                  // print_r($sumPrvaSmena);
+                                } else if($u == '1'){
+                                     foreach($sumVtoraSmena as $vtora){
+                                         if(($cl == '6') || ($cl == '7') || ($cl == '13') || ($cl == '14') || ($cl == '20') || ($cl == '21') || ($cl == '27') || ($cl == '28') || ($cl == '34') || ($cl == '35')){
+                                             ?>
+                                            <td class="dayfield weekend">
+                                        <?php
+                                         }else{
+                                             ?>
+                                            <td class="dayfield">
+                                        <?php } ?>
+                                             <?php echo $vtora; ?>
+                                         </td>
+                                         <?php
+                                        $cl++;
+                                     }
+                                     if($first == 'Mon'){
+                                         $cl = 1;
+                                     }
+                                     if($first == 'Tue'){
+                                         $cl = 2;
+                                     }
+                                     if($first == 'Wed'){
+                                         $cl = 3;
+                                     }
+                                     if($first == 'Thu'){
+                                         $cl = 4;
+                                     }
+                                     if($first == 'Fri'){
+                                         $cl = 5;
+                                     }
+                                     if($first == 'Sat'){
+                                         $cl = '6';
+                                     }
+                                     if($first == 'Sun'){
+                                         $cl = '7';
+                                     }
+                                } else if($u == '2'){
+                                     foreach($sumTretaSmena as $treta){
+                                         if(($cl == '6') || ($cl == '7') || ($cl == '13') || ($cl == '14') || ($cl == '20') || ($cl == '21') || ($cl == '27') || ($cl == '28') || ($cl == '34') || ($cl == '35')){
+                                             ?>
+                                            <td class="dayfield weekend">
+                                        <?php
+                                         }else{
+                                             ?>
+                                            <td class="dayfield">
+                                        <?php } ?>
+                                             <?php echo $treta; ?>
+                                         </td>
+                                         <?php
+                                         $cl++;
+                                     }
+                                     if($first == 'Mon'){
+                                         $cl = 1;
+                                     }
+                                     if($first == 'Tue'){
+                                         $cl = 2;
+                                     }
+                                     if($first == 'Wed'){
+                                         $cl = 3;
+                                     }
+                                     if($first == 'Thu'){
+                                         $cl = 4;
+                                     }
+                                     if($first == 'Fri'){
+                                         $cl = 5;
+                                     }
+                                     if($first == 'Sat'){
+                                         $cl = '6';
+                                     }
+                                     if($first == 'Sun'){
+                                         $cl = '7';
+                                     }
+                                } else if($u == '3'){
+                                     foreach($dez1Smena as $cetvrta){
+                                         if(($cl == '6') || ($cl == '7') || ($cl == '13') || ($cl == '14') || ($cl == '20') || ($cl == '21') || ($cl == '27') || ($cl == '28') || ($cl == '34') || ($cl == '35')){
+                                             ?>
+                                            <td class="dayfield weekend">
+                                        <?php
+                                         }else{
+                                             ?>
+                                            <td class="dayfield">
+                                        <?php } ?>
+                                             <?php echo $cetvrta; ?>
+                                         </td>
+                                         <?php
+                                         $cl++;
+                                     }
+                                     if($first == 'Mon'){
+                                         $cl = 1;
+                                     }
+                                     if($first == 'Tue'){
+                                         $cl = 2;
+                                     }
+                                     if($first == 'Wed'){
+                                         $cl = 3;
+                                     }
+                                     if($first == 'Thu'){
+                                         $cl = 4;
+                                     }
+                                     if($first == 'Fri'){
+                                         $cl = 5;
+                                     }
+                                     if($first == 'Sat'){
+                                         $cl = '6';
+                                     }
+                                     if($first == 'Sun'){
+                                         $cl = '7';
+                                     }
+                                } else if($u == '4'){
+                                     foreach($dez2Smena as $peta){
+                                         if(($cl == '6') || ($cl == '7') || ($cl == '13') || ($cl == '14') || ($cl == '20') || ($cl == '21') || ($cl == '27') || ($cl == '28') || ($cl == '34') || ($cl == '35')){
+                                             ?>
+                                            <td class="dayfield weekend">
+                                        <?php
+                                         }else{
+                                             ?>
+                                            <td class="dayfield">
+                                        <?php } ?>
+                                             <?php echo $peta; ?>
+                                         </td>
+                                         <?php
+                                         $cl++;
+                                     }
+                                     if($first == 'Mon'){
+                                         $cl = 1;
+                                     }
+                                     if($first == 'Tue'){
+                                         $cl = 2;
+                                     }
+                                     if($first == 'Wed'){
+                                         $cl = 3;
+                                     }
+                                     if($first == 'Thu'){
+                                         $cl = 4;
+                                     }
+                                     if($first == 'Fri'){
+                                         $cl = 5;
+                                     }
+                                     if($first == 'Sat'){
+                                         $cl = '6';
+                                     }
+                                     if($first == 'Sun'){
+                                         $cl = '7';
+                                     }
+                                }
+                                ?>
+                            <!-- </td> -->
+                            <?php
+                    }
+                    ?>
+                </tr>
+            <?php } ?>
+        </table>
+        <?php } ?>
+    </div>
+<?php } else{
+    if(isset($error)){
+        echo $error;
+    }
+}
+?>
+</div>
+

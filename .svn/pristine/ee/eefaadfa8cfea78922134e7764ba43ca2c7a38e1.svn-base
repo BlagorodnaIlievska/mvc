@@ -1,0 +1,6 @@
+<div id="index" class="main-menu-tabs">
+    <ul>
+        <li><a href="/index.php/pacienti/pacienti/view_pacient">Пациенти</a></li>
+
+    </ul>
+</div>

@@ -1,0 +1,20 @@
+<div class="novproizvoditel">
+    <form action="/index.php/podatoci/proizvoditeli/update_proizvoditel" method="post">
+        <fieldset>
+            <input type="hidden" name="id" value="<?php echo $proizvoditel->id  ?>"/>
+
+            <legend>Измени производител</legend>
+            Име:<br/>
+            <input type="text" name="ime" value="<?php echo $proizvoditel->ime ?>"/><br/>
+
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="proizvoditel_popolnilista()" poraka_uspesno="Производителот е успешно изменет"
+                poraka_neuspesno="Грешка при снимање на производител"
+                ><span>Сними</span></button>
+
+        <br/>
+    </form>
+
+</div>

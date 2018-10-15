@@ -1,0 +1,127 @@
+<?  $d = date("d-m-Y");?>
+<div id="plata_kontrolen_list">
+    <div class="top-center">
+        <h1>ЈЗУ УК Тра, Орто, КАРИЛ, Ургентен
+            ВОДЊАНСКА БР. 17 СКОПЈЕ
+            Тел: 3211136
+            Жиро сметка : 200002215168719
+            Даночен број: 4080010514566
+            <? echo $d;?>
+        </h1><br/>
+
+    </div>
+    <div class="top-left">
+        ВКУПНО Вработени: <?= count($vraboteni); ?><br/>
+        Месец на обработка : <? echo $mesec;?> / <? echo $godina;?>
+        бр. на пресметка :1
+    </div>
+    <br>
+    <div class="middle-center">
+        РЕКАПИТУЛАР  <br>
+      <?if(!empty($ustanova)) { ?>  Клиника за <? echo $ustanova->ime;}?>
+    </div>
+    <br> <br> <br>
+    <div class="rekapitular-levo">
+        01. Нето од редовна работа <? echo $neto[0]->neto_plata;?>  <br>
+        02. Вирмански              <? echo $neto[0]->neto_plata;?>   <br>
+        02. Каса помош             0.00   <br>
+        02. Заем             0.00   <br>
+        03. Со чек               0.00     <br>
+        04. Аванс                 0.00    <br>
+        04. Мобилни телефони   <?echo $mobilni_telefoni[0]->zadrska_telefon;?>        <br>
+        04. Алиментација         0.00       <br>
+        04. Одбиток       <? echo $odbitok[0]->odbitok;?>              <br>
+        04. Лекарска комора    <? echo $lekarska_komora[0]->lek_komora;?>          <br>
+        04. Осигурување        <? echo $osiguruvanje[0]->osiguruvanje;?>          <br>
+        05. Синдикат           <? echo $sindikat[0]->sindikat;?>          <br>
+        06. Кредити              <? echo $krediti[0]->iznos_rata;?>         <br>
+        07. Вкупно одбитоци 4+5+6   <? $vkupno_zadrski=$mobilni_telefoni[0]->zadrska_telefon+$lekarska_komora[0]->lek_komora+$odbitok[0]->odbitok+$osiguruvanje[0]->osiguruvanje+$sindikat[0]->sindikat+$krediti[0]->iznos_rata;
+                  echo $vkupno_zadrski;
+        ?>    <br>
+        08. Нето плата 1+7         <? $neto_1_7= $neto[0]->neto_plata+$vkupno_zadrski; echo $neto_1_7; ?>      <br>
+        13. Даночно ослободување  <? echo $danocno_osloboduvanje[0]->licno_osloboduvanje;?>     <br>
+        14. Даночна основа             <br>
+        15. Данок           <? echo $danok[0]->personalen_danok_na_dohod;?>            <br>
+        16. Бруто даночна основа        <br>
+        16. Бруто за придонеси        <br>
+        17. ПИО             <? echo $pio[0]->pridones_za_pio;?>           <br>
+        18. Здравство     <? echo $zdravstvo[0]->pridones_za_zdravstvo;?>               <br>
+        19. Вработување     <? echo $vrabotuvanje[0]->pridones_za_vrabotuvanje;?>           <br>
+        20. Прид за проф заб. 0.5%   <? echo $dop_pridones[0]->dop_pridones_za_zdravstvo;?>  <br>
+        21. Вкупно  <?  $vkupno=$pio[0]->pridones_za_pio+$zdravstvo[0]->pridones_za_zdravstvo+$vrabotuvanje[0]->pridones_za_vrabotuvanje+$dop_pridones[0]->dop_pridones_za_zdravstvo;
+        echo $vkupno;?>
+        <br><br><br><br><br><br><br><br><br><br>
+        Одговорно лице :    <br>
+        ______________________________________
+
+    </div>
+    <div class="rekapitular-desno">
+     Доплата на придонеси       <br>
+     22. ПИО                 0.00    <br>
+     23. Здравство          0.00    <br>
+     24.Вработување         0.00    <br>
+     25. Прид. за проф заб.   0.00   <br>
+     26. ВКУПНО              0.00      <br>
+     27. Вкупно со персонален данок  <? $vkupno_so_personalen=$vkupno+$danok[0]->personalen_danok_na_dohod; echo $vkupno_so_personalen;?><br>
+     28. БРУТО   <? echo $bruto[0]->bruto_plata;?>  <br> <br> <br> <br>
+
+
+     29. Бруто износ за Сложеност <? echo $bruto_slozenost[0]->slozenost;?>   <br>
+     30. Бруто износ за Услови  <? echo $bruto_uslovi[0]->uslovi;?>    <br>
+     30. Бруто износ за Раководење <? echo $bruto_rakovodenje[0]->rakovodenje;?> <br>
+     30. Бруто износ за Минат труд  <? echo $bruto_minat_trud[0]->iznos_minat_trud;?><br>
+        <br>
+     31. Наставен денар 0.00 <br><br>         <br>
+     32. 25% од сложеност <? $procent_od_slozenost=($bruto_slozenost[0]->slozenost*25)/100; echo $procent_od_slozenost;?>
+        <br>  <br>
+     33. Разлика 28-29-31 <? $razlika1=$bruto[0]->bruto_plata-$bruto_slozenost[0]->slozenost-0; echo $razlika1; ?> <br>
+     34. Разлика 32-33   <? $razlika2= $procent_od_slozenost-$razlika1; echo $razlika2;?>  <br>
+        <br><br><br> <br>  <br><br>  <br><br><br>
+     Пресметката не го надминува лиитот од 25% од Коефициентот на сложеност
+        <br><br><br>
+        Овластено лице :
+        _________________________________________
+    </div>
+</div>
+<style type="text/css">
+    #plata_kontrolen_list .top-center {
+        width: 50%;
+        /*float: left;*/
+    }
+
+    #plata_kontrolen_list .top-left {
+        width: 100%;
+        /*float: left;*/
+    }
+    #plata_kontrolen_list .rekapitular-levo {
+        width: 50%;
+       float: left;
+    }
+    #plata_kontrolen_list .rekapitular-desno {
+        width: 50%;
+        float: right;
+    }
+    #plata_kontrolen_list .middle-center{
+         width: 100%;
+         text-align: center;
+        font-weight: bold;
+
+        /*float: left;*/
+    }
+
+    .tabela {
+        margin-top: 40px;
+    }
+
+    table thead th, table tbody td, table tfoot td {
+        overflow: hidden;
+    }
+
+    table {
+        font-size: 9px !important;
+    }
+
+    th {
+        background-color: transparent;
+    }
+</style>

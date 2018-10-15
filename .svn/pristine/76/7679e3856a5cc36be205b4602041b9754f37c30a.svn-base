@@ -1,0 +1,117 @@
+<div>
+<form action="/index.php/upati/upati/create_upat" method="post">
+<input type="hidden" name="priem_id" value="<?php echo $priem_id; ?>">
+<div >
+    <input type="hidden" name="tip_upat" value="konzolijarno_mislenje">
+<div class="levo">
+    <input type="text" value="ЈЗУ Ургентни Клиники" disabled=""><br/>
+   <label class="text1_levo">Назив на здравствена установа</label>
+
+    <input type="text" name="rabotna_edinica_oddelenie"
+           value="<?php echo $this->session->userdata('firma_ime') ?>" readonly=""/><br/>
+    <label class="text1_levo">Одделение</label>
+    <input type="text" name="mesto" ><br/>
+    <label class="text1_levo">Место</label>
+</div>
+    <div class="desno">
+<label class="text1_levo">ФЗОМ Образец - КММР</label><br/>
+    </div>
+
+    <div style="clear: both" class="naslov">
+        <h3 style="text-align: center">КОНЗИЛИЈАРНО МИСЛЕЊЕ</h3>
+        <br/>
+        <h4>ЗА ПРОДОЛЖЕНО ЛЕКУВАЊЕ - МЕДИЦИНСКА РЕХАБИЛИТАЦИЈА</h4>
+    </div>
+    <div class="text-inside">
+        <p>
+        Име <input type="text" name="ime" disabled=""> татково име <input type="text" name="tatkovoime" disabled=""> презиме <input type="text" name="prezime" disabled=""><br>
+        Адреса <input type="text" name="ulica" disabled="" width="100px"><input type="text" name="grad"disabled="" width="100px"><input type="text" name="drzava"disabled="" width="100px"><br>
+        ЕМБГ&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="embg" style="width: 650px" disabled=""><br>
+        ЕЗБО&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="ezbo" style="width: 650px" disabled=""><br>
+        Сериски бр. на ЕЗК/Бр. на здравствена легитимација<input type="text" name="br_zdravstvena_legitimacija" style="width: 317px" disabled=""><br>
+        </p>
+        <p>
+            Пациентот е примен во нашата здравствена установа со дијагноза<br> <textarea type="text" name="dijagnoza" rows="2" style="width: 800px" ></textarea><br>
+            и шифра на дијагноза по МКБ - 10 АМ <input type="text" name="sifra_dijagnoza">.<br>
+            Конзилијарното мислење се издава за остварување на право на продолжено лекување - медицинска рехабилитација во <input type="text" name="mesto_rehabilitacija">
+            <input type="radio" name="pridruznik" value="da">со придружник - <input type="radio" name="pridruznik" value="ne">без придружник,
+            во траење од <input type="text" name="denovi_rehabilitacija"> дена.<br>
+            Конзилијарното мислење е со важност согласно член 79 од Правилникот за содржината и начинот на остварувањето на правата и обврските од задолжителното
+            здравствено осигурување.
+
+        </p>
+        <p>
+            Образложение <textarea name="obrazlozenije_rehabilitacija" style="width: 800px" rows="5"></textarea>
+        </p>
+    </div>
+    <br>
+
+    <div class="levo" style="line-height: 300%;">
+        Директор<br>
+        <input type="text" name="direktor"><br>
+        Bo <input type="text" name="mesto" style="width: 140px"><br>
+        Дата<input type="text" name="datum" class="datum" style="width: 130px" value="<?php echo date('d-m-Y'); ?>"> <input type="hidden" name="vreme" value="<?php echo date('H:i'); ?>">
+    </div>
+    <div class="mp">МП</div>
+    <div class="desno" style="line-height: 300%;">
+        Лекарски конзилиум<br/>
+        1.<input type="text" name="doktor1"><br/>
+        2.<input type="text" name="doktor2"><br/>
+        3.<input type="text" name="doktor3"><br/>
+    </div>
+
+</div>
+    <div class="addstavka floatright">
+        <?php if($print == 2) { ?>
+        <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_konzilijarnomislenje_upat&id=" class="printlink" target="_blank" >
+            <button type="button" class="print"><span>Принт</span></button>
+        </a>
+        <?php } ?>
+        <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_konzilijarnomislenje_upat&id=" class="printlinkupati hide" target="_blank" >
+            <button type="button" class="print"><span>Принт</span></button>
+        </a>
+        <button type="button" class="button snimi-forma-upati" poraka_uspesno="успешно снимен"
+                poraka_neuspesno="Грешка при снимање" izvrsi="lekuvanja_listasozapisi(lekuvanja_getaktiven_priemid())">
+            <span>Сними</span>
+        </button>
+
+    </div>
+    </form>
+  </div>
+    <style type="text/css">
+        .{
+           padding: 70px 50px;
+            width: 800px;
+        }
+        .levo{
+            float: left;
+            text-align: center;
+            width: 200px;
+        }
+        .desno{
+            float: right;
+            text-align: center;
+            width: 200px;
+        }
+        .mp{
+            width: 600px;
+            text-align: center;
+        }
+        .naslov{
+            text-align: center;
+        padding-bottom: 50px;
+         background-color: #ffffff;
+        }
+        .text-inside{
+            clear: both;
+            text-align: justify;
+        }
+        .text1_levo{
+        font-size: 12px; font-family: Tahoma, Geneva, sans-serif;
+        }
+            }
+
+    </style>
+        <script>
+            $('.datum').datepicker({dateFormat:'yy-mm-dd'});
+        </script>

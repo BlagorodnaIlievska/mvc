@@ -1,0 +1,47 @@
+
+
+
+
+<fieldset>
+
+
+
+
+
+    <?php
+
+    echo form_open('podatoci/grad/create_grad');
+
+
+
+    ?><br><br>
+
+    <?php
+    echo form_label('Име на град','GradIme');?> &nbsp;&nbsp;&nbsp;
+  <?  echo form_input('GradIme',''); echo br();
+    echo form_label('Поштенски број','PostBroj');
+    echo form_input('PostBroj', '');echo br();
+    echo form_label('Држава ','Drzava');?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   <? echo form_input('Drzava', '');echo br();
+
+    // echo form_submit('submit', 'Submit');
+
+    ?>
+
+    <input type="button" class="ajaxcreateform button" value="Додади"><br />
+
+
+
+    <?php
+
+    echo validation_errors('<p class="error">');
+
+    echo form_close();
+
+    ?>
+
+
+
+
+
+</fieldset>

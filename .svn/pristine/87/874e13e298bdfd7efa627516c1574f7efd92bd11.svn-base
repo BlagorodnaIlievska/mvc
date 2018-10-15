@@ -1,0 +1,24 @@
+<div id="vlezizlez_menu_form">
+    <div id="vlezizlez" class="sub-menu-tabs">
+        <ul>
+            <?php if (bis_check_access('materijalno_vlez_izlez_vlez_tab')): ?>
+            <li><?php echo anchor('materijalno/vlez_izlez/vlez', 'Влез'); ?></li>
+            <?php endif ?>
+    <?php if (bis_check_access('materijalno_vlez_izlez_izlez_tab')): ?>
+            <li><?php echo anchor('materijalno/vlez_izlez/izlez', 'Излез'); ?></li>
+    <?php endif ?>
+<!--            <li>--><?php //echo anchor('materijalno/vlez_izlez/povratnici', 'Повратници'); ?><!--</li>-->
+        <?php if (bis_check_access('materijalno_vlez_izlez_interni_tab')): ?>
+            <li><?php echo anchor('materijalno/vlez_izlez/interni', 'Интерни'); ?></li>
+        <?php endif ?>
+            <!-- <li><?php //echo anchor('materijalno/vlez_izlez/proizvodstvo', 'Proizvodstvo'); ?></li> -->
+            <?php if (bis_check_access('materijalno_vlez_izlez_kartici_tab')): ?>
+            <li><?php echo anchor('materijalno/vlez_izlez/kartici', 'Картици'); ?></li>
+            <?php endif ?>
+            <!-- <li><?php //echo anchor('materijalno/vlez_izlez/proizvodstvo', 'Proizvodstvo'); ?></li> -->
+            <?///php if (bis_check_access('materijalno_vlez_izlez_otpis_na_materijali_tab')): ?>
+            <li><?php echo anchor('materijalno/vlez_izlez/otpis_na_materijali', 'Требовање'); ?></li>
+            <?php //endif ?>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,3 @@
+members area only ...
+<br>
+<?php echo anchor('users/login/index', 'Logout'); ?>

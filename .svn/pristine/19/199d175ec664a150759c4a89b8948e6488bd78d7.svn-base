@@ -1,0 +1,48 @@
+<div id="new_proizvoditel_form">
+
+    <div class="proizvoditel">
+        <?php
+        echo form_open('materijalno/priemnica/create_proizvoditel');
+        echo form_label('Proizvoditel:', 'new-proizvoditel-ime');
+        echo form_input('new-proizvoditel-ime','', 'id="new-proizvoditel-ime"');
+        ?>
+        <input type="button" value="Submit" class="novkatbroj"><br>
+        <?php
+        echo form_close();
+        ?>
+    </div><br>
+
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.novkatbroj').live('click',function(){
+            var formaction=jQuery(this).parent().attr('action');
+            var formmethod=jQuery(this).parent().attr('method');
+            var dialogid=jQuery(this).parent().parent().parent().parent();
+            var dialogformid=jQuery(this).parent().parent().parent().parent().parent().attr('class');
+            //alert(jQuery(this).parent().serialize());
+            jQuery.ajax({
+                type: "post",
+                url: formaction,
+                data: jQuery(this).parent().serialize(),
+                success:  function(data){
+                    console.log(data);
+                    //var proizvoditel = jQuery('#new-proizvoditel-ime').val();
+                    /*jQuery("#proizvod option").each(function() {
+                        if(jQuery(this).text() != proizvoditel) {
+
+                            jQuery(this).attr('selected', 'selected');
+                        }
+                    });*/
+                    // jQuery.each(data, function(val, text) {
+                    //     jQuery('#proizvod').append( new Option(text,val) );
+                    // });
+                    var option = jQuery('<option />');
+                    option.attr('value', data.markerID).text(data.markerIme);
+                    dialogid.dialog("destroy").remove();
+                }
+            });
+        });
+    });
+</script>

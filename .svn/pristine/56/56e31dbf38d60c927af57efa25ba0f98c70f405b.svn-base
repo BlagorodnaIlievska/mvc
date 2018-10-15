@@ -1,0 +1,94 @@
+<div class="pacienti-pregled-uslugi">
+    <form class="pacienti-pregled-forma">
+        <input type="hidden" name="priem_id" value="<?php echo $_POST['priem_id'] ?>"/>
+        <div class="parametri-pregled-pacienti">
+            <div class="tabela-paketi predtabela" id="pregled_paketi">
+                <table class="paketi-tabela">
+                    <thead>
+                    <!--                        <th></th>-->
+                    <th>Бр</th>
+                    <th>Услуга</th>
+                    <th>Количина</th>
+                    </thead>
+                    <tbody>
+                    <?php if(is_array($uslugi)){ ?>
+                        <?php $i=1; foreach($uslugi as $usluga): ?>
+                            <tr>
+                                <!--                                <td class="deleteusluga"><a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a></td>-->
+                                <td class="redenbroj"><?= $i; ?></td>
+                                <td><?= $usluga->paket->naziv ?></td>
+                                <td><?= $usluga->kolicina ?></td>
+                                <td class="dbid hide"><input type="hidden" value="<?= $usluga->id; ?>" class="dbid" /></td>
+                            </tr>
+                            <?php $i++; ?>
+                        <?php endforeach; ?>
+                    <?php }; ?>
+                    </tbody>
+                </table>
+                <br/>
+            </div>
+            <button type="button" class="button dodadi-paket"><span>Ценоник 92</span></button>
+            <button type="button" class="button dodadi-paket-dsg"><span>Услуги дсг</span></button>
+            <button type="button" class="button dodadi-paket-db"><span>Услуги дб</span></button>
+            <button type="button" class="button dodadi-paket-spec"><span>Услуги спец</span></button>
+        </div>
+        <div class="clear"></div>
+        <br/><br/>
+        <div class="footer-pregled-pacienti">
+            <div class="actions-pregled-pacienti">
+                <button type="button" class="button zacuvajpriemuslugi"><span>Зачувај</span></button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".zacuvajpriemuslugi").click(function () {
+            lekuvanja_zacuvajpriemuslugi(jQuery(this));
+        });
+        jQuery(".dodadi-paket").click(function () {
+            var redovi = jQuery(".paketi-tabela tbody tr").length;
+            redovi = 1 * redovi + 1;
+            jQuery(".paketi-tabela tbody").append('<tr>' +
+                '<td>' + redovi + '</td>' +
+                '<td><input class="izvrseni_uslugi" /><input type="hidden" class="paketi-usluga" name="paketi[' + redovi + '][paket_id]" /></td>' +
+                '<td><input type="text" name="paketi[' + redovi + '][kolicina]" class="paketi-kolicina" value="1" /></td>' +
+                '<td class="hide"><input type="hidden" name="paketi[' + redovi + '][cenovnik]" class="paketi-cenovnik" value="1" /></td>' +
+                '</tr>');
+            autocomplete_cenovnikuslugi(1);
+        });
+        jQuery(".dodadi-paket-dsg").click(function () {
+            var redovi = jQuery(".paketi-tabela tbody tr").length;
+            redovi = 1 * redovi + 1;
+            jQuery(".paketi-tabela tbody").append('<tr>' +
+                '<td>' + redovi + '</td>' +
+                '<td><input class="izvrseni_uslugi" /><input type="hidden" class="paketi-usluga" name="paketi[' + redovi + '][paket_id]" /></td>' +
+                '<td><input type="text" name="paketi[' + redovi + '][kolicina]" class="paketi-kolicina" value="1" /></td>' +
+                '<td class="hide"><input type="hidden" name="paketi[' + redovi + '][cenovnik]" class="paketi-cenovnik" value="2" /></td>' +
+                '</tr>');
+            autocomplete_cenovnikuslugi(2);
+        });
+        jQuery(".dodadi-paket-db").click(function () {
+            var redovi = jQuery(".paketi-tabela tbody tr").length;
+            redovi = 1 * redovi + 1;
+            jQuery(".paketi-tabela tbody").append('<tr>' +
+                '<td>' + redovi + '</td>' +
+                '<td><input class="izvrseni_uslugi" /><input type="hidden" class="paketi-usluga" name="paketi[' + redovi + '][paket_id]" /></td>' +
+                '<td><input type="text" name="paketi[' + redovi + '][kolicina]" class="paketi-kolicina" value="1" /></td>' +
+                '<td class="hide"><input type="hidden" name="paketi[' + redovi + '][cenovnik]" class="paketi-cenovnik" value="3" /></td>' +
+                '</tr>');
+            autocomplete_cenovnikuslugi(3);
+        });
+        jQuery(".dodadi-paket-spec").click(function () {
+            var redovi = jQuery(".paketi-tabela tbody tr").length;
+            redovi = 1 * redovi + 1;
+            jQuery(".paketi-tabela tbody").append('<tr>' +
+                '<td>' + redovi + '</td>' +
+                '<td><input class="izvrseni_uslugi" /><input type="hidden" class="paketi-usluga" name="paketi[' + redovi + '][paket_id]" /></td>' +
+                '<td><input type="text" name="paketi[' + redovi + '][kolicina]" class="paketi-kolicina" value="1" /></td>' +
+                '<td class="hide"><input type="hidden" name="paketi[' + redovi + '][cenovnik]" class="paketi-cenovnik" value="4" /></td>' +
+                '</tr>');
+            autocomplete_cenovnikuslugi(4);
+        });
+    });
+</script>

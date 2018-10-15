@@ -1,0 +1,280 @@
+<div   xmlns="http://www.w3.org/1999/html">
+
+    <?php
+    $delete = img(array(
+        'src' => 'images/delete.png',
+        'width' => '15',
+        'height' => '15',
+        'class' => 'delete'
+    ));
+    $edit = img(array(
+        'src' => 'images/edit.png',
+        'width' => '15',
+        'height' => '15'
+    ));
+    $add = img(array(
+        'src' => 'images/add.png',
+        'width' => '15',
+        'height' => '15'
+    ));
+    //echo form_open('kasa/menu/nov_vlez_izlez');
+    ?>
+    <button type="button" value="" formaction="/index.php/kasa/menu/nov_vlez_izlez" class="magacinbutton button bnovafak" style="margin-top: 10px"><span>Нов</span></button>
+    <span class="print" style="margin-top: 10px"> <?php echo anchor('', 'Печати'); ?></span>
+    <button type="button" value="" class="baraj button" style="margin-top: 10px"><span>Барај</span></button>
+    <br>
+    <div class="filtermenukasa" style="display: none; margin-top: 10px">
+        <div class="filter-kasa">
+            <span>Период од:</span>
+            <? $d=date("Y-m-d");?>
+            <input type="text" class="periodod pregledsostojba" name="periodod" value=<?echo $d;?> >
+            <span style="margin: 0 5px;">до:</span>
+            <input type="text" class="perioddo pregledsostojba" name="perioddo" value=<?echo $d;?> >    <div class="sostojba">
+        </div>
+
+        <div class="filter-kasa" >
+            <?
+            echo   form_label('Каса','kasa');
+            echo    form_dropdown('kasa',$kasa,'','class="ddkasa pregledsostojba"');
+            ?>
+           Моментална состојба : <input type="text" name="sos" class="sos"  readonly>
+        </div>
+    </div>
+
+
+      <!--  <table class="tabelasostojba" border="1" cellspacing="2" cellpadding="2">
+            <tr>
+                <th>Kasa</th>
+                <th>DEN</th>
+                <th>EUR</th>
+                <th>USD</th>
+            </tr>
+                <tr class='prethodna'>
+                <td> <input type='text' class='big' name='prethodna' value="Sostojba prethodna" readonly> </td>
+                <td> <input type='text' class='den medim' name='den' readonly> </td>
+                <td> <input type='text' class='eur medium' name='eur' readonly> </td>
+                <td> <input type='text' class='usd medium' name='usd' readonly> </td>
+            </tr>
+            <tr class='promena'>
+                <td> <input type='text' class='big' name='promena' value="Promena" readonly> </td>
+                <td> <input type='text' class='den medim' name='den' readonly> </td>
+                <td> <input type='text' class='eur medium' name='eur' readonly> </td>
+                <td> <input type='text' class='usd medium' name='usd' readonly> </td>
+            </tr>
+            <tr class='krajna'>
+                <td> <input type='text' class='big' name='krajna' value="Sostojba krajna" readonly> </td>
+                <td> <input type='text' class='den medim' name='den' readonly> </td>
+                <td> <input type='text' class='eur medium' name='eur' readonly> </td>
+                <td> <input type='text' class='usd medium' name='usd' readonly> </td>
+            </tr>
+        </table>
+        <!-- Sostojba prethodna: <input type="text" class="prethodna inline"  value="" readonly><br>
+        Promena: <input type="text" class="promena inline"  value="" readonly><br>
+        Sostojba krajna: <input type="text" class="krajna inline"  value="" readonly><br> -->
+   <br>
+    <br>
+    <br>
+    </div>
+    <div class="kasa-glavnalista">
+
+        <table class="tabela-kasalista" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Датум</th>
+                <th>Број</th>
+                <th>Клиент</th>
+                <th>Одлив</th>
+                <th>Прилив</th>
+                <th>Намена</th>
+                <th>Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            echo "<tr class='hiderow'>";
+            echo "<td>". $delete . "</td>";
+            //echo "<td>". $delete . " " . $edit . "</td>";
+            echo "<td><input type='hidden' class='kasaid' name='kasaid'> <input type='text' class='datum big' name='pdatum' readonly> </td>";
+            echo "<td> <input type='text' class='broj' name='pbroj' readonly> </td>";
+            echo "<td> <input type='text' class='klient' name='pklient' readonly> </td>";
+            echo "<td> <input type='text' class='odliv' name='podliv' readonly> </td>";
+            echo "<td> <input type='text' class='priliv medium' name='ppriliv' readonly> </td>";
+            echo "<td> <input type='text' class='konto small'> </td>";
+            echo "<td> <input type='text' class='zabeleska big' name='pzabeleska' readonly> </td>";
+            echo "</tr>";
+            ?>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.periodod').datepicker({dateFormat:'yy-mm-dd'});
+        jQuery('.perioddo').datepicker({dateFormat:'yy-mm-dd'});
+        jQuery(".tabela-kasalista").tablesorter();
+        var startdata = {
+            data : 1
+        }
+        jQuery.ajax({
+            url: "/index.php/kasa/menu/getSiteKasi",
+            type: 'POST',
+            data: startdata,
+            dataType: 'json',
+            success: function(response) {
+               console.log(response);
+                jQuery(".tabela-kasalista").find("tr:gt(1)").remove();
+                var tr = jQuery('.tabela-kasalista tr:last');
+                tr.removeClass('hiderow');
+                for ( var i = 0; i < response.length; i++ ) {
+                    var newrow = jQuery(tr).clone().insertAfter(tr);
+                    newrow.find('input[name=dbid]').val(response[i].dbid);
+                    //newrow.find('input[name=2kasa]').val(response[i].kasaIme);
+                    newrow.find('input[name=pdatum]').val(response[i].datum);
+                    newrow.find('input[name=pbroj]').val(response[i].intBroj);
+                    newrow.find('input[name=pklient]').val(response[i].firmaIme);
+                    newrow.find('input[name=pzabeleska]').val(response[i].zabeleska);
+                    if(response[i].tip == 540) newrow.find('input[name=podliv]').val(response[i].suma);
+                    if(response[i].tip == 550) newrow.find('input[name=ppriliv]').val(response[i].suma);
+                }
+                //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                tr.addClass('hiderow');
+                // presmetaj sostojba na kasa
+                //jQuery(".tpriemnica").live('blur',function(){
+                    var sostojba = 0, odliv = 0, priliv = 0, sumaodliv = 0, sumapriliv = 0;
+                    jQuery(".tabela-kasalista td").each(function() {
+                        odliv = jQuery(this).find('.odliv').val();
+                        priliv = jQuery(this).find('.priliv').val();
+                        // add only if the value is number
+                        if(!isNaN(odliv) && odliv.length != 0) {
+                            sumaodliv += parseFloat(odliv);
+                        }
+                        if(!isNaN(priliv) && priliv.length != 0) {
+                            sumapriliv += parseFloat(priliv);
+                        }
+                    });
+                    sostojba = parseFloat(sumapriliv) - parseFloat(sumaodliv);
+                    //console.log(sostojba);
+                    jQuery('.tabelasostojba tr.promena').find('.den').val(sostojba);
+                    jQuery('.tabelasostojba tr.krajna').find('.den').val(sostojba);
+               //});
+            }
+        });
+        jQuery('.tabela-kasalista tr').live("dblclick", function(){
+            var id = jQuery(this).find('input[name=dbid]').val();
+            //console.log("clicked: ", id);
+            var formaction= "/index.php/kasa/menu/editVlezIzlezKasa?id=" + id;
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({
+                autoOpen: true,
+                width: 800,
+                close: function(event, ui){
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            }).load(formaction);
+        });
+        jQuery('.magacinbutton').click(function()
+        {
+            var formaction=jQuery(this).attr('formaction');
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({
+                autoOpen: true,
+                width: 800,
+                close: function(event, ui){
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            }).load(formaction);
+        });
+        jQuery('.add-tr').live('click',function(e)
+        {
+            var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+            jQuery("body").append('<div class="'+tempdialog+'"></div>');
+            jQuery('div.'+tempdialog).dialog({
+                autoOpen: true,
+                width: 400,
+                close: function(event, ui){
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            }).load(jQuery(this).attr('href'));
+            e.preventDefault();
+        });
+        jQuery(".delete").live('click', function() {
+            var trow = jQuery(this).closest('tr');
+            var id = trow.find('input[name=dbid]').val();
+            //console.log(id);
+            var formaction= "/index.php/kasa/menu/deleteStavkaKasa?id=" + id;
+            var deletedata = { id : id }
+            jQuery.ajax({
+                url: "/index.php/kasa/menu/deleteStavkaKasa",
+                type: 'POST',
+                data: deletedata,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log(response);
+                    var tabs = jQuery('.main-menu-tabs');
+                    var selected = tabs.tabs('option', 'selected');
+                    jQuery(".main-menu-tabs").tabs('load',selected);
+                }
+            });
+        });
+        jQuery(".baraj").live("click", function () {
+            if (jQuery(".filtermenukasa").hasClass("prikazano")) {
+                jQuery(".filtermenukasa").hide(500);
+                jQuery(".filtermenukasa").removeClass("prikazano");
+            } else {
+                jQuery(".filtermenukasa").show(500);
+                jQuery(".filtermenukasa").addClass("prikazano");
+            }
+        });
+        jQuery('.pregledsostojba').live('change', function () {
+            jQuery(".tabela-kasalista").find("tr:gt(1)").remove();
+            var kasaid = jQuery('.ddkasa option:selected').val();
+            var period1 = jQuery('.periodod').val();
+            var period2 = jQuery('.perioddo').val();
+            var formaction = "/index.php/kasa/menu/getKasa";
+          //  console.log(kasaid, period1, period2);
+            var data = {
+                kasaid:kasaid,
+                period1:period1,
+                period2:period2
+            }
+            jQuery.ajax({
+                url:formaction,
+                type:'POST',
+                data:data,
+                dataType:'json',
+                success:function (response) {
+              //  console.log(response);
+                    var tr = jQuery('.tabela-kasalista tr:last');
+                    tr.removeClass('hiderow');
+                    var sos=0;
+                    for (var i = 0; i < response.length; i++) {
+                        var newrow = jQuery(tr).clone().insertAfter(tr);
+                        newrow.find('input[name=kasaid]').val(response[i].kasa);
+                        newrow.find('input[name=pdatum]').val(response[i].datum);
+                        newrow.find('input[name=pbroj]').val(response[i].intBroj);
+                       // newrow.find('.pklient').text(response[i].firmaIme);
+                      if(response[i].tip == 550) {newrow.find('input[name=ppriliv]').val(response[i].z_uplata);
+                                sos=sos+parseFloat(response[i].z_uplata);
+                      }
+                        if(response[i].tip == 540) {newrow.find('input[name=podliv]').val(response[i].z_uplata);
+                            sos=sos-parseFloat(response[i].z_uplata);
+                        }
+
+                        newrow.find('input[name=pzabeleska]').val(response[i].komentar);
+                    }
+                    //jQuery(".tabelasmetka").find("tr:eq(1)").remove();
+                    jQuery('.sos').val(sos);
+                    tr.addClass('hiderow');
+                }
+            });
+        });
+    });
+</script>

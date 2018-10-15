@@ -1,0 +1,146 @@
+<? $d=date('d-m-Y');?>
+<div class="livce-top">
+    <span>Година: <?php echo $godina; ?> </span><span> Месец: <?echo $mesec;?></span><span class="lzp-pecatenona">  Печатено на: <?echo $d;?></span>  <br>
+</div>
+<div class="livce-za-plata">
+
+    <div class="osnovni-info">
+         <div class="lzp-osnovi-podatoci"><? echo $vraboten[0]->ime.' '.$vraboten[0]->prezime;?> ЈЗУ УК Тра, Орто, КАРИЛ, Ургентен  <br></div>
+        <div class="osnovni-info-levo">
+            Сметка : 200001439413256 <br>
+            Вредност на бод : 12167<br>
+            Стаж : <?$vraboten[0]->vkupno_staz;?><br>
+            Инд. фактор 100,00%<br>
+        </div>
+        <div class="osnovni-info-desno">
+          коефициент сложеност<?echo $vraboten[0]->koef_slozenost;?>  <br>
+          коефициент услови <?echo $vraboten[0]->koef_uslovi_na_rabota;?>  <br>
+          коефициент раководење <?echo $vraboten[0]->koef_rakovodno_mesto;?> <br>
+          коеф. Минат труд  <?echo $vraboten[0]->koef_staz;?><br>
+        </div>
+    </div>
+    <div class="lzp-primanja">
+        <div class="lzp-primanja-zadrskinaslovi">
+            <h4><p class="lzp-primanja-naslov">ПРИМАЊА</p><span><p class="lzp-zadrski-naslov">ЗАДРШКИ</p></span></h4>
+        </div>
+    <div class="lzp-primanja-info">
+           <?if ($plata_vraboten[0]->dodatok !=0) { ?>
+
+        <div class="lzp-3col-1">Додаток</div> <div class="lzp-3col-2"></div> <div class="lzp-3col-3"><?  echo $plata_vraboten[0]->dodatok ?></div>  <br>
+ <?   }?>
+
+        <?if ($plata_vraboten[0]->dezurstvo_1 !=0) { ?>
+         <div class="lzp-3col-1">Дежурство 1 </div> <div class="lzp-3col-2"><? echo $parametri[0]->dezurstvo_1?>h</div> <div class="lzp-3col-3"><?  echo $plata_vraboten[0]->dezurstvo_1 ?></div>  <br>
+   <? }?>
+
+        <?if ($plata_vraboten[0]->drzavni_praznici !=0) { ?>
+        <div class="lzp-3col-1">Државни празници </div> <div class="lzp-3col-2"><? echo $parametri[0]->drzavni_praznici ?>h </div> <div class="lzp-3col-3"> <? echo $plata_vraboten[0]->drzavni_praznici ?></div>
+        <br>
+  <?  }?>
+
+        <?if ($plata_vraboten[0]->boleduvanje_1 !=0) { ?>
+        <div class="lzp-3col-1">Боледување 1 </div> <div class="lzp-3col-2"><? echo $parametri[0]->boleduvanje_1_70?>h </div> <div class="lzp-3col-3"> <? echo $plata_vraboten[0]->boleduvanje_1; ?></div>
+        <br>
+  <?  }?>
+
+        <?if ($plata_vraboten[0]->boleduvanje_2 !=0) { ?>
+        <div class="lzp-3col-1">Боледување 2 </div> <div class="lzp-3col-2"><? echo $parametri[0]->boleduvanje_2_80?>h </div> <div class="lzp-3col-3"> <? echo $plata_vraboten[0]->boleduvanje_2 ?></div>
+        <br>
+  <?  }?>
+
+        <?if ($plata_vraboten[0]->boleduvanje_3 !=0) { ?>
+        <div class="lzp-3col-1">Боледување 3 </div> <div class="lzp-3col-2"><? echo $parametri[0]->boleduvanje_3_90?>h </div> <div class="lzp-3col-3"> <? echo $plata_vraboten[0]->boleduvanje_3 ?></div>
+        <br>
+   <? }?>
+        <?if ($parametri[0]->boleduvanje_nad_30_denovi !=0) { ?>
+        <div class="lzp-3col-1">Боледување над 30 дена </div> <div class="lzp-3col-2"><? echo $parametri[0]->boleduvanje_nad_30_denovi?>h </div> <div class="lzp-3col-3"> <? echo "0.00" ?></div>
+        <br>
+   <? }?>
+        <?if ($plata_vraboten[0]->nokna_rabota !=0) { ?>
+        <div class="lzp-3col-1">Ноќна работа </div> <div class="lzp-3col-2"><? echo $parametri[0]->noken_trud?>h </div> <div class="lzp-3col-3"> <? echo $plata_vraboten[0]->nokna_rabota ?></div>
+
+        <br>
+ <?   }?>
+        <div class="lzp-3col-1">Ефективно раб. вре </div> <div class="lzp-3col-2"> 10h </div> <div class="lzp-3col-3"> <? echo $plata_vraboten[0]->iznos_efektivna_rabota;?></div> <br>
+        <div class="lzp-sur">
+        <div class="lzp-2col-1">Сложеност: </div> <div class="lzp-2col-2"> <?echo $plata_vraboten[0]->slozenost;?> </div>  <br>
+        <div class="lzp-2col-1">Услови: </div> <div class="lzp-2col-2"><? echo $plata_vraboten[0]->uslovi;?>  </div>  <br>
+        <div class="lzp-2col-1">Раководење: </div> <div class="lzp-2col-2"><? echo $plata_vraboten[0]->rakovodenje;?> </div>  <br>
+        </div>
+        <div class="lzp-2col-1">Минат труд: </div> <div class="lzp-2col-2"><? echo $plata_vraboten[0]->iznos_minat_trud;?> </div>  <br>
+    </div>
+        <div class="zadrski">
+            <?if ($plata_vraboten[0]->sindikat !=0) { ?>
+            <div class="lzp-2col-1">Синдикат: </div> <div class="lzp-2col-2"> <?echo $plata_vraboten[0]->sindikat?> </div>  <br>
+            <? } ?>
+            <?if ($plata_vraboten[0]->lek_komora !=0) { ?>
+            <div class="lzp-2col-1">Лек. комора: </div> <div class="lzp-2col-2"> <?echo $plata_vraboten[0]->lek_komora ?> </div>  <br>
+            <? } ?>
+            <?if ($plata_vraboten[0]->osiguruvanje !=0) { ?>
+            <div class="lzp-2col-1">Осигурување: </div> <div class="lzp-2col-2"> <?echo $plata_vraboten[0]->osiguruvanje ?> </div>  <br>
+            <? } ?>
+            <?if ($plata_vraboten[0]->odbitok !=0) { ?>
+            <div class="lzp-2col-1">Одбиток: </div> <div class="lzp-2col-2"> <?echo $plata_vraboten[0]->odbitok?> </div>  <br>
+            <? } ?>
+            <?if ($plata_vraboten[0]->zadrska_telefon !=0) { ?>
+            <div class="lzp-2col-1">Задршка за телефон: </div> <div class="lzp-2col-2"> <?echo $plata_vraboten[0]->zadrska_telefon?> </div>  <br>
+            <? } ?>
+        </div>
+
+    </div>
+    <div>
+        <?
+          if(isset($krediti_vraboten)){ ?>
+              <h4>КРЕДИТИ</h4>
+        <table class="kredititabela" border="1" cellpadding="2" >
+        <thead>
+        <tr>
+            <th>Бр. Кредит</th>
+            <th>Назив</th>
+            <th>Останати Рати</th>
+            <th>Рата</th>
+            <th>Валута</th>
+            <th>Износ</th>
+        </tr>
+        </thead>
+            <tbody>
+         <?  foreach($krediti_vraboten as $kredit){ ?>
+            <tr>
+                <td><? echo $kredit->iznos_kredit ?></td>
+                <td><? echo $kredit->kreditor ?></td>
+                <td><? echo $kredit->ostanati_rati ?></td>
+                <td><? echo $kredit->iznos_rata ?></td>
+                <td><? echo $kredit->valuta ?></td>
+                <td><? echo $kredit->isplaten_iznos ?></td>
+            </tr>
+         <? } ?>
+            </tbody>
+        </table>
+         <? }
+        ?>
+    </div>
+    <br>   <br><br>
+    <div class="bruto-lzp">
+        <div class="lzp-3col-1-1">БРУТО</div> <div class="lzp-3col-2-2"> = </div> <div class="lzp-3col-3"> <? echo $plata_vraboten[0]->bruto_plata;?></div>
+        <div style="margin-left: 100px;" class="lzp-3col-1-1">ДАНОЧНО ОСЛОБОДУВАЊЕ</div> <div class="lzp-3col-2-2"> = </div> <div class="lzp-3col-3"> <? echo $plata_vraboten[0]->licno_osloboduvanje; ?></div> <br>
+        <div class="lzp-3col-1-1">Персо. Данок</div> <div class="lzp-3col-2-2"> = </div> <div class="lzp-3col-3"> <? echo $plata_vraboten[0]->personalen_danok_na_dohod;?></div> <br>
+        <div class="lzp-3col-1-1">Придонес за ПИО :</div> <div class="lzp-3col-2-2"> = </div> <div class="lzp-3col-3"> <? echo $plata_vraboten[0]->pridones_za_pio;?></div><br>
+        <div class="lzp-3col-1-1">Придонес за вработување</div> <div class="lzp-3col-2-2"> = </div> <div class="lzp-3col-3"> <? echo $plata_vraboten[0]->pridones_za_vrabotuvanje;?></div><br>
+        <div class="lzp-3col-1-1">Придонес за здравство</div> <div class="lzp-3col-2-2"> = </div> <div class="lzp-3col-3"> <? echo $plata_vraboten[0]->pridones_za_zdravstvo;?></div><br>
+        <div class="lzp-3col-1-1">Дополнит. здравство</div> <div class="lzp-3col-2-2"> = </div> <div class="lzp-3col-3"> <? echo $plata_vraboten[0]->dop_pridones_za_zdravstvo;?></div><br>
+    </div>
+    <div class="brotoneto-lzp">
+    <div class="brotoneto-lzp-content">
+        <strong>
+            <div class="lzp-3col-1-1">ВКУПНО НЕТО ПРИМАЊА</div> <div class="lzp-3col-2-2"> = </div> <div class="lzp-3col-3"> <? echo $plata_vraboten[0]->neto_plata_so_zadrski;?></div><br>
+            <div class="lzp-3col-1-1">ВКУПНО ЗАДРШКИ</div> <div class="lzp-3col-2-2"> = </div> <div class="lzp-3col-3"> <? echo $plata_vraboten[0]->zadrshka_od_plata;?></div><br>
+
+   </strong>
+    </div>
+        <div class="lzp-neto">
+            <div class="lzp-3col-1-1"><storng><span class="bneto">НЕТО ЗА ИСПЛАТА:</storng></div>  <div class="lzp-3col-3-neto"> <storng><span class="bneto"><? echo $plata_vraboten[0]->neto_plata;?></span></storng></div><br>
+        </div>
+    </div>
+
+</div>
+

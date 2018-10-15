@@ -1,0 +1,105 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Fields_data extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+    }
+
+    public function new_field_data()
+    {
+        $this->load->model('users/accounts_model');
+        $data['users'] = $this->accounts_model->get_users_dropdown();
+        $this->load->model('users/fields_model');
+        $data['fields'] = $this->fields_model->get_fields_dropdown();
+        $this->load->view('users/fields_data/fields_data_form', $data);
+    }
+
+    public function create_field_data()
+    {
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('user_id', 'Username', 'required');
+        $this->form_validation->set_rules('field_id', 'Field', 'required');
+        $this->form_validation->set_rules('fd_value', 'Value', 'trim|required');
+
+        if($this->form_validation->run() == FALSE)
+        {
+            $this->new_field_data();
+        }
+        else
+        {
+            $this->load->model('users/fields_data_model');
+            if($query = $this->fields_data_model->create_field_data())
+            {
+                $data['main_content'] = 'users/fields_data/field_data_successful';
+                $this->load->view('includes/template', $data);
+            }
+            else
+            {
+                $this->load->view('users/fields_data/fields_data_form');
+            }
+        }
+    }
+
+    public function view_fields_data()
+    {
+        $this->load->model('users/fields_data_model');
+        $this->load->model('users/joins_model');
+        //$query = $this->fields_data_model->getAll();
+        $query = $this->joins_model->join_fieldsdata_users_fields();
+        $data['fields_data'] = $query;
+        $this->load->view('users/fields_data/edit_fields_data_form', $data);
+    }
+
+    public function delete_field_data(){
+
+        $this->load->model('users/fields_data_model');
+        $this->fields_data_model->delete_field_data();
+        $this->view_fields_data();
+    }
+
+    public function edit_field_data(){
+
+        $this->load->model('users/fields_data_model');
+        $query = $this->fields_data_model->edit_field_data();
+
+        $this->load->model('users/accounts_model');
+        $data['users'] = $this->accounts_model->get_users_dropdown();
+        $this->load->model('users/fields_model');
+        $data['fields'] = $this->fields_model->get_fields_dropdown();
+        $data['main_content'] = 'users/fields_data/update_fields_data_form';
+        $data['fields_data'] = $query;
+        $this->load->view('includes/template', $data);
+        $this->view_fields_data();
+    }
+
+    public function update_field_data(){
+
+        $this->load->model('users/fields_data_model');
+        $query = $this->fields_data_model->update_field_data();
+
+        if($query)
+        {
+            echo "Field Data updated successfully";
+        }
+        else
+        {
+            echo "No row was found ... Please try again.";
+        }
+        $this->view_fields_data();
+    }
+
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+
+}

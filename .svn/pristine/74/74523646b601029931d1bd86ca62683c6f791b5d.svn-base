@@ -1,0 +1,99 @@
+function  krediti_polnilista()
+{
+    var formurl = "/index.php/plati/krediti/polnilista";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        dataType:'json',
+        success:function (response) {
+            var redenbroj = 1;
+            jQuery(".tabela-krediti tbody").html('');
+            jQuery.each(response, function (index, item) {
+                var vrabotenFullName = item.vrabotenIme+" "+item.vrabotenPrezime;
+                jQuery(".tabela-krediti tbody").append(('<tr kredit_id="' + item.id + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                    '</td>' +
+                    '<td class="id">' + redenbroj + '</td>' +
+                    '<td class="vraboten">' + vrabotenFullName + '</td>' +
+                    '<td class="kreditor">' + item.kreditorIme + '</td>' +
+                    '<td class="iznos_rata text-right">' + formatnumbermkd(item.iznos_rata) + '</td>' +
+                    '<td class="iznos_kredit text-right">' + formatnumbermkd(item.iznos_kredit) + '</td>' +
+                    '</tr>'
+                    ));
+                redenbroj = 1*redenbroj + 1*1;
+            });
+            jQuery(".tabela-krediti").trigger("update");
+            jQuery(".naslovkrediti .vkupnostavki").html(response.length);
+        }
+    });
+}
+function kredit_nov() {
+    var formurl = "/index.php/plati/krediti/nov_kredit";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нов кредит",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function kredit_izmeni(kredit_id) {
+    var formurl = "/index.php/plati/krediti/izmeni";
+    var data = {  id: kredit_id  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени кредит",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function kredit_delete(kredit_id){
+    var r=confirm("Избриши кредит");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/plati/krediti/delete_kredit";
+            var data = {  id: kredit_id  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    krediti_polnilista();
+                }
+            });
+        }
+    }
+}

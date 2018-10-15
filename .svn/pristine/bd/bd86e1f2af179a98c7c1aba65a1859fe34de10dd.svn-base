@@ -1,0 +1,174 @@
+<div id="vlezizlez" class="sub-menu-tabs notfixedtable">
+    <?
+    $godina = array(
+        '2013'  => '2013',
+        '2012'  => '2012',
+        '2011'  => '2011',
+        '2010'=>'2010',
+        '2009'=>'2009',
+        '2008'=>'2008'
+    );
+    ?>
+
+    <div class="pregledstavkiglavno" id="listastavkiglavno">
+
+        <div class="pregledstavki">
+            <div class="buttoncontainer">
+                <span>Период од:</span>
+                <input type="text" class="periodod filterplan" name="filter-periodod"/>
+                <span style="margin: 0 5px;">до:</span>
+                <input type="text" class="perioddo filterplan" name="filter-perioddo"/>
+                <!--
+                     <!--   <span>Период од:</span>
+                        <input type="text" class="periodod pregledstavki" name="periodod"/>
+                        <span style="margin: 0 5px;">до:</span>
+                        <input type="text" class="perioddo pregledstavki" name="perioddo"/>  -->
+            </div>
+            <div class="predtabela">
+                <table class="pregled" >
+
+                    <thead>
+                    <tr>
+                        <th class="redenbr">РБ</th>
+                        <th>Конто</th>
+                        <th>Назив</th>
+                        <th>Планиран износ</th>
+                        <th>Потрошени</th>
+                        <th>Остаток</th>
+
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="1">Вкупно:</td>
+
+                        <td></td>
+                        <td></td>
+                        <td class="vkupnoplanirani">0</td>
+                        <td class="vkupnopotroseni">0</td>
+
+
+                        <td class="vkupnoostatok">0</td>
+
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    jQuery(document).ready(function(){
+        jQuery('.pregled').tablesorter();
+        jQuery('.periodod').datepicker({dateFormat:'dd-mm-yy'});
+        jQuery('.perioddo').datepicker({dateFormat:'dd-mm-yy'});
+        jQuery('.periodod').datepicker('setDate','01-01-2013');
+        jQuery('.perioddo').datepicker('setDate',new Date());
+        pregled_trosoci();
+        jQuery('.filterplan').live("change", function () {
+            //if(jQuery(this).closest("select").hasClass("konto-promena")) {
+            console.log(jQuery(this).closest("select"));
+
+          //  var konto = jQuery('.konto-pregled').val();
+            var datum1=jQuery('.periodod').val();
+            var datum2=jQuery('.perioddo').val();
+            console.log(datum1,datum2);
+            prebaruvanje_po_period_trosoci(datum1,datum2);
+            ///  }
+        });
+    });
+    function prebaruvanje_po_period_trosoci(datum1,datum2){
+        var formurl = "/index.php/finansiski_plan/pregled_trosoci/prebaruvanje_po_period";
+        jQuery.ajax({
+            url:formurl,
+            type:'POST',
+            data:{ datum1:datum1, datum2:datum2
+
+            },
+            dataType:'json',
+            success:function (response) {
+               // console.log(response);
+                jQuery(".pregled tbody").html('');
+                var reden=1;
+                var vkupnopotroseni=0;
+                var vkupnoplanirani=0;
+                var vkupnoostatok=0;
+                var ostatok=0;
+                jQuery.each(response, function (index, item) {
+                    //   console.log(item.id);
+                    ostatok= parseFloat(item.vkupno)-parseFloat(item.potrosen_iznos);
+                    jQuery(".pregled tbody").append(('<tr>' +
+                            '<td>' + reden + '</td>' +
+                            '<td>' + item.konto + '</td>' +
+                            '<td>' + item.naziv + '</td>' +
+                            '<td class="text-right">' + formatnumbermkd(item.vkupno) + '</td>' +
+                            '<td class="text-right">' + formatnumbermkd(item.potrosen_iznos) + '</td>' +
+
+                            '<td class="text-right">' + formatnumbermkd(ostatok) + '</td>' +
+
+                            '</tr>'));
+                    vkupnopotroseni=vkupnopotroseni +parseFloat(item.potrosen_iznos);
+                    vkupnoplanirani=vkupnoplanirani +parseFloat(item.vkupno);
+                    vkupnoostatok=vkupnoostatok +parseFloat(ostatok);
+                    reden=reden+1;
+                });
+
+                jQuery(".pregled tfoot .vkupnoplanirani").html(formatnumbermkd(vkupnoplanirani));
+                jQuery(".pregled tfoot .vkupnopotroseni").html(formatnumbermkd(vkupnopotroseni));
+                jQuery(".pregled tfoot .vkupnoostatok").html(formatnumbermkd(vkupnoostatok));
+                jQuery(".pregled").trigger("update");
+                //  console.log(sos);
+
+            }
+        });
+    }
+
+    function pregled_trosoci(){
+
+
+        jQuery.ajax({
+            url:"/index.php/finansiski_plan/pregled_trosoci/getTrosoci",
+            type:'POST',
+            data:{},
+            dataType:'json',
+            success:function (response) {
+                var ostatok=0;
+                var reden=1;
+                var vkupnoplanirani=0;
+                var vkupnopotroseni=0;
+                var vkupnoostatok=0;
+                jQuery(".pregled tbody").html('');
+                //      jQuery(".grupi tbody").html('');
+                //    jQuery(".konta tbody").html('');
+                console.log(response);
+                jQuery.each(response, function (index, item) {
+                    //   console.log(item.id);
+                    ostatok= parseFloat(item.vkupno)-parseFloat(item.potrosen_iznos);
+                    jQuery(".pregled tbody").append(('<tr>' +
+                            '<td>' + reden + '</td>' +
+                            '<td>' + item.konto + '</td>' +
+                            '<td>' + item.naziv + '</td>' +
+                            '<td class="text-right">' + formatnumbermkd(item.vkupno) + '</td>' +
+                            '<td class="text-right">' + formatnumbermkd(item.potrosen_iznos) + '</td>' +
+
+                            '<td class="text-right">' + formatnumbermkd(ostatok) + '</td>' +
+
+                            '</tr>'));
+                    vkupnopotroseni=vkupnopotroseni +parseFloat(item.potrosen_iznos);
+                    vkupnoplanirani=vkupnoplanirani +parseFloat(item.vkupno);
+                    vkupnoostatok=vkupnoostatok +parseFloat(ostatok);
+                    reden=reden+1;
+                });
+                jQuery(".pregled tfoot .vkupnoplanirani").html(formatnumbermkd(vkupnoplanirani));
+                jQuery(".pregled tfoot .vkupnopotroseni").html(formatnumbermkd(vkupnopotroseni));
+                jQuery(".pregled tfoot .vkupnoostatok").html(formatnumbermkd(vkupnoostatok));
+                jQuery(".stavki").trigger("update");
+            }
+        });
+    }
+</script>

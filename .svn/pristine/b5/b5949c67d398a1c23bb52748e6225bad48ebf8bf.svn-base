@@ -1,0 +1,21 @@
+<div id="edit_form">
+
+    <div id="vnesi_faktura" class="pop-menu-tabs">
+        <ul>
+            <li><?php echo anchor('izlezni_fakturi/faktura/editFakturaPaket?id='.$id, 'Фактура'); ?></li>
+            <li><?php echo anchor('izlezni_fakturi/faktura/editUplata', 'Уплата'); ?></li>
+            <li><?php echo anchor('izlezni_fakturi/faktura/editPriemnica', 'Приемници'); ?></li>
+        </ul>
+    </div>
+
+</div>
+<span class="print"><?php echo anchor('izlezni_fakturi/pregled_izlezni/pecati_faktura?id='.$id, 'Печати'); ?></span>
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.pop-menu-tabs').tabs({
+            cache: true,
+            ajaxOptions: {
+                type: "POST"
+            }});
+    });
+</script>

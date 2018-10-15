@@ -1,0 +1,149 @@
+function zacuvaj_planiranje_den(button)
+{
+    var data = button.closest("form").serialize();
+    var formurl = "/index.php/planiranje/nov_plan/zacuvaj_planiranje_den";
+    return jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data
+    });
+}
+function delete_planiranje_aktivnost(aktivnost_id, row)
+{
+    var data = {
+        id: aktivnost_id
+    }
+    var formurl = "/index.php/planiranje/nov_plan/delete_aktivnost";
+    jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+        success: function (response) {
+            if(response == 1) {
+                var tabela_klasa = row.closest("table").attr("class");
+                row.remove();
+                var redenbroj = 1;
+                jQuery("."+tabela_klasa+" tbody tr").each(function(){
+                    jQuery(this).find(".redenbroj").html(redenbroj);
+                    redenbroj = redenbroj + 1*1;
+                });
+                proveri_status_smena();
+            }
+        }
+    });
+}
+function proveri_status_smena()
+{
+    var smena = jQuery(".izbor_smena option:selected").val();
+    var broj_aktivnosti = jQuery(".tabela-aktivnosti tbody tr").not(":last").length;
+    if((smena == 0 || smena == 6) && broj_aktivnosti == 0) jQuery(".snimi-planiranje-podatoci").show();
+}
+function proveri_smena_nov_datum()
+{
+    var smena = jQuery(".raspored_planiranje_smeni .izbor_smena option:selected").val();
+    if(smena) return 1;
+    else return 0;
+}
+function proveri_tabela_podatoci(table_class)
+{
+    var proverka = 1;
+    jQuery("."+table_class+" tbody tr td").not(".pacient_id").each(function(){
+        if (jQuery(this).is(":has(input)"))
+        {
+            var field = jQuery(this).find("input").val();
+            if(field == '') proverka = 0;
+        }
+    });
+    return proverka;
+}
+function get_aktivnost_za_den(vraboten_id, datum)
+{
+    var data = {
+        vraboten_id: vraboten_id,
+        datum: datum
+    }
+    var formurl = "/index.php/planiranje/nov_plan/get_aktivnost_za_den";
+    return jQuery.ajax({
+            url: formurl,
+            type: 'POST',
+            data: data
+        });
+}
+function get_smena_za_den(vraboten_id, datum)
+{
+    var data = {
+        vraboten_id: vraboten_id,
+        datum: datum
+    }
+    var formurl = "/index.php/planiranje/nov_plan/get_smena_za_den";
+    return jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data,
+        dataType: 'json'
+    });
+}
+function get_site_aktivnosti_za_den(datum)
+{
+    var data = {
+        datum: datum
+    }
+    var formurl = "/index.php/planiranje/nov_plan/get_site_aktivnosti_za_den";
+    return jQuery.ajax({
+        url: formurl,
+        type: 'POST',
+        data: data
+    });
+}
+function get_next_day(datum)
+{
+    var rokDenovi=  1;
+    var myDate=datum;
+    myDate=myDate.split("-");
+    var newDate=myDate[2]+","+myDate[1]+","+myDate[0];
+    var novdatum=new Date(newDate).getTime()+(rokDenovi*86400 *1000 );
+    var novdatumread=new Date(novdatum);
+
+    return ('0' + novdatumread.getDate()).slice(-2) +"-"+ ('0' + (novdatumread.getMonth()+1)).slice(-2)+"-"+novdatumread.getFullYear();
+}
+function get_previous_day(datum)
+{
+    var rokDenovi = -1;
+    var myDate=datum;
+    myDate=myDate.split("-");
+    var newDate=myDate[2]+","+myDate[1]+","+myDate[0];
+    var novdatum=new Date(newDate).getTime()+(rokDenovi*86400 *1000 );
+    var novdatumread=new Date(novdatum);
+
+    return ('0' + novdatumread.getDate()).slice(-2) +"-"+ ('0' + (novdatumread.getMonth()+1)).slice(-2)+"-"+novdatumread.getFullYear();
+}
+function zapisi_podatoci_raspored_vraboteni(vraboten_id, datum)
+{
+    jQuery.when(get_smena_za_den(vraboten_id, datum)).done(function(response){
+        var part_datum = datum.split("-");
+        var datum_aktivnost = part_datum[2]+"-"+part_datum[1]+"-"+part_datum[0];
+        jQuery(".raspored_planiranje_smeni .datum_aktivnost").val(datum_aktivnost);
+        jQuery(".raspored_planiranje_smeni .month").val(part_datum[1]);
+        jQuery(".raspored_planiranje_smeni .year").val(part_datum[2]);
+        jQuery(".raspored_planiranje_smeni .smenska_mapa_id").val(response.smena_id);
+        jQuery(".raspored_planiranje_smeni .izbor_smena").val(response.smena_day);
+        jQuery(".raspored_planiranje_smeni .izbor_smena").attr("name", response.smena_index);
+    });
+    jQuery.when(get_aktivnost_za_den(vraboten_id, datum)).done(function(response){
+        if(response)
+        {
+            jQuery(".raspored_planiranje_smeni .tabela-raspored-aktivnosti tbody").html(response);
+            jQuery(".raspored_planiranje_smeni .tabela-raspored-aktivnosti tbody select.pacient_id").combobox();
+            var broj_aktivnosti = jQuery(".raspored_planiranje_smeni .tabela-raspored-aktivnosti tbody tr").length;
+            jQuery(".naslov-raspored .vkupnostavki").html(broj_aktivnosti);
+            jQuery(".raspored_planiranje_smeni .tabela-raspored-aktivnosti").tablesorter();
+            dodadi_nov_red_aktivnost();
+        }
+        else
+        {
+            jQuery(".raspored_planiranje_smeni .tabela-raspored-aktivnosti tbody").html('');
+            jQuery(".naslov-raspored .vkupnostavki").html(0);
+            dodadi_nov_red_aktivnost();
+        }
+    });
+}

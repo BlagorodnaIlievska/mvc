@@ -1,0 +1,19 @@
+<div class="novatiposiguruvanje">
+    <form action="/index.php/bolnicko_rabotenje_podatoci/tip_osiguruvanje/create_tiposiguruvanje" method="post">
+        <fieldset>
+            <legend>Нов тип на осигурување</legend>
+            <ul>
+                <li><label class="tip-osiguruvanje-nov">Тип на осигурување:</label>
+                <input type="text" name="ime"/><br/></li>
+                <li><label class="konto-osiguruvanje-nov">Конто</label>
+                <? echo form_dropdown('konto_id',$konto); ?></li>
+            </ul>
+        </fieldset>
+        <br/>
+        <button type="button" class="button snimi-forma" izvrsi="tiposiguruvanje_polnilista()" poraka_uspesno="Тип на осигурување е успешно снимена"
+                poraka_neuspesno="Грешка при снимање на тип на осигурување"
+                ><span>Сними</span></button>
+        <br/>
+    </form>
+
+</div>

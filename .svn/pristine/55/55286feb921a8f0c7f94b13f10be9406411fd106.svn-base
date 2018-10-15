@@ -1,0 +1,68 @@
+p.smen {
+    text-align: center;
+    font-size: 9px;
+    margin: 0;
+}
+.denoviHead {font-size: 10px;width: 14px;}
+.imepr-plan {text-align: center}
+td.clickField {padding: 0 !important;}
+.entete {
+    font-size: 12px;
+    text-align: left;
+}
+.row-fluid table {float: left;width: 830px;table-layout: fixed;}
+.smeni-tabela {float: left;margin-left: 5px;}
+.smeni-tabela tr td , .dayfield , .smenskagrupa {font-size: 12px;text-align: center;}
+.smeni-tabela th {
+    height: 28.5px;
+}
+.smenskagrupa , .filterod-smeni {text-align: center}
+.filterod-smeni , .imepr-plan  {font-size: 12px;width: 115px;border-left: 0;border-right: 0;line-height: 2;padding-right: 0;}
+.entete , .smenskagrupa {width: 115px;border-left: 0;border-right: 0;}
+.smenskagrupa-tabela {clear: both;float: left}
+
+.clickField.weekend , .dayfield.weekend {
+    background-color: pink;
+}
+.novaAkt{
+    margin-top: 10px;
+    display: none;
+}
+.tabelaAkt{
+    margin-top: 5px;
+    display: none;
+}
+.aktivTab{
+    margin-top: 10px;
+    display: none;
+}
+.smeni-tabela table {width: 150px;display: block;}
+.smeni-poime {width: 830px;table-layout: fixed;}
+.denoviHead {text-align: center;}
+.smenskagrupa-naslov {clear: both;
+    float: left;
+    margin-top: 10px;
+    width: 830px;
+}
+.smeni-poime td , #tabPlanning1 td {overflow: hidden;}
+.dayfield {padding: 0;}
+.smeni-poime .imepr-plan {
+    padding-right: 7px;
+}
+.smeni-tabela td {
+    height: 20px;
+    padding: 0;
+    width: 10px;
+}
+
+.smeni-tabela td:last-child {
+    text-align: right;
+}
+.izbor_smena {margin-top: 5px;}
+.raspored-parametri { margin: 10px 0;}
+.raspored_planiranje_smeni .span-vraboteni { line-height: 1.6; float: left;}
+.raspored_planiranje_smeni .vraboteni { float: left;}
+.raspored-prikaz {clear: both; padding-top: 10px;}
+
+.raspored-denovi-parametri { margin: 10px 0;}
+.naslov-raspored, .naslov-raspored-denovi {background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;padding: 1px;margin: 5px 0 0 0;}

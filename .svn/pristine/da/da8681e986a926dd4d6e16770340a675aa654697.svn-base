@@ -1,0 +1,64 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+
+class Statistika extends CI_Controller
+{
+
+
+    function __construct()
+
+    {
+
+        parent::__construct();
+
+    }
+
+    public function index()
+    {
+        $data['main_content'] = 'statisticki_podatoci/index_form';
+        $this->load->view('includes/template', $data);
+    }
+
+    public function pregled()
+    {
+        $this->load->model('statisticki_podatoci/statistika_model');
+        //$year = date("Y");
+        //$d = $year . "-06-30";
+        $d = date('Y-m-d');
+//print_r($d); die();
+        $query_opsto = $this->statistika_model->grupa_na_podatoci_opsto($d);
+        $query_TRAUMAORT = $this->statistika_model->grupa_na_podatoci_TRAUMAORT($d);
+        $query_KARIL = $this->statistika_model->grupa_na_podatoci_KARIL($d);
+        $query_UC = $this->statistika_model->grupa_na_podatoci_UC($d);
+        for ($i = 1; $i <= 7; $i++) {
+            $data["q" . $i] = $query_opsto[$i];
+            $data["t" . $i] = $query_TRAUMAORT[$i];
+            $data["k" . $i] = $query_KARIL[$i];
+            $data["uc" . $i] = $query_UC[$i];
+        }
+        //$data['main_content'] = 'statisticki_podatoci/nesto1.html';
+        $this->load->view('statisticki_podatoci/statistika_form', $data);
+    }
+
+    public function prebaruvanje()
+    {
+        $this->load->model('statisticki_podatoci/statistika_model');
+        $polovina = $this->input->post('polovina');
+        $godina = $this->input->post('godina');
+        //06-30-1
+        //06-30-2
+        //2013
+        $datum = $godina . "-" . $polovina;
+        //echo($datum);
+        $q = $this->statistika_model->vrati_gi_site($datum);
+        $t = $this->statistika_model->vrati_gi_site_traum_ort($datum);
+        $k = $this->statistika_model->vrati_gi_site_KARIL($datum);
+        $uc = $this->statistika_model->vrati_gi_site_UC($datum);
+//         bis_debug($q, 'query');
+        $site = array($q, $t, $k, $uc);
+        echo json_encode($site);
+
+    }
+}

@@ -1,0 +1,40 @@
+<div class="fondovski-lekuvanja">
+    <div class="baraj">
+        <form class="fondovski-barajform">
+            <label class="status-faktura-lekuvanje">Статус</label>
+            <select name="status" class="status-lekuvanje">
+                <option value="1">Сите</option>
+                <option value="2">Платени</option>
+                <option value="3">Неплатени</option>
+            </select>
+        </form>
+    </div>
+    <div class="prikaz-fondovski-lekuvanja">
+        <p class="naslovshalter"> ( <span class="fondovski-lekuvanja-vkupnostavki">0</span> ) <span class="status">Лекувања</span></p>
+        <div class="predtabela">
+            <table class="fondovski-lekuvanja-tabela">
+                <thead>
+                <th class="broj-lekuvanje">Број на лекување</th>
+                <th class="pacient-lekuvanja">Пациент</th>
+                <th class="datum">Датум</th>
+                <th class="vreme">Време</th>
+                <th class="oddel">Оддел</th>
+                <th class="tip">Пододдел</th>
+                <th class="paketi">Пакети</th>
+                <th class="fond">Фонд</th>
+                <th class="realen-trosok">Реален Трошок</th>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function(){
+       lekuvanja_shalter_fondovski();
+        jQuery(".status-lekuvanje").change(function(){
+            lekuvanja_shalter_fondovski();
+        });
+    });
+</script>

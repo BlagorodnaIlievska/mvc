@@ -1,0 +1,50 @@
+<div id="nova_smetka_form">
+     <?php
+     $zirosmetka = array(
+         'name'        => 'novazirosmetka',
+         'class'       => 'novazirosmetka'
+     );?>
+    <fieldset>
+    <?php echo form_open('izvodi/menu/create_smetka'); ?>
+        <div class="nova-zirosmetka">
+            <label>Жиросметка: </label>
+            <input type="text" class="nova-zirosmetka" name="nova-zirosmetka">
+        </div>
+        <div class="nova-zirosmetka">
+            <label>Банка депонент: </label>
+            <?php  echo form_dropdown('nova-banka', $banki); ?>
+        </div>
+<!--        <input type="button" class="smetkabutton button" value="Ok">-->
+        <button type="button" class="smetkabutton button"><span>Зачувај</span></button>
+        <?php
+        echo form_close();
+        ?>
+    </fieldset>
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.smetkabutton').live('click',function(){
+            var ovakopce=jQuery(this);
+            var formaction=jQuery(this).parent().attr('action');
+            var formmethod=jQuery(this).parent().attr('method');
+            var dialogid=jQuery(this).parent().parent().parent();
+            //alert(jQuery(this).parent().serialize());
+            jQuery.ajax({
+                type: "post",
+                url: formaction,
+                data: jQuery(this).parent().serialize(),
+                success:  function(data){
+                    //alert('uspesno');
+                    destroyparentdialog(ovakopce);
+                    //var selected_val = '';
+                    //jQuery("#zirosmetka option[value='"+ selected_val +"']").remove();
+//                    var tabs = jQuery('.main-menu-tabs');
+//                    var selected = tabs.tabs('option', 'selected');
+//                    jQuery(".main-menu-tabs").tabs('load',selected);
+                    //jQuery('#zirosmetka').prop('selectedIndex', 1);
+                }
+            });
+        });
+    });
+</script>

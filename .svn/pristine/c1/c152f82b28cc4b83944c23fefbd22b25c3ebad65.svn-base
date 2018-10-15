@@ -1,0 +1,30 @@
+<div class="modenovvraboten">
+    <fieldset>
+        <legend>Нов Вработен</legend>
+
+
+
+
+
+        <form action="/index.php/vraboteni/vraboteni/create_vraboten" method="post">
+
+
+
+
+
+
+
+
+            Име:<br/>
+            <input type="text" name="ime"/><br/>
+            Презиме:<br/>
+            <input type="text" name="prezime"/><br/>
+            Адреса:<br/>
+            <input type="text" name="adresa"/><br/>
+            ЕМБГ:<br/>
+            <input type="text" name="embg"/><br/>
+
+            <button type="button" class="snimi-forma button" izvrsi="vraboteni_popolnilista()" poraka_uspesno="Вработениот е снимен" poraka_neuspesno="Грешка">Сними</button>
+        </form>
+    </fieldset>
+</div>

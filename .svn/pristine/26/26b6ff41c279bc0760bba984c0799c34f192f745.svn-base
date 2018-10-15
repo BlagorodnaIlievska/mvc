@@ -1,0 +1,76 @@
+<?php if (!defined('BASEPATH')) {
+	exit('No direct script access allowed');
+}
+
+
+class Kasi extends CI_Controller
+{
+
+	function __construct()
+	{
+		parent::__construct();
+	}
+
+
+	public function nov()
+
+	{
+
+		$this->load->model('start/start_model');
+
+		$data['start_model']  = $this->start_model;
+
+		$this->load->view('start/kasi/nov', $data);
+
+	}
+
+	public function popolnilista()
+	{
+		$this->load->model('start/start_model');
+		echo json_encode($this->start_model->getKasi());
+	}
+
+	public function create_kasa()
+	{
+		$this->load->model('start/start_model');
+		if ($query = $this->start_model->create_kasa()) {
+			echo "ok";
+		} else {
+			echo "err";
+		}
+	}
+
+	public function izmeni()
+	{
+		$this->load->model('start/start_model');
+		$kasa = $this->start_model->getKasa($this->input->get("id"));
+		$data['kasa']      = $kasa;
+
+		$data['start_model']=$this->start_model;
+		$this->load->view('start/kasi/izmeni', $data);
+	}
+
+
+	public function delete_kasa()
+	{
+		$this->load->model('start/start_model');
+		$id=$this->input->get("id");
+		$this->start_model->delete_kasa($id);
+		echo "ok";
+
+	}
+	public function update_kasa()
+	{
+
+		$this->load->model('start/start_model');
+		$query = $this->start_model->update_kasa();
+		if ($query) {
+			echo "ok";
+		} else {
+			echo "err";
+		}
+
+	}
+
+
+}

@@ -1,0 +1,719 @@
+<div>
+    <h4 align="center">РЕЗУЛТАТИ ОД БИОХЕМИСКИ АНАЛИЗИ</h4>
+    <br>
+</div>
+<form class="pacienti-pregled-forma" method="post" action="/index.php/upati/upati/create_biohemiska_analiza">
+<input type="hidden" name="priem_id" value="<?php echo $priem_id ?>"/>
+
+<div class="biohemiski-pregled-levo">
+    <fieldset>
+        <div class="bio-info">
+            <label>Клиника</label>
+            <input type="text" name="klinika" class="klinika" value="ЈЗУ Ургентни Клиники" disabled="" />
+        </div>
+        <div class="bio-info">
+            <label>Лаб. бр</label>
+            <input type="text" name="laboratorija" class="lab">
+        </div>
+        <div class="bio-info">
+            <label>Датум</label>
+            <input type="text" name="datum" class="datum" value="<?php echo date("d-m-Y") ?>" />
+        </div>
+        <div class="bio-info">
+            <label>Време</label>
+            <input type="text" name="vreme" class="vreme" value="<?php echo date("H:i") ?>" />
+        </div>
+    </fieldset>
+
+    <div class="notacordion parametri-pregled-pacienti">
+        <h3><a href="javascript:">Хематолошки статус</a></h3>
+
+        <div class="pregled-pacient-info">
+            <table class="input-table-bio">
+                <tr>
+                    <th>Анализа</th>
+                    <th>Резултат</th>
+                    <th>Реф. вр.</th>
+                </tr>
+                <tr>
+                    <td>SE mm/h</td>
+                    <td><input type="text" name="se" class="hematoloski1"></td>
+                    <td>8-12</td>
+                </tr>
+                <tr>
+                    <td>Хемоглобин mmoL/L</td>
+                    <td><input type="text" name="hemoglobin" class="hematoloski2"></td>
+                    <td>7,76-10,6</td>
+                </tr>
+                <tr>
+                    <td>Еритроцити</td>
+                    <td><input type="text" name="eritrociti" class="hematoloski3"></td>
+                    <td>4,2-5,5</td>
+                </tr>
+                <tr>
+                    <td>MVC fL</td>
+                    <td><input type="text" name="mvc" class="hematoloski4"></td>
+                    <td>82-92</td>
+                </tr>
+                <tr>
+                    <td>Хематокрит</td>
+                    <td><input type="text" name="hematokrit" class="hematoloski3"></td>
+                    <td>0,37-0,54</td>
+                </tr>
+                <tr>
+                    <td>Тромбоцити 10^9/L</td>
+                    <td><input type="text" name="trombociti" class="hematoloski2"></td>
+                    <td>140-250</td>
+                </tr>
+                <tr>
+                    <td>Леукоцити 10^9/L</td>
+                    <td><input type="text" name="leukociti" class="hematoloski7"></td>
+                    <td>4-9</td>
+                </tr>
+                <tr>
+                    <th>Диференцијална крвна слика</th>
+                    <th></th>
+                    <th>4 4</th>
+                </tr>
+                <tr>
+                    <td>неутрофили</td>
+                    <td><input type="text" name="neutrofili" class="hematoloski8"></td>
+                    <td>0,58-0,66</td>
+                </tr>
+                <tr>
+                    <td>стапичасти</td>
+                    <td><input type="text" name="stapicasiti" class="hematoloski9"></td>
+                    <td>0,03-0,05</td>
+                </tr>
+                <tr>
+                    <td>лимфоцити</td>
+                    <td><input type="text" name="limfociti" class="hematoloski9"></td>
+                    <td>0,21-0,25</td>
+                </tr>
+                <tr>
+                    <td>моноцити</td>
+                    <td><input type="text" name="monociti" class="hematoloski12"></td>
+                    <td>0,05-0,08</td>
+                </tr>
+                <tr>
+                    <td>еозинофили</td>
+                    <td><input type="text" name="eozinofili" class="hematoloski11"></td>
+                    <td>0,02-0,04</td>
+                </tr>
+                <tr>
+                    <td>базофилии</td>
+                    <td><input type="text" name="bazofili" class="hematoloski9"></td>
+                    <td> до 0,01</td>
+                </tr>
+            </table>
+        </div>
+        <h3><a href="javascript:">Коагулациски статус</a></h3>
+
+        <div class="pregled-pacient-info">
+            <table class="input-table-bio">
+                <tr>
+                    <th>Анализа</th>
+                    <th>Резултат</th>
+                    <th>Реф. вр.</th>
+                </tr>
+                <tr>
+                    <td>време крварење (sec)</td>
+                    <td><input type="text" name="vremekrvarenje" class="hematoloski20"></td>
+                    <td>60 - 180</td>
+                </tr>
+                <tr>
+                    <td>време коагулација</td>
+                    <td><input type="text" name="vremekoagulacija" class="hematoloski15"></td>
+                    <td>60 -180</td>
+                </tr>
+            </table>
+        </div>
+
+
+        <div class="clear"></div>
+        <h3><a href="javascript:">Глуциден статус</a></h3>
+
+        <div class="pregled-pacient-info">
+            <table class="input-table-bio">
+                <tr>
+                    <th>Анализа</th>
+                    <th>Резултат</th>
+                    <th>Реф. вр.</th>
+                </tr>
+                <tr>
+                    <td>гликоза (серум) mol/L</td>
+                    <td><input type="text" name="glikoza" class="hematoloski31"></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="clear"></div>
+        <h3><a href="javascript:">LIQUOR</a></h3>
+
+        <div class="pregled-pacient-info">
+            <table class="input-table-bio">
+                <tr>
+                    <th>Анализа</th>
+                    <th>Резултат</th>
+                    <th>Реф. вр.</th>
+                </tr>
+                <tr>
+                    <td>sf Kelii 10^0 L</td>
+                    <td><input type="text" name="sfkelii" class="hematoloski9"></td>
+                    <td>0 - 50</td>
+                </tr>
+                <tr>
+                    <td>sf Pandy 0 ++++</td>
+                    <td><input type="text" name="sfpandy" class="hematoloski13"></td>
+                    <td>нег.</td>
+                </tr>
+                <tr>
+                    <td>sf Riwalta 0 ++++</td>
+                    <td><input type="text" name="sfriwalta" class="hematoloski14"></td>
+                    <td>нег.</td>
+                </tr>
+            </table>
+        </div>
+        <div class="clear"></div>
+        <h3><a href="javascript:">FECES</a></h3>
+
+        <div class="pregled-pacient-info">
+            <table class="input-table-bio">
+                <tr>
+                    <th>Анализа</th>
+                    <th>Резултат</th>
+                    <th>Реф. вр.</th>
+                </tr>
+                <tr>
+                    <td>окултно крварење</td>
+                    <td><input type="text" name="okultnokrvarenje" class="hematoloski15"></td>
+                    <td>нег.</td>
+                </tr>
+                <tr>
+                    <td>жолчни бои</td>
+                    <td><input type="text" name="zolcniboi" class="hematoloski10"></td>
+                    <td>+</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="clear"></div>
+        <h3><a href="javascript:">Ензимиски статус</a></h3>
+
+        <div class="pregled-pacient-info">
+            <table class="input-table-bio">
+                <tr>
+                    <th>Анализа</th>
+                    <th>Резултат</th>
+                    <th>Реф. вр.</th>
+                </tr>
+                <tr>
+                    <td>Alt (gpt) u/l</td>
+                    <td><input type="text" name="alt" class="hematoloski10"></td>
+                    <td>7 - 56</td>
+                </tr>
+                <tr>
+                    <td>Ast (got) u/l</td>
+                    <td><input type="text" name="ast" class="hematoloski12"</td>
+                    <td>5 - 40</td>
+                </tr>
+                <tr>
+                    <td>Алк. фосфатаза u/l</td>
+                    <td><input type="text" name="alk" class="hematoloski17"></td>
+                    <td>38 - 126</td>
+                </tr>
+                <tr>
+                    <td>Кис. фосфатаза u/l</td>
+                    <td><input type="text" name="kis" class="hematoloski17"></td>
+                    <td> до 13,5</td>
+                </tr>
+                <tr>
+                    <td>Pap u/l</td>
+                    <td><input type="text" name="pap" class="hematoloski19"></td>
+                    <td>до 3,7</td>
+                </tr>
+                <tr>
+                    <td>Алфа амилаза (s) u/l</td>
+                    <td><input type="text" name="alfaamilazas" class="hematoloski20"></td>
+                    <td>30 - 110</td>
+                </tr>
+                <tr>
+                    <td>Алфа амилаза (u) u/l</td>
+                    <td><input type="text" name="alfaamilazau" class="hematoloski20"></td>
+                    <td>32 - 641</td>
+                </tr>
+                <tr>
+                    <td>Ygt u/l</td>
+                    <td><input type="text" name="ygtu" class="hematoloski19"></td>
+                    <td>8 - 78</td>
+                </tr>
+                <tr>
+                    <td>Ldh u/l</td>
+                    <td><input type="text" name="ldhu" class="hematoloski19"></td>
+                    <td>313 - 618</td>
+                </tr>
+                <tr>
+                    <td>Липаза u/l^2</td>
+                    <td><input type="text" name="lipazau" class="hematoloski21"></td>
+                    <td>23 - 300</td>
+                </tr>
+                <tr>
+                    <td>Холинестераза</td>
+                    <td><input type="text" name="holinesterazam" class="hematoloski22"></td>
+                    <td>м 5,90-12,22</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="text" name="holinesterazaz" class="hematoloski23"></td>
+                    <td>м 4,65-10,44</td>
+                </tr>
+            </table>
+        </div>
+        <h3><a href="javascript:">Липиден статус</a></h3>
+
+        <div class="pregled-pacient-info">
+            <table class="input-table-bio">
+                <tr>
+                    <th>Анализа</th>
+                    <th>Резултат</th>
+                    <th>Реф. вр.</th>
+                </tr>
+                <tr>
+                    <td>Вкупни липиди g/l</td>
+                    <td><input type="text" name="vkupnilipidi" class="hematoloski16"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Холестерол (вкупен mmol/L</td>
+                    <td><input type="text" name="holesterol" class="hematoloski24"></td>
+                    <td>5,2-6,2</td>
+                </tr>
+                <tr>
+                    <td>Триглицериди mmol/L</td>
+                    <td><input type="text" name="trigliceridi" class="hematoloski20"></td>
+                    <td>0,45-1,81</td>
+                </tr>
+            </table>
+        </div>
+        <h3><a href="javascript:">Електролитен статус</a></h3>
+
+        <div class="pregled-pacient-info">
+            <table class="input-table-bio">
+                <tr>
+                    <th>Анализа</th>
+                    <th>Резултат</th>
+                    <th>Реф. вр.</th>
+                </tr>
+                <tr>
+                    <td>Натриум mmol/L</td>
+                    <td><input type="text" name="natrium" class="hematoloski25"></td>
+                    <td>135-145</td>
+                </tr>
+                <tr>
+                    <td>Калиум mmol/L</td>
+                    <td><input type="text" name="kalium" class="hematoloski11"></td>
+                    <td>3,8-5,5</td>
+                </tr>
+                <tr>
+                    <td>Калциум mmol/L</td>
+                    <td><input type="text" name="kalcium" class="hematoloski25"></td>
+                    <td>2,1-2,6</td>
+                </tr>
+                <tr>
+                    <td>Хлориди mmol/L</td>
+                    <td><input type="text" name="hloridi" class="hematoloski25"></td>
+                    <td>99-108</td>
+                </tr>
+                <tr>
+                    <td>Фосфати mmol/L</td>
+                    <td><input type="text" name="fosfati" class="hematoloski13"></td>
+                    <td>0,8-1,4</td>
+                </tr>
+                <tr>
+                    <td>Натриум mmol/L</td>
+                    <td><input type="text" name="natrium_dva" class="hematoloski25"></td>
+                    <td>100-220</td>
+                </tr>
+                <tr>
+                    <td>Калиум mmol/du</td>
+                    <td><input type="text" name="kalium_dva" class="hematoloski25"></td>
+                    <td>35-80</td>
+                </tr>
+            </table>
+        </div>
+        <h3><a href="javascript:">Имунолошки статус</a></h3>
+
+        <div class="pregled-pacient-info">
+            <table class="input-table-bio">
+                <tr>
+                    <th>Анализа</th>
+                    <th>Резултат</th>
+                    <th>Реф. вр.</th>
+                </tr>
+                <tr>
+                    <td>Crp</td>
+                    <td><input type="text" name="crp" class="hematoloski26"></td>
+                    <td>нег.</td>
+                </tr>
+            </table>
+        </div>
+        <h3><a href="javascript:">Ацидо-базен статус</a></h3>
+
+        <div class="pregled-pacient-info">
+            <table class="input-table-bio">
+                <tr>
+                    <th>Анализа</th>
+                    <th>Резултат</th>
+                    <th>Реф. вр.</th>
+                </tr>
+                <tr>
+                    <td>Арт./ вен./ капил.</td>
+                    <td><input type="text" name="artvenkapil" class="hematoloski15"></td>
+                    <td>A/V/C</td>
+                </tr>
+                <tr>
+                    <td>pH</td>
+                    <td><input type="text" name="ph" class="hematoloski27"></td>
+                    <td>7,35-7,45</td>
+                </tr>
+                <tr>
+                    <td>pО^2KPa</td>
+                    <td><input type="text" name="pokpa" class="hematoloski28"></td>
+                    <td>9-14</td>
+                </tr>
+                <tr>
+                    <td>pCO^2KPa</td>
+                    <td><input type="text" name="pco_dva_kpa" class="hematoloski29"></td>
+                    <td>4,5-5,6</td>
+                </tr>
+                <tr>
+                    <td>pCO^3KPa mmol/L</td>
+                    <td><input type="text" name="pco_tri_kpa" class="hematoloski15"></td>
+                    <td>22-30</td>
+                </tr>
+                <tr>
+                    <td>p - Base excess mmol/L</td>
+                    <td><input type="text" name="pbaseexcess" class="hematoloski2"></td>
+                    <td>-3 +3</td>
+                </tr>
+                <tr>
+                    <td>Sat %</td>
+                    <td><input type="text" name="sat" class="hematoloski26"></td>
+                    <td>нег.</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <br/><br/>
+
+    <div class="footer-pregled-pacienti">
+
+        <div class="statusselektor">
+
+        </div>
+
+        <div class="actions-pregled-pacienti">
+            <!--            <button type="button" class="button izbrisi"><span>Избриши</span></button>-->
+            <!--            <button type="button" class="button promeni"><span>Промени</span></button>-->
+
+        </div>
+    </div>
+
+</div>
+<div class="biohemiski-pregled-desno">
+    <fieldset>
+        <div class="bio-info">
+            <label>Отсек</label>
+            <input type="text" name="otsek" class="otsek" value="<?php echo $this->session->userdata('firma_ime') ?>" />
+        </div>
+        <div class="bio-info">
+            <label>Име</label>
+            <input type="text" name="ime" class="ime">
+        </div>
+        <div class="bio-info">
+            <label>Презиме</label><input type="text" name="prezime">
+        </div>
+        <div class="bio-info">
+            <label>Дијагноза</label>
+            <input type="text" name="dijagnozarezultat" class="dijagnozarezultat">
+        </div>
+    </fieldset>
+
+
+    <div class="notacordion parametri-pregled-pacienti">
+        <h3><a href="javascript:">Уринарен статус</a></h3>
+
+        <div class="pregled-pacient-info">
+            <table class="input-table-bio">
+                <tr>
+                    <th>Анализа</th>
+                    <th>Резултат</th>
+                    <th>Реф. вр.</th>
+                </tr>
+                <tr>
+                    <td>Спец. теж</td>
+                    <td><input type="text" name="spectezu" class="hematoloski9"></td>
+                    <td>1,15-1,025</td>
+                </tr>
+                <tr>
+                    <td>Осмолалност mmoL/L</td>
+                    <td><input type="text" name="osmolalnostu" class="hematoloski24"></td>
+                    <td>над 500</td>
+                </tr>
+                <tr>
+                    <td>pH - киселост</td>
+                    <td><input type="text" name="phkiselostu" class="hematoloski13"></td>
+                    <td>6,5-7,5</td>
+                </tr>
+                <tr>
+                    <td>Диуреза dU/L</td>
+                    <td><input type="text" name="diurezau" class="hematoloski13"></td>
+                    <td>0,8-1,5</td>
+                </tr>
+                <tr>
+                    <td>Уробилиноген</td>
+                    <td><input type="text" name="urobilinogenu" class="hematoloski13"></td>
+                    <td>1,2-1,4</td>
+                </tr>
+                <tr>
+                    <td>Билирубин</td>
+                    <td><input type="text" name="bilirubinu" class="hematoloski9"></td>
+                    <td>нег.</td>
+                </tr>
+                <tr>
+                    <td>Гликоза</td>
+                    <td><input type="text" name="glikozau" class="hematoloski30"></td>
+                    <td>нег.</td>
+                </tr>
+                <tr>
+                    <td>Кетони (ацетони)</td>
+                    <td><input type="text" name="ketoniu" class="hematoloski7"></td>
+                    <td>нег.</td>
+                </tr>
+                <tr>
+                    <td>Протеини</td>
+                    <td><input type="text" name="proteiniu" class="hematoloski12"></td>
+                    <td>нег.</td>
+                </tr>
+                <tr>
+                    <td>Хемоглобин</td>
+                    <td><input type="text" name="hemoglobinu" class="hematoloski8"></td>
+                    <td>нег.</td>
+                </tr>
+                <tr>
+                    <td>Седимент (просек во поле)</td>
+                    <td><input type="text" name="sedimentu" class="hematoloski24"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Еритроцити</td>
+                    <td><input type="text" name="eritrocitiu" class="hematoloski8"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Леукоцити</td>
+                    <td><input type="text" name="leukocitiu" class="hematoloski21"></td>
+                    <td>3-10</td>
+                </tr>
+                <tr>
+                    <td>Цилиндри хиалини</td>
+                    <td><input type="text" name="cilindrihialiniu" class="hematoloski31"></td>
+                    <td>0-1</td>
+                </tr>
+                <tr>
+                    <td>Цилиндри гранулирани</td>
+                    <td><input type="text" name="cilindrigranuliraniu" class="hematoloski24"></td>
+                    <td>нег.</td>
+                </tr>
+                <tr>
+                    <td>Епителни клетки</td>
+                    <td><input type="text" name="epitelnikletkiu" class="hematoloski18"></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>Кристали</td>
+                    <td><input type="text" name="kristaliu" class="hematoloski12"></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>Бактерии</td>
+                    <td><input type="text" name="bakteriiu" class="hematoloski12"></td>
+                    <td>нег.</td>
+                </tr>
+            </table>
+        </div>
+
+        <h3><a href="javascript:">Деградациски продукти</a></h3>
+
+        <div class="pregled-pacient-info">
+            <table class="input-table-bio">
+                <tr>
+                    <th>Анализа</th>
+                    <th>Резултат</th>
+                    <th>Реф. вр.</th>
+                </tr>
+                <tr>
+                    <td>Уреа (серум) mmol/L</td>
+                    <td><input type="text" name="urea" class="hematoloski24"></td>
+                    <td>3-7,8</td>
+                </tr>
+                <tr>
+                    <td>du уреа mmol/L</td>
+                    <td><input type="text" name="duurea" class="hematoloski17"></td>
+                    <td>250-667</td>
+                </tr>
+                <tr>
+                    <td>Уреа клиренс ml/g</td>
+                    <td><input type="text" name="ureaklirens" class="hematoloski32"></td>
+                    <td>0,50-0,66</td>
+                </tr>
+                <tr>
+                    <td>Креатинин (серум) mmol/L</td>
+                    <td><input type="text" name="kreatinin" class="hematoloski24"></td>
+                    <td>45-109</td>
+                </tr>
+                <tr>
+                    <td>du креатинини mmol/L 3,5-6,5</td>
+                    <td><input type="text" name="dukreatinin" class="hematoloski24"></td>
+                    <td>7-17</td>
+                </tr>
+                <tr>
+                    <td>Клиренс креатенин ml/g</td>
+                    <td><input type="text" name="klirenskreatinin" class="hematoloski24"></td>
+                    <td>1,3-2,7</td>
+                </tr>
+                <tr>
+                    <td>Мочна киселина mmol/L</td>
+                    <td><input type="text" name="mocnakiselina" class="hematoloski24"></td>
+                    <td>150-450</td>
+                </tr>
+                <tr>
+                    <td>du мочна киселина mmol/L</td>
+                    <td><input type="text" name="dumocnakiselina" class="hematoloski24"></td>
+                    <td>1,2-6,0</td>
+                </tr>
+            </table>
+        </div>
+
+
+        <div class="clear"></div>
+        <h3><a href="javascript:">Протеински статус</a></h3>
+
+        <div class="pregled-pacient-info">
+            <table class="input-table-bio">
+                <tr>
+                    <th>Анализа</th>
+                    <th>Резултат</th>
+                    <th>Реф. вр.</th>
+                </tr>
+                <tr>
+                    <td>Вкупни протеини g/L</td>
+                    <td><input type="text" name="vkupniproteini" class="hematoloski24"></td>
+                    <td>65-80</td>
+                </tr>
+                <tr>
+                    <td>Албумини g/L</td>
+                    <td><input type="text" name="albumini" class="hematoloski15"></td>
+                    <td>35-40</td>
+                </tr>
+                <tr>
+                    <td>Билирубин (вкупен) imol/L</td>
+                    <td><input type="text" name="bilirubinvkupen" class="hematoloski24"></td>
+                    <td>0,8-22</td>
+                </tr>
+                <tr>
+                    <td>Билирубин директен</td>
+                    <td><input type="text" name="bilirubindirekten" class="hematoloski24"></td>
+                    <td>1,5-6,8</td>
+                </tr>
+                <tr>
+                    <td>Билирубин индиректен</td>
+                    <td><input type="text" name="bilirubinindirekten" class="hematoloski24"></td>
+                    <td>5,1-13,6</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="clear"></div>
+        <h3><a href="javascript:">Останати анализи</a></h3>
+
+        <div class="pregled-pacient-info">
+            <table class="input-table-bio">
+                <tr>
+                    <th>Анализа</th>
+                    <th>Резултат</th>
+                    <th>Реф. вр.</th>
+                </tr>
+                <tr>
+                    <td>Ликтати mmol/L</td>
+                    <td><input type="text" name="laktati" class="hematoloski18"></td>
+                    <td>0,7-2,1</
+                    <td>
+                </tr>
+                <tr>
+                    <td>Осмолалност mosm/kg</td>
+                    <td><input type="text" name="osmolalnost" class="hematoloski24"></td>
+                    <td>до 300</td>
+                </tr>
+                <tr>
+                    <td>Еластаза ig/l</td>
+                    <td><input type="text" name="elastaza" class="hematoloski13"></td>
+                    <td>до 22</td>
+                </tr>
+            </table>
+        </div>
+        <div class="clear"></div>
+
+
+    </div>
+    <div class="clear"></div>
+    <br/>
+
+    <div class="footer-pregled-pacienti">
+
+        <div class="statusselektor">
+
+        </div>
+
+        <div class="actions-pregled-pacienti">
+            <?php if($print == 2) { ?>
+            <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_rezultat_biohemija&id=" class="printlink" target="_blank" >
+                <button type="button" class="print"><span>Принт</span></button>
+            </a>
+            <?php } ?>
+            <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_rezultat_biohemija&id=" class="printlinkupati hide" target="_blank" >
+                <button type="button" class="print"><span>Принт</span></button>
+            </a>
+            <button type="button" class="button snimi-forma-upati"  poraka_uspesno="успешно снимен"
+                    poraka_neuspesno="Грешка при снимање" izvrsi="lekuvanja_listasozapisi(lekuvanja_getaktiven_priemid())">
+                <span>Зачувај</span>
+            </button>
+        </div>
+    </div>
+</form>
+</div>
+<script>
+
+    jQuery(document).ready(function () {
+        jQuery('.datum').datepicker({dateFormat:'dd-mm-yy'});
+        jQuery(".parametri-pregled-pacienti.notacordion").addClass("ui-accordion ui-accordion-icons ui-widget ui-helper-reset")
+            .find("h3")
+            .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
+            .hover(function () {
+                jQuery(this).toggleClass("ui-state-hover");
+            })
+            .prepend('<span class="ui-icon ui-icon-triangle-1-e"></span>')
+            .click(function () {
+                jQuery(this)
+                    .toggleClass("ui-accordion-header-active ui-state-active ui-state-default ui-corner-bottom")
+                    .find("> .ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
+                    .next().toggleClass("ui-accordion-content-active").slideToggle();
+                return false;
+            })
+            .next()
+            .addClass("ui-accordion-content  ui-helper-reset ui-widget-content ui-corner-bottom")
+            .hide();
+    });
+</script>

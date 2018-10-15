@@ -1,0 +1,117 @@
+<html>
+<head>
+    <link rel='stylesheet' type='text/css' href='css/style.css' />
+</head>
+    <body>
+    <p class="goreLevo">
+        <h3> TRINITI sistemi dooel</h3>
+        <br>
+        Tel. +389(0)22573770 Faks +389(0)22573780
+        <br>
+        Ziro smetka : 210-0645825401-28
+        <br>
+        Deponent : Tutunska banka AD Skopje
+        <br>
+        Ziro smetka : 380-7769211001-79
+        <br>
+        Deponent : ProKredit banka AD Skopje
+        <br>
+        Danocen broj : 4032009500514
+        <br>
+        DDV broj : MK4032009500514
+
+        Datum : <? echo $q[0]->datum?>
+    </p>
+   <table class="goreDesno" border="1" width ="300px" height="300px" rules='rows'>
+    <tr><td>Kupuvac</td></tr>
+    <tr><td> <?echo $q[0]->firmaIme; ?></td></tr>
+
+   </table>
+
+    <br>
+    <br>
+    <br>
+
+
+    <h2 align='center'>Izlezna faktura br. <?echo $q[0]->broj;?> </h2>
+
+    <br>
+
+    <table  border='1' rules='rows'  width='150' height='60' align='center' >
+        <tr>
+            <td>reden broj</td>
+            <td>Stavka</td>
+            <td>Kolicina</td>
+            <td>Edinecna cena</td>
+            <td>DDV (%)</td>
+            <td>Cena na ddv</td>
+            <td>Vkupno bez ddv</td>
+            <td>Vkupno</td>
+
+        </tr>
+
+        <?php
+        $reden=1;
+        $d=0;
+        $b=0;
+        foreach($query as $row){
+            $ddv=($row->cenaDDV-$row->cena)*$row->kolicina;
+            $bezddv=$row->kolicina*$row->cena;
+            $vkupno=$ddv+$bezddv;
+            echo "<tr>" ;
+            echo "<td width='20'>" . $reden . "</td>";
+            echo "<td width='100'>" . $row->stavka . "</td>";
+            echo "<td width='60'>" .$row->kolicina."</td>";
+            echo "<td width='60'>" .$row->cena."</td>";
+            echo "<td width='60'>" .$row->DDV."</td>";
+            echo "<td width='60'>".$ddv. "</td>";
+            echo "<td width='60'>" .$bezddv."</td>";
+            echo "<td width='60'>" .$vkupno."</td>";
+
+
+            $reden=$reden+1;
+
+          $d+=$ddv;
+           $b+=$bezddv;
+            echo " </tr>";
+
+        }
+        ?>
+
+    </table>
+    <br>
+    <br>
+
+        <table class="doleDesno" border="1">
+             <tr><td><? echo 'Vkupen iznos bez DDV:'.$b;?></td></tr>
+            <tr><td> <? echo 'Osnovica za DDV:'.$b;?></td></tr>
+            <tr><td><? echo 'Vkupno DDV:'.$d;?></td></tr>
+            <tr><td> <? echo 'Vkupno so DDV:'.$q[0]->vkupno;?></td></tr>
+            <tr><th>Vkupno za naplata :<? echo $q[0]->vkupno; ?></th></tr>
+        </table>
+
+
+
+    <br>
+    <br>
+   <p class="doleLevo">
+       Pri plakjanje zadolzitelno navedete go brojot na faktura :<?echo $q[0]->broj;?>
+       <br>
+       Rok na plakjanje do : <?echo $q[0]->rok; ?>
+       <br>
+       Ve molime naznaceniot iznos da go platite vo validen rok, za sekoe zadocnuvanje presmetuvame zakonska kamata.
+       <br>
+       Fakturiral :
+       <br>
+      ________________________
+   </p>
+    <p class="doleD" >
+        Primil:
+        <br>
+      _________________________
+    </p>
+    </body>
+
+</html>
+
+

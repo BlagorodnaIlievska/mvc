@@ -1,0 +1,84 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+
+class Mesecni_parametri extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function lista()
+    {
+        $this->load->model('plati/mesecni_parametri_model');
+        $data['mesec'] = $this->mesecni_parametri_model->mesec_dropdown();
+        $this->load->view('plati/mesecni_parametri/lista', $data);
+    }
+
+    public function nov_mesecen_parametar()
+    {
+        $mesec_id = $this->input->get('mesec');
+        $godina = $this->input->get('godina');
+        $this->load->model('plati/mesecni_parametri_model');
+        $this->load->model('plati/vraboten_mesecni_promeni_model');
+        $data['mesecni_parametri']=$this->mesecni_parametri_model->getMesecniParametri_prethodenMesec($mesec_id-1);
+   //   print_r($data['mesecni_parametri']); die();
+        $data['mesec'] = $this->vraboten_mesecni_promeni_model->getMesec($mesec_id);
+        $data['mesec_id'] = $mesec_id;
+        $data['godina'] = $godina;
+        $this->load->view( 'plati/mesecni_parametri/nov_mesecen_parametar', $data);
+    }
+
+    public function izmeni()
+    {
+        $this->load->model('plati/mesecni_parametri_model');
+        $mesecen_parametar = $this->mesecni_parametri_model->getMesecenParametar($this->input->get("id"));
+        $data['mesec'] = $this->mesecni_parametri_model->mesec_dropdown();
+        $data['parametar']    = $mesecen_parametar;
+        $this->load->view('plati/mesecni_parametri/izmeni', $data);
+    }
+
+    public function polnilista()
+    {
+        $this->load->model('plati/mesecni_parametri_model');
+        $this->load->model('plati/plati_model');
+        $return = $this->mesecni_parametri_model->getMesecniParametri();
+       // $q=$this->plati_model->presmetajPlata();
+     //   print_r($q); die();
+        echo json_encode($return);
+    }
+
+    public function create_mesecen_parametar()
+    {
+        $this->load->model('plati/mesecni_parametri_model');
+        $this->mesecni_parametri_model->create_mesecen_parametar();
+        echo "ok";
+    }
+
+    public function update_mesecen_parametar()
+    {
+        $this->load->model('plati/mesecni_parametri_model');
+        $this->mesecni_parametri_model->update_mesecen_parametar() ;
+        echo 'ok';
+
+    }
+
+    public function delete_mesecen_parametar()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('plati/mesecni_parametri_model');
+        $this->mesecni_parametri_model->delete_mesecen_parametar($id);
+        echo "ok";
+    }
+
+    public function proveri_mesecen_parametar()
+    {
+        $mesec = $this->input->get('mesec');
+        $godina = $this->input->get('godina');
+        $this->load->model('plati/mesecni_parametri_model');
+        $return = $this->mesecni_parametri_model->proveri_mesecen_parametar($mesec, $godina);
+        echo json_encode($return);
+    }
+}

@@ -1,0 +1,37 @@
+function novo_baranje(){
+    var formaction = '/index.php/javni_nabavki/javni_nabavki/novo_baranje';
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery.ajax({
+        url:formaction,
+        success:function (response) {
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery("." + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+//                width:"auto",
+                width:1024,
+                position:[00, 00],
+                modal:true,
+                dialogClass: 'dialogsotabovi',
+                title:"Ново барање",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/javni_nabavki/javni_nabavki/baranje_index',
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #baranje").html(response);
+                }
+            });
+            jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                cache:true,
+                ajaxOptions:{
+                    type:"POST"
+                }
+            });
+        }
+    });
+}

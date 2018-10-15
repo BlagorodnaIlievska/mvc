@@ -1,0 +1,18 @@
+<!-- <div id="menu" class="main-menu-tabs">
+    <ul>
+        <li><a href="#start">Start</a></li>
+        <li><a href="/index.php/vlezni_fakturi/menu/main_menu">Vlezni fakturi</a></li>
+        <li><a href="/index.php/izlezni_fakturi/menu/main_menu">Izlezni fakturi</a></li>
+        <li><a href="/index.php/izvodi/menu/index">Izvodi</a></li>
+        <li><a href="#profakturi">Profakturi</a></li>
+        <li><a href="/index.php/kartici/menu/index">Kartici</a></li>
+        <li><a href="/index.php/kasa/menu/index">Kasa</a></li>
+        <li><a href="/index.php/materijalno/menu/index">Materijalno</a></li>
+        <li><a href="#raporti">Raporti</a></li>
+        <li><a href="/index.php/podatoci/site/admin_area">Podatoci</a></li>
+        <li><a href="/index.php/users/site/admin_area">Users</a></li></li>
+    </ul>
+    <div id="start">Start</div>
+    <div id="profakturi">Profakturi</div>
+    <div id="raporti">Raporti</div>
+</div>  -->

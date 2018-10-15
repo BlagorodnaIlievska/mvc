@@ -1,0 +1,153 @@
+<div class="faktura-arhivskibroj">
+    <label>Број на налог: </label>
+
+    <input type="text" name="brojnalog" style="margin-bottom: 5px;margin-left: 10px;"    class="brojnalog" value="<? echo $nalog[0]->broj;?>">     <br>
+</div>
+<div class="faktura-od-dobavuvac">
+
+    <div class="nalog-datum">
+        <label>Датум на налог:</label>
+
+        <input type="text" name="datum"  class="nalogdatum" value="<?echo $nalog[0]->datum;?>">
+        <input type="hidden" name="tip" value="<?echo $nalog[0]->tip_na_nalog;?>">
+
+    </div>
+</div>
+<fieldset>
+    <legend>Ставки во документот</legend>
+    <table class="stavki-nalog-detali" border="1" cellpadding="2" id="faktura">
+        <thead>
+        <tr>
+            <th></th>
+            <th>РБ</th>
+            <th class="konto">Конто</th>
+            <th>Бр.док.</th>
+
+            <th class="opis">Опис</th>
+            <th>Коминтент</th>
+            <th class="dolzi">Должи</th>
+            <th class="pobaruva">Побарува</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <?php if(is_array($nalog_detali)){ ?>
+            <?php $i=1; foreach($nalog_detali as $nalog1): ?>
+                <tr zadokid="<? echo $nalog1->dokid;?>" tip="<?echo $nalog[0]->tip_na_nalog;  ?>" zsid="<?echo $nalog1->zsid;  ?>" broj_izvod="<?echo $nalog1->broj_dok;  ?>" >
+                    <td><a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a></td>
+                    <td class="redenbroj text-right"><?= $i; ?></td>
+                    <td class="text-right"><?= $nalog1->konto ?></td>
+                    <td><?= $nalog1->broj_dok ?></td>
+                    <td><?= $nalog1->opis ?></td>
+                    <td><?= $nalog1->komintent ?></td>
+                    <td class="text-right"><?= $nalog1->dolzi ?></td>
+                    <td class="text-right"><?= $nalog1->pobaruva ?></td>
+
+                </tr>
+
+                <?php $i++; ?>
+            <?php endforeach; ?>
+        <?php }; ?>
+        </tbody>
+    </table>
+    <!--    <div class="addstavka floatleft">
+            <button type="button" class="add button"><span>Додади ставка</span>
+            </button>
+       </div>
+        <div class="addstavka floatleft">
+            <button type="button" class="dodadiusluga button"><span>Додади услуга</span></button>
+        </div>      -->
+
+</fieldset>
+<script>
+    jQuery(".stavki-nalog-detali").tablesorter();
+    jQuery('.stavki-nalog-detali .edit-tr').click(function () {
+        var id=jQuery(this).parent().parent().attr("zadokid");
+        var tip=jQuery(this).parent().parent().attr("tip");
+        var zsid= jQuery(this).parent().parent().attr("zsid");
+        var broj_izvod= jQuery(this).parent().parent().attr("broj_izvod");
+         console.log(id);
+        if(tip==550 || tip==540){
+            odliv_priliv_izmeni(id);
+             var elem=jQuery(this);
+            destroyparentdialog(elem);
+        }
+       else if(tip==50 || tip==40){
+           console.log(broj_izvod,zsid);
+           edit_izvod(broj_izvod,zsid);
+            var elem=jQuery(this);
+            destroyparentdialog(elem);
+        }
+        else if(tip==10){
+            var elem=jQuery(this);
+            destroyparentdialog(elem);
+            var formaction = "/index.php/vlezni_fakturi/pregled_vlezni/editVleznaFaktura?id=" + id;
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+
+            jQuery.ajax({
+                url:formaction,
+                success:function (response) {
+//            console.log(response);
+                    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                    jQuery("." + tempdialog).html(response);
+                    jQuery('div.' + tempdialog).dialog({
+                        autoOpen:true,
+                        width:"auto",
+                        position:[20, 20],
+                        modal:true,
+                        title:"Измени Фактура",
+                        dialogClass: 'dialogsotabovi',
+                        close:function (event, ui) {
+                            jQuery(this).dialog("destroy");
+                            jQuery(this).remove();
+                        }
+                    });
+                    jQuery.ajax({
+                        url:'/index.php/vlezni_fakturi/faktura/editFaktura?id='+id,
+                        type:'GET',
+                        success:function (response) {
+                            jQuery("." + tempdialog +" #editfaktura").html(response);
+                        }
+                    });
+
+                }
+            });
+        }
+        else if(tip==20){
+            var elem=jQuery(this);
+            destroyparentdialog(elem);
+            var formaction = "/index.php/izlezni_fakturi/pregled_izlezni/editIzleznaFaktura?id=" + id;
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+
+            jQuery.ajax({
+                url:formaction,
+                success:function (response) {
+//            console.log(response);
+                    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                    jQuery("." + tempdialog).html(response);
+                    jQuery('div.' + tempdialog).dialog({
+                        autoOpen:true,
+                        width:"auto",
+                        position:[20, 20],
+                        modal:true,
+                        title:"Измени Фактура",
+                        dialogClass: 'dialogsotabovi',
+                        close:function (event, ui) {
+                            jQuery(this).dialog("destroy");
+                            jQuery(this).remove();
+                        }
+                    });
+                    jQuery.ajax({
+                        url:'/index.php/izlezni_fakturi/faktura/editFaktura?id='+id,
+                        type:'GET',
+                        success:function (response) {
+                            jQuery("." + tempdialog +" #editfaktura").html(response);
+                        }
+                    });
+
+                }
+            });
+        }
+
+    });
+</script>

@@ -1,0 +1,254 @@
+.pacienti-filter-nov .grupa {
+    width: 300px;
+    float: left;
+    background-color: #1A4775;
+    color: #FFF;
+}
+.pacienti-filter-nov {
+    background-color: #1A4775;
+    height: 95px;
+    width: 100%;
+    min-width: 1100px;
+}
+.pacienti-filter-nov .levakolona{
+    float: left;
+    font-size: 90%;
+    padding-left: 10px;
+    padding-top: 5px;
+    width: 155px;
+}
+.pacienti-filter-nov .desnakolona{
+    float: left;
+    font-size: 90%;
+    height: 19px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    width: 120px;
+}
+.pacienti-filter-nov .desnakolona input {
+    width: 100%;
+
+}
+.pacienti-lista-tabela .alatki {
+    width: 40px;
+}
+.podatoci-za-kontakt .grupa1,
+.podatoci-za-kontakt .grupa2,
+.podatoci-za-kontakt .grupa3 {
+    float: left;
+    width: 321px;
+    margin: 2px 2px 2px 0;
+}
+.podatoci-za-kontakt .levakolona,
+.podatoci-za-kontakt .desnakolona {
+    float: left;
+    width: 130px;
+    padding: 5px;
+    white-space: nowrap;
+}
+.podatoci-za-osig .grupa1,
+.podatoci-za-osig .grupa2,
+.podatoci-za-osig .grupa3 {
+    float: left;
+    width: 300px;
+    clear: none;
+    margin: 2px 2px 2px 0;
+}
+.podatoci-za-osig .levakolona,
+.podatoci-za-osig .desnakolona {
+    float: left;
+    width: 130px;
+    padding: 5px;
+    white-space: nowrap;
+}
+.podatoci-za-osig .grupa1,
+.podatoci-za-osig .grupa2,
+.podatoci-za-osig .grupa3
+{
+    margin: 0px 2px 2px 0;
+    height: 160px !important;
+}
+
+.podatoci-za-priemkajdoktor .grupa1,
+.podatoci-za-priemkajdoktor .grupa2,
+.podatoci-za-priemkajdoktor .grupa3 {
+    float: left;
+    width:400px;
+    clear: none;
+    margin: 2px 2px 2px 0;
+}
+.podatoci-za-pridruznik-form .grupa1,
+.podatoci-za-pridruznik-form .grupa2,
+.podatoci-za-pridruznik-form .grupa3 {
+    float: left;
+    width: 300px;
+    clear: none;
+    margin: 2px 2px 2px 0;
+}
+.podatoci-za-osig.osig1 {margin-top: 2px;}
+.podatoci-za-priemkajdoktor .levakolona,
+.podatoci-za-priemkajdoktor .desnakolona {
+    float: left;
+    width: 130px;
+    padding: 5px;
+}
+.moeosiguruvanje {
+    color: #388dff !important;
+    text-decoration: underline;
+    margin-left: 5px;
+}
+/*.podatoci-za-priemkajdoktor fieldset {height: 250px !important;}*/
+.notacordion h3 {
+    line-height: 1.2 !important;
+    color: #FFF !important;
+    border-radius: 0 !important;
+    text-decoration: none !important;
+    text-shadow: 0px 1px 0px rgba(0, 0, 0, .35) !important;
+    background: #6c6e74 !important;
+    padding: 5px 10px 5px 5px !important;
+    background: -moz-linear-gradient(top, #6c6e74 0%, #4b4d51 100%) !important;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #6c6e74), color-stop(100%, #4b4d51)) !important;
+    background: -webkit-linear-gradient(top, #6c6e74 0%, #4b4d51 100%) !important;
+    background: -o-linear-gradient(top, #6c6e74 0%, #4b4d51 100%) !important;
+    background: -ms-linear-gradient(top, #6c6e74 0%, #4b4d51 100%) !important;
+    background: linear-gradient(top, #6c6e74 0%, #4b4d51 100%) !important;
+}
+.notacordion h3.ui-accordion-header-active.ui-state-active {
+    border-radius: 0 !important;
+    background: -moz-linear-gradient(center top , #3F3F3F 7%, #303030 100%) repeat scroll 0 0 transparent !important;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(7%,#3F3F3F), color-stop(100%, #303030)) !important;
+    font-size: 13px !important;
+    border: none !important;
+    color: #ADD8E6 !important;
+}
+.notacordion h3 span {float: left !important;margin: 2px 0 0 2px !important;background: url("../images/plus.png") no-repeat scroll 0 0 transparent !important;}
+.notacordion h3.ui-accordion-header-active.ui-state-active span {background: url("../images/minus.png") no-repeat scroll 0 0 transparent !important;}
+.notacordion h3 a {margin: 10px !important;color: #FDFDFD !important;}
+.notacordion h3.ui-accordion-header-active.ui-state-active a {color: #ADD8E6 !important;}
+
+.parametri-pregled-pacienti {clear: both;}
+.parametri-statistika {clear: both;}
+.pacienti-pregled {float: left;width: 100%;background-color: #FFF;;}
+.pacienti-pregled span , .pacienti-pregled {font-size: 14px;}
+.pacienti-pregled .status-pregledpacient {margin-top: 10px;}
+.pacienti-pregled .status-pregledpacient .lnapregledi {float: right;}
+.upaten-prgled-pacienti div {float: left;margin-right: 15px;}
+.primen-pregled-pacienti .datanapriem {width: 90px;}
+.primen-pregled-pacienti .datanapriem .primenvo-pacienti {width: 60px;}
+.primen-pregled-pacienti .primil-pacienti ,.primen-pregled-pacienti .primil-naoddel-pacienti {width: 170px;}
+.primen-pregled-pacienti , .upaten-prgled-pacienti {margin: 5px 0;}
+.upaten-prgled-pacienti {float: left; clear: both;}
+/*.parametri-pregled-pacienti h3 a {color: #000 !important;}*/
+.vitalniparametri-pregled-pacienti input {margin-right: 10px;}
+.vitalniparametri-pregled-pacienti input , .vitalniparametri-pregled-pacienti span {float: left;}
+.vitalniparametri-pregled-pacienti span {line-height: 1.5;margin-right: 3px;}
+.vitalniparametri-1 {clear: both;margin-top: 5px;}
+.vitalniparametri-2 {clear: both;}
+.vitalniparametri-2 .gsk {float: left;font-weight: bold;margin-top: 10px;}
+.oci-vitalniparametri {width: 150px;}
+.primen-pregled-pacienti , .sostojba-pregled-pacienti {float: left; clear: both;}
+.odgovor-vitalniparametri {width: 170px;}
+.oci-vitalniparametri , .odgovor-vitalniparametri , .odgovor-vitalniparametri {float: left;margin-left: 20px;}
+.oci-vitalniparametri select , .odgovor-vitalniparametri select , .odgovor-vitalniparametri select {float: left;clear:both;}
+.vkupno-vitalniparametri input {width: 50px ;}
+.vkupno-vitalniparametri {clear: both;margin-top: 15px;float: left;}
+.vkupno-vitalniparametri span {float: left;}
+.vitalniparametri-pregled-pacienti textarea {resize: none;width: 100%;}
+.specijalisticki-pregled-pacienti {float: left;clear: both;width: 100%;}
+.terapija-pregled-pacienti {float: left;margin-top: 10px;}
+.paket-usluga-pregled-pacienti {float: right;margin-top: 10px;}
+.opis-terapija-pregled-pacienti {float: left; clear: both; width: 100%; margin-top: 10px;}
+.tabela-lekovi {float: left; width: 100%; clear: both;}
+.buttoncontainer-pregled-pacienti {margin: 10px 0;}
+.buttoncontainer-pregled-pacienti , .footer-pregled-pacienti {float: left;clear: both; width: 100%;}
+.actions-pregled-pacienti {float: right;}
+#pacienti-priem div fieldset {height: 225px;}
+.tiket-doktor {
+    float: left;
+    width: 300px;
+}
+tr.aktivni_priemi td {
+    background-color: #F4ECF0;
+}
+tr.fakturirani_priemi td {
+    background-color: #aaaaaa;
+}
+.podatoci-za-priemkajdoktor-form .grupa1 .desnakolona input {width: 90px;}
+.podatoci-za-kontakt-form .grupa3 textarea {resize: none;width: 145px;}
+/*.podatoci-za-priemkajdoktor-form .grupa2 input {width: 312px !important ;}*/
+.podatoci-za-priemkajdoktor-form .grupa2 .vlezna_faktura input {width: 0 !important ;}
+/*.podatoci-za-priemkajdoktor-form .grupa2  input[type=text] {margin-bottom: 3px;width: 35% !important;}*/
+.podatoci-za-priemkajdoktor-form fieldset.grupa3 .desnakolona {width: 100%;}
+.izberi-participacija .participacija-dropdown {width: 99%;}
+.brnaupat {width: 150px !important;float: right;}
+.podatoci-za-priemkajdoktor-form .upat.ima_upat {width: 292px;float: right;}
+.upatenod-kajdoktor {
+    float: left;
+    width: 109px !important;
+}
+.podatoci-za-priemkajdoktor-form .grupa2 p {margin: 0px 0;}
+.novatiposiguruvanje select {margin-top: 5px;width: 151px;}
+.edit-pacientinfo li {height: 29px;}
+.edit-pacientinfo li:last-child {height: 60px;}
+.pacienti-pacient-dokument-forma li input {
+    float: right;
+    width: 200px;
+}
+.edit-pacientinfo li textarea {resize: none;float: right;width: 203px;}
+.pacienti-pacient-dokument-forma li select {float: right;width: 205px;}
+.podatoci-za-priemkajdoktor-form .grupa3 .ednakolona button {clear: both;}
+.datum-gr1 , .vreme-gr1 {float: left;width: 100%;}
+/*#pacienti-priem .desnakolona input , #pacienti-priem .desnakolona textarea , .pacienti-priem-edit-form input , .pacienti-priem-edit-form textarea {width: 145px !important;}*/
+.grupa3 .pacient-pridruzni-usluga {width: 100%;}
+.pacienti-priem-edit-form .podatoci-za-kontakt-form fieldset {height: 195px;}
+.paketi-tabela-dopolnitelni .paketi-cena {margin-right: 0;float: none !important;width: 100%;text-align: right;}
+.paketi-tabela-dopolnitelni td.cena {width: 120px;}
+.editispratnica input {width: 100%;}
+.editispratnica .magacin {width: 140px;}
+.nova-ispratnica input {width: 100%;}
+.nova-ispratnica .ui-combobox-input.ui-autocomplete-input , .tpriemnica.editpriemnica.editispratnica .ui-combobox-input.ui-autocomplete-input , table.internaispratnica .ui-combobox-input.ui-autocomplete-input {width: 65% !important;}
+table.internaispratnica input {width: 100%;}
+
+.podatoci-za-osig-form {float: left;clear: both;width: 100%;}
+.dali-ima-pridruzba .levakolona {float: left;}
+.podatoci-za-pridruznik-form .dali-ima-pridruzba .desnakolona input.pacient-ima-pridruznik {float: left;width: 20px !important;}
+.podatoci-za-pridruznik.pridruznik1 {float: left;clear: both;}
+.priem_doktor_vlezna_faktura label {float: left; line-height: 1.7; clear: both;}
+.izberi-participacija {clear: both;}
+.span-upatna-dijagnoza {clear: both;}
+
+.grupa-kopcinja-pacienti button > span {
+    white-space: nowrap;
+}
+.grupa-kopcinja-pacienti {
+    float: left;
+    width: 170px;
+}
+.pacient-filter-nov-forma select {width: 125px;}
+.upaten-vo-dropdown {width: 250px;}
+.brnaupat-kaj {width: 100px;display: inline-block;}
+.ednakolona-priem {float: left;margin-top: 5px;width: 100%;}
+.mojtermin-label {width: 100px;display: inline-block;}
+.mojtermin-checkbox {display: inline-block;}
+.moj-termin-display {display: inline-block; width: 190px;margin-left: 80px;}
+.moj-termin-podatoci .moj_termin_broj_na_upat , .brnaupat {width: 141px !important;}
+.lekari-searchlager .ui-combobox .ui-state-default.ui-autocomplete-input {width: 255px !important;}
+.lekari-searchlager {display: inline-block;}
+.upat.pricina_za_upat {width: 144px;float: right;}
+.ednakolona .button.za-edit-forma  {margin-top: 2px;}
+.podatoci-za-priemkajdoktor .podatoci-za-priemkajdoktor-form fieldset.grupa1 input {width: 245px !important;}
+.podatoci-za-priemkajdoktor .podatoci-za-priemkajdoktor-form fieldset.grupa1 .ui-combobox-input.ui-autocomplete-input {width:190px !important; ;}
+.novdoktor {float: left;}
+.upatenkajdr {float: left;margin-right: 23px;margin-left: 6px;}
+.naslov-priem {font-size: 16px;text-align: left;}
+.osnovnaosiglabel {float: left;width: 146px;}
+.podatoci-za-osig .ui-combobox-input.ui-autocomplete-input {width: 190px !important;}
+.podatoci-za-osig .grupa1 input ,
+.podatoci-za-osig .grupa2 input ,
+.podatoci-za-osig .grupa3 input {width: 245px !important;}
+.podatoci-za-kontakt-form div fieldset {width: 300px;}
+.podatoci-za-kontakt-form input,
+.podatoci-za-kontakt-form textarea {width: 150px;}
+.pacient-pridruzni-usluga {width: 203px;}
+.vaznost-na-upat {width: 200px;display: inline-block;}
+.vaznost_na_upat {width: 141px !important;float: right;}

@@ -1,0 +1,16 @@
+<div class="nov-samopridones">
+    <form action="/index.php/plata_podatoci/samopridonesi/create_samopridonesi" method="post">
+        <fieldset>
+            <legend>Нов придонес</legend>
+            Назив:<br/>
+            <input type="text" name="naziv"/><br/>
+            Процент:<br/>
+            <input type="text" name="procent"/><br/>
+        </fieldset>
+        <br/>
+        <button type="button" class="button snimi-forma" izvrsi="samopridonesi_polnilista()" poraka_uspesno="Самопридонесот е успешно снимен"
+                poraka_neuspesno="Грешка при снимање на самопридонес">
+                <span>Сними</span></button>
+        <br/>
+    </form>
+</div>

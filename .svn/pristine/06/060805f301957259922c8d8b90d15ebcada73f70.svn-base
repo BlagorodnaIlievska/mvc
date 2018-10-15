@@ -1,0 +1,8 @@
+<div id="vlezizlez" class="sub-menu-tabs">
+    <ul>
+        <li><?php echo anchor('izlezni_fakturi/pregled_izlezni/detalenPregled', 'Детален преглед'); ?></li>
+<!--        <li>--><?//echo anchor('izlezni_fakturi/pregled_izlezni/grupenPregled', 'Групен преглед'); ?><!--</li>-->
+        <li><?echo anchor('izlezni_fakturi/pregled_izlezni/pregledIzlezniFzom', 'Излезни ФЗОМ'); ?></li>
+        <li><?echo anchor('izlezni_fakturi/pregled_izlezni/pregledIzlezniMinisterstvo', 'Излезни Министерство'); ?></li>
+    </ul>
+</div>

@@ -1,0 +1,20 @@
+.listastavkiglavno .buttoncontainer { margin-top: 10px;
+    margin-bottom: 10px;
+}
+.listastavki  {
+   margin-top: 10px;;
+}
+.pregled{margin-top: 15px; width: 600px;}
+.pregledstavki{ margin-top: 10px;}
+.stavki{ width: 800px;}
+.redenbr{ width: 5px;}
+.text-right {text-align: right;}
+.listastavkiglavno .listastavki tfoot {font-weight: bold;text-align: right;}
+.naziv-plan {
+    max-width: 250px;
+    overflow: hidden;
+}
+.pregledstavki table.pregled tfoot {font-weight: bold;}
+.vkupnoostatok,
+.vkupnopotroseni,
+.vkupnoplanirani {text-align: right ;}

@@ -1,0 +1,34 @@
+<div class="novpaket">
+    <fieldset>
+        <legend>Нова содржина</legend>
+        <div>
+            <p>Пакет :<?=  $paketid[0]->naziv?></p>
+            <p>Шифра :<?=  $paketid[0]->sifra?></p>
+        </div>
+
+        <form accept-charset="utf-8" method="post" action="/index.php/paketi/sppr_uslugi/create_sodrzina">
+
+
+
+
+
+
+            Содржина на пакет:<br />
+            <textarea  name="sodrzina"></textarea><br />
+
+            <input type="hidden" name="parent_id" value="<?php echo $paketid[0]->id; ?>" />
+            <input type="hidden" name="sodrzina_parent" value="<?php echo $paketid[0]->sifra; ?>" />
+
+            <br/>
+            <input type="button" class="ajaxsodrzinacreateform_spec button" value="Додади"><br/>
+        </form>
+    </fieldset>
+</div>
+
+    <!--
+<script>
+    jQuery(document).ready(function() {
+        jQuery('.vaziod').datepicker({dateFormat:'yy-mm-dd'});
+    });
+</script>
+    -->

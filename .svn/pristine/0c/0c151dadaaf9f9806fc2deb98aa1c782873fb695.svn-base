@@ -1,0 +1,147 @@
+<div class="kalkulacija-form">
+
+    <?php
+    $delete = img(array(
+        'src' => 'images/delete.png',
+        'width' => '15',
+        'height' => '15',
+        'class' => 'tr-delete'
+    ));
+    $add = img(array(
+        'src' => 'images/add.png',
+        'width' => '15',
+        'height' => '15',
+        'class' => 'tr-add',
+        'formaction' => '/index.php/materijalno/priemnica/new_artikl'
+    ));
+    $options = array(
+        '0' => 'Сите',
+        '1' => 'Група1',
+        '2' => 'Група2',
+        '3' => 'Група3'
+    );
+    $kgrupa = 'id="kgrupa"';
+    ?>
+    <fieldset>
+        <legend>Листа на фиксни трошоци</legend>
+    <div class="predtabela">
+    <table class="t-kalkulacija" border="1" cellspacing="2" cellpadding="2">
+
+        <tr>
+            <th class="kopcinjakolona"></th>
+            <th class="broj">Бр.</th>
+            <th class="stavka">Ставка</th>
+            <th class="trosoci">Трошоци</th>
+            <th class="grupa">Група</th>
+        </tr>
+
+        <?php
+
+        echo "<tr class='hiderow trow'>";
+        echo "<td>". $delete . " " . $add ."</td>";
+        echo "<td> <input type='text' class='number small' name='knumber' readonly> </td>";
+        echo "<td> <input type='text' class='stavka big' name='kstavka'> </td>";
+        echo "<td> <input type='text' class='trosok medium' name='ktrosok'> </td>";
+        echo "<td>" . form_dropdown('kgrupa', $options, '0', $kgrupa) . "</td>";
+        echo "</tr>";
+
+        ?>
+    </table>
+    </div>
+    </fieldset>
+    <div>
+        <fieldset>
+            <legend>Листа на трошоци по ставка</legend>
+        <div class="predtabela">
+        <table class="t-suma" border="1" cellspacing="2" cellpadding="2">
+             <tr>
+                <th class="sifra">Шифра</th>
+                <th class="katbroj">Кат. Број</th>
+                <th class="stavka">Ставка</th>
+                <th class="kolicina">Кол</th>
+                <th class="fakturnacena">Фак. Цена</th>
+                <th class="vkupno">Вкупно</th>
+                <th class="poparce">По парче</th>
+                <th class="postavka">По ставка</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th class="vleznacena">Влез. Цена</th>
+            </tr>
+
+            <?php
+
+            echo "<tr>";
+            echo "<td> <input type='text' class='sifra medium' id='ssifra' readonly> </td>";
+            echo "<td> <input type='text' class='kat-broj medium' id='skat-broj' readonly> </td>";
+            echo "<td> <input type='text' class='stavka big' id='sstavka' readonly> </td>";
+            echo "<td> <input type='text' class='kolicina small' id='skolicina' readonly> </td>";
+            echo "<td> <input type='text' class='fak-cena medium' id='sfakcena' readonly> </td>";
+            echo "<td> <input type='text' class='vkupno medium' readonly> </td>";
+            echo "<td> <input type='text' class='po-parce medium' id='sparce'> </td>";
+            echo "<td> <input type='text' class='po-stavka medium' id='spostavka'> </td>";
+            echo "<td> <input type='text' class='1 medium' id='s1'> </td>";
+            echo "<td> <input type='text' class='2 medium' id='s2'> </td>";
+            echo "<td> <input type='text' class='3 medium' id='s3'> </td>";
+            echo "<td> <input type='text' class='vlezna-cena medium' id='svleznacena' readonly> </td>";
+
+            echo "</tr>";
+
+            ?>
+        </table>
+        </div>
+            </fieldset>
+    </div>
+
+</div>
+
+<script>
+    jQuery(document).ready(function() {
+        var firsttr = jQuery('.t-kalkulacija').find('tr:eq(1)');
+        var number = firsttr.find('input[name=knumber]').val();
+        if(!number)
+        {
+            var lasttr = jQuery('.t-kalkulacija tr:last');
+            lasttr.removeClass('hiderow');
+            var newtr = jQuery(lasttr).clone().insertBefore(lasttr);
+            newtr.find('input[name=knumber]').val(1);
+            lasttr.addClass('hiderow');
+        }
+        jQuery('.trosok').live('blur', function(){
+            if(isNaN(jQuery(this).val())) {
+                jQuery(this).val(0);
+            }
+           //console.log(jQuery(this).val());
+        });
+        jQuery(".tr-add").live('click', function() {
+            //jQuery('.t-kalkulacija tbody>tr:last').clone(true).insertAfter('.t-kalkulacija tbody>tr:last');
+            var tmp =jQuery('.t-kalkulacija tbody>tr:last').prev('tr').find('input[name=knumber]').val();
+            var tr = jQuery('.t-kalkulacija tr:last');
+            tr.removeClass('hiderow');
+            var newtr = jQuery(tr).clone().insertBefore(tr);
+            newtr.find('input[name=knumber]').val(parseInt(tmp)+1);
+            tr.addClass('hiderow');
+        });
+        jQuery(".tr-delete").live('click', function() {
+            var trow =jQuery(this).parent().parent().attr('class');
+            if(jQuery("." + trow).length != 1)
+            {
+                jQuery(this).parent().parent().remove();
+            }
+        });
+        jQuery("p").live('click', function() {
+            var rows = jQuery(".t-priemnica tr:gt(0)"); // skip the header row
+            //console.log(jQuery('.t-priemnica tr').length);
+
+            rows.each(function(index) {
+                var sifra = jQuery("td:nth-child(3) input", this).val();
+                var sifra2 = jQuery("td:nth-child(4) input", this).val();
+                var stavka = jQuery("td:nth-child(6) input", this).val();
+                console.log(sifra, sifra2, stavka);
+                jQuery('.t-suma tbody>tr:last').clone(true).insertAfter('.t-suma tbody>tr:last');
+
+            });
+
+        });
+    });
+</script>

@@ -1,0 +1,64 @@
+<br/>
+<p><h3 style="text-align: center">Kоминтент - <?php echo $klientime; ?></h3></p>
+<br/>
+<br/>
+<p style="text-align: left">Период од: <?php echo $periodod; ?></p>
+<p style="text-align: left">Период до: <?php echo $perioddo; ?></p>
+<br/>
+<br/>
+<div class="detali">
+    <p class="naslovperioddetali"> ( <span class="vkupnostavki"><?= count($fakturi_klient, COUNT_NORMAL)  ?></span> ) Листа на фактури</p>
+
+    <div class="predtabela">
+        <table class="tklientfakturi" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="datum">Датум</th>
+                <th class="broj">Број</th>
+                <th class="osnova">Основица</th>
+                <th class="ddv">ДДВ</th>
+                <th class="vkupno">Вкупно</th>
+                <th>Група</th>
+                <th>Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $osnova_vk = 0;
+            $ddv_vk =0;
+            $vkupno_vk = 0;
+            foreach($fakturi_klient as $faktura){
+                ?>
+            <tr>
+                <td class="datum"><?= $faktura->datum ?></td>
+                <td class="broj"><?= $faktura->broj ?></td>
+                <td class="osnova"><?= $faktura->osnova ?></td>
+                <td class="ddv"><?= $faktura->ddv ?></td>
+                <td class="vkupno"><?= $faktura->vkupno ?></td>
+                <td class="grupa"><?= $faktura->grupa ?></td>
+                <td class="zabeleska"><?= $faktura->zabeleska ?></td>
+            </tr>
+                <?php
+                $osnova_vk += $faktura->osnova; $ddv_vk += $faktura->ddv; $vkupno_vk += $faktura->vkupno;
+            }
+            ?>
+ </tbody>
+        </table>
+    </div>
+
+    <br/>
+    <br/>
+    <table class="sumiranje sumfakturi sumvlezni-pk" style="width: 250px">
+        <tr>
+            <td><span style="padding-top: 3px; width: 120px;">Вкупно основица: <span></td><td><input type="text" style="border-left: none; border-right: none; border-top: none" value="<?= $osnova_vk ?>"></td>
+        </tr>
+        <tr>
+            <td><span style="padding-top: 3px; width: 120px;">Вкупно ддв: <span></td><td><input type="text" style="border-left: none; border-right: none; border-top: none" value="<?= $ddv_vk ?>"></td>
+        </tr>
+        <tr>
+            <td><span style="padding-top: 3px; width: 120px;">Вкупно износ: <span></td><td><input type="text" style="border-left: none; border-right: none; border-top: none" value="<?= $vkupno_vk ?>"></td>
+        </tr>
+    </table>
+</div>
+
+

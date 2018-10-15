@@ -1,0 +1,14 @@
+.tnabavki .ui-combobox a.ui-button {
+    display: none;
+}
+#dogovor .dogovor-form  #dogovor.tnabavki  td.katbroj input,
+#dogovor .dogovor-form  #dogovor.tnabavki td.artikli input,
+#dogovor .dogovor-form  #dogovor.tnabavki td.kontodetali input,
+#dogovor .dogovor-form  #dogovor.tnabavki td input.kolicina,
+#dogovor .dogovor-form  #dogovor.tnabavki td input.koeficient,
+#dogovor .dogovor-form  #dogovor.tnabavki td input.bezddv {background-color: #FFF !important;}
+#dogovor .dogovor-form  #dogovor.tnabavki td.katbroj input.katbrojusluga {background-color: transparent !important;}
+
+#dogovor .dogovor-form  #dogovor.tnabavki td input.koeficient {text-align: right;}
+#dogovor .dogovor-form  #dogovor.tnabavki td.bezddv {width: 65px;}
+#dogovor .dogovor-form  #dogovor.tnabavki td.edmerka {width: 65px;}

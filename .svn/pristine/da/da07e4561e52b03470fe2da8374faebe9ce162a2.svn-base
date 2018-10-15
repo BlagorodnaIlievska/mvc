@@ -1,0 +1,62 @@
+<div>
+    <br>
+    <div class="konto-novokonto">
+    <?php if (bis_check_access('materijalno_magacin_filter_po_magacin')): ?>
+    <label>Магацин:</label>
+    <select name="magacin" class="magacin searchspecifikacija">
+        <option value="0">Сите</option>
+        <?php foreach ($magacini as $magacin) { ?>
+        <option value="<?php echo $magacin->id ?>"><?php echo $magacin->ime ?></option>
+        <?php } ?>
+    </select>
+<?php endif ?>
+
+
+       <?php if (bis_check_access('materijalno_magacin_filter_po_artikl')): ?>
+        <label>Артикл:</label>
+        <select name="artikli" class="artikli searchspecifikacija">
+        <option value=""> </option>
+            <option value="0"><?php echo "Сите"; ?></option>
+        <?php foreach($artikli as $artikal) { ?>
+            <option value="<?php echo $artikal->SID ?>"><?php echo '('.$artikal->sifra.') '.$artikal->S1Ime ?></option>
+        <?php }  ?>
+        </select>
+        <?php endif ?>
+
+    </div>
+    <div class="filter-vleznifak">
+        <span>Период од:</span>
+        <input type="text" class="periodod pregledspecifikacija" name="periodod"/>
+        <span style="margin: 0 5px;">до:</span>
+        <input type="text" class="perioddo pregledspecifikacija" name="perioddo"/>
+    </div>
+    <br>
+    <br>
+    <p class="naslovstavkipopis" > Спецификација</p>
+    <div class="predtabela">
+        <table class="tabela-stavkispecifikacija" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <!--                <th></th>-->
+                <th class="redenbroj">РБ</th>
+                <th class="sifra">Шифра</th>
+                <th class="artikl">Артикл</th>
+
+                <th class="vleznena-kolicina">Влезена кол.</th>
+                <th class="izlezena-kolicina">Излезена кол.</th>
+                <th class="izlezena-kolicina">Моментална кол.</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+    <script>
+        jQuery(document).ready(function() {
+            jQuery('.searchspecifikacija').combobox();
+            jQuery('.pregledspecifikacija').datepicker();
+            popolni_specifikacija();
+        });
+    </script>

@@ -1,0 +1,326 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: HP
+ * Date: 4/12/13
+ * Time: 12:16 AM
+ * To change this template use File | Settings | File Templates.
+ */
+class Novd_model extends CI_Model{
+
+
+    public  function sifra_dropdown()
+    {
+        $this->db->select('id, sifra');
+        $this->db->from('dnevnaBol_uslugi');
+        $this->db->order_by('id');
+        // $this->db->where('parent_grupa !=',0);
+        //    $this->db->where('parent_podgrupa !=',0);
+
+        $query    = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[''] = 'сите';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['id']] = $row['sifra'];
+            }
+        }
+
+        return $dropdown;
+
+    }
+
+    public  function naziv_dropdown()
+    {
+        $this->db->select('id, naziv');
+        $this->db->from('dnevnaBol_uslugi');
+        //   $this->db->where('parent_grupa !=',0);
+        // $this->db->where('parent_podgrupa !=',0);
+        $this->db->order_by('id');
+        $query    = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown[''] = 'сите';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['id']] = $row['naziv'];
+            }
+        }
+
+        return $dropdown;
+
+    }
+
+    public function getUslugi_nova()
+    {
+
+        $this->db->select('*');
+        $this->db->from('dnevnaBol_uslugi');
+
+        //  $this->db->where("parent_podgrupa",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+    public function getGrupa($id)
+    {
+        $this->db->select("*");
+        $this->db->where('id', $id);
+
+        $query = $this->db->get('dnevnaBol_uslugi');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+
+    public function update_paket()
+    {
+        $field_update_data = $this->input->post();
+        $this->db->where('id', $this->input->post('id'));
+        $update = $this->db->update('dnevnaBol_uslugi', $field_update_data);
+
+        return $update;
+    }
+
+
+
+    public function create_paket(){
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('dnevnaBol_uslugi', $new_field_insert_data);
+        return $insert;
+    }
+    public function create_sodrzina(){
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('dnevnaBol_uslugi', $new_field_insert_data);
+        return $insert;
+    }
+
+    public function delete_grupa($id)
+    {
+        $this->db->where('id',$id );
+        $this->db->delete('dnevnaBol_uslugi');
+    }
+
+    public function getPaket($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('dnevnaBol_uslugi');
+        $this->db->where("id",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function getSodrzini($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('dnevnaBol_uslugi');
+
+        $this->db->where("id",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+
+    public function prebaruvanje_paketi_posifra($sifraid){
+        $this->db->from('dnevnaBol_uslugi');
+        //   $this->db->where('parent_grupa !=',0);
+
+        //  $this->db->where('id',0);
+        //   $this->db->where('parent_podgrupa !=',0);
+        $this->db->where('id',$sifraid);
+        $this->db->order_by('id');
+        $query    = $this->db->get();
+        return $query->result();
+    }
+    public function prebaruvanje_paketi_ponaziv($nazivid){
+        $this->db->from('dnevnaBol_uslugi');
+        //   $this->db->where('parent_grupa !=',0);
+
+        //  $this->db->where('id',0);
+        //  $this->db->where('parent_podgrupa !=',0);
+        $this->db->where('id',$nazivid);
+        $this->db->order_by('id');
+        $query    = $this->db->get();
+        return $query->result();
+    }
+
+    public function smeni_p(){
+
+        $this->db->select('id, cena');
+        $this->db->from('spec_kon_prev_zz');
+        $ceni = $this->db->get();
+        if($ceni->num_rows()>0){
+            foreach ($ceni->result_array() as $row) {
+                switch (true){
+                    case ($row['cena'] <= 100):
+                        $nova=0;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case($row['cena'] >= 101 && $row['cena'] <= 300):
+                        $nova = 20;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= 301 && $row['cena'] <= 500):
+
+                        $nova = 40;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case($row['cena'] >= 501 && $row['cena'] <= 700):
+
+                        $nova = 60;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= 701 && $row['cena'] <= 1000):
+
+                        $nova = 80;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= '1,001' && $row['cena'] <= '2,000'):
+
+                        $nova = 150;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= '2,001' && $row['cena'] <= '3,000'):
+
+                        $nova = 250;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case(floatval($row['cena']) >= 3001 && floatval($row['cena']) <= 4000):
+                        $nova = 350;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case(floatval($row['cena']) >= 4001 && floatval($row['cena']) <= 5000):
+
+
+                        $nova = 450;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case(floatval($row['cena']) >= 5001 && floatval($row['cena']) <= 6000):
+
+                        $nova = 550;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case(floatval($row['cena']) >= 6001 && floatval($row['cena']) <= 8000):
+
+                        $nova = 700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case(floatval($row['cena']) >= 8001 && floatval($row['cena']) <= 10000):
+
+                        $nova = 900;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case(floatval($row['cena']) >= 10001 && floatval($row['cena']) <= 15000):
+
+                        $nova = 1250;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case(floatval($row['cena']) >= 15001 && floatval($row['cena']) <= 20000):
+                        $nova = 1700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 20001 && floatval($row['cena']) <= 25000):
+                        $nova = 2200;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 25001 && floatval($row['cena']) <= 30000):
+                        $nova = 2700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 30001 && floatval($row['cena']) <= 35000):
+                        $nova = 3200;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 35001 && floatval($row['cena']) <= 40000):
+                        $nova = 3700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 40001 && floatval($row['cena']) <= 45000):
+                        $nova = 4200;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 45001 && floatval($row['cena']) <= 50000):
+                        $nova = 4700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 50001 && floatval($row['cena']) <= 55000):
+                        $nova = 5200;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) >= 55001 && floatval($row['cena']) <= 60000):
+                        $nova = 5700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case(floatval($row['cena']) > 60000):
+                        $nova = 6000;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                }
+            }
+        }
+
+    }
+    public function update_cena($id, $nova){
+        $pole=array(
+            'participacija'=>$nova
+        );
+
+        $this->db->where('id', $id);
+        $this->db->update('spec_kon_prev_zz', $pole);
+    }
+
+}

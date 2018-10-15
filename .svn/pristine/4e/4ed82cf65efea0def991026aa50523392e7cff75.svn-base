@@ -1,0 +1,125 @@
+<div class="vlez-form matvlezform matintizlezform">
+    <?php if (bis_check_access('materijalno_vlez_izlez_interni_interna_ispratnica_button')): ?>
+    <div class="buttoncontainer">
+        <button type="button" class="button" onclick="mat_interna_ispratnica_nova()"><span>Интерна испратница</span></button>
+    </div>
+        <?php endif ?>
+    <div class="filterformmat">
+        <span>Магацин од:</span>
+        <select name="magacin_id" class="magacin_id searchinterni">
+            <option value="0">Сите</option>
+            <?php foreach ($magacini as $magacin) { ?>
+                <option value="<?php echo $magacin->id ?>"><?php echo $magacin->ime ?></option>
+            <?php } ?>
+        </select>
+    </div>
+    <div class="filterformmat">
+        <span>Магацин во:</span>
+        <select name="magacin_id" class="klient searchinterni">
+            <option value="0">Сите</option>
+            <?php foreach ($magacini as $magacin) { ?>
+            <option value="<?php echo $magacin->id ?>"><?php echo $magacin->ime ?></option>
+            <?php } ?>
+        </select>
+    </div>
+    <div class="tabela">
+        <p class="naslovinterniispratnici" > ( <span class="vkupnostavki">0</span> )  Испратници</p>
+        <div class="predtabela">
+            <table class="internaroba">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th class="broj">Број</th>
+                    <th class="datum">Датум</th>
+                    <th class="magacin_od">Магацин од</th>
+                    <th class="magacin_vo">Магацин во</th>
+                    <th class="faktura">Фактура</th>
+                    <th class="zabeleska">Забелешка</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+     <!--   <button type="button" class="pecatikartica print"><span>Печати</span></button> -->
+        <?php if (bis_check_access('materijalno_vlez_izlez_interni_interna_pecati_ispratnici_button')): ?>
+        <a href="" target="_blank" class="cmd-printlink-interni">
+            <button type="button" class="pecatikartica print"><span>Печати</span></button>
+        </a>
+            <?php endif ?>
+    </div>
+    <div class="stavkadetail">
+        <p class="naslovinternidetali naslov" > ( <span class="vkupnostavki">0</span> ) Ставки во документот - детално</p>
+        <div class="predtabela">
+            <table class="tstavkadetail matintizlezstavki" border="1" cellpadding="2">
+                <thead>
+                <tr>
+                    <th>Бр.</th>
+                    <th>Шифра</th>
+<!--                    <th>Кат. Број</th>-->
+                    <th>Ставка</th>
+                    <th>Кол</th>
+                    <th>ЕМ</th>
+                    <th>Гарантен рок</th>
+                    <th>Употребливо до</th>
+                    <th>Сер. Бр.</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <?php if (bis_check_access('materijalno_vlez_izlez_interni_interna_pecati_stavki_button')): ?>
+        <a href="" target="_blank" class="cmd-printlink-int-stavki">
+            <button type="button" class="pecatikartica print"><span>Печати</span></button>
+        </a>
+            <?php endif ?>
+    </div>
+</div>
+
+<script>
+    jQuery(document).ready(function () {
+        var ispratnicataID;
+        jQuery('.magacin_id.searchinterni').combobox();
+        jQuery('.klient.searchinterni').combobox();
+        jQuery("table.izleznaroba").tablesorter();
+        jQuery("table.matstavki").tablesorter();
+        mat_interni_popolnilista();
+
+        jQuery('.internaroba tbody tr').live("dblclick", function () {
+            mat_izlez_izmeni(jQuery(this).attr("ispratnica_id"));
+        });
+        jQuery('.internaroba tbody tr .edit-tr').live("click", function () {
+            var ispratnica = jQuery(this).parent().parent().attr("ispratnica_id");
+            var priemnica = jQuery(this).parent().parent().attr("priemnica_id");
+            mat_interni_izmeni(ispratnica, priemnica);
+        });
+        jQuery('.internaroba tbody tr').live("click", function () {
+            jQuery('.internaroba tbody tr').removeClass("active");
+            jQuery(this).addClass("active");
+            ispratnicataID = jQuery(this).attr("ispratnica_id"); // ID
+            mat_interni_popolnilista_artikli_podokument(jQuery(this).attr("ispratnica_id"),".tstavkadetail.matintizlezstavki");
+        });
+        jQuery('.searchinterni').live('change', function () {
+            var magacinid = jQuery('.magacin_id.searchinterni option:selected').val();
+            var klientid = jQuery('.klient.searchinterni option:selected').val();
+           // var pogledid = jQuery('.pogled.searchinterni option:selected').val();
+            mat_interni_popolnilista(klientid, magacinid);
+        });
+        jQuery(".cmd-printlink-interni").click(function(){
+            var magacinid = jQuery('.magacin_id.searchinterni option:selected').val();
+            jQuery(".cmd-printlink-interni").attr("href","/index.php/print/pdf?view=/index.php/materijalno/interni/pecati_site_interni&magacinid="+ magacinid + "&klientid=0"  + "&pogledid=0");
+        });
+        jQuery(".cmd-printlink-int-stavki").click(function(){
+            var magacinid = jQuery('.magacin_id.searchinterni option:selected').val();
+            var klientid = $('.klient.searchinterni option:selected').val();
+            if(ispratnicataID>0){
+                jQuery(".cmd-printlink-int-stavki").attr("href","/index.php/print/pdf?view=/index.php/materijalno/interni/print_stavki_InInternaIspratnica&magacinid="+ magacinid + "&klientid=" + klientid + "&id=" + ispratnicataID);
+            }else{
+                alert("Ве молиме изберете интерна испратница");
+                return false;
+            }
+        });
+    });
+</script>

@@ -1,0 +1,113 @@
+function nov(formurl,title)
+{
+    jQuery.ajax({
+        url:formurl,
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery("." + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                modal:true,
+                title:title,
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+}
+
+function popolni_lista(formurl,table_class,items)
+{
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data: {},
+        dataType:'json',
+        success:function (response) {
+            var tables = "";
+            for (x in table_class)
+            { tables = tables + table_class[x] + " ";
+            }
+            tables = tables + "tbody";
+
+            jQuery(tables).html('');
+            jQuery.each(response, function (index, item) {
+                row_data="";
+                for (x in items) {
+                    row_data= row_data + "'<td>"+ item[items[x]]+" </td>'";
+                }
+                jQuery(tables).append('<tr id ="' + item.id + '" >'  +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>'+
+                    '</td>'+
+                    '<td>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>'+
+                    '</td>'+
+                    row_data+
+                    '</tr>');
+            });
+            jQuery(tables).trigger("update");
+        }
+    });
+
+}
+
+function izmeni(id,formurl,title)
+{
+    var data = {  id:id  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:title,
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+
+}
+
+function brisi(id,title,formurl,lista_na)
+{
+    var r=confirm(title);
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var data = {  id:id  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                   eval(lista_na+'_popolnilista()');
+                }
+            });
+
+        }
+    }
+
+}

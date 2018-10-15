@@ -1,0 +1,73 @@
+<?php
+
+    /**
+     * Class Vlezni_fakturi_model
+     */
+    class Javni_nabavki_model extends CI_Model
+{
+        public function create_dogovor()
+                    {
+
+            $insert_data=array(
+              'broj_tender'=>$this->input->post('broj_tender'),
+               'datum_tender'=>$this->input->post('datum_tender'),
+                'vid_postapka'=>$this->input->post('vid_postapka'),
+                'broj_dogovor'=>$this->input->post('broj_dogovor'),
+                'datum_sklucuvanje_dogovor'=>$this->input->post('datum_sklucuvanje_dogovor'),
+                'datum_istekuvanje_dogovor'=>$this->input->post('datum_istekuvanje_dogovor'),
+                 'klient'=>$this->input->post('klient'),
+                'zabeleska'=>$this->input->post('zabeleska')
+
+
+            );
+            $insert = $this->db->insert('dogovor', $insert_data);
+            if ($insert) $id = $this->db->insert_id();
+            else $id = false;
+            $stavka = $this->input->post('stavka');
+       foreach ($stavka as $index => $value) {
+          $new_stavka = $this->input->post('stavka');
+           $new_sifra = $this->input->post('sifra');
+           $new_cena = $this->input->post('bezddv');
+           $new_cenaddv = $this->input->post('soddv');
+          $new_kolicina = $this->input->post('kolicina');
+           $new_ddv = $this->input->post('ddvid');
+
+           $new_edmerka = $this->input->post('edmerkaid');
+            $new_koeficient = $this->input->post('koeficient');
+          $new_tipstavka = $this->input->post('tipstavka');
+       $detali_data = array(
+        'dogovor_id' => $id,
+       'artikl_id' => $new_sifra[$index],
+       'stavka' => $new_stavka[$index],
+       'cena' => $new_cena[$index],
+       'cena_ddv' => ($new_cena[$index] * $new_kolicina[$index] * $new_ddv[$index]) / 100 + ($new_cena[$index] * $new_kolicina[$index]),
+       'kolicina' => $new_kolicina[$index],
+        'edinica_merka' => $new_edmerka[$index],
+       'koeficient' => $new_koeficient[$index],
+       'tip_stavka' => $new_tipstavka[$index],
+       'ddv' => $new_ddv[$index],
+
+       'firma_id' => $this->input->post('klient')
+      );
+
+   $detali = $this->db->insert('dogovor_detali', $detali_data);
+       }
+     if($detali){
+       return 1;
+     }
+      else return false;
+
+    }
+        public function getDogovori(){
+            $this->db->select('dogovor.*, firma.ime as klient') ;
+            $this->db->from('dogovor');
+            $this->db->join('firma','dogovor.klient=firma.firmaID');
+            $query=$this->db->get();
+            if($query->num_rows() > 0){
+                $result= $query->result();
+                return $result;
+            }
+            else return false;
+        }
+    }
+    ?>

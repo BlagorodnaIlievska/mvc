@@ -1,0 +1,252 @@
+<div class="raspored_planiranje_smeni">
+    <form class="raspored-planiranje-aktivnosti-forma">
+    <div class="raspored-parametri">
+        <div class="raspored-vraboteni">
+            <span class="span-vraboteni">Избери вработен: </span>
+            <select class="vraboteni parametar-raspored" name="user_id">
+                <option value="0"></option>
+                <?php foreach($vraboteni as $vraboten){ ?>
+                    <option value="<?= $vraboten->id; ?>"><?= $vraboten->ime." ".$vraboten->prezime; ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <div class="raspored-datum">
+            <span>Датум:</span>
+            <input type="text" class="datum parametar-raspored" />
+            <span class="previous"><img width="15" height="15" alt="" src="/images/prev.png"></span>
+            <span class="next"><img width="15" height="15" alt="" src="/images/next.png"></span>
+        </div>
+    </div>
+    <div class="raspored-prikaz">
+        <div class="raspored-smena">
+            <span class="span-raspored-smena">Смена</span>
+            <select class="izbor_smena" name="">
+                <option value=""></option>
+                <option value="0">Слободен</option>
+                <option value="1">С1</option>
+                <option value="2">С2</option>
+                <option value="3">С3</option>
+                <option value="4">Д1</option>
+                <option value="5">Д2</option>
+                <option value="6">Одмор</option>
+            </select>
+            <input type="hidden" class="smenska_mapa_id" name="smenska_mapa_id" />
+            <input type="hidden" class="datum_aktivnost" name="datum_aktivnost" />
+            <input type="hidden" class="month" name="month" />
+            <input type="hidden" class="year" name="year" />
+        </div>
+        <div class="container-tabela-aktivnosti">
+            <p class="naslov-raspored" > ( <span class="vkupnostavki">0</span> ) <span class="status">Активности</span></p>
+            <div class="predtabela">
+                <table class="tabela-raspored-aktivnosti">
+                    <thead>
+                    <th class="delete"></th>
+                    <th class="redenbroj">Р.Б</th>
+                    <th class="vreme-od">Време од</th>
+                    <th class="vreme-do">Време до</th>
+                    <th class="aktivnost">Активност</th>
+                    <th class="mesto">Место</th>
+                    <th class="pacient">Пациент</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="raspored-zacuvaj-podatoci">
+        <button type="button" class="button snimi-planiranje-podatoci"><span>Зачувај</span></button>
+    </div>
+    </form>
+</div>
+<script>
+    function aktivnost_pacient_option_values(){
+        return ''+ '<option value=""></option>' +
+            '<?php foreach($pacienti as $pacient) { echo '<option value="'.$pacient->id.'">'.$pacient->ime." ".$pacient->prezime. ' </option>'; } ?>';
+    }
+    function dodadi_nov_red_aktivnost(){
+        var redovi = jQuery(".raspored_planiranje_smeni .tabela-raspored-aktivnosti tbody tr").length;
+        redovi = 1*redovi + 1*1;
+        jQuery(".raspored_planiranje_smeni .tabela-raspored-aktivnosti tbody").append('<tr>' +
+            '<td class="delete_aktivnost">' + '<a class="delete" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' + '</td>' +
+            '<td class="redenbroj">' + redovi + '</td>' +
+            '<td class="vreme"><input type="text" class="vreme" name="aktivnosti['+redovi+'][vreme]" value="" /></td>' +
+            '<td class="vreme_do"><input type="text" class="vreme_do" name="aktivnosti['+redovi+'][vreme_do]" value="" /></td>' +
+            '<td class="aktivnost"><input type="text" class="aktivnost" name="aktivnosti['+redovi+'][aktivnost]" value="" /></td>' +
+            '<td class="mesto"><input type="text" class="mesto" name="aktivnosti['+redovi+'][mesto]" value="" /></td>' +
+            '<td class="pacient_id"><select class="pacient_id pacient_dropdown" name="aktivnosti['+redovi+'][pacient_id]" >'+aktivnost_pacient_option_values()+'</select></td>' +
+            '<td class="status hide"><input type="hidden" class="status" name="aktivnosti[' + redovi + '][status]" value="0" /></td>' +
+            '</tr>');
+        jQuery('[name="aktivnosti[' + redovi + '][pacient_id]"]').combobox();
+    }
+
+jQuery(document).ready(function() {
+    jQuery(".vraboteni.parametar-raspored").combobox();
+    jQuery(".datum.parametar-raspored").datepicker({dateFormat:'dd-mm-yy'});
+    jQuery(".datum.parametar-raspored").datepicker('setDate', new Date());
+
+    jQuery(".parametar-raspored").change(function(){
+        var vraboten_id = jQuery(".raspored_planiranje_smeni .vraboteni").val();
+        var datum = jQuery(".raspored_planiranje_smeni .datum").val();
+        if(vraboten_id>0 && datum.length>0) {
+            zapisi_podatoci_raspored_vraboteni(vraboten_id, datum);
+        }
+    });
+    jQuery(".raspored_planiranje_smeni .previous").click(function(){
+        var vraboten_id = jQuery(".raspored_planiranje_smeni .vraboteni").val();
+        var datum = jQuery(".raspored_planiranje_smeni .datum").val();
+
+        var previous_day = get_previous_day(datum);
+        jQuery('.datum.parametar-raspored').datepicker('setDate', previous_day);
+
+        if(vraboten_id>0 && datum.length>0) {
+            zapisi_podatoci_raspored_vraboteni(vraboten_id, previous_day);
+        }
+    });
+    jQuery(".raspored_planiranje_smeni .next").click(function(){
+        var vraboten_id = jQuery(".raspored_planiranje_smeni .vraboteni").val();
+        var datum = jQuery(".raspored_planiranje_smeni .datum").val();
+
+        var next_day = get_next_day(datum);
+        jQuery('.datum.parametar-raspored').datepicker('setDate', next_day);
+
+        if(vraboten_id>0 && datum.length>0) {
+            zapisi_podatoci_raspored_vraboteni(vraboten_id, next_day);
+        }
+    });
+
+//    var smena_id = jQuery(".raspored_planiranje_smeni .izbor_smena option:selected").val();
+//    if(smena_id != 0 && smena_id != 6) {
+//        jQuery(".container-tabela-aktivnosti").show();
+//        dodadi_nov_red_aktivnost();
+//    }
+//    else jQuery(".container-tabela-aktivnosti").hide();
+//    jQuery(".raspored_planiranje_smeni .izbor_smena").change(function () {
+//        var smena = jQuery(".raspored_planiranje_smeni .izbor_smena option:selected").val();
+//        var broj_aktivnosti = jQuery(".tabela-raspored-aktivnosti tbody tr").length;
+//        if(smena != 0 && smena != 6){
+//            jQuery(".container-tabela-aktivnosti").show();
+//            jQuery(".snimi-planiranje-podatoci").show();
+//            if(broj_aktivnosti == 0) dodadi_nov_red_aktivnost();
+//        } else if(smena == 0 && broj_aktivnosti>0){
+//            jQuery(".snimi-planiranje-podatoci").hide();
+//            alert("Избришете ги сите закажани активности за да зачувате!!!");
+//        } else if(smena == 6 && broj_aktivnosti>0){
+//            jQuery(".snimi-planiranje-podatoci").hide();
+//            alert("Избришете ги сите закажани активности за да зачувате!!!");
+//        }
+//    });
+
+    jQuery(".tabela-raspored-aktivnosti tbody tr .delete").live("click", function () {
+        var row = jQuery(this).closest("tr");
+        var aktivnost_id = row.attr("aktivnost_id");
+        if(aktivnost_id) delete_planiranje_aktivnost(aktivnost_id, row);
+    });
+    jQuery(".tabela-raspored-aktivnosti tbody tr :input").live("blur", function () {
+        var row = jQuery(this).closest("tr");
+        if(row.is(":last-child")) dodadi_nov_red_aktivnost();
+    });
+    jQuery(".raspored_planiranje_smeni .snimi-planiranje-podatoci").click(function () {
+        var ovakopce = jQuery(this);
+//        ovakopce.attr("disabled", "disabled");
+        if(proveri_smena_nov_datum() == 0) return alert("Изберете смена !!!");
+        jQuery(".tabela-raspored-aktivnosti tbody tr:last").remove();
+        if(jQuery(".tabela-raspored-aktivnosti tbody tr").length > 0)
+        {
+            var table_class = "tabela-raspored-aktivnosti";
+
+            jQuery.when(proveri_tabela_podatoci(table_class)).done(function(data){
+                if(data == 0) alert("Мора да ги пополните сите полиња!!!");
+                else zacuvaj_planiranje_den(ovakopce);
+            });
+        }
+        else
+        {
+            alert("Внесете активност !!!")
+            dodadi_nov_red_aktivnost();
+        }
+    });
+
+    jQuery(".tabela-raspored-aktivnosti tbody tr td input.vreme").live("blur", function () {
+        var elem = jQuery(this);
+        var row = elem.closest("tr");
+        var ova_vreme = elem.val();
+        jQuery.when(proveri_format_vreme(ova_vreme)).done(function(data){
+            if(data == false) alert("Ве молиме внесете време во HH:MM формат!!!");
+            else{
+//                if(proveri_period_vreme_od_do(row) == false) {
+//                    elem.val('');
+//                    alert("Грешка при внесување на период од-до!!!");
+//                }
+                if(proveri_period_vreme_prethodno(row) == false) {
+                    elem.val('');
+                    alert("имате закажано активност во овој период!!!");
+                }
+            }
+        });
+    });
+
+    jQuery(".tabela-raspored-aktivnosti tbody tr td input.vreme_do").live("blur", function () {
+        var elem = jQuery(this);
+        var row = elem.closest("tr");
+        var ova_vreme = elem.val();
+        jQuery.when(proveri_format_vreme(ova_vreme)).done(function(data){
+            if(data == false) {
+                elem.val('');
+                alert("Ве молиме внесете време во HH:MM формат!!!");
+            }
+            else{
+                if(proveri_period_vreme_od_do(row) == false) {
+                    elem.val('');
+                    alert("Грешка при внесување на период од-до!!!");
+                }
+            }
+        });
+    });
+});
+
+    function proveri_period_vreme_prethodno(row)
+    {
+        var row_prev = row.prev();
+        if(row_prev[0])
+        {
+            var current_vreme_od = row.find("input.vreme").val();
+            var vreme_od = row_prev.find("input.vreme").val();
+            var vreme_do = row_prev.find("input.vreme_do").val();
+
+            current_vreme_od = current_vreme_od.split(":");
+            var current_vreme_start = current_vreme_od.join("");
+
+            vreme_od = vreme_od.split(":");
+            var vreme_start = vreme_od.join("");
+
+            vreme_do= vreme_do.split(":");
+            var vreme_end = vreme_do.join("");
+
+            if(current_vreme_start >= vreme_start && current_vreme_start <= vreme_end) return false;
+            else return true;
+        }
+        return true;
+    }
+    function proveri_format_vreme(vreme)
+    {
+        var hour = '^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$';
+
+        if ($.trim(vreme).match(hour) == null) return false;
+        else return true;
+    }
+    function proveri_period_vreme_od_do(row)
+    {
+        var vreme_od = row.find("input.vreme").val();
+        var vreme_do = row.find("input.vreme_do").val();
+
+        vreme_od = vreme_od.split(":");
+        vreme_od = vreme_od.join("");
+
+        vreme_do = vreme_do.split(":");
+        vreme_do = vreme_do.join("");
+
+        if(vreme_od >= vreme_do) return false;
+        else return true;
+    }
+</script>

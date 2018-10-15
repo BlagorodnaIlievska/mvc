@@ -1,0 +1,43 @@
+<div class="uloga-glavnalista">
+    <div class="ulogalista">
+        <?php if (bis_check_access('sistemsko_podesuvanje_korisnici_rabotna_grupa_nova_rabotna_grupa_button')): ?>
+            <div class="buttoncontainer">
+                <button class="button" onclick="uloga_nova()">Нова работна група</button>
+            </div>
+            <?php endif ?>
+        <div class="predtabela">
+            <table class="tabela-ulogalista">
+                <thead>
+                <tr>
+                    <th width='25'></th>
+                    <th> Име</th>
+
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        uloga_popolnilista();
+        jQuery(".tabela-ulogalista").tablesorter();
+
+        jQuery(".tabela-ulogalista tbody tr").live('click', function () {
+            jQuery(".tabela-ulogalista tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+
+        });
+        jQuery(".tabela-ulogalista .edit-tr").live('click', function () {
+            uloga_izmeni(jQuery(this).parent().parent().attr('uloga_id'));
+        });
+        jQuery(".tabela-ulogalista .delete-tr").live('click', function () {
+            uloga_delete(jQuery(this).parent().parent().attr('uloga_id'));
+        });
+
+    });
+</script>

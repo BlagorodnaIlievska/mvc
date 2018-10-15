@@ -1,0 +1,185 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+
+
+class Fin_grupi extends CI_Controller{
+
+
+
+    function __construct()
+
+    {
+
+        parent::__construct();
+
+        //$this->is_logged_in();
+
+    }
+
+
+
+    public function new_tip()
+
+    {
+
+         $this->load->model('podatoci/fin_grupi_model');
+
+        // $data['roles'] = $this->membership_model->get_roles_dropdown();
+
+        $data['grupa']=$this->fin_grupi_model->get_grupa_dropdown();
+
+        $this->load->view('podatoci/fin_grupi/tip_form', $data);
+
+    }
+
+
+
+    public function create_tip()
+
+    {
+
+        $this->load->library('form_validation');
+
+        $this->form_validation->set_rules('tipIme', 'Ime na tip', 'trim|required');
+
+
+
+        if($this->form_validation->run() == FALSE)
+
+        {
+
+            $this->new_tip();
+
+        }
+
+        else
+
+        {
+
+            $this->load->model('podatoci/fin_grupi_model');
+
+            if($query = $this->fin_grupi_model->create_tip())
+
+            {
+
+                $data['main_content'] = 'podatoci/fin_grupi/tip_successful';
+
+                $this->load->view('includes/template', $data);
+
+            }
+
+            else
+
+            {
+
+                $this->load->view('podatoci/fin_grupi/tip_form');
+
+            }
+
+        }
+
+    }
+
+
+
+    public function view_tip()
+    {
+        $this->load->model('podatoci/fin_grupi_model');
+        $query = $this->fin_grupi_model->getAll();
+        $data['tip'] = $query;
+        $this->load->view('podatoci/fin_grupi/edit_tip_form', $data);
+    }
+
+public function getAll(){
+    $this->load->model('podatoci/fin_grupi_model');
+    $query = $this->fin_grupi_model->getAll();
+    echo json_encode($query);
+}
+
+    public function delete_tip(){
+
+        $this->load->model('podatoci/fin_grupi_model');
+
+        $this->fin_grupi_model->delete_tip();
+
+        $this->view_tip();
+
+    }
+
+
+
+    public function edit_tip(){
+
+        $this->load->model('podatoci/fin_grupi_model');
+
+        $query = $this->fin_grupi_model->edit_tip();
+
+
+        $data['main_content'] = 'podatoci/fin_grupi/update_tip_form';
+
+        $data['tip'] = $query;
+        $data['grupa']=$this->fin_grupi_model->get_grupa_dropdown();
+
+        $this->load->view('includes/template', $data);
+
+        $this->view_tip();
+
+    }
+
+
+
+    public function update_tip(){
+
+
+
+        $this->load->model('podatoci/fin_grupi_model');
+
+        $query = $this->fin_grupi_model->update_tip();
+
+
+//print_r($query); die();
+        if($query)
+
+        {
+
+            echo "Field updated successfully";
+
+        }
+
+        else
+
+        {
+
+            echo "No row was found ... Please try again.";
+
+        }
+
+        $this->view_tip();
+
+    }
+
+
+
+    public function is_logged_in()
+
+    {
+
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+
+        {
+
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+
+            die();
+
+        }
+
+    }
+
+
+
+}

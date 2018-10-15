@@ -1,0 +1,1266 @@
+<?php
+
+class Plati_model extends CI_Model
+{
+
+    public function getSindikati()
+    {
+        $query = $this->db->get('bis_sindikati');
+        return $query->result();
+    }
+
+
+    public function getSindikat($id)
+    {
+        $this->db->where("id", $id);
+        $query = $this->db->get('bis_sindikati');
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_sindikat()
+    {
+        $insert_data = $this->input->post();
+        $insert      = $this->db->insert('bis_sindikati', $insert_data);
+        return $insert;
+    }
+
+
+    public function delete_sindikat($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_sindikati');
+    }
+
+    public function update_sindikat()
+    {
+        $field_update_data =	$this->input->post();
+        $this->db->where('id',$field_update_data['id']);
+        $this->db->update('bis_sindikati', $field_update_data);
+    }
+
+    public function proveriPlata()
+    {
+        $mesec = $this->input->post("mesec");
+        $godina = $this->input->post("godina");
+        $this->db->from("plata");
+        $this->db->where("mesec", $mesec);
+        $this->db->where("godina", $godina);
+        $query = $this->db->get();
+
+        if ($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return 1;
+        }
+        else return 0;
+    }
+
+    public function getVraboteniPlata($filter = '')
+    {
+        $mesec = $this->input->post("mesec");
+        $godina = $this->input->post("godina");
+//        $limit = $this->input->post("limit");
+        if (is_array($filter))
+        {
+            foreach ($filter as $key => $val)
+            {
+                if ($val == "") unset($filter[$key]);
+            }
+            $this->db->order_by('covecki_resursi_id');
+            $query = $this->db->get_where("plata", $filter);
+//            $query = $this->db->get_where("plata", $filter, $limit);
+        }
+        else
+        {
+            $this->db->select("
+                        plata.*,
+                        covecki_resursi.id as vrabotenID,
+                        covecki_resursi.ime as ime,
+                        covecki_resursi.prezime as prezime,
+                        covecki_resursi.embg as embg
+                    ");
+            $this->db->from("plata");
+            $this->db->join("covecki_resursi", "plata.covecki_resursi_id = covecki_resursi.id");
+            $this->db->where("mesec",$mesec);
+            $this->db->where("godina",$godina);
+            $this->db->order_by('plata.covecki_resursi_id');
+//            $this->db->limit($limit);
+            $query = $this->db->get();
+        }
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+    }
+
+    public function getPlataDef()
+    {
+        $this->db->from("plata_def");
+        $this->db->limit(1);
+        $query = $this->db->get();
+
+        if ($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result[0];
+        }
+    }
+    public function pridones_za_pio(){
+        $this->db->select('*');
+        $this->db->from('bis_pridonesi');
+        $this->db->where('id',1);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            $result=$query->result();
+        }
+        return $result[0]->stapka;
+
+    }
+    public function pridones_zdravstvo(){
+        $this->db->select('*');
+        $this->db->from('bis_pridonesi');
+        $this->db->where('id',3);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            $result=$query->result();
+        }
+        return $result[0]->stapka;
+
+    }
+    public function pridones_za_vrabotuvanje(){
+        $this->db->select('*');
+        $this->db->from('bis_pridonesi');
+        $this->db->where('id',4);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            $result=$query->result();
+        }
+        return $result[0]->stapka;
+
+    }
+    public function pridones_dopolnitelno_zdravstveno(){
+        $this->db->select('*');
+        $this->db->from('bis_pridonesi');
+        $this->db->where('id',5);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            $result=$query->result();
+        }
+        return $result[0]->stapka;
+
+    }
+    public function personalen_danok(){
+        $this->db->select('*');
+        $this->db->from('bis_pridonesi');
+        $this->db->where('id',6);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            $result=$query->result();
+        }
+        return $result[0]->stapka;
+
+    }
+    public function licno_osloboduvanje(){
+        $this->db->select('*');
+        $this->db->from('bis_pridonesi');
+        $this->db->where('id',7);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            $result=$query->result();
+        }
+        return $result[0]->stapka;
+
+    }
+    public function presmetajPlata()
+    {
+        $mesec = $this->input->post("mesec");
+        $godina = $this->input->post("godina");
+        $this->db->from("bis_vraboteni_mesecni_promeni");
+        $this->db->where("mesec", $mesec);
+        $this->db->where("godina", $godina);
+//        $this->db->limit(5);
+        $query = $this->db->get();
+
+
+        if ($query->num_rows > 0)
+        {
+            $vraboteni = $query->result();
+            $plata_def = $this->getPlataDef();
+            $max_casovi=$this->getEfektivniCasovi($mesec,$godina);
+            $parametri=$this->getParametriZaMesec($mesec,$godina);
+
+
+          //  $pridonesPio = $plata_def->pridones_za_pio;
+            $pridonesPio = $this->pridones_za_pio();
+          //  $pridonesZdravstvo = $plata_def->pridones_za_zdravstvo;
+            $pridonesZdravstvo = $this->pridones_zdravstvo();
+            //$pridonesVrabotuvanje = $plata_def->pridones_za_vrabotuvanje;
+            $pridonesVrabotuvanje = $this->pridones_za_vrabotuvanje();
+
+          //  $pridonesDopZdravstvo = $plata_def->dop_pridones_za_zdravstvo;
+
+            $pridonesDopZdravstvo = $this->pridones_dopolnitelno_zdravstveno();
+         //   $licnoOsloboduvanje = $plata_def->licno_osloboduvanje;
+//            $licnoOsloboduvanje = 0;
+            $licnoOsloboduvanje = $this->licno_osloboduvanje();
+          //  $personalenDND = $plata_def->personalen_dnd;
+            $personalenDND = $this->personalen_danok();
+            foreach ($vraboteni as $key => $row)
+            {
+                $sindikat=0;
+
+//                $bruto = $row->bruto_plata;
+                $bruto_data = $this->presmetajBrutoPlataVraboten($row->vraboten_id, $mesec, $godina);
+                $zadrski_data=$this->presmetajZadrskiPlataVraboten_vo_pole($row->vraboten_id,$mesec,$godina);
+                $bruto = $bruto_data['bruto_plata'];
+                $efektivni_casovi=$row->boleduvanje_1_70+$row->boleduvanje_2_80 + $row->boleduvanje_3_90 +  $row->efektivno_rabotno_vreme;
+                if($bruto !=0){
+
+
+                $efektivno_rabotno_vreme = $bruto_data['efektivno_rabotno_vreme'];
+                $minat_trud = $bruto_data['minat_trud'];
+                $dodatok=$bruto_data['dodatok'];
+                $dezurstvo_1=$bruto_data['dezurstvo_1'];
+                $drzavni_praznici=$bruto_data['drzavni_praznici'];
+                $boleduvanje_1=$bruto_data['boleduvanje_1'];
+                $boleduvanje_2=$bruto_data['boleduvanje_2'];
+                $boleduvanje_3=$bruto_data['boleduvanje_3'];
+                $nokna_rabota=$bruto_data['nokna_rabota'];
+                $slozenost=$bruto_data['slozenost'];
+                $uslovi=$bruto_data['uslovi'];
+                $rakovodenje=$bruto_data['rakovodenje'];
+
+                $zadrski = $this->presmetajZadrskiPlataVraboten($row->vraboten_id, $mesec, $godina);
+                $krediti=$this->getKreditiVrabotenUpdate($row->vraboten_id);
+
+                if(is_array($krediti))
+                {
+                    foreach($krediti as $k=>$r)
+                    {
+                        if($r->ostanati_rati !=0)
+                        {
+
+                            $pole=array('ostanati_rati'=>$r->ostanati_rati - 1, 'ostatok_isplata'=>$r->ostatok_isplata-$r->iznos_rata,
+                                'isplateni_rati'=>$r->isplateni_rati+1, 'isplaten_iznos'=>$r->isplaten_iznos + $r->iznos_rata);
+                            $this->db->where('id',$r->id);
+                            $this->db->update('bis_krediti',$pole);
+                        }
+                    }
+                }
+                $krediti2=$this->getKreditiVrabotenUpdate($row->vraboten_id);
+                if(is_array($krediti2))
+                {
+                    foreach($krediti2 as $kredit2)
+                    {
+                        if($kredit2->ostanati_rati==0)
+                        {
+                            $pole2=array('status_kredit'=> 1);
+                            $this->db->where('id',$kredit2->id);
+                            $this->db->update('bis_krediti',$pole2);
+                        }
+                    }
+                }
+                $sumaPridonesZaPio = $bruto - ($bruto - ($bruto / 100) * $pridonesPio);
+                $sumaPridonesZaZdravstvo = $bruto - ($bruto - ($bruto / 100) * $pridonesZdravstvo);
+                $sumaPridonesZaVrabotuvanje = $bruto - ($bruto - ($bruto / 100) * $pridonesVrabotuvanje);
+                $sumaDopPridonesZaZdravstvo = $bruto - ($bruto - ($bruto / 100) * $pridonesDopZdravstvo);
+                $vkupnoPridonesi =  $sumaPridonesZaPio + $sumaPridonesZaZdravstvo + $sumaPridonesZaVrabotuvanje + $sumaDopPridonesZaZdravstvo;
+
+                $sumaLicnoOsloboduvanje = ($licnoOsloboduvanje/$max_casovi)*$efektivni_casovi;
+                $sumaPersonalenDanok = (($bruto - ($vkupnoPridonesi + $sumaLicnoOsloboduvanje)) / 100) * $personalenDND;
+                $neto_plata_so_zadrski=$bruto - ($vkupnoPridonesi + $sumaPersonalenDanok);
+
+              if($this->dali_e_clen_na_sindikat($row->vraboten_id)==1) {
+                  $sindikat=($neto_plata_so_zadrski*($parametri->sindikalna_clanarina))/100;
+                  $zadrski=$zadrski+$sindikat;
+              }
+                $netoPlata = $bruto - ($vkupnoPridonesi + $sumaPersonalenDanok + $zadrski);
+
+                $data['mesec'] = $mesec;
+                $data['godina'] = $godina;
+                $data['bruto_plata'] = $bruto;
+                $data['iznos_efektivna_rabota'] = $efektivno_rabotno_vreme;
+                $data['iznos_minat_trud'] = $minat_trud;
+                $data['pridones_za_pio'] = $sumaPridonesZaPio;
+                $data['pridones_za_zdravstvo'] = $sumaPridonesZaZdravstvo;
+                $data['pridones_za_vrabotuvanje'] = $sumaPridonesZaVrabotuvanje;
+                $data['dop_pridones_za_zdravstvo'] = $sumaDopPridonesZaZdravstvo;
+                $data['vkupno_pridonesi'] = $vkupnoPridonesi;
+                $data['licno_osloboduvanje'] = $sumaLicnoOsloboduvanje;
+                $data['personalen_danok_na_dohod'] = $sumaPersonalenDanok;
+                $data['neto_plata'] = $netoPlata;
+                $data['neto_plata_so_zadrski']=$neto_plata_so_zadrski;
+                $data['zadrshka_od_plata'] = $zadrski;
+                $data['covecki_resursi_id'] = $row->vraboten_id;
+                $data['dodatok']=$dodatok;
+                $data['dezurstvo_1']=$dezurstvo_1;
+                $data['drzavni_praznici']=$drzavni_praznici;
+                $data['boleduvanje_1']=$boleduvanje_1;
+                $data['boleduvanje_2']=$boleduvanje_2;
+                $data['boleduvanje_3']=$boleduvanje_3;
+                $data['nokna_rabota']=$nokna_rabota;
+                $data['slozenost'] =$slozenost;
+                $data['uslovi']=$uslovi;
+                $data['rakovodenje']=$rakovodenje;
+                $data['sindikat'] =$sindikat;
+                $data['lek_komora']=$zadrski_data['lek_komora'];
+                $data['zadrska_telefon']=$zadrski_data['zadrska_telefon'];
+                $data['osiguruvanje']=$zadrski_data['osiguruvanje'];
+                $data['odbitok']=$zadrski_data['odbitok'];
+                $this->db->insert('plata', $data);
+                }
+                else {
+                    $data['mesec'] = $mesec;
+                    $data['godina'] = $godina;
+                    $data['bruto_plata'] = 0;
+                    $data['iznos_efektivna_rabota'] = 0;
+                    $data['iznos_minat_trud'] = 0;
+                    $data['pridones_za_pio'] = 0;
+                    $data['pridones_za_zdravstvo'] = 0;
+                    $data['pridones_za_vrabotuvanje'] = 0;
+                    $data['dop_pridones_za_zdravstvo'] = 0;
+                    $data['vkupno_pridonesi'] = 0;
+                    $data['licno_osloboduvanje'] = 0;
+                    $data['personalen_danok_na_dohod'] = 0;
+                    $data['neto_plata'] = 0;
+                    $data['neto_plata_so_zadrski']=0;
+                    $data['zadrshka_od_plata'] = 0;
+                    $data['covecki_resursi_id'] = $row->vraboten_id;
+                    $data['dodatok']=0;
+                    $data['dezurstvo_1']=0;
+                    $data['drzavni_praznici']=0;
+                    $data['boleduvanje_1']=0;
+                    $data['boleduvanje_2']=0;
+                    $data['boleduvanje_3']=0;
+                    $data['nokna_rabota']=0;
+                    $data['slozenost'] =0;
+                    $data['uslovi']=0;
+                    $data['rakovodenje']=0;
+                    $data['sindikat'] =0;
+                    $data['zadrska_telefon']=0;
+                    $data['lek_komora']=0;
+                    $data['osiguruvanje']=0;
+                    $data['odbitok']=0;
+                    $this->db->insert('plata', $data);
+                }
+            }
+            return true;
+        }
+        else return false;
+    }
+    public function getBrutoPlataVraboten($id)
+    {
+        $this->db->from("covecki_resursi");
+        $this->db->where("id", $id);
+        $this->db->limit(1);
+        $query = $this->db->get();
+
+        if ($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result[0]->bruto_plata;
+        }
+    }
+
+    public function presmetajBrutoPlataVraboten($id, $mesec, $godina)
+    {
+        $this->db->from("covecki_resursi");
+        $this->db->where("id", $id);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows == 1)
+        {
+            $result = $query->result();
+            $parametri=$this->getParametriZaMesec($mesec,$godina);
+            $mesecni_parametri = $this->getVrabotenMesecniPromeni($id, $mesec, $godina);
+
+            $nokna_rabota = 0; $drzavni_praznici = 0;  $dodatok=0;   $boleduvanje1=0;
+            $boleduvanje2=0; $boleduvanje3=0; $boleduvanje_nad_30=0; $dezurstvo_1=0;
+
+            $vrednost_na_bod = $this->getVrednostNaBod($mesec, $godina);
+            $slozenost = $result[0]->koef_slozenost * $vrednost_na_bod* ($mesecni_parametri->procent_na_ucinok/100);
+            $uslovi = $result[0]->koef_uslovi_na_rabota * $vrednost_na_bod;
+            $rakovodno_mesto = $result[0]->koef_rakovodno_mesto * $vrednost_na_bod;
+            $staz = $result[0]->koef_staz * $vrednost_na_bod;
+
+            $efektivno_rab_vreme = $slozenost + $uslovi + $rakovodno_mesto;
+            $efektivno_rab_vreme_i_staz= $efektivno_rab_vreme + $staz;
+            $vrednost_efektiven_cas = $efektivno_rab_vreme/$mesecni_parametri->vkupno_casovi;
+            $vrednost_efektiven_cas_none= $slozenost/$mesecni_parametri->vkupno_casovi;
+            if($mesecni_parametri->noken_trud > 0) $nokna_rabota = $vrednost_efektiven_cas_none*$mesecni_parametri->noken_trud*($parametri->noken_trud/100);
+            if($mesecni_parametri->drzavni_praznici > 0) $drzavni_praznici = $vrednost_efektiven_cas_none*$mesecni_parametri->drzavni_praznici*($parametri->drzavni_praznici/100);
+            if($mesecni_parametri->dezurstvo_1 > 0) $dezurstvo_1 = $vrednost_efektiven_cas_none*$mesecni_parametri->dezurstvo_1*($parametri->dezurstvo_1/100);
+            if($mesecni_parametri->dodatok_1 > 0) $dodatok=$mesecni_parametri->dodatok_1;
+            if($mesecni_parametri->boleduvanje_3_90 > 0)
+            {
+
+                $efektivno_rab_vreme=$vrednost_efektiven_cas *($mesecni_parametri->vkupno_casovi - $mesecni_parametri->boleduvanje_3_90);
+                $slozenost=($result[0]->koef_slozenost * $vrednost_na_bod/$mesecni_parametri->vkupno_casovi) * ($mesecni_parametri->vkupno_casovi - $mesecni_parametri->boleduvanje_3_90);
+                $staz=($result[0]->koef_staz * $vrednost_na_bod/$mesecni_parametri->vkupno_casovi) * ($mesecni_parametri->vkupno_casovi - $mesecni_parametri->boleduvanje_3_90);
+                $boleduvanje3 = ($efektivno_rab_vreme_i_staz/$mesecni_parametri->vkupno_casovi)*$mesecni_parametri->boleduvanje_3_90*($parametri->boleduvanje_3/100);
+
+
+            }
+            if($mesecni_parametri->boleduvanje_2_80 > 0)
+            {
+                $efektivno_rab_vreme=$vrednost_efektiven_cas *($mesecni_parametri->vkupno_casovi - $mesecni_parametri->boleduvanje_2_80);
+                $staz=($result[0]->koef_staz * $vrednost_na_bod/$mesecni_parametri->vkupno_casovi) * ($mesecni_parametri->vkupno_casovi - $mesecni_parametri->boleduvanje_2_80);
+                $slozenost=($result[0]->koef_slozenost * $vrednost_na_bod/$mesecni_parametri->vkupno_casovi) * ($mesecni_parametri->vkupno_casovi - $mesecni_parametri->boleduvanje_2_80);
+
+                $boleduvanje2 = ($efektivno_rab_vreme_i_staz/$mesecni_parametri->vkupno_casovi)* $mesecni_parametri->boleduvanje_2_80*($parametri->boleduvanje_2/100);
+            }
+            if($mesecni_parametri->boleduvanje_1_70 > 0)   {
+
+                $efektivno_rab_vreme=$vrednost_efektiven_cas *($mesecni_parametri->vkupno_casovi - $mesecni_parametri->boleduvanje_1_70);
+                $staz=($result[0]->koef_staz * $vrednost_na_bod/$mesecni_parametri->vkupno_casovi) * ($mesecni_parametri->vkupno_casovi - $mesecni_parametri->boleduvanje_1_70);
+                $slozenost=($result[0]->koef_slozenost * $vrednost_na_bod/$mesecni_parametri->vkupno_casovi) * ($mesecni_parametri->vkupno_casovi - $mesecni_parametri->boleduvanje_1_70);
+                $boleduvanje1 = ($efektivno_rab_vreme_i_staz/$mesecni_parametri->vkupno_casovi)* $mesecni_parametri->boleduvanje_1_70*($parametri->boleduvanje_1/100);
+            }
+
+            if($mesecni_parametri->boleduvanje_nad_30_denovi == $mesecni_parametri->vkupno_casovi)
+            {
+                $bruto_plata=0;
+                $efektivno_rab_vreme=0;
+                $staz=0;
+                $dodatok=0;
+            }
+            else if($mesecni_parametri->boleduvanje_nad_30_denovi > 0 && $mesecni_parametri->boleduvanje_nad_30_denovi < $mesecni_parametri->vkupno_casovi)
+            {
+                $efektivno_rab_vreme=0;
+                $staz=0;
+                $slozenost=0;
+                $dopolnitelni_primanja = $nokna_rabota + $drzavni_praznici + $dezurstvo_1 + $dodatok;
+                $bruto_plata =  $dopolnitelni_primanja + $boleduvanje1 +$boleduvanje2 +$boleduvanje3;
+            }
+            else if(empty($mesecni_parametri->boleduvanje_nad_30_denovi))
+            {
+                $dopolnitelni_primanja = $nokna_rabota + $drzavni_praznici + $dezurstvo_1 + $dodatok;
+                $bruto_plata = $efektivno_rab_vreme + $staz + $dopolnitelni_primanja + $boleduvanje1 +$boleduvanje2 +$boleduvanje3;
+            }
+
+            $data['bruto_plata'] = $bruto_plata;
+            $data['efektivno_rabotno_vreme'] = $efektivno_rab_vreme;
+            $data['minat_trud'] = $staz;
+            $data['dodatok']=$dodatok;
+            $data['dezurstvo_1']=$dezurstvo_1;
+            $data['drzavni_praznici']=$drzavni_praznici;
+            $data['boleduvanje_1']=$boleduvanje1;
+            $data['boleduvanje_2']=$boleduvanje2;
+            $data['boleduvanje_3']=$boleduvanje3;
+
+            $data['nokna_rabota']=$nokna_rabota;
+            $data['slozenost']=$slozenost;
+            $data['uslovi']=$uslovi;
+            $data['rakovodenje']=$rakovodno_mesto;
+
+
+            return $data;
+        }
+    }
+    public  function dali_e_clen_na_sindikat($id){
+        $this->db->from("covecki_resursi");
+        $this->db->where("id", $id);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows == 1)
+        {
+            $result = $query->result();
+            if($result[0]->clen_na_sindikat == 1)
+                return 1;
+             else return 0;
+        }
+    }
+
+    public function presmetajZadrskiPlataVraboten_vo_pole($id,$mesec,$godina){
+        $this->db->from("covecki_resursi");
+        $this->db->where("id", $id);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows == 1)
+        {
+            $result = $query->result();
+            $mesecni_parametri = $this->getVrabotenMesecniPromeni($id, $mesec, $godina);
+            $sindikat = 0; $lek_komora = 0; $odbitok = 0; $osiguruvanje = 0;   $zadrski_za_telefon=0;
+
+          //  if($result[0]->clen_na_sindikat == 1) $sindikat = 255;  //корекција
+            if($result[0]->clen_lekarska_komora == 1) $lek_komora = 122;
+            if($result[0]->osiguruvanje == 1) $osiguruvanje = 100;
+            if(isset($mesecni_parametri)) $odbitok = $mesecni_parametri->odbitok;
+            if(isset($mesecni_parametri)) $zadrski_za_telefon = $mesecni_parametri->zadrska_telefon;
+            $krediti = $this->getKreditiVraboten($id);
+
+         //    $data['sindikat']=$sindikat;
+             $data['lek_komora']=$lek_komora;
+             $data['osiguruvanje']=$osiguruvanje;
+             $data['odbitok']=$odbitok;
+             $data['zadrska_telefon']=$zadrski_za_telefon;
+            return $data;
+        }
+    }
+
+    public function presmetajZadrskiPlataVraboten($id, $mesec, $godina)
+    {
+        $this->db->from("covecki_resursi");
+        $this->db->where("id", $id);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        if ($query->num_rows == 1)
+        {
+            $result = $query->result();
+            $mesecni_parametri = $this->getVrabotenMesecniPromeni($id, $mesec, $godina);
+            $sindikat = 0; $lek_komora = 0; $odbitok = 0; $osiguruvanje = 0;    $zadrski_za_telefon=0;
+          //  $vrednost_sindikat=$this->getVrednostSindikat($mesec,$godina);
+         //   if($result[0]->clen_na_sindikat == 1) $sindikat = 255;  //корекција
+            if($result[0]->clen_lekarska_komora == 1) $lek_komora = 122;
+            if($result[0]->osiguruvanje == 1) $osiguruvanje = 100;
+            if(isset($mesecni_parametri)) $odbitok = $mesecni_parametri->odbitok;
+            if(isset($mesecni_parametri)) $zadrski_za_telefon = $mesecni_parametri->zadrska_telefon;
+
+            $krediti = $this->getKreditiVraboten($id);
+            $vkupno_zadrski =$lek_komora + $osiguruvanje + $odbitok + $zadrski_za_telefon+ $krediti;
+
+            return $vkupno_zadrski;
+        }
+    }
+   public function getDatumNaPocnuvanjeKredit($id){
+       $pole1=array();
+       $pole2=array();
+       $i=0;
+       $j=0;
+       $this->db->select('bis_krediti.datum_pocetok');
+       $this->db->from("bis_krediti");
+       $this->db->where("vraboten_id", $id);
+       $query = $this->db->get();
+       if ($query->num_rows > 0)
+
+       {
+           $result = $query->result();
+           foreach($result as $r){
+                 $pole1[$i]= $r->datum_pocetok;
+                 $i++;
+           }
+           foreach($pole1 as $test){
+
+
+                   $pole2[$j]=$test[3].$test[4];
+                    $j++;
+
+           }
+           return   $pole2;
+       }
+       else return 0;
+
+
+   }
+    public function getDatumNaZavrsuvanjeKredit($id){
+        $pole1=array();
+        $pole2=array();
+        $i=0;
+        $j=0;
+        $this->db->select('bis_krediti.datum_zatvaranje');
+        $this->db->from("bis_krediti");
+        $this->db->where("vraboten_id", $id);
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+
+        {
+            $result = $query->result();
+            foreach($result as $r){
+                $pole1[$i]= $r->datum_zatvaranje;
+                $i++;
+            }
+            foreach($pole1 as $test){
+
+
+                $pole2[$j]=$test[3].$test[4];
+                $j++;
+
+            }
+            return   $pole2;
+        }
+        else return 0;
+
+
+    }
+    public function getKreditiVraboten($id)
+    {
+        $this->db->from("bis_krediti");
+        $this->db->where("vraboten_id", $id);
+        $this->db->where('status_kredit',0);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            $result = $query->result();
+            $vkupno_krediti = 0;
+            foreach($result as $kredit)
+            {
+                $vkupno_krediti += $kredit->iznos_rata;
+            }
+            return $vkupno_krediti;
+        }
+        else return 0;
+    }
+    public function getKreditiVrabotenUpdate($id)
+    {
+
+        $this->db->from("bis_krediti");
+        $this->db->where("vraboten_id", $id);
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result;
+        }
+        else return 0;
+    }
+
+    public function getVrabotenMesecniPromeni($id, $mesec, $godina)
+    {
+        $this->db->from("bis_vraboteni_mesecni_promeni");
+        $this->db->where("vraboten_id", $id);
+        $this->db->where("mesec", $mesec);
+        $this->db->where("godina", $godina);
+        $this->db->limit(1);
+        $query = $this->db->get();
+
+        if ($query->num_rows == 1)
+        {
+            $result = $query->result();
+            return $result[0];
+        }
+        else return false;
+    }
+    public function getParametriZaMesec($mesec, $godina)
+    {
+        $this->db->from("bis_mesecni_parametri");
+
+        $this->db->where("mesec", $mesec);
+        $this->db->where("godina", $godina);
+        $this->db->limit(1);
+        $query = $this->db->get();
+
+        if ($query->num_rows == 1)
+        {
+            $result = $query->result();
+            return $result[0];
+        }
+        else return false;
+    }
+    public function getVrednostNaBod($mesec, $godina)
+    {
+        $this->db->from("bis_mesecni_parametri");
+        $this->db->where("mesec", $mesec);
+        $this->db->where("godina", $godina);
+        $this->db->limit(1);
+        $query = $this->db->get();
+
+        if ($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result[0]->vrednost_na_bod;
+        }
+    }
+    public function getVrednostSindikat($mesec, $godina)
+    {
+        $this->db->from("bis_mesecni_parametri");
+        $this->db->where("mesec", $mesec);
+        $this->db->where("godina", $godina);
+        $this->db->limit(1);
+        $query = $this->db->get();
+
+        if ($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result[0]->sindikalna_clenarina;
+        }
+    }
+    public function getEfektivniCasovi($mesec, $godina)
+    {
+        $this->db->from("bis_mesecni_parametri");
+        $this->db->where("mesec", $mesec);
+        $this->db->where("godina", $godina);
+        $this->db->limit(1);
+        $query = $this->db->get();
+
+        if ($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result[0]->max_broj_casovi;
+        }
+    }
+
+    public function getVrabotenPlata($id,$mesec,$godina)
+    {
+        $this->db->select('*');
+        $this->db->where('covecki_resursi_id', $id);
+        $this->db->where('mesec', $mesec);
+        $this->db->where('godina', $godina);
+        $query = $this->db->get('plata');
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public function getVrabotenKrediti($id)
+    {
+        $this->db->select('bis_krediti.*, bis_kreditori.naziv as kreditor');
+        $this->db->where('bis_krediti.vraboten_id', $id);
+
+        $this->db->where('bis_krediti.status_kredit', 0);
+        $this->db->join('bis_kreditori','bis_krediti.kreditor_id=bis_kreditori.id') ;
+        $query = $this->db->get('bis_krediti');
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public function getVrabotenMesecniParametri($id,$mesec,$godina)
+    {
+        $this->db->select('*');
+        $this->db->where('vraboten_id', $id);
+        $this->db->where('mesec', $mesec);
+        $this->db->where('godina', $godina);
+        $query = $this->db->get('bis_vraboteni_mesecni_promeni');
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public function getPlata($oddel, $mesec, $godina)
+    {
+        $this->db->select('
+                    plata.*,
+                    covecki_resursi.ime as vrabotenIme,
+                    covecki_resursi.prezime as vrabotenPrezime,
+                    covecki_resursi.koef_slozenost,
+                    covecki_resursi.koef_uslovi_na_rabota,
+                    covecki_resursi.koef_rakovodno_mesto,
+                    covecki_resursi.koef_staz,
+                    covecki_resursi.clen_lekarska_komora,
+                    covecki_resursi.osiguruvanje
+                    ');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec', $mesec);
+        $this->db->where('plata.godina', $godina);
+       if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+        $query = $this->db->get();
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            foreach($result as $res)
+            {
+                $vraboten = $res->covecki_resursi_id;
+                $mesecni_promeni = $this->getVrabotenMesecniPromeni($vraboten, $mesec, $godina);
+                $res->mesecni_promeni = $mesecni_promeni;
+                $res->krediti = $this->getKreditiVraboten($vraboten);
+            }
+            return $result;
+        }
+        else return false;
+    }
+    public  function getNetoOdRedovnaRabota($oddel,$mesec,$godina){
+    $this->db->select_sum('plata.neto_plata');
+    $this->db->from('plata');
+    $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+    $this->db->where('plata.mesec',$mesec);
+    $this->db->where('plata.godina',$godina);
+   if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+    $query = $this->db->get();
+    if ($query->num_rows > 0)
+    {
+        return $query->result();
+    }
+
+}
+    public  function getMobilniTelefoni($oddel,$mesec,$godina){
+        $this->db->select_sum('bis_vraboteni_mesecni_promeni.zadrska_telefon');
+        $this->db->from('bis_vraboteni_mesecni_promeni');
+        $this->db->join('covecki_resursi', 'bis_vraboteni_mesecni_promeni.vraboten_id=covecki_resursi.id', 'left');
+        $this->db->where('bis_vraboteni_mesecni_promeni.mesec',$mesec);
+        $this->db->where('bis_vraboteni_mesecni_promeni.godina',$godina);
+        if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+    public  function getOdbitokVoRekapitular($oddel,$mesec,$godina){
+        $this->db->select_sum('bis_vraboteni_mesecni_promeni.odbitok');
+        $this->db->from('bis_vraboteni_mesecni_promeni');
+        $this->db->join('covecki_resursi', 'bis_vraboteni_mesecni_promeni.vraboten_id=covecki_resursi.id', 'left');
+        $this->db->where('bis_vraboteni_mesecni_promeni.mesec',$mesec);
+        $this->db->where('bis_vraboteni_mesecni_promeni.godina',$godina);
+        if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+    public  function getLekarskaKomora($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.lek_komora');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getDanocnoOsloboduvanje($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.licno_osloboduvanje');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getDanok($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.personalen_danok_na_dohod');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getPIO($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.pridones_za_pio');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getZdravstvo($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.pridones_za_zdravstvo');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel))  $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getPridonesZaVrabotuvanje($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.pridones_za_vrabotuvanje');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getDopolnitelenPridonesZaZdravstvo($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.dop_pridones_za_zdravstvo');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getBrutoVoRekapitular($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.bruto_plata');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel))  $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getBrutoIznosSlozenost($oddel,$mesec,$godina){
+    $this->db->select_sum('plata.slozenost');
+    $this->db->from('plata');
+    $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+    $this->db->where('plata.mesec',$mesec);
+    $this->db->where('plata.godina',$godina);
+        if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+    $query = $this->db->get();
+    if ($query->num_rows > 0)
+    {
+        return $query->result();
+    }
+}
+    public  function getBrutoIznosUslovi($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.uslovi');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel))  $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getBrutoIznosRakovodenje($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.rakovodenje');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getBrutoIznosMinatTrud($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.iznos_minat_trud');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel))  $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getOsiguruvanje($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.osiguruvanje');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel))    $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getSindikatVoRekapitular($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.sindikat');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel))  $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getKreditiVoRekapitular(){
+        $this->db->select_sum('bis_krediti.iznos_rata');
+        $this->db->from('bis_krediti');
+        $this->db->where('bis_krediti.status_kredit', 0);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getDodatok($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.dodatok');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getCasoviRedovnaRabota($oddel,$mesec,$godina){
+        $this->db->select_sum('bis_vraboteni_mesecni_promeni.efektivno_rabotno_vreme');
+        $this->db->from('bis_vraboteni_mesecni_promeni');
+        $this->db->join('covecki_resursi', 'bis_vraboteni_mesecni_promeni.vraboten_id=covecki_resursi.id', 'left');
+        $this->db->where('bis_vraboteni_mesecni_promeni.mesec',$mesec);
+        $this->db->where('bis_vraboteni_mesecni_promeni.godina',$godina);
+        if(!empty($oddel))    $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+    public  function getCasoviNoknaRabota($oddel,$mesec,$godina){
+        $this->db->select_sum('bis_vraboteni_mesecni_promeni.noken_trud');
+        $this->db->from('bis_vraboteni_mesecni_promeni');
+        $this->db->join('covecki_resursi', 'bis_vraboteni_mesecni_promeni.vraboten_id=covecki_resursi.id', 'left');
+        $this->db->where('bis_vraboteni_mesecni_promeni.mesec',$mesec);
+        $this->db->where('bis_vraboteni_mesecni_promeni.godina',$godina);
+        if(!empty($oddel))  $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+    public  function getCasoviPraznik($oddel,$mesec,$godina){
+        $this->db->select_sum('bis_vraboteni_mesecni_promeni.drzavni_praznici');
+        $this->db->from('bis_vraboteni_mesecni_promeni');
+        $this->db->join('covecki_resursi', 'bis_vraboteni_mesecni_promeni.vraboten_id=covecki_resursi.id', 'left');
+        $this->db->where('bis_vraboteni_mesecni_promeni.mesec',$mesec);
+        $this->db->where('bis_vraboteni_mesecni_promeni.godina',$godina);
+        if(!empty($oddel))  $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+    public  function getCasoviDezurstvo($oddel,$mesec,$godina){
+        $this->db->select_sum('bis_vraboteni_mesecni_promeni.dezurstvo_1');
+        $this->db->from('bis_vraboteni_mesecni_promeni');
+        $this->db->join('covecki_resursi', 'bis_vraboteni_mesecni_promeni.vraboten_id=covecki_resursi.id', 'left');
+        $this->db->where('bis_vraboteni_mesecni_promeni.mesec',$mesec);
+        $this->db->where('bis_vraboteni_mesecni_promeni.godina',$godina);
+        if(!empty($oddel))   $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+    public  function getCasoviBoleduvanje1($oddel,$mesec,$godina){
+        $this->db->select_sum('bis_vraboteni_mesecni_promeni.boleduvanje_1_70');
+
+        $this->db->from('bis_vraboteni_mesecni_promeni');
+        $this->db->join('covecki_resursi', 'bis_vraboteni_mesecni_promeni.vraboten_id=covecki_resursi.id', 'left');
+        $this->db->where('bis_vraboteni_mesecni_promeni.mesec',$mesec);
+        $this->db->where('bis_vraboteni_mesecni_promeni.godina',$godina);
+        if(!empty($oddel))   $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+    public  function getCasoviBoleduvanje2($oddel,$mesec,$godina){
+        $this->db->select_sum('bis_vraboteni_mesecni_promeni.boleduvanje_2_80');
+
+        $this->db->from('bis_vraboteni_mesecni_promeni');
+        $this->db->join('covecki_resursi', 'bis_vraboteni_mesecni_promeni.vraboten_id=covecki_resursi.id', 'left');
+        $this->db->where('bis_vraboteni_mesecni_promeni.mesec',$mesec);
+        $this->db->where('bis_vraboteni_mesecni_promeni.godina',$godina);
+        if(!empty($oddel))  $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+    public  function getCasoviBoleduvanje3($oddel,$mesec,$godina){
+        $this->db->select_sum('bis_vraboteni_mesecni_promeni.boleduvanje_3_90');
+
+        $this->db->from('bis_vraboteni_mesecni_promeni');
+        $this->db->join('covecki_resursi', 'bis_vraboteni_mesecni_promeni.vraboten_id=covecki_resursi.id', 'left');
+        $this->db->where('bis_vraboteni_mesecni_promeni.mesec',$mesec);
+        $this->db->where('bis_vraboteni_mesecni_promeni.godina',$godina);
+        if(!empty($oddel))    $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+    public  function getCasoviBoleduvanjeNad30($oddel,$mesec,$godina){
+        $this->db->select_sum('bis_vraboteni_mesecni_promeni.boleduvanje_nad_30_denovi');
+
+        $this->db->from('bis_vraboteni_mesecni_promeni');
+        $this->db->join('covecki_resursi', 'bis_vraboteni_mesecni_promeni.vraboten_id=covecki_resursi.id', 'left');
+        $this->db->where('bis_vraboteni_mesecni_promeni.mesec',$mesec);
+        $this->db->where('bis_vraboteni_mesecni_promeni.godina',$godina);
+        if(!empty($oddel))  $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+    public  function getSumaNoknaRabota($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.nokna_rabota');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel))  $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getSumaPraznici($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.drzavni_praznici');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getSumaDezurstvo($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.dezurstvo_1');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel))  $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getSumaBoleduvanje1($oddel,$mesec,$godina){
+    $this->db->select_sum('plata.boleduvanje_1');
+    $this->db->from('plata');
+    $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+    $this->db->where('plata.mesec',$mesec);
+    $this->db->where('plata.godina',$godina);
+        if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+    $query = $this->db->get();
+    if ($query->num_rows > 0)
+    {
+        return $query->result();
+    }
+}
+    public  function getSumaBoleduvanje2($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.boleduvanje_2');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getSumaBoleduvanje3($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.boleduvanje_3');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel))  $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+    public  function getSumaBoleduvanjeNad30($oddel,$mesec,$godina){
+        $this->db->select_sum('plata.boleduvanje_nad_30');
+        $this->db->from('plata');
+        $this->db->join('covecki_resursi', 'plata.covecki_resursi_id=covecki_resursi.id', 'left');
+        $this->db->where('plata.mesec',$mesec);
+        $this->db->where('plata.godina',$godina);
+        if(!empty($oddel)) $this->db->where('covecki_resursi.oddel', $oddel);
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+
+}

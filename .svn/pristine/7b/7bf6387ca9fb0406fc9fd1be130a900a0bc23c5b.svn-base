@@ -1,0 +1,63 @@
+.listafirmi  {
+    width: 365px;
+    float: left;
+}
+
+.123 {}
+
+.listaklasi  {
+    float: left;
+}
+.listagrupi  {
+    width: 365px;
+    float: left;
+    margin-left: 10px;
+}
+.listakonta  {
+    width: 365px;
+    float: left;
+    margin-left: 10px;
+}
+
+.listaodeli  {
+    width: 365px;
+    float: left;
+    margin-left: 10px;
+}
+.listapododeli  {
+    width: 365px;
+    float: left;
+    margin-left: 10px;
+}
+.listafirmiglavno table tbody tr td:first-child {
+    width: 16px ;
+}
+
+
+.listaklasiglavno .buttoncontainer { margin-top: 10px;
+margin-bottom: 10px;
+}
+/*.listafirmi .firmi tfoot tr td,*/
+/*.listafirmi .firmi tfoot tr  {*/
+    /*border: none;*/
+    /*background: transparent;*/
+    /*padding-top: 10px;*/
+    /*padding: 5px;*/
+/*}*/
+  .klasi {margin-top: 10px;}
+.firmadropdown .firmafirma {
+    padding-left: 5px !important;
+}
+.firmadropdown .firmaodel {
+    padding-left: 15px !important;
+}
+.firmadropdown .firmapododel {
+    padding-left: 25px !important;
+}
+
+.listafirmiglavno .cmdnovafirma,
+.listafirmiglavno .cmdnovodel,
+.listafirmiglavno .cmdnovpododel
+{
+   margin-bottom: 10px;
+}

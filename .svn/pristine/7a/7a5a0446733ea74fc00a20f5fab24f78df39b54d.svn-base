@@ -1,0 +1,20 @@
+$(document).ready(function(){
+   window.bojanwidth=220;
+
+   setTimeout("$(window).resize();",500)
+
+});
+
+$(window).resize(function () {
+    var viewportWidth =$(window).width()-window.bojanwidth;
+    var viewportHeight = $(window).height()-140;
+    jQuery(".wrapper, .left-menu").css("height",viewportHeight+"px");
+    jQuery(".wrapper").css("width",viewportWidth +"px");
+
+}).resize();
+
+function resizewrapper(){
+
+//    console.log(viewportWidth);
+//    console.log(viewportHeight);
+}

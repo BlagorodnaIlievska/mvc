@@ -1,0 +1,56 @@
+
+<p align="center">Преглед на приемници</p><br/><br/>
+    <?php
+  /* foreach($priemnici as $priemnica){
+       print_r($priemnica);
+       $vrzanidok = '';
+       foreach($priemnica->dokumenti as $dok){
+           $vrzanidok += '<span>' .  $dok->textBroj . '</span>';
+       }
+   }
+die();
+  */
+?>
+<div>
+
+   <label>Магацин: </label>
+    <p><?php echo $magacinIme; ?></p>
+    <label>Коминтент: </label>
+    <p><?php echo $magacinIme; ?></p>
+    <label>Фактура: </label>
+    <p><?php echo $magacinIme; ?></p>
+<br/><br/>
+<table border="1" align="center">
+    <thead>
+    <tr>
+        <th class="broj">Број</th>
+        <th class="datum">Датум</th>
+        <th class="klient">Комитент</th>
+        <th class="faktura">Фактура</th>
+        <th class="zabeleska">Забелешка</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+   foreach($priemnici as $priemnica){
+
+        $vrzanidok = '';
+        foreach($priemnica->dokumenti as $dok){
+            $vrzanidok .=  '<span>' .  $dok->textBroj . '</span>';
+        }
+       ?>
+ <tr>
+     <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $priemnica->textBroj; ?></td>
+     <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $priemnica->datum; ?></td>
+     <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $priemnica->firmaime; ?></td>
+     <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $vrzanidok; ?></td>
+     <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $priemnica->komentar; ?></td>
+</tr>
+
+   <?php
+   }
+
+    ?>
+    </tbody>
+</table>
+</div>

@@ -1,0 +1,196 @@
+<div id="nov_izvod_form">
+    <form action="/index.php/izvodi/menu/create_izvod" method="post">
+        <fieldset class="izvod-opsti-podatoci">
+			<legend>Нов Извод</legend>
+            <div class="podatoci-nov-izvod">
+                Жиросметка:<br/>
+                <select name="ZSID" class="izbor-zirosmetka">
+                    <option value="0"></option>
+					<?php foreach ($zirosmetki as $zirosmetka) { ?>
+                    <option value="<?php echo $zirosmetka->id ?>"><?php echo $zirosmetka->zirosmetka ?></option>
+					<?php } ?>
+                </select><br/>
+                Извод број:<br/>
+                <input type="text" name="brojizvod" class="brojizvod" readonly><br/>
+                Датум: <br/>
+                <input type="text" name="datum" class="datum" readonly><br/>
+            </div>
+        </fieldset><br/>
+        <fieldset class="izvod-stavki">
+            <table class="tabela-izvod-stavki" border="1" cellpadding="2" id="faktura">
+                <thead>
+                <tr>
+                    <th class="del"></th>
+                    <th class="redenbroj">РБ</th>
+                    <th>Коминтент</th>
+                    <th>Жиросметка</th>
+                    <th>Одлив</th>
+                    <th>Прилив</th>
+<!--                    <th>Шифра</th>-->
+                    <th>Повик. број</th>
+                    <th>По фактура</th>
+                    <th>Конто</th>
+                    <th>Забелешка</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </fieldset>
+<!--        <button type="button" class="button snimi-forma" poraka_uspesno="Изводот е успешно снимен"  poraka_neuspesno="Грешка"><span>Зачувај</span></button>-->
+        <button type="button" class="button snimi-izvod" poraka_uspesno="Изводот е успешно снимен"  poraka_neuspesno="Грешка"><span>Зачувај</span></button>
+    </form>
+
+</div>
+
+<script>
+    function izvod_komintenti(){
+        return '<option value="0"></option>'+
+            '<?php foreach($komintenti as $komintent) { echo '<option value="'.$komintent->id.'">'.$komintent->ime.' </option>'; } ?>';
+    }
+    function izvod_konta(){
+        return '<option value="0"></option>'+
+            '<?php foreach($konta as $konto) { echo '<option value="'.$konto->id.'">'.$konto->sifra.' </option>'; } ?>';
+    }
+    function izvodi_proveri_komintent(row){
+        var komintent = row.find(".komintent").val();
+        if(komintent > 0) return 1;
+        else return 0;
+    }
+    function izvod_dodadi_stavka() {
+        var redovi = jQuery(".tabela-izvod-stavki tbody tr").length;
+        redovi = 1 * redovi + 1;
+        jQuery(".tabela-izvod-stavki tbody").append('<tr>' +
+            '<td class="deletestavka">' +
+            '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+            '</td>' +
+            '<td class="redenbroj">' + redovi + '</td>' +
+            '<td><select name="izvod-stavka[' + redovi + '][firmaID]" class="komintent" >'+izvod_komintenti()+'</select></td>' +
+            '<td><input type="text" name="izvod-stavka[' + redovi + '][firmaZSmetkaID]" class="firmaZSmetkaID" /></td>' +
+            '<td><input type="text" name="izvod-stavka[' + redovi + '][odliv]" class="odliv" /></td>' +
+            '<td><input type="text" name="izvod-stavka[' + redovi + '][priliv]" class="priliv" /></td>' +
+//            '<td><input type="text" name="izvod-stavka[' + redovi + '][zaSifraID]" class="zaSifraID" /></td>' +
+            '<td><input type="checkbox" class="s-faktura" disabled="true" /></td>' +
+            '<td class="zaDokID hide"><input type="hidden" name="izvod-stavka[' + redovi + '][zaDokID]" class="zaDokID" /></td>' +
+            '<td><input type="text" name="izvod-stavka[' + redovi + '][zaPovikBroj]" class="zaPovikBroj" readonly /></td>' +
+            '<td class="konto"><select name="izvod-stavka[' + redovi + '][tipID]" class="tipID" >'+izvod_konta()+'</select></td>' +
+            '<td><input type="text" name="izvod-stavka[' + redovi + '][komentar]" class="komentar" /></td>' +
+            '<td class="index hide"><input type="hidden" name="izvod-stavka[' + redovi + '][textBroj]" class="textBroj" value="'+redovi+'" /></td>' +
+            '</tr>');
+        jQuery('[name="izvod-stavka[' + redovi + '][firmaID]"]').combobox();
+        jQuery('[name="izvod-stavka[' + redovi + '][tipID]"]').combobox();
+    }
+    jQuery(document).ready(function () {
+        jQuery('.tipID').combobox();
+        jQuery('.datum').datepicker({dateFormat:'dd-mm-yy'});
+        jQuery('.datum').datepicker('setDate', new Date());
+        jQuery('.novazirosmetka').val(jQuery('.zirosmetka option:selected').text());
+        jQuery('.idnovazirosmetka').val(jQuery('.zirosmetka option:selected').val());
+        izvod_dodadi_stavka();
+
+        jQuery(".dodadi_stavka").click(function () {
+            var row = jQuery(".tabela-izvod-stavki tbody tr:last");
+            if(izvodi_proveri_komintent(row) == 1) izvod_dodadi_stavka();
+            else return alert("Избери коминтент за последната ставка!!!");
+        });
+        jQuery('.tabela-izvod-stavki tbody tr .odliv').live("blur", function(){
+            var elem = jQuery(this);
+            var odliv = jQuery(this).val();
+            if( odliv.length >= 1 )
+            {
+                var row = elem.closest("tr");
+                row.find('.priliv').val("");
+                row.find('.s-faktura').attr("disabled", false);
+                row.find('.zaPovikBroj').attr("disabled", false);
+                if(row.is(":last-child"))
+                {
+                    if(izvodi_proveri_komintent(row) == 1) izvod_dodadi_stavka();
+                }
+            }
+            elem.val(formatnumbermkd(odliv));
+        });
+        jQuery('.tabela-izvod-stavki tbody tr .priliv').live("blur", function(){
+            var elem = jQuery(this);
+            var priliv = jQuery(this).val();
+            if( priliv.length >= 1 )
+            {
+                var row = elem.closest("tr");
+                row.find('.odliv').val("");
+               // var temp2=formatnumbermkd(row.find('.priliv').val()) ;
+               // row.find('.priliv').val(temp2);
+                row.find('.s-faktura').attr("disabled", false);
+                row.find('.zaPovikBroj').attr("disabled", false);
+                if(row.is(":last-child"))
+                {
+                    if(izvodi_proveri_komintent(row) == 1) izvod_dodadi_stavka();
+                }
+                elem.val(formatnumbermkd(priliv));
+            }
+        });
+        jQuery('.tabela-izvod-stavki tbody tr .deletestavka').live("click",function() {
+            var row = jQuery(this).closest("tr");
+            row.remove();
+            var i = 1;
+            jQuery('.tabela-izvod-stavki tbody tr').each(function () {
+                jQuery(this).find('.redenbroj').html(i);
+                i = 1 * i + 1;
+            });
+        });
+        jQuery('.s-faktura').live('click',function(){
+            if(jQuery('.s-faktura').is(":checked"))
+            {
+                jQuery(".tabela-izvod-stavki tbody tr").removeClass("active");
+                jQuery(this).closest("tr").addClass("active");
+                var formaction="/index.php/izvodi/menu/povrzi_postoecka";
+                var tempdialog="dialog"+Math.floor((Math.random()*1000)+1);
+                jQuery.ajax({
+                    url:formaction,
+                    success:function (response) {
+                        var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+                        jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                        jQuery("." + tempdialog).html(response);
+                        jQuery('div.' + tempdialog).dialog({
+                            autoOpen:true,
+                            width:"auto",
+                            position:"center",
+                            modal:true,
+                            title:"Поврзи фактура",
+                            close:function (event, ui) {
+                                jQuery(this).dialog("destroy");
+                                jQuery(this).remove();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        jQuery(".podatoci-nov-izvod .izbor-zirosmetka").live("change", function(){
+            var zirosmetka = jQuery(this).val();
+            var data = {zirosmetka: zirosmetka};
+            jQuery.ajax({
+                url:"/index.php/izvodi/menu/countIzvodByZirosmetka",
+                type:'POST',
+                data:data,
+                dataType:'json',
+                success:function (response) {
+                    var lastizvodbroj = response.broj;
+                    if (lastizvodbroj) var nextizvodbroj = Number(lastizvodbroj) + 1;
+                    else var nextizvodbroj = 1;
+                    jQuery('.brojizvod').val(nextizvodbroj);
+                }
+            });
+        });
+        jQuery('.snimi-izvod').click(function () {
+            var ovakopce = jQuery(this);
+            ovakopce.attr("disabled", "disabled");
+            jQuery(".tabela-izvod-stavki tbody tr:last").remove();
+            jQuery(".tabela-izvod-stavki tbody tr").each(function() {
+                var odliv = jQuery(this).find(".odliv").val();
+                var priliv = jQuery(this).find(".priliv").val();
+                jQuery(this).find(".odliv").val(formatbrojjs(odliv));
+                jQuery(this).find(".priliv").val(formatbrojjs(priliv));
+            });
+            izvodi_zacuvajnov(jQuery(this));
+        });
+    });
+</script>

@@ -1,0 +1,56 @@
+<?php  if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class Zemji extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+        $this->load->model('bolnicko_rabotenje_podatoci/zemji_model');
+
+
+    }
+
+    public function nova_zemja()
+    {
+        $this->load->view('bolnicko_rabotenje_podatoci/nova_zemja');
+    }
+
+    public function izmeni()
+    {
+        $data['zemja']     = $this->zemji_model->getZemja($this->input->get("id"));
+        $this->load->view('bolnicko_rabotenje_podatoci/izmeni', $data);
+    }
+
+    public function lista()
+    {
+        $this->load->view('bolnicko_rabotenje_podatoci/lista');
+    }
+
+    public function polnilista()
+    {
+        echo json_encode($this->zemji_model->getZemji());
+    }
+
+    public function create_zemja()
+    {
+        $this->zemji_model->create_zemja();
+        echo "ok";
+    }
+
+    public function update_zemja()
+    {
+        $this->zemji_model->update_zemja() ;
+        echo 'ok';
+
+    }
+
+    public function delete_zemja()
+    {
+        $this->zemji_model->delete_zemja($this->input->get("id"));
+        echo "ok";
+    }
+}

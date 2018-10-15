@@ -1,0 +1,56 @@
+<p style="text-align: center"> СПЕЦИФИКАЦИЈА на требувања - Излез</p>
+<div>
+    <table border="1" align="center">
+        <thead>
+        <tr>
+            <th class="broj">РБ</th>
+            <th class="datum">Артикл шифра</th>
+
+            <th class="magacin_vo">Артикл</th>
+
+            <th class="zabeleska">Количина</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+
+        $rb=1;
+        foreach(array($specifikacija) as $spec){
+
+            foreach($spec as $s) {
+
+
+
+                ?>
+            <tr>
+                <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; width: 50px;"><? echo $rb; ?></td>
+                <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px; width: 87px;"><?echo $s['sifra']; ?></td>
+
+                <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $s['stavka']; ?></td>
+
+
+
+                <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><?echo $s['izlez']->kolicina; ?></td>
+
+            </tr>
+
+                <?php
+                $rb++;
+            } }
+
+        ?>
+        </tbody>
+    </table>
+    <br>
+    <br>
+    <div style="float: left; width: 50%;" >
+
+        Примил <br>
+        _____________________________
+    </div>
+    <div style="float: right; width: 50%;">
+
+        Издал <br>
+        _____________________________
+    </div>
+</div>

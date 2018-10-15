@@ -1,0 +1,83 @@
+<div>
+    <form class="podatoci-za-osig-form" method="post">
+        <input type="hidden" name="pacient_id" value="" class="pacientidstatic"/>
+
+        <div class="podatoci-za-osig osig1">
+            <fieldset class="grupa1">
+                <div class="levakolona">Ослб.од парт:</div>
+                <div class="desnakolona">
+                    <select name="osloboden_od_participacija" class="pacient-osloboden_od_participacija">
+                        <option value="1">Да</option>
+                        <option value="0">Не</option>
+                    </select>
+                </div>
+                <div class="levakolona">Причина:</div>
+                <div class="desnakolona"><input name="pricina" value="" class="pacient-pricina"/></div>
+                <div class="levakolona">Број на решение:</div>
+                <div class="desnakolona"><input name="broj_na_resenie" value="" class="pacient-broj_na_resenie"/></div>
+            </fieldset>
+<!--            <fieldset class="grupa2">-->
+<!--                <div class="levakolona">Тип на осиг.:</div>-->
+<!--                <div class="desnakolona"><input name="tip_na_osiguruvanje" value=""-->
+<!--                                                class="pacient-tip_na_osiguruvanje"/></div>-->
+<!--                <div class="levakolona">Основ осиг.:</div>-->
+<!--                <div class="desnakolona"><input name="osnov_na_osiguruvanje" value=""-->
+<!--                                                class="pacient-osnov_na_osiguruvanje"/></div>-->
+<!--                <div class="levakolona">Фзо подрачна:</div>-->
+<!--                <div class="desnakolona"><input name="fzo_podracna" value="" class="pacient-fzo_podracna"/></div>-->
+<!--            </fieldset>-->
+            <fieldset class="grupa3">
+                <div class="levakolona">Име.:</div>
+                <div class="desnakolona"><input name="nositel_ime" value="" class="pacient-nositel_ime"/></div>
+                <div class="levakolona">Презиме:</div>
+                <div class="desnakolona"><input name="nositel_prezime" value="" class="pacient-nositel_prezime"/></div>
+                <div class="levakolona">Бр. Легитимација:</div>
+                <div class="desnakolona"><input name="nositel_br_na_legitimacija" value=""
+                                                class="pacient-nositel_br_na_legitimacija"/></div>
+                <div class="levakolona">Основ:</div>
+                <div class="desnakolona"><input name="nositel_osnov" value="" class="pacient-nositel_osnov"/></div>
+            </fieldset>
+        </div>
+        <div class="clear"></div>
+        <div class="podatoci-za-osig ">
+            <fieldset class="grupa1">
+                <div class="levakolona">Крводарител:</div>
+                <div class="desnakolona">
+                    <select name="krvodaritel" class="pacient-krvodaritel">
+                        <option value="1">Да</option>
+                        <option value="0">Не</option>
+                    </select>
+                </div>
+                <div class="levakolona">Бр:</div>
+                <div class="desnakolona"><input name="krvodaritel_broj" value="" class="pacient-krvodaritel_broj"/></div>
+                <div class="levakolona">Крвна група:</div>
+                <div class="desnakolona">
+                    <select name="krvna_grupa" class="pacient-krvna_grupa">
+                        <option>0-</option>
+                        <option>0+</option>
+                        <option>A-</option>
+                        <option>A+</option>
+                        <option>B-</option>
+                        <option>B+</option>
+                        <option>AB-</option>
+                        <option>AB+</option>
+                    </select>
+                </div>
+            </fieldset>
+<!--            <fieldset class="grupa2">-->
+<!--                <div class="ednakolona">Забелешки за пациентот:</div>-->
+<!--                <div class="ednakolona"><input name="pacient_zabeleska" value="" class="pacient-pacient_zabeleska"/></div>-->
+<!--            </fieldset>-->
+            <fieldset class="grupa3">
+                <div class="levakolona">Шифра на земја:</div>
+                <div class="desnakolona"><input name="stranski_teret_fzom_zemja_sifra" value="" class="pacient-stranski_teret_fzom_zemja_sifra"/></div>
+                <div class="levakolona">Земја:</div>
+                <div class="desnakolona"><input name="stranski_teret_fzom_zemja" value="" class="pacient-stranski_teret_fzom_zemja"/></div>
+                <div class="levakolona">Бр. осигурување:</div>
+                <div class="desnakolona"><input name="stranski_teret_fzom_br_osig" value="" class="pacient-stranski_teret_fzom_br_osig"/></div>
+                <div class="levakolona">EHIS:</div>
+                <div class="desnakolona"><input name="stranski_teret_fzom_ehis" value="" class="pacient-stranski_teret_fzom_ehis"/></div>
+            </fieldset>
+        </div>
+    </form>
+</div>

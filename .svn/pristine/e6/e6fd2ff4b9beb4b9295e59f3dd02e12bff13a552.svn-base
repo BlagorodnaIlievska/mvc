@@ -1,0 +1,90 @@
+<?php
+
+class Mesecni_parametri_model extends CI_Model
+{
+
+    public function getMesecniParametri()
+    {
+        $this->db->select('
+                bis_mesecni_parametri.*,
+                mesec.ime as mesec,
+                mesec.vrednost as vrednost'
+        );
+        $this->db->from('bis_mesecni_parametri');
+        $this->db->join('mesec', 'bis_mesecni_parametri.mesec = mesec.id', 'left');
+        $query = $this->db->get();
+        return $query->result();
+    }
+    public function getMesecniParametri_prethodenMesec($mesec)
+    {
+        $this->db->select('
+                bis_mesecni_parametri.*,
+                mesec.ime as mesec,
+                mesec.vrednost as vrednost'
+        );
+        $this->db->from('bis_mesecni_parametri');
+        $this->db->join('mesec', 'bis_mesecni_parametri.mesec = mesec.id', 'left');
+        $this->db->where('mesec.id',$mesec);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+
+
+    public function getMesecenParametar($id)
+    {
+        $this->db->where("id", $id);
+        $query = $this->db->get('bis_mesecni_parametri');
+        $return = $query->result();
+
+        return $return[0];
+    }
+
+    public function create_mesecen_parametar()
+    {
+        $insert_data = $this->input->post();
+        $insert      = $this->db->insert('bis_mesecni_parametri', $insert_data);
+        return $insert;
+    }
+
+    public function delete_mesecen_parametar($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('bis_mesecni_parametri');
+    }
+
+    public function update_mesecen_parametar()
+    {
+        $field_update_data =	$this->input->post();
+        $this->db->where('id',$field_update_data['id']);
+        $this->db->update('bis_mesecni_parametri', $field_update_data);
+    }
+    public function mesec_dropdown()
+    {
+        $this->db->select('id, ime, vrednost');
+        $this->db->from('mesec');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = '';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function proveri_mesecen_parametar($mesec, $godina)
+    {
+        $this->db->select();
+        $this->db->where("mesec", $mesec);
+        $this->db->where("godina", $godina);
+        $query = $this->db->get("bis_mesecni_parametri");
+        if($query->num_rows > 0)
+        {
+            return 1;
+        }
+        else return 0;
+    }
+}

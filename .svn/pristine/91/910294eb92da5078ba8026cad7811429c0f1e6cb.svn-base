@@ -1,0 +1,189 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+/**
+ * Created by JetBrains PhpStorm.
+ * User: HP
+ * Date: 4/11/13
+ * Time: 10:45 PM
+ * To change this template use File | Settings | File Templates.
+ */
+class Dsg_uslugi extends CI_Controller{
+
+function _construct(){
+    parent::__construct();
+}
+
+    public function view_dsg(){
+        $this->load->model('paketi/dsg_model');
+
+        $data['sifra']= $this->dsg_model->sifra_dropdown();
+        $data['naziv']= $this->dsg_model->naziv_dropdown();
+
+        $this->load->view('paketi/dsg/dsg_base', $data);
+    }
+
+
+    public function getUslugi_nova()
+    {
+        $this->load->model('paketi/dsg_model');
+        $query = $this->dsg_model->getUslugi_nova();
+        echo json_encode($query);
+    }
+
+
+   /*  public function nov_paket()
+    {
+        $this->load->model('paketi/dsg_model');
+
+        $podgrupa=$this->paket_model->getPodgrupa($this->input->get('paketid'));
+        ///  print_r($podgrupa); die();
+        $grupa=$this->paket_model->getGrupa($podgrupa[0]->parent_grupa);
+        $data['main_content'] = 'paketi/paket/nov_paket';
+        $data['idnagrupa'] =$grupa[0]->id ;
+        $data['idnapodgrupa'] =$podgrupa[0]->id ;
+        $data['nazivnagrupa'] = $grupa[0]->naziv ;
+        //  $data['sifranaklasa'] = $klasa[0]->sifra ;
+        $data['nazivnapodgrupa'] = $podgrupa[0]->naziv ;
+        // $data['sifranagrupa'] = $grupa[0]->sifra ;
+        $data['ajax']         = 1;
+        $this->load->view('includes/template', $data);
+    } */
+    public function nov_paket_nova()
+    {
+        $this->load->model('paketi/dsg_model');
+
+        // $data['sifranagrupa'] = $grupa[0]->sifra ;
+        $this->load->view('paketi/dsg/nov_paket_nova');
+    }
+
+    public function nova_sodrzina()
+    {
+        $this->load->model('paketi/dsg_model');
+        $paket = $this->dsg_model->getPaket($this->input->get('paketid'));
+        $data['paketid'] = $paket;
+        //$podgrupa=$this->paket_model->getPodgrupa($paket[0]->parent_podgrupa);
+        ///  print_r($podgrupa); die();
+        // $grupa=$this->paket_model->getGrupa($paket[0]->parent_grupa);
+        // $data['idnagrupa'] =$grupa[0]->id ;
+        // $data['idnapodgrupa'] =$podgrupa[0]->id ;
+        //$data['idenpaket'] =$paket[0]->id ;
+        //$data['nazivnagrupa'] = $grupa[0]->naziv ;
+        //  $data['sifranaklasa'] = $klasa[0]->sifra ;
+        //    $data['nazivnapodgrupa'] = $podgrupa[0]->naziv ;
+        // $data['sifranagrupa'] = $grupa[0]->sifra ;
+        $this->load->view('paketi/dsg/nova_sodrzina', $data);
+    }
+
+    public function create_paket()	{
+        $this->load->model('paketi/dsg_model');
+        if($query = $this->dsg_model->create_paket() ){
+            echo 'ok';
+        }   else 'error';
+        //   print_r($query); die();
+    }
+    public function create_sodrzina()	{
+        $this->load->model('paketi/dsg_model');
+        if($query = $this->dsg_model->create_sodrzina() ){
+            echo 'ok';
+        }   else 'error';
+        //   print_r($query); die();
+    }
+    public function delete_paket()
+    {
+
+
+        $this->load->model('paketi/dsg_model');
+        $this->dsg_model->delete_grupa($this->input->get('paketid'));
+        echo "ok";
+
+
+    }
+
+    public function prebaruvanje_paketi_posifra(){
+        $sifraid = $this->input->post('sifraid');
+
+        $this->load->model('paketi/dsg_model');
+        $query = $this->dsg_model->prebaruvanje_paketi_posifra($sifraid);
+        echo json_encode($query);
+    }
+
+    public function prebaruvanje_paketi_ponaziv(){
+        $nazivid = $this->input->post('nazivid');
+
+        $this->load->model('paketi/dsg_model');
+        $query = $this->dsg_model->prebaruvanje_paketi_ponaziv($nazivid);
+        echo json_encode($query);
+    }
+
+    public function izmeni_dsg()
+    {
+        $this->load->model('paketi/dsg_model');
+        $id=$this->input->get('id');
+        $grupa=$this->dsg_model->getGrupa($id);
+        // print_r($grupa); die();
+        // $data['adresa']=$firma[0]->adresa;
+        // $data['danocenbroj']=$firma[0]->danocenbroj;
+        $data['id'] =$id ;
+        //if ($grupa[0]->parent_grupa==0 AND $grupa[0]->parent_podgrupa==0 AND $grupa[0]->parent_paket==0 ){
+        //LOAD Grupa SETTINGS
+        $data['tip']='paket';
+        $data['nazivnapaket'] = $grupa[0]->naziv ;
+        $data['sifranapaket'] = $grupa[0]->sifra ;
+        $data['cenanapaket'] = $grupa[0]->cena ;
+        $data['participacija'] = $grupa[0]->participacija ;
+        //  $data['sifranaklasa'] = $klasa[0]->sifra ;
+        // }
+
+        // elseif($grupa[0]->parent_paket !=0){
+        //load sodrzina
+        // $grupagrupa= $this->paket_model->getGrupa($grupa[0]->parent_grupa);
+        //  $grupapodgrupa=$this->paket_model->getGrupa($grupa[0]->parent_podgrupa);
+        //  $grupapaket=$this->paket_model->getGrupa($grupa[0]->parent_paket);
+        // print_r($grupapaket); die();
+        //$data['tip']='sodrzina';
+
+        //  $data['nazivnagrupa']=$grupagrupa[0]->naziv;
+        //  $data['nazivnapodgrupa']=$grupapodgrupa[0]->naziv;
+        // $data['nazivnapaket']=$grupapaket[0]->naziv;
+        //$data['sodrzinapaket']=$grupa[0]->sodrzina;
+
+        // }
+        $this->load->view('paketi/dsg/edit_dsg', $data);
+
+    }
+    public function getPaketi()
+    {
+        $this->load->model('paketi/paket_model');
+        $query = $this->paket_model->getPaketi($this->input->post("id"));
+        echo json_encode($query);
+    }
+    public function getPaketi_nova()
+    {
+        $this->load->model('paketi/paket_model');
+        $query = $this->paket_model->getPaketi_nova();
+        echo json_encode($query);
+    }
+    public function getSodrzini()
+    {
+        $this->load->model('paketi/dsg_model');
+        $query = $this->dsg_model->getSodrzini($this->input->post("id"));
+        echo json_encode($query);
+    }
+    public function update_paket()
+    {
+        $this->load->model('paketi/dsg_model');
+        $query = $this->dsg_model->update_paket();
+        // print_r($query); die();
+        if ($query) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+    }
+
+
+
+}
+
+

@@ -1,0 +1,60 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+
+class Kreditori extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function lista()
+    {
+        $this->load->view('plata_podatoci/kreditori/lista');
+    }
+
+    public function nov_kreditor()
+    {
+        $this->load->view('plata_podatoci/kreditori/nov_kreditor');
+    }
+
+    public function izmeni()
+    {
+        $this->load->model('plata_podatoci/kreditori_model');
+        $kreditor = $this->kreditori_model->getKreditor($this->input->get("id"));
+        $data['kreditor']     = $kreditor;
+        $this->load->view('plata_podatoci/kreditori/izmeni', $data);
+    }
+
+    public function polnilista()
+    {
+        $this->load->model('plata_podatoci/kreditori_model');
+        $return = $this->kreditori_model->getKreditori();
+        echo json_encode($return);
+    }
+
+    public function create_kreditori()
+    {
+        $this->load->model('plata_podatoci/kreditori_model');
+        $this->kreditori_model->create_kreditori();
+        echo "ok";
+    }
+
+    public function update_kreditori()
+    {
+        $this->load->model('plata_podatoci/kreditori_model');
+        $this->kreditori_model->update_kreditori() ;
+        echo 'ok';
+
+    }
+
+    public function delete_kreditori()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('plata_podatoci/kreditori_model');
+        $this->kreditori_model->delete_kreditori($id);
+        echo "ok";
+    }
+}

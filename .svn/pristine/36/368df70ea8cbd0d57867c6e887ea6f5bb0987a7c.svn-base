@@ -1,0 +1,60 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+
+class Samopridonesi extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function lista()
+    {
+        $this->load->view('plata_podatoci/samopridonesi/lista');
+    }
+
+    public function nov_samopridones()
+    {
+        $this->load->view('plata_podatoci/samopridonesi/nov_samopridones');
+    }
+
+    public function izmeni()
+    {
+        $this->load->model('plata_podatoci/samopridonesi_model');
+        $samopridones = $this->samopridonesi_model->getSamopridones($this->input->get("id"));
+        $data['samopridones']     = $samopridones;
+        $this->load->view('plata_podatoci/samopridonesi/izmeni', $data);
+    }
+
+    public function polnilista()
+    {
+        $this->load->model('plata_podatoci/samopridonesi_model');
+        $return = $this->samopridonesi_model->getSamopridonesi();
+        echo json_encode($return);
+    }
+
+    public function create_samopridonesi()
+    {
+        $this->load->model('plata_podatoci/samopridonesi_model');
+        $this->samopridonesi_model->create_samopridonesi();
+        echo "ok";
+    }
+
+    public function update_samopridonesi()
+    {
+        $this->load->model('plata_podatoci/samopridonesi_model');
+        $this->samopridonesi_model->update_samopridonesi() ;
+        echo 'ok';
+
+    }
+
+    public function delete_samopridonesi()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('plata_podatoci/samopridonesi_model');
+        $this->samopridonesi_model->delete_samopridonesi($id);
+        echo "ok";
+    }
+}

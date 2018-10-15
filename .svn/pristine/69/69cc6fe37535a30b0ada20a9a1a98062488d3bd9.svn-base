@@ -1,0 +1,11 @@
+<div id="vnesi_faktura" class="pop-menu-tabs">
+        <ul>
+            <li><a href="#faktura">Фактура</a></li>
+<!--            <li><a href="#uplata">Уплата</a></li>-->
+<!--            <li><a href="#priemnici">Приемници</a></li>-->
+        </ul>
+        <div id="faktura"></div>
+<!--        <div id="uplata"></div>-->
+<!--        <div id="priemnici"></div>-->
+</div>
+

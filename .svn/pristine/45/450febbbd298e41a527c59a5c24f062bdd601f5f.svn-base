@@ -1,0 +1,520 @@
+<div class="vlez-form content-area">
+
+    <?php
+    $valuta_options = array(
+        '0' => 'DEN',
+        '1' => 'EUR',
+        '2' => 'USD'
+    );
+    $status_options = array('0' => 'Site', '1' => 'Plateni', '2' => 'Ne plateni');
+    $nacin_options  = array('3' => 'Site', '0' => 'virmanski', '1' => 'vo gotovo', '2' => 'kompenzacija');
+    $uloga=array(
+
+        '1'=>'доктор',
+        '2'=>'сестра',
+        '3'=>'волонтер'
+    );
+    $obrazovanie=array(
+        '1'=>'ОО',
+        '2'=>'СС',
+        '3'=>'ВСС',
+        '4'=>'Мр.',
+        '5'=>'Доц.Др.',
+        '6'=>'Др'
+    );
+    ?>
+    <form class="vraboten-filter-forma">
+    <div class="buttoncontainer-vraboteni-cr" >
+        <?php if (bis_check_access('planiranje_resursi_covecki_resursi_nov_vraboten_button')): ?>
+             <button type="button" value="" class="button bnovraboten"><span>Нов вработен</span></button>
+        <?php endif ?>
+        <?php if (bis_check_access('planiranje_resursi_covecki_resursi_baraj_button')): ?>
+             <button type="button" value="" class="baraj button"><span>Барај</span></button>
+        <?php endif ?>
+        <?php if (bis_check_access('planiranje_resursi_covecki_resursi_print_button')): ?>
+           <!-- <a href="" target="_blank" class="cmd-printlink">
+                <button type="button" class="print"><span>Принт</span></button>
+            </a> -->
+        <?php endif ?>
+
+    </div>
+    <div class="filtermenu-vraboten" style="display: none;">
+        <div class="filter-vrab">
+          <label>Име :</label><input type="text" name="ime">
+        </div>
+        <div class="filter-vrab">
+            <label>Презиме :</label><input type="text" name="prezime">
+        </div>
+        <div class="filter-vrab">
+            <label>Бр. Пл :</label><input type="text" name="broj_platen_spisok">
+        </div>
+        <div class="filter-vrab clear">
+            <label>Бр. ЛК :</label><input type="text" name="broj_licna_karta">
+        </div>
+       <!-- <div class="filter-vrab">
+            <label>Работно место</label>
+            <select name="uloga">
+                <option></option>
+                <option value="1">Доктор</option>
+                <option value="2" >Сестра</option>
+                <option value="3">Волонтер</option>
+            </select>
+        </div>
+        -->
+        <div class="filter-vrab">
+            <?  echo form_label('Работно место/класиф. :', 'klasifikacija');
+            echo form_dropdown('klasifikacija',$klasifikacija,'','class="ddklasifikacija listacovecki"');
+
+            ?>
+        </div>
+        <div class="filter-vrab">
+            <label>Степен на образование</label>
+            <select name="obrazovanie">
+                <option></option>
+                <option value="1">ОО</option>
+                <option value="2" >СС</option>
+                <option value="3">ВСС</option>
+                <option value="4">Мр.</option>
+                <option value="5">Доц.Др</option>
+                <option value="6">Др.</option>
+            </select>
+        </div>
+        <div class="filter-vrab clear">
+            <label>Национ. прип. :</label><input type="text" class="nacpripadnost" name="nacionalna_pripadnost">
+        </div>
+        <div class="filter-vrab">
+            <? echo form_label('Оддел :','oddel');
+            echo form_dropdown('oddel',$oddel,'','class="ddoddel listacovecki"');
+            ?>
+        </div>
+
+
+        <div class="filter-vrab">
+            <? echo form_label('Пододдел :','pododdel');
+            echo form_dropdown('pododdel',$pododdel,'','class="ddpododdel listacovecki"');
+            ?>
+        </div>
+        <div class="filter-vrab clear">
+            <label>Работен стаж:</label><input class="rabotenstazinput" type="text" name="vkupno_staz">
+        </div>
+        <div class="filter-vrab">
+            <label>Пол</label>
+            <select name="pol">
+                <option></option>
+                <option value="1">Машки</option>
+                <option value="2" >Женски</option>
+            </select>
+        </div>
+    </div>
+        </form>
+    <div class="lista-na-vraboteni-cr clear">
+        <div class="predtabela">
+            <table class="filter-covecki-resursi" >
+                <thead>
+                <tr>
+                    <th></th>
+                    <th class="redenbr">РБ</th>
+                    <th>Име</th>
+                    <th>Презиме</th>
+                    <th>ЕМБГ</th>
+                    <th>Бруто плата</th>
+                    <th class="rabotnomesto">Раб. место</th>
+                    <th>Класификација</th>
+                    <th>Бр. лиценца</th>
+                    <th>Важи од</th>
+                    <th>Важи до</th>
+                    <th>Бр.факсимил</th>
+                    <th>Фирма</th>
+                    <th>Оддел</th>
+                    <th>Пододдел</th>
+                    <th>Сменска гр.</th>
+                    <th>Дат. раѓ.</th>
+                    <th>Поч. раб. однос/волон.</th>
+                    <th>Крај на раб. однос/волон.</th>
+                    <th>Правен основ</th>
+                    <th>Стр. квалифик.</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+jQuery(document).ready(function () {
+    jQuery('.periodod').datepicker({dateFormat:'yy-mm-dd'});
+    jQuery('.periodod').datepicker('setDate', new Date(2013,00,01));
+    jQuery('.perioddo').datepicker({dateFormat:'yy-mm-dd'});
+    jQuery('.perioddo').datepicker('setDate', new Date());
+
+    jQuery('.filter-covecki-resursi').tablesorter();
+    reload_covecki_resursi();
+
+    jQuery('.bnovraboten').click(function () {
+        nov_vraboten();
+    });
+    jQuery(".baraj").live("click", function () {
+        if (jQuery(".filtermenu-vraboten").hasClass("prikazano")) {
+            jQuery(".filtermenu-vraboten").hide(500);
+            jQuery(".filtermenu-vraboten").removeClass("prikazano");
+        } else {
+            jQuery(".filtermenu-vraboten").show(500);
+            jQuery(".filtermenu-vraboten").addClass("prikazano");
+        }
+    });
+    jQuery(".filtermenu-vraboten input, .filtermenu-vraboten select").val('');
+
+    jQuery(".filtermenu-vraboten input").change(function () {
+
+        clearTimeout(window.listatimeout);
+        window.listatimeout = setTimeout("vraboteni_popolnilistasotimeout()", 1600);
+    });
+    jQuery(".filtermenu-vraboten select:not(.ddoddel)").change(function () {
+
+        clearTimeout(window.listatimeout);
+        window.listatimeout = setTimeout("vraboteni_popolnilistasotimeout()", 1600);
+    });
+
+    jQuery(".filtermenu-vraboten input").keyup(function () {
+        clearTimeout(window.listatimeout);
+        window.listatimeout = setTimeout("vraboteni_popolnilistasotimeout()", 1600);
+    });
+    jQuery(".filtermenu-vraboten select:not(.ddoddel)").keyup(function () {
+        clearTimeout(window.listatimeout);
+        window.listatimeout = setTimeout("vraboteni_popolnilistasotimeout()", 1600);
+    });
+    jQuery(".filtermenu-vraboten .ddoddel").change(function () {
+        //jQuery(".filtermenu-vraboten .ddpododdel option:selected").val('');
+        //clearTimeout(window.listatimeout);
+        //window.listatimeout = setTimeout("vraboteni_popolnilistasotimeout()",1600);
+        if($('.filtermenu-vraboten .ddoddel option:selected').val() != ''){
+            var oddel_id = $('.filtermenu-vraboten .ddoddel option:selected').val();
+            var url = "/index.php/covecki_resursi/covecki/pododdeli?oddel_id=" + oddel_id;
+            jQuery.ajax({
+                url: url,
+                type: 'GET',
+
+                dataType: 'json',
+                success:function (response) {
+                    console.log(response);
+                    jQuery('.filtermenu-vraboten .ddpododdel').empty();
+                    jQuery.each(response, function(index, item){
+                        if(item == 'Сите'){
+                            jQuery(".filtermenu-vraboten .ddpododdel").append($('<option selected>' + item + '</option>').val(index));
+                        }else
+                      jQuery(".filtermenu-vraboten .ddpododdel").append($('<option>' + item + '</option>').val(index));
+
+                    });
+             }
+            });
+        }
+        clearTimeout(window.listatimeout);
+        window.listatimeout = setTimeout("vraboteni_popolnilistasotimeout()",1600);
+    });
+    jQuery(".filtermenu-vraboten .ddoddel").keyup(function () {
+        clearTimeout(window.listatimeout);
+        window.listatimeout = setTimeout("vraboteni_popolnilistasotimeout()", 1600);
+        if($('.filtermenu-vraboten .ddoddel option:selected').val() != ''){
+            var oddel_id = $('.filtermenu-vraboten .ddoddel option:selected').val();
+            var url = "/index.php/covecki_resursi/covecki/pododdeli?oddel_id=" + oddel_id;
+            jQuery.ajax({
+                url: url,
+                type: 'GET',
+
+                dataType: 'json',
+                success:function (response) {
+                    console.log(response);
+                    jQuery('.filtermenu-vraboten .ddpododdel').empty();
+                    jQuery.each(response, function(index, item){
+
+
+                        jQuery(".filtermenu-vraboten .ddpododdel").append($('<option>' + item + '</option>').val(index));
+
+                    });
+
+
+
+
+                }
+            });
+        }
+
+    });
+
+
+
+    jQuery(".cmd-printlink").click(function(e){
+        //jQuery.ajax({
+          //  url:'/index.php/covecki_resursi/covecki/print_covecki_resursi',
+          //  type:'POST',
+          //  data: {},
+           // success:function (response) {
+
+
+
+           // }
+       // });
+
+
+       jQuery(".cmd-printlink").attr("href","/index.php/print/pdf?view=/index.php/covecki_resursi/covecki/print_covecki_resursi");
+
+        //if (vlezni_fakturi_getSelektirana()>0){
+//jQuery(".cmd-printlink").attr("href","/index.php/print/pdf?view=/index.php/vlezni_fakturi/faktura/print_vlezna_faktura&id="+vlezni_fakturi_getSelektirana())
+//} else {
+            //alert("Ве молиме одберете фактура");
+            //e.preventDefault();
+           // return false;
+       // }
+    });
+
+
+});
+
+jQuery('.filter-covecki-resursi tbody .delete-tr').live('click',function () {
+    var r=confirm("Дали сте сигурни?");
+    var vrabotenid=jQuery(this).parent().parent().attr("vrabotenid");
+    var vrabotenred=jQuery(this).parent().parent();
+    if (r==true){
+        jQuery.ajax({
+            url:'/index.php/covecki_resursi/covecki/delete_vraboten?vrabotenid='+vrabotenid,
+            type:'GET',
+            success:function (response) {
+                if (jQuery.trim(response)=="ok"){
+                    vrabotenred.remove();
+                }
+
+            }
+        });
+
+    }
+
+
+});
+jQuery('.filter-covecki-resursi tbody .edit-tr').live('click',function () {
+    var vrabotenid=jQuery(this).parent().parent().attr("vrabotenid");
+    editvraboten(vrabotenid);
+});
+jQuery(".filter-covecki-resursi tbody .info-tr").live('click', function () {
+    vraboteni_prikazi(jQuery(this).parent().parent().attr("vrabotenid"));
+});
+function vraboteni_prikazi(vrabotenid)
+{
+    var formurl = "/index.php/covecki_resursi/covecki/vraboteni_prikazi";
+    var data = {  id:vrabotenid  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Преглед",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+          jQuery(".iskluci-izmeni input, .iskluci-izmeni textarea, .iskluci-izmeni select").attr('disabled','disabled');
+        }
+
+    });
+
+}
+function vraboteni_popolnilistasotimeout(){
+
+popolni_lista_vraboteni(jQuery(".vraboten-filter-forma").serialize());
+}
+
+function  popolni_lista_vraboteni(filterdata) {
+
+    if (typeof filterdata != "undefined") {
+        var data = filterdata;
+
+    } else {
+        var data = {};
+    }
+//console.log(data);
+    jQuery.ajax({
+
+        url: "/index.php/covecki_resursi/covecki/lista",
+        type: 'POST',
+        data: data,
+        dataType: 'json',
+        success:function (response) {
+
+
+            jQuery(".filter-covecki-resursi tbody").html('');
+            var reden=1;
+            //      jQuery(".grupi tbody").html('');
+            //    jQuery(".konta tbody").html('');
+            jQuery.each(response, function (index, item) {
+                //console.log(response);
+               // if(index = 'pododdeli'){
+                    //jQuery(".ddpododdel listacovecki").empty();
+                  // for(var i = 0; i < response['pododdeli'].length; i++){
+                      // jQuery(".ddpododdel listacovecki").append($('<option>' + item[i][1] + '</option>').val(item[i][0]));
+                 //  }
+                   // jQuery(".ddpododdel listacovecki").trigger("update");
+ jQuery(".filter-covecki-resursi tbody").append(('<tr vrabotenid="' + item.id + '">' +
+                        '<td>' +
+                        '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>'+
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>'+
+                        '<a class="info-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/information.png"></a>' +
+                        '</td>' +
+                        '<td>' + reden + '</td>' +
+                        '<td>' + item.ime + '</td>' +
+                        '<td>' + item.prezime + '</td>' +
+                        '<td>' + item.embg + '</td>' +
+                        '<td class="text-right">' + formatnumbermkd(item.bruto_plata) + '</td>' +
+                        '<td class="rabotnomesto">' + item.rabotno_mesto + '</td>' +
+                        '<td>' + pododdel_ime_proveri(item.klasifikacija_ime) + '</td>' +
+                        '<td>' + item.broj_licenca + '</td>' +
+                        '<td>' + item.vazi_od + '</td>' +
+                        '<td>' + item.vazi_do + '</td>' +
+                        '<td>' + item.broj_faksimil + '</td>' +
+                        '<td>' + pododdel_ime_proveri(item.firma_ime) + '</td>' +
+                        '<td>' + pododdel_ime_proveri(item.bfod) + '</td>' +
+                        '<td>' + pododdel_ime_proveri(item.pododdel_ime) + '</td>' +
+                        '<td>' + item.smgr + '</td>' +
+                        '<td>' + item.datum_ragjanje + '</td>' +
+                        '<td>' + item.pocetok_raboten_odnos + '</td>' +
+                        '<td>' + item.kraj_raboten_odnos + '</td>' +
+                        '<td>' + item.praven_osnov + '</td>' +
+                        '<td></td>' +
+
+
+                        '</tr>'));
+                reden=reden+1;
+
+            });
+
+            jQuery(".filter-covecki-resursi").trigger("update");
+        }
+    });
+    }
+
+function editvraboten(vrabotenid){
+
+    var vrabotenred=jQuery(this).parent().parent();
+    var formaction = "/index.php/covecki_resursi/covecki/izmeni_vraboten?id="+vrabotenid;
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery("body").append('<div class="' + tempdialog + '"></div>');
+
+    jQuery.ajax({
+        url:formaction,
+        type:'GET',
+        success:function (response) {
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position: "center",
+                title: "Измени",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+
+        }
+    });
+
+}
+
+function reload_covecki_resursi(){
+    var limit = 2000;
+    jQuery.ajax({
+        url:"/index.php/covecki_resursi/covecki/getVraboteni",
+        type:'POST',
+        data:{limit: limit},
+        dataType:'json',
+        success:function (response) {
+            jQuery(".filter-covecki-resursi tbody").html('');
+            var reden=1;
+            //      jQuery(".grupi tbody").html('');
+            //    jQuery(".konta tbody").html('');
+            jQuery.each(response, function (index, item) {
+//                console.log(response);
+                jQuery(".filter-covecki-resursi tbody").append(('<tr vrabotenid="' + item.id + '">' +
+                        '<td>' +
+                        '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>'+
+                        '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>'+
+                        '<a class="info-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/information.png"></a>' +
+                        '</td>' +
+                        '<td>' + reden + '</td>' +
+                        '<td>' + item.ime + '</td>' +
+                        '<td>' + item.prezime + '</td>' +
+                        '<td>' + item.embg + '</td>' +
+                        '<td class="text-right">' + formatnumbermkd(item.bruto_plata) + '</td>' +
+                        '<td class="rabotnomesto">' + item.rabotno_mesto + '</td>' +
+                        '<td>' + pododdel_ime_proveri(item.klasifikacija_ime) + '</td>' +
+                        '<td>' + item.broj_licenca + '</td>' +
+                        '<td>' + item.vazi_od + '</td>' +
+                        '<td>' + item.vazi_do + '</td>' +
+                        '<td>' + item.broj_faksimil + '</td>' +
+                        '<td>' + pododdel_ime_proveri(item.firma_ime) + '</td>' +
+                        '<td>' + pododdel_ime_proveri(item.bfod) + '</td>' +
+                        '<td>' + pododdel_ime_proveri(item.pododdel_ime) + '</td>' +
+                        '<td>' + item.smgr + '</td>' +
+                        '<td>' + item.datum_ragjanje + '</td>' +
+                        '<td>' + item.pocetok_raboten_odnos + '</td>' +
+                        '<td>' + item.kraj_raboten_odnos + '</td>' +
+                        '<td>' + item.praven_osnov + '</td>' +
+                        '<td></td>' +
+
+
+                        '</tr>'));
+                reden=reden+1;
+            });
+
+            jQuery(".filter-covecki-resursi").trigger("update");
+        }
+    });
+}
+function pododdel_ime_proveri(pododdel){
+    if(!pododdel || pododdel == ""){
+        return "нема";
+    }else
+    {
+        return pododdel;
+    }
+}
+jQuery('.ajaxvrabotenupdate').live('click', function () {
+    var formaction = jQuery(this).parent().attr('action');
+    var formmethod = jQuery(this).parent().attr('method');
+    jQuery.ajax({
+        type:"post",
+        url:formaction,
+        data:decodeURIComponent(jQuery(this).parent().serialize()),
+        success:function (data) {
+            if (jQuery.trim(data)=="ok"){
+                reload_covecki_resursi();
+                alert('Успешно');
+            } else {
+                alert('Грешка');
+            }
+        }
+
+    });
+    destroyparentdialog(jQuery(this));
+
+});
+
+</script>

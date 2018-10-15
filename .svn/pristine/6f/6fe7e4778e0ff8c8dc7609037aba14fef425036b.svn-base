@@ -1,0 +1,157 @@
+<div id="recepta-column-wrapper" class="recepta-column-wrapper">
+<form action="/index.php/upati/upati/create_recepta_obicna" method="post">
+    <input type="hidden" name="priem_id" value="<?php echo $priem_id; ?>">
+    <div id="desna-kolona" class="recepta-desna-kolona">
+        <div class="div-first-block">
+            <input type="hidden" name="tip" value="recepta_domasen_osiguranik">
+            <div class="recepta-naslov1 do">ФОНД ЗА ЗДРАВСТВЕНО ОСИГУРУВАЊЕ НА МАКЕДОНИЈА</div>
+            <div class="recepta-naslov1 center">РЕЦЕПТ Бр<input type="text" name="br_recepta" class="input_linii sirina_40"></div>
+            <div class="recepta-naslov1 center">ЗА ПРОПИШУВАЊЕ НА ЛЕК</div>
+        </div>
+        <div class="recepta-fineprint-border">
+            Место за<br/> потврда<br/> за платен<br/> придонес
+        </div>
+        <div class="clear"></div>
+
+        <label class="recepta-labela">Подрачна служба</label><input type="text" name="fzo_podracna" class="sirina_200 recepta-input-l input_linii" maxlength="23" disabled=""/>
+        <br>
+        <label class="recepta-labela">Презиме и име</label><input type="text" name="prezime" class="sirina_100 recepta-input-l input_linii" maxlength="20" disabled=""/>
+        <input type="text" name="ime" class="sirina_100 recepta-input-l input_linii" maxlength="15" disabled=""/>
+        <br>
+        <label class="recepta-labela">Адреса</label><input type="text" name="ulica" disabled="" class="recepta-input-l input_linii" maxlength="40"/>
+        <br>
+        <label class="recepta-labela">ЕМБГ</label><input type="text" name="embg" maxlength="13" class="recepta-input-l input_linii sirina_150" disabled="">
+        <label class="recepta-labela">ЕЗБО</label><input type="text" name="ezbo" maxlength="9" class="recepta-input-l input_linii sirina_150" disabled=""><br>
+        <label class="recepta-labela">Број на<br>&nbsp; здравствен картон</label><input type="text" name="br_zdr_karton" style="width: 80px" class="input_linii" maxlength="8"/>
+        <label class="recepta-labela">Oснов на осигурување</label><input type="text" name="osnov_na_osiguruvanje" class="input_linii sirina_40" maxlength="2" disabled=""/><br>
+        <label class="recepta-labela">Број на здравствена<br>&nbsp;легитимација</label><input type="text" name="br_zdravstvena_legitimacija" class="input_linii" maxlength="14" disabled="">
+        <br/>
+        <br/>
+        <div class="linija-br"></div>
+        <label class="recepta-labela">Податоци за носителот на осигурување</label><br><br/>
+        <label class="recepta-labela">Презиме и име</label><input type="text" name="nositel_prezime" class="sirina_150 recepta-input-l input_linii" disabled=""/>
+        <input type="text" name="nositel_ime" class="sirina_150 recepta-input-l input_linii" disabled=""/>
+        <br>
+        <label class="recepta-labela">ЕМБГ</label><input type="text" name="nositel_embg" maxlength="13" class="recepta-input-l input_linii sirina_150" disabled="">
+        <label class="recepta-labela">ЕЗБО</label><input type="text" name="nositel_ezbo" maxlength="9" class="recepta-input-l input_linii sirina_150" disabled=""><br>
+        <br/>
+        <div class="linija-br"></div>
+
+
+
+
+        <div class="div_tret_del">
+            <label class="input-potpis left_float">Препорака од</label>
+            <div class="div-preporaka-od">
+            <input type="text" maxlength="6" name="preporakaodInput" class="input-potpis input_linii sirina_60" >
+            <input type="text" maxlength="6" name="preporakaodInput" class="input-potpis input_linii sirina_60" >
+            <input type="text" maxlength="6" name="preporakaodInput" class="input-potpis input_linii sirina_60" >
+        </div>
+            <div class="clear">
+                <input type="radio" name="preporaka_od" value="specijalist"><label  class="input-potpis">Специјалист</label><input type="radio" name="preporakaod" value="subspecijalist"><label class="input-potpis">Субспецијалист</label><input type="radio" name="preporakaod" value="konzilium"><label class="input-potpis">Конзилиум</label>
+            </div>
+            <div class="div-preporaka-od">
+                <label class="input-potpis">H</label><input type="checkbox" name="checkbox_boxes" value="H">
+                <label class="input-potpis">A</label><input type="checkbox" name="checkbox_boxes" value="A" >
+                <label class="input-potpis">X</label><input type="checkbox" name="checkbox_boxes" value="X" >
+              <input type="text" name="checkbox_text" maxlength="6" class="sirina_60 input_linii">
+            </div>
+            <div class="clear">
+                <h1 class="margin-left-15">Rp.</h1><br/>
+                <textarea name="recepta_text" class="textarea-recepta" maxlength="400"></textarea>
+
+            </div>
+            <img src="/images/BARKOD.png" class="slika_barkod">
+            <div class="potpisi clear"></div>
+            <div class="div-datumi-propis">
+                <input type="text" name="datum_propisuvanje" class="input-potpis input_linii datum sirina_120" value="<?php echo date('d-m-Y');?>"/>
+                <input type="hidden" name="vreme_propisuvanje" value="<?php echo date('H:i');?>"><br/>
+                <label class="potpisVtori input-potpis">датум пропишување</label>
+            </div>
+            <div class="div-datumi-propis">
+                <input type="text" name="datum_hronicna" class="input-potpis input_linii datum sirina_120" value="<?php echo date('d-m-Y');?>"/><br/>
+                <label class="potpisVtori input-potpis">датум на важност од<br/> (за хронична терапија)</label>
+            </div>
+            <div class="MP-recepta">
+                <label class="input-potpis">М.П.</label>
+            </div>
+            <div class="div-datumi-propis">
+                <input type="text" name="faksimil_i_potpis" class="input-potpis input_linii div-datumi-propis"/><br/>
+                <label class="potpisVtori input-potpis">факсимил и потпис<br/>на лекар</label>
+            </div>
+
+        </div>
+
+        <div class="linija-br"></div>
+        <br/>
+
+        <div>
+            <div class="sirina_220 left_float">
+                <label class="recepta-labela">Шифра на лекот</label>
+                <input type="text" name="sifra_lek" class="sirina_90 pole-za-lek input_linii" maxlength="6"/><br/>
+                <div>
+                    <div class="sirina_100 left_float recepta-labela">
+                        Количина на лек по единица фармацевтска форма</div>
+                    <div>
+                        <input type="text" name="kolicna_lek" class=" sirina_100 pole-za-lek input_linii" maxlength="3"/>
+                    </div>
+                </div>
+                <div class="clear">
+                    <label class="recepta-labela">Пакување</label>
+                    <input type="text" name="pakuvanje" class="sirina_130 pole-za-lek input_linii" maxlength="2"/><br/>
+                </div>
+            </div>
+            <div class="sirina_220 right_float">
+                <label class="recepta-labela">Шифра на аптека</label>
+                <input type="text" name="sifra_apteka" class="sirina_90 pole-za-lek input_linii" maxlength="8"/><br/>
+                <label class="recepta-labela">Број на спецификација</label>
+                <input type="text" name="br_specifikacija" class="sirina_40 pole-za-lek input_linii" maxlength="6"/><br/>
+
+                <div class="sirina_100 left_float recepta-labela">
+                    Реден број на рецептот во спецификација</div>
+                <div>
+                    <input type="text" name="red_br_lek_vo_spec" class="sirina_90 recepta-input-l input_linii" maxlength="6"/>
+                </div><br/>
+       </div>
+
+            <div class="potpisi clear"></div>
+            <div class="div-datumi-propis">
+                <input type="text" name="datum_izdavnje_lek" class="input-potpis input_linii datum sirina_120" id="datumIzd"  value="<?php echo date('d-m-Y');?>"/><br/>
+                <label class="potpisLabela input-potpis">датум на издавање<br/> на лекот</label>
+            </div>
+            <div class="MP-recepta">
+                <label class="input-potpis">М.П.</label>
+            </div>
+            <div class="sirina_150 left_float">
+                <input type="text" name="sifra_potpis_faramac_tehnicar" class="input-potpis input_linii sirina_140" /><br/>
+                <label class="potpisLabela1 input-potpis">шифра и потпис на<br/>фармацевтскиот техничар</label>
+            </div>
+            <div class="sirina_120 padding_left_5 left_float">
+                <input type="text" name="faksimil_potpis_farmacevt" class="input-potpis input_linii sirina_120"/><br/>
+                <label class="potpisLabela input-potpis">факсимил и потпис<br/>на фармацевтот</label>
+            </div>
+
+
+        </div>
+
+    </div>
+    <div class="addstavka floatright">
+        <?php if($print == 2) { ?>
+        <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_recepta_obicna&id=" class="printlink" target="_blank" >
+            <button type="button" class="print"><span>Принт</span></button>
+        </a>
+        <?php } ?>
+        <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_recepta_obicna&id=" class="printlinkupati hide" target="_blank" >
+            <button type="button" class="print"><span>Принт</span></button>
+        </a>
+        <button type="button" class="button snimi-forma-upati"  poraka_uspesno="успешно снимен"
+                poraka_neuspesno="Грешка при снимање"  izvrsi="lekuvanja_listasozapisi(lekuvanja_getaktiven_priemid())"
+                ><span>Сними</span></button>
+
+    </div>
+</form>
+</div>
+<script>
+    jQuery('.datum').datepicker({dateFormat:'yy-mm-dd'});
+</script>
+

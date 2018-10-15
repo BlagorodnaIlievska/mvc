@@ -1,0 +1,61 @@
+<div class="container">
+    <input type="hidden" class="pacient-id" value="<?= $pacient_id; ?>" />
+    <div class="pacienti-filter-nov">
+        <form class="pacient-filter-nov-forma">
+            <div class="grupa">
+                <div class="levakolona">Име:</div>
+                <div class="desnakolona"><input name="ime" value="" class="pacient-ime"/></div>
+                <div class="levakolona">Татково Име:</div>
+                <div class="desnakolona"><input name="tatkovoime" value="" class="pacient-tatkovoime"/></div>
+                <div class="levakolona">Презиме:</div>
+                <div class="desnakolona"><input name="prezime" value="" class="pacient-prezime"/></div>
+            </div>
+            <div class="grupa">
+                <div class="levakolona">Бр.Легитимација:</div>
+                <div class="desnakolona"><input name="br_zdravstvena_legitimacija" value=""
+                                                class="pacient-br_zdravstvena_legitimacija"/></div>
+                <div class="levakolona">Роден/а:</div>
+                <div class="desnakolona"><input name="datum_na_raganje" value="" class="pacient-datum_na_raganje"/>
+                </div>
+                <div class="levakolona">Пол:</div>
+                <div class="desnakolona"><select name="pol">
+                        <option></option>
+                        <option>Машки</option>
+                        <option>Женски</option>
+                    </select></div>
+            </div>
+            <div class="grupa">
+                <div class="levakolona">ЕМБГ:</div>
+                <div class="desnakolona"><input name="embg" value="" class="pacient-embg"/></div>
+                <div class="levakolona"> ЕЗБО:</div>
+                <div class="desnakolona"><input name="ezbo" value="" class="pacient-ezbo"/></div>
+                <div class="levakolona">
+                    <button type="button" class="button vnesinovpacient"><span>Внеси како нов</span></button>
+                </div>
+                <div class="desnakolona">
+                    <button type="button" class="button ispraznipolinja"><span>Испразни полиња</span></button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="clear"></div>
+    <div class="tabs-pacienti">
+        <!--<div id="pacienti-priem" class="notacordion">-->
+        <div class="nov-priem">
+            <h3><a href="javascript:">Прием кај доктор</a></h3>
+            <?php include('../priem_includes/podatoci_za_priemkajdoktor.php') ?>
+            <div class="clear"></div>
+            <h3><a href="javascript:">Податоци за Контакт</a></h3>
+            <?php include('../priem_includes/podatoci_za_kontakt.php') ?>
+            <div class="clear"></div>
+            <h3><a href="javascript:">Податоци за осигурување</a></h3>
+            <?php include('../priem_includes/podatoci_za_osig.php') ?>
+        </div>
+    </div>
+</div>
+<script>
+jQuery(document).ready(function () {
+    console.log("pacient: ", jQuery(".pacient-id").val());
+    pacienti_popolni_priemlista(jQuery(".pacient-id").val());
+});
+</script>

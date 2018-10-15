@@ -1,0 +1,72 @@
+<div class="artikli-lista-glavna">
+    <div class="buttoncontainer">
+        <button class="button" onclick="artikli_nov()"><span>Нов</span></button>
+    </div>
+
+
+    <div class="konto-novokonto">
+        <?   echo form_label('Артикл: ', ' artikl-baraj');
+        echo form_dropdown('artikl-baraj',$artikl2,'','class="artikl-baraj"');?>
+    </div>
+    <br>
+    <br>
+    <div class="artikli-lista">
+
+            <div class="predtabela">
+            <table class="tabela-artikli">
+                <thead>
+                <tr>
+                    <th class="koptabela" ></th>
+                    <th class="koptabela" ></th>
+                    <th class="koptabela" ></th>
+                    <th class="sifratabela">Шифра</th>
+                    <th class="katbrojtabela">Кат. број</th>
+                    <th class="imetabela">Име</th>
+                    <th class="emtabela">ем</th>
+                    <th class="barkodtabela">Баркод</th>
+                    <th class="opistabela">Опис</th>
+
+
+                </tr>
+                </thead>
+
+                <tbody></tbody>
+            </table>
+            </div>
+
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery('.artikl-baraj').combobox();
+        artikli_napolnilista();
+        jQuery(".tabela-artikli").tablesorter();
+
+        jQuery(".tabela-artikli tbody tr").live('click', function () {
+            jQuery(".tabela-artikli tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+        jQuery(".tabela-artikli .edit-tr").live('click', function () {
+		     artikli_izmeni(jQuery(this).parent().parent().attr("artikalid"));
+        });
+
+        jQuery(".tabela-artikli .delete-tr").live('click', function () {
+            artikli_delete(jQuery(this).parent().parent().attr("artikalid"));
+        });
+        jQuery(".tabela-artikli .info-tr").live('click', function () {
+            artikli_prikaziartikl(jQuery(this).parent().parent().attr("artikalid"));
+        });
+	    jQuery(".izbrisidokumentodartikal").live('click',function(){
+            artikli_izbrisidokumentodartikal( jQuery(".izbrisidokumentodartikal").parent().attr('artikalid'), jQuery(".izbrisidokumentodartikal").parent().attr('ime'),jQuery(this) );
+
+	    });
+        jQuery('.artikl-baraj').live("change", function () {
+
+            var artikl = jQuery('.artikl-baraj').val();
+
+            console.log(artikl);
+           filtriraj_po_artikl(artikl);
+            ///  }
+        });
+    });
+</script>

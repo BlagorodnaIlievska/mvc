@@ -1,0 +1,21 @@
+<?php
+if(isset($aktivnosti) && is_array($aktivnosti))
+{
+    $i = 0;
+    foreach($aktivnosti as $aktivnost){
+        $i++;
+        ?>
+        <tr aktivnost_id="<?= $aktivnost->id; ?>">
+<!--            <td class="delete_aktivnost"><a class="delete" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a></td>-->
+            <td class="redenbroj"><?= $i; ?></td>
+            <td class="doktor"><input type="text" class="mesto" value="<?php echo $aktivnost->doktorIme." ".$aktivnost->doktorPrezime; ?>" /></td>
+            <td class="vreme"><input type="text" class="vreme" value="<?php echo $aktivnost->vreme; ?>" /></td>
+            <td class="vreme_do"><input type="text" class="vreme_do" value="<?php echo $aktivnost->vreme_do; ?>" /></td>
+            <td class="aktivnost"><input type="text" class="aktivnost" value="<?php echo $aktivnost->aktivnost; ?>" /></td>
+            <td class="mesto"><input type="text" class="mesto" value="<?php echo $aktivnost->mesto; ?>" /></td>
+            <td class="pacient"><input type="text" class="mesto" value="<?php echo $aktivnost->pacientIme." ".$aktivnost->pacientPrezime; ?>" /></td>
+        </tr>
+    <?php
+    }
+}
+?>

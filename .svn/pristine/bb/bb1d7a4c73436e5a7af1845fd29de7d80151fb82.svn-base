@@ -1,0 +1,3 @@
+<p>Полето е креирано.</p>
+
+<br><?php echo anchor('podatoci/site/main_area', 'Назад во мени'); ?>

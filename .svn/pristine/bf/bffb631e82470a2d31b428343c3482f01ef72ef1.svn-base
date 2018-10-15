@@ -1,0 +1,220 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+
+
+class Pacienti extends CI_Controller{
+
+
+
+    function __construct()
+
+    {
+
+        parent::__construct();
+
+
+    }
+
+
+
+    public function new_pacient()
+
+    {
+
+        //  $this->load->model('users/membership_model');
+
+        // $data['roles'] = $this->membership_model->get_roles_dropdown();
+
+        $this->load->view('pacienti/pacient_form');
+
+    }
+
+
+      public function prebaruvaj(){
+
+          $ime = $this->input->post('imeid');
+          $pacientid = $this->input->post('pacientid');
+          $tatkovo = $this->input->post('tatkovo');
+          $embr = $this->input->post('embrid');
+          $datrag = $this->input->post('datrag');
+          $ezbo = $this->input->post('ezboid');
+          $prezime = $this->input->post('prezimeid');
+         $pol=$this->input->post('polid');
+          $this->load->model('pacienti/pacienti_model');
+          $query = $this->pacienti_model->prebaruvanje($ime, $pacientid, $tatkovo, $embr, $datrag, $ezbo,$prezime,$pol);
+
+          echo json_encode($query);
+        }
+
+    public function create_pacient()
+
+    {
+
+        $this->load->library('form_validation');
+
+        $this->form_validation->set_rules('ime', 'Ime na ime', 'trim|required');
+
+
+
+        if($this->form_validation->run() == FALSE)
+
+        {
+
+            $this->new_pacient();
+
+        }
+
+        else
+
+        {
+
+            $this->load->model('pacienti/pacienti_model');
+
+
+            if($query = $this->pacienti_model->create_pacient())
+
+
+           {
+
+              $data['main_content'] = 'pacienti/pacient_successful';
+
+             $this->load->view('includes/template', $data);
+
+        }
+
+        else
+
+      {
+
+               $this->load->view('pacienti/pacient_form');
+
+          }
+
+        }
+
+    }
+
+
+
+    public function view_pacient()
+
+    {
+        $this->load->model('pacienti/pacienti_model');
+        $query = $this->pacienti_model->getAllPacienti();
+
+        $data['main_content'] = 'pacienti/edit_pacient_form';
+        $data['pacient'] = $query;
+        $data['ajax'] = 1;
+        $this->load->view('includes/template', $data);
+    }
+
+
+
+    public function delete_pacient(){
+
+
+
+        $this->load->model('pacienti/pacienti_model');
+
+        $this->pacienti_model->delete_pacient();
+
+        $this->view_pacient();
+
+    }
+
+
+
+    public function edit_pacient(){
+
+
+
+        $this->load->model('pacienti/pacienti_model');
+
+
+        $query = $this->pacienti_model->edit_pacient();
+
+
+
+        $data['main_content'] = 'pacienti/update_pacient_form';
+
+
+        $data['pacient'] = $query;
+
+        $this->load->view('includes/template', $data);
+
+        $this->view_pacient();
+
+    }
+
+
+
+    public function update_pacient(){
+
+
+
+        $this->load->model('pacienti/pacienti_model');
+
+        $query = $this->pacienti_model->update_pacient();
+
+
+
+        if($query)
+
+        {
+
+            echo "Field updated successfully";
+
+        }
+
+        else
+
+        {
+
+            echo "No row was found ... Please try again.";
+
+        }
+
+        $this->view_pacient();
+
+    }
+
+
+
+    public function is_logged_in()
+
+    {
+
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+
+        {
+
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+
+            die();
+
+        }
+
+    }
+public function update(){
+
+    $id=$this->input->get('id');
+
+    $this->load->model('pacienti/pacienti_model');
+    $query = $this->pacienti_model->edit_pacient2($id);
+    $data['main_content'] = 'pacienti/update_pacient_form';
+    $data['pacient'] = $query;
+    $data['ajax'] = 1;
+    $this->load->view('includes/template', $data);
+
+    $this->view_pacient();
+
+
+
+}
+
+
+}

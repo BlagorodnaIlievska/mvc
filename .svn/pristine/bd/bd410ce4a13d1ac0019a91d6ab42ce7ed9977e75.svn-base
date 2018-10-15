@@ -1,0 +1,236 @@
+<div class="podatoci-za-priemkajdoktor">
+    <form class="podatoci-za-priemkajdoktor-form">
+        <input type="hidden" name="pacient_id" class="pacientidstatic" value="<?= $priem->pacient_id ?>" />
+<!--        <input type="hidden" name="pridruznik_id" class="pacientidpridruznik" value="--><?//= $priem->pridruznik_id ?><!--" />-->
+        <input type="hidden" name="osiguruvanje_id" class="pacientidosiguruvanje" value="<?= $priem->osiguruvanje_id ?>" />
+        <fieldset class="grupa1">
+            <div class="datum-gr1">
+                <div class="levakolona">Датум:</div>
+                <div class="desnakolona"><input name="priem_datum" class="pacient-priem_datum"
+                                                value="<?= $priem->priem_datum; ?>" readonly="readonly"/>
+                </div>
+            </div>
+            <div class="vreme-gr1">
+                <div class="levakolona">Време:</div>
+                <div class="desnakolona">
+                    <input name="priem_vreme" class="pacient-priem_vreme" value="<?= $priem->priem_vreme; ?>"
+                           readonly="readonly"/>
+                </div>
+            </div>
+            <?php if($priem->firma_id == 44) { ?>
+                <div class="pregledan-od-gr1">
+                    <div class="levakolona">Прегледан од:</div>
+                    <div class="desnakolona">
+                        <input type="text" name="pregledan_od" class="pacient-pregledan_od" value="<?= $priem->pregledan_od ?>" />
+                    </div>
+                </div>
+                <div class="brza-pomos-gr1">
+                    <div class="levakolona">Донесен со брза помош:</div>
+                    <div class="desnakolona">
+                        <input type="checkbox" name="donesen_so_brza_pomos" class="pacient-brza_pomos"
+                               checked="<?= ($priem->donesen_so_brza_pomos == 1) ? "checked" : ""; ?>" />
+                    </div>
+                </div>
+            <?php } ?>
+        </fieldset>
+        <fieldset class="grupa2">
+            <div class="clear">
+            Основ
+            <select name="ima_upat" class="upat ima_upat">
+                <option value="0" <?= ($priem->ima_upat==0) ? "selected" : ""; ?> >Нема упат</option>
+                <option value="1" <?= ($priem->ima_upat==1) ? "selected" : ""; ?> >Болнички упат</option>
+                <option value="2" <?= ($priem->ima_upat==2) ? "selected" : ""; ?> >Интерболнички упат</option>
+                <option value="3" <?= ($priem->ima_upat==3) ? "selected" : ""; ?> >Интерклинички упат</option>
+                <option value="4" <?= ($priem->ima_upat==4) ? "selected" : ""; ?> >Специјалистички упат</option>
+            </select>
+            </div>
+            <div class="clear">
+            <span class="pricina-za-upat">Причина за упатување</span>
+            <select name="pricina_za_upat" class="upat pricina_za_upat">
+                <option value="1" <?= ($priem->pricina_za_upat==1) ? "selected" : ""; ?> >Болен</option>
+                <option value="2" <?= ($priem->pricina_za_upat==2) ? "selected" : ""; ?> >Сообраќајка</option>
+                <option value="3" <?= ($priem->pricina_za_upat==3) ? "selected" : ""; ?> >Тепачка</option>
+                <option value="4" <?= ($priem->pricina_za_upat==4) ? "selected" : ""; ?> >Семејно насилство</option>
+                <option value="5" <?= ($priem->pricina_za_upat==5) ? "selected" : ""; ?> >Самоубиство</option>
+                <option value="5" <?= ($priem->pricina_za_upat==5) ? "selected" : ""; ?> >Друго</option>
+            </select>
+            </div>
+            <div class="clear">
+                <span class="upaten-od">Упатен од</span></br>
+                <select class="lekari searchlager" name="spec_ustanova_id">
+                    <option value="0"></option>
+                    <?php foreach ($ustanovi as $key => $val) { ?>
+                        <option value="<?php echo $key ?>" <?= ($key==$priem->spec_ustanova_id) ? "selected" : "" ?> ><?php echo $val ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+            <div class="clear">
+                Број на упат <input type="text" size="5" name="spec_upatbroj" class="brnaupat" value="<?= $priem->spec_upatbroj; ?>">
+            </div>
+            <div class="clear">
+                Важност на упат <input type="text" size="5" name="vaznost_na_upat" class="vaznost_na_upat" value="<?= $priem->vaznost_na_upat; ?>">
+            </div>
+            <div class="clear"></div>
+            <div class="priem_doktor_vlezna_faktura">
+                <label>Дали има влезно ДСГ:</label>
+                <input type="checkbox" class="ima_vlezno_dsg" name="ima_vlezno_dsg" <?= ($priem->ima_vlezno_dsg == 1) ? "checked" : ""; ?> />
+                <div class="priem_doktor_vlezno_dsg">
+                    <label>Влезно ДСГ:</label>
+                    <select class="vlezno_dsg_id" name="vlezno_dsg_id">
+                        <option value="0"></option>
+                        <?php foreach ($paketi_dsg as $paket) { ?>
+                            <option value="<?php echo $paket->id ?>" <?= ($paket->id==$priem->vlezno_dsg_id) ? "selected" : ""; ?> ><?php echo "( ". $paket->sifra . " ) " . $paket->naziv ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <br/>
+            </div>
+            <div class="izberi-participacija ednakolona">
+                <label>Основ на осигурување:</label><br/>
+                <select class="participacija-dropdown" name="participacija">
+                    <option value="0"></option>
+                    <?php foreach ($osnov_osiguruvanje as $osnov) { ?>
+                            <option value="<?php echo $osnov->id ?>" <?= ($osnov->id==$priem->participacija) ? "selected" : ""; ?> ><?php echo "( ". $osnov->sifra . " ) " . $osnov->naziv ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+            <div class="clear"></div>
+            <div class="ednakolona">
+                <a href="javascript:" class="moeosiguruvanje">Провери осигурување</a>
+            </div>
+        </fieldset>
+        <fieldset class="grupa1">
+            <div class="moj-termin">
+                <div class="levakolona">Мој термин:</div>
+                <div class="desnakolona"><input type="checkbox" class="moj_termin" name="moj_termin" <?= ($priem->moj_termin==1) ? "checked" : ""; ?> /></div>
+                <div class="moj-termin-podatoci <?= ($priem->moj_termin==0) ? "hide" : ""; ?>">
+                    <div class="levakolona">Број:</div>
+                    <div class="desnakolona"><input type="text" name="moj_termin_broj_na_upat" class="moj_termin_broj_na_upat"
+                                                    value="<?= $priem->moj_termin_broj_na_upat ?>" /></div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="grupa3">
+            <div class="levakolona">Упатен кај Др:</div>
+            <div class="desnakolona">
+                <select class="doktori searchlagern" name="za_doktor_id">
+                    <option value="0"></option>
+                    <?php foreach ($dok as $key => $val) { ?>
+                        <option value="<?php echo $key ?>" <?= ($key==$priem->za_doktor_id) ? "selected" : ""; ?> ><?= $val; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+            <br/><br/><br/>
+            <div class="levakolona">Упатен во:</div>
+            <div class="desnakolona">
+                <select class="upaten-vo-dropdown" name="pod_oddel">
+                    <?php
+                    if (is_array($pododeli)) {
+                        foreach ($pododeli as $pododel) { ?>
+                            <option value="<?php echo $pododel->id ?>" <?= ($pododel->id==$priem->pod_oddel) ? "selected" : "" ?> ><?php echo $pododel->parentIme . " : " . $pododel->ime ?></option>
+                        <?php }
+                    } else { ?>
+                        <option value="0">Ве молиме одберете Оддел</option>
+                    <?php } ?>
+                </select>
+            </div>
+            <div class="ednakolona">
+                <button type="button" class="button za-edit-forma" onclick="pacienti_priemupdate()" style="float: right">
+                    <span>Зачувај</span>
+                </button>
+            </div>
+        </fieldset>
+    </form>
+    <form class="podatoci-za-osig-form" method="post">
+        <input type="hidden" name="pacient_id" value="" class="pacientidstatic"/>
+        <div class="podatoci-za-osig osig1">
+            <fieldset class="grupa1">
+                <div class="levakolona">Причина:*</div>
+                <div class="desnakolona"><input name="pricina" value="<?= $priem_osig->pricina ?>" class="pacient-pricina"/></div>
+                <div class="levakolona">Број на решение:*</div>
+                <div class="desnakolona"><input name="broj_na_resenie" value="<?= $priem_osig->broj_na_resenie ?>" class="pacient-broj_na_resenie"/></div>
+                <div class="levakolona">Крвна група:*</div>
+                <div class="desnakolona">
+                    <select name="krvna_grupa" class="pacient-krvna_grupa">
+                        <option <?= ($priem_osig->krvna_grupa=="0-") ? "selected" : ""; ?> >0-</option>
+                        <option <?= ($priem_osig->krvna_grupa=="0+") ? "selected" : ""; ?> >0+</option>
+                        <option <?= ($priem_osig->krvna_grupa=="A-") ? "selected" : ""; ?> >A-</option>
+                        <option <?= ($priem_osig->krvna_grupa=="A+") ? "selected" : ""; ?> >A+</option>
+                        <option <?= ($priem_osig->krvna_grupa=="B-") ? "selected" : ""; ?> >B-</option>
+                        <option <?= ($priem_osig->krvna_grupa=="B+") ? "selected" : ""; ?> >B+</option>
+                        <option <?= ($priem_osig->krvna_grupa=="AB-") ? "selected" : ""; ?> >AB-</option>
+                        <option <?= ($priem_osig->krvna_grupa=="AB+") ? "selected" : ""; ?> >AB+</option>
+                    </select>
+                </div>
+            </fieldset>
+        </div>
+<!--        <div class="clear"></div>-->
+        <div class="podatoci-za-osig ">
+            <fieldset class="grupa3">
+                <div class="levakolona">Шифра на земја:*</div>
+                <div class="desnakolona"><input name="stranski_teret_fzom_zemja_sifra" value="<?= $priem_osig->stranski_teret_fzom_zemja_sifra ?>" class="pacient-stranski_teret_fzom_zemja_sifra"/></div>
+                <div class="levakolona">Земја:*</div>
+                <div class="desnakolona"><input name="stranski_teret_fzom_zemja" value="<?= $priem_osig->stranski_teret_fzom_zemja ?>" class="pacient-stranski_teret_fzom_zemja"/></div>
+                <div class="levakolona">Бр. осигурување:*</div>
+                <div class="desnakolona"><input name="stranski_teret_fzom_br_osig" value="<?= $priem_osig->stranski_teret_fzom_br_osig ?>" class="pacient-stranski_teret_fzom_br_osig"/></div>
+                <div class="levakolona">EHIS:*</div>
+                <div class="desnakolona"><input name="stranski_teret_fzom_ehis" value="<?= $priem_osig->stranski_teret_fzom_ehis ?>" class="pacient-stranski_teret_fzom_ehis"/></div>
+            </fieldset>
+        </div>
+    </form>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        //getNewPriemBroj();
+        jQuery('.doktori').combobox();
+        jQuery('.lekari').combobox();
+        jQuery('.participacija-dropdown').combobox();
+        jQuery('.vlezno_dsg_id').combobox();
+        jQuery('.vaznost_na_upat').datepicker();
+
+        if(jQuery(".firmadropdown option:selected").val() == 44)
+        {
+            jQuery(".upaten-vo-dropdown option[value='2']").hide();
+            jQuery(".upaten-vo-dropdown option[value='3']").hide();
+        }
+
+        jQuery('.pacienti-priem-edit-form .za-edit-forma').removeAttr('onclick');
+        jQuery(".pacienti-priem-edit-form .za-edit-forma").click(function(){
+//            lekuvanja_update_priem(jQuery(this));
+            pacienti_priemupdate(jQuery(this));
+        });
+        setTimeout("jQuery('.ui-autocomplete.ui-menu').hide()", 200);
+        jQuery('.moeosiguruvanje').live('click', function () {
+            pokaziMoeOsigFzoIframe();
+        });
+        jQuery(".moj_termin").click(function () {
+            jQuery(".moj-termin-podatoci").toggleClass("hide");
+        });
+        jQuery(".ima_upat").change(function () {
+            if (jQuery(".ima_upat").val() == 2) {
+                jQuery(".priem_doktor_vlezna_faktura").show();
+            } else {
+                jQuery(".priem_doktor_vlezna_faktura").hide();
+            }
+        });
+        jQuery(".ima_vlezno_dsg").change(function () {
+            if (jQuery(".ima_vlezno_dsg").attr("checked")) {
+                jQuery(".priem_doktor_vlezno_dsg").show();
+            } else {
+                jQuery(".priem_doktor_vlezno_dsg").hide();
+            }
+        });
+
+        if (jQuery(".ima_upat").val() == 2) {
+            jQuery(".priem_doktor_vlezna_faktura").show();
+        } else {
+            jQuery(".priem_doktor_vlezna_faktura").hide();
+        }
+
+        if (jQuery(".ima_vlezno_dsg").attr("checked")) {
+            jQuery(".priem_doktor_vlezno_dsg").show();
+        } else {
+            jQuery(".priem_doktor_vlezno_dsg").hide();
+        }
+    });
+</script>

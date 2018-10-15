@@ -1,0 +1,117 @@
+<?php
+$delete = img(array(
+    'src' => 'images/delete.png',
+    'width' => '15',
+    'height' => '15',
+));
+$edit = img(array(
+    'src' => 'images/edit.png',
+    'width' => '15',
+    'height' => '15',
+));
+$smeni=array(
+    '1'=>'една смена',
+    '2'=>'во смени'
+);
+$pol=array(
+    '1'=>'машки',
+    '2'=>'женски'
+);
+$bracen_status=array(
+    '1'=>'во брак',
+    '2'=>'сам/а',
+    '3'=>'разведен/а'
+);
+$rabMesto=array('1'=>'Hirurg');
+$grupa=array('1'=>'Hirurg');
+$obrazovanie=array(
+    '1'=>'ОО',
+    '2'=>'СС',
+    '3'=>'ВСС',
+    '4'=>'Мр.',
+    '5'=>'Доц.Др.',
+    '6'=>'Др'
+);
+$p=$vraboten[0]->pol;
+$b=$vraboten[0]->bracen_status;
+$f=$vraboten[0]->firma;
+$o=$vraboten[0]->oddel;
+$pod=$vraboten[0]->pododdel;
+$ob=$vraboten[0]->obrazovanie;
+$s=$vraboten[0]->smenska_grupa;
+?>
+
+<div class="editklasa iskluci-izmeni prikazinfo-plata">
+    <form method="post" action="/index.php/plati/plati/podeliPlata" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="<?php echo $id ?>" />
+
+        <div class="novvraboten-levomeni">
+            <h4>Лични податоци</h4>
+            <ul>
+            <li><label>Име </label><input type="text" name="ime" value="<?echo $vraboten[0]->ime;?>" class="imevrab" /></li>
+                <li><label>Презиме</label> <input type="text" name="prezime" value="<?echo $vraboten[0]->prezime;?>" /></li>
+                <li><label>Датум на раѓање </label><input type="text" name="datum_ragjanje" value="<?echo $vraboten[0]->datum_ragjanje;?>" class="datumvrab"/></li>
+                <li><? echo form_label('Пол','pol');
+            echo form_dropdown('pol',$pol,$p,'class="polvrab"');
+            ?> </li>
+                <li><label>Бр. платен список</label><input type="text" name="broj_platen_spisok"  value="<?echo $vraboten[0]->broj_platen_spisok;?>" class="brojspisok"/></li>
+                <li><label>Бр. ЛК</label><input type="text" name="broj_licna_karta" value="<?echo $vraboten[0]->broj_licna_karta;?>" class="brojlicna" /></li>
+                <li><label>Роден во</label> <input type="text" name="mesto_ragjanje" value="<?echo $vraboten[0]->mesto_ragjanje;?>"  class="mestoragj"/></li>
+                <li class="duploli nacpripadnost"><label>Национална припадност</label> <input type="text" name="nacionalna_pripadnost" value="<?echo $vraboten[0]->nacionalna_pripadnost;?>"  class="nacionalnapripadnost" /></li>
+                <li><label>ЕМБГ</label> <input type="text" name="embg" value="<?echo $vraboten[0]->embg;?>" class="embgvrab" /><br>
+                <li><? echo form_label('Брачен статус','bracen_status');
+            echo form_dropdown('bracen_status',$bracen_status,$b,'class="bracenstatus"');
+            ?></li>
+            </ul>
+
+        </div>
+        <div class="novvraboten-desnomeni">
+            <h4>Работен однос</h4>
+            <ul>
+            <li class="duploli">Поч. на раб. однос/волонтерство <input type="text" name="pocetok_raboten_odnos"  value="<?echo $vraboten[0]->pocetok_raboten_odnos;?>" class="datumvrab"/></li>
+                <li class="duploli"><label>Крај на работен однос/волонтерство </label><input type="text" name="kraj_raboten_odnos" value="<?echo $vraboten[0]->kraj_raboten_odnos;?>" class="datumvrab"/></li>
+                <li class="duploli"><label>Правен основ( за завршување на раб. однос)</label> <input type="text" name="praven_osnov"  value="<?echo $vraboten[0]->praven_osnov;?>"  class="pravenosnov"/></li>
+                <li><label>Стаж </label><input type="text" name="staz" value="<?echo $vraboten[0]->staz;?>" class="stazvrab"  /> год.</li>
+                <li><label>Претходен стаж </label><input type="text" name="prethoden_staz" value="<?echo $vraboten[0]->prethoden_staz;?>" class="prethodenstaz" /> год.</li>
+                <li><label>Вкупен стаж </label><input type="text" name="vkupno_staz" value="<?echo $vraboten[0]->vkupno_staz;?>" class="vkupnostaz"  /> год.</li>
+                <li><label>ЛД основица </label> <input type="text" name="ld_osnovica" value="<?echo $vraboten[0]->ld_osnovica;?>" class="ldosnovica" /> год.</li>
+                <li><? echo form_label('Фирма','firma');
+            echo form_dropdown('firma',$firma,$f,'class="firmavrab"');
+            ?> </li>
+                <li><? echo form_label('Оддел','oddel');
+            echo form_dropdown('oddel',$oddel,$o,'class="oddelvrab"');
+            ?></li>
+                <li>
+            <? echo form_label('Пододдел','pododdel');
+            echo form_dropdown('pododdel',$pododdel,$pod,'class="pododdelvrab"');
+            ?></li>
+                <li class="duploli"><? echo form_label('Сменска група','smenska_grupa');
+            echo form_dropdown('smenska_grupa',$smena,$s,'class="smenagrupa"');
+            ?></li>
+                <li class="duploli"><label>Број на факсимил (важи само за доктори) </label><input type="text" name="broj_faksimil" value="<?echo $vraboten[0]->broj_faksimil;?>" class="brojfaksimil" /></li>
+            </ul>
+        </div>
+
+        <div class="novvraboten-podmeni">
+            <ul>
+            <li><? echo form_label('Образование','obrazovanie');
+            echo form_dropdown('obrazovanie',$obrazovanie,$ob,'class="obrazovanie"');
+            ?></li>
+
+            <li><label>Број на лиценца/Уверение</label> <input type="text" name="broj_licenca" value="<?echo $vraboten[0]->broj_licenca;?>"  class="brojlicenca" /></li>
+            <ul class="vazi-od-do"><li class="vazi-od"><label>Важи од</label> <input type="text" name="vazi_od" class="datumvrab" value="<?echo $vraboten[0]->vazi_od;?>" /></li>  <li class="vazi-do"><label>До</label> <input type="text" name="vazi_do"  class="datumvrab" value="<?echo $vraboten[0]->vazi_do;?>" /></li></ul>
+            </ul>
+        </div>
+
+        <br/>
+        <div class="clear"></div>
+        <div>
+            <button type="submit" value="Zacuvaj" class="button"><span>Зачувај</span></button>
+        </div>
+
+    </form>
+</div>
+<script>
+
+    jQuery('.datumvrab').datepicker({dateFormat:'yy-mm-dd'});
+</script>

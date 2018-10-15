@@ -1,0 +1,125 @@
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+class Lekuvanja_pomosen extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+        bis_checkusage();
+        $this->load->model('pacienti/pacienti_pomosen_model');
+    }
+    function pokaziMoeOsigFzoIframe(){
+
+        $this->load->view('pacienti/priem_includes/fzomoeosigiframe');
+    }
+    function getPocetnaSostojba()
+    {
+        $id = $this->input->post("id");
+        $result = $this->pacienti_pomosen_model->getPocetnaSostojba($id);
+        echo json_encode($result);
+    }
+    function getPregled()
+    {
+        $id = $this->input->post("id");
+        $result = $this->pacienti_pomosen_model->getPregled($id);
+        echo json_encode($result);
+    }
+    function getUpatVrednosti()
+    {
+        $id = $this->input->post("id");
+        $result = $this->pacienti_pomosen_model->getUpatVrednosti($id);
+        echo json_encode($result);
+    }
+    function updateUpatVrednosti()
+    {
+        $data = $this->input->post();
+        $query = $this->pacienti_pomosen_model->updateUpatVrednosti($data);
+        echo $query;
+    }
+    function getObrazecVrednosti()
+    {
+        $id = $this->input->post("id");
+        $result = $this->pacienti_pomosen_model->getObrazecVrednosti($id);
+        echo json_encode($result);
+    }
+    function updateObrazecVrednosti()
+    {
+        $data = $this->input->post();
+        $query = $this->pacienti_pomosen_model->updateObrazecVrednosti($data);
+        echo $query;
+    }
+    function getReceptiVrednosti()
+    {
+        $id = $this->input->post("id");
+        $result = $this->pacienti_pomosen_model->getReceptiVrednosti($id);
+        echo json_encode($result);
+    }
+    function updateReceptiVrednosti()
+    {
+        $data = $this->input->post();
+        $query = $this->pacienti_pomosen_model->updateReceptiVrednosti($data);
+        echo $query;
+    }
+    function getIzjaviVrednosti()
+    {
+        $id = $this->input->post("id");
+        $result = $this->pacienti_pomosen_model->getIzjaviVrednosti($id);
+        echo json_encode($result);
+    }
+    function updateIzjaviVrednosti()
+    {
+        $data = $this->input->post();
+        $query = $this->pacienti_pomosen_model->updateIzjaviVrednosti($data);
+        echo $query;
+    }
+    function getPotvrdaZaSmrtVrednosti()
+    {
+        $id = $this->input->post("id");
+        $result = $this->pacienti_pomosen_model->getPotvrdaZaSmrtVrednosti($id);
+        echo json_encode($result);
+    }
+    function updatePotvrdaZaSmrtVrednosti()
+    {
+        $data = $this->input->post();
+        $query = $this->pacienti_pomosen_model->updatePotvrdaZaSmrtVrednosti($data);
+        echo $query;
+    }
+    function getOtpusnaListaVrednosti()
+    {
+        $id = $this->input->post("id");
+        $result = $this->pacienti_pomosen_model->getOtpusnaListaVrednosti($id);
+        echo json_encode($result);
+    }
+    function updateOtpusnaListaVrednosti()
+    {
+        $data = $this->input->post();
+        $query = $this->pacienti_pomosen_model->updateOtpusnaListaVrednosti($data);
+        echo $query;
+    }
+    function getBiohemiskaAnalizaVrednosti()
+    {
+        $id = $this->input->post("id");
+        $result = $this->pacienti_pomosen_model->getBiohemiskaAnalizaVrednosti($id);
+        bis_debug($result, "analiza");
+        echo json_encode($result);
+    }
+    function updateBiohemiskaAnalizaVrednosti()
+    {
+        $data = $this->input->post();
+        $query = $this->pacienti_pomosen_model->updateBiohemiskaAnalizaVrednosti($data);
+        echo $query;
+    }
+    function getZapisZaPriemVrednosti()
+    {
+        $id = $this->input->post("id");
+        $result = $this->pacienti_pomosen_model->getZapisZaPriemVrednosti($id);
+        echo json_encode($result);
+    }
+    function updateZapisZaPriemVrednosti()
+    {
+        $data = $this->input->post();
+        $query = $this->pacienti_pomosen_model->updateZapisZaPriemVrednosti($data);
+        echo $query;
+    }
+}

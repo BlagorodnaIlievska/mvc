@@ -1,0 +1,119 @@
+
+function uloga_nova() {
+
+    var formurl = "/index.php/korisnici/ulogi/nova";
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:{},
+        success:function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Нова Улога",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+
+
+        }
+    });
+}
+
+function uloga_popolnilista(){
+    var formurl = "/index.php/korisnici/ulogi/popolnilista";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data:{},
+        dataType: 'json',
+        success: function(response){
+            jQuery(".tabela-ulogalista tbody").html('');
+            jQuery.each(response, function (index, item) {
+                //  console.log(item);
+
+                jQuery(".tabela-ulogalista tbody").append(('<tr uloga_id="' + item.ulogi_id + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+
+                    '</td>' +
+                    '<td>' + item.uloga_ime + '</td>' +
+
+                    '</tr>'
+                    ));
+
+            });
+            jQuery(".tabela-ulogalista").trigger("update");
+        }
+
+
+    });
+}
+
+function uloga_izmeni(uloga_id) {
+    var formurl = "/index.php/korisnici/ulogi/izmeni";
+    var data = {  ulogi_id:uloga_id  }
+    jQuery.ajax({
+        url:formurl,
+        type:'GET',
+        data:data,
+        success:function (response) {
+
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:"center",
+                title:"Измени Улога",
+                close:function (event, ui) {
+                    // Remove the dialog elements
+                    // Note: this will put the original div element in the dom
+                    jQuery(this).dialog("destroy");
+                    // Remove the left over element (the original div element)
+                    jQuery(this).remove();
+                }
+            });
+
+        }
+    });
+
+}
+
+function uloga_delete(uloga_id){
+    var r=confirm("Избриши Улога");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/korisnici/ulogi/delete_uloga";
+            var data = {  ulogi_id:uloga_id  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    uloga_popolnilista();
+                }
+            });
+
+        }
+    }
+
+}
+
+
+

@@ -1,0 +1,211 @@
+.filter2-vlez {margin: 10px 0;}
+.filter2-vlez select {margin-right: 10px;}
+.pecatikartica {margin-top:10px;}
+.vleznaroba {margin: 0;}
+.vleznaroba .tip.small {width: 40px;}
+.vleznaroba .number.medium , .vleznaroba th.faktura{width:90px ;}
+.vleznaroba .datum.medium {width: 85px;}
+.vleznaroba th.klient {width: 300px;}
+.vleznaroba th.vkupno , .vleznaroba th.magacinska {width: 200px;}
+.matstavki .number.small {width: 30px;}
+.matstavki .sifra.medium , .matstavki .sifra2.medium {width: 70px;}
+.matstavki .katbroj.medium {width: 50px;}
+.matstavki .kolicina.small {width:45px;}
+.matstavki .procent.medium {width: 20px;}
+.tpriemnica .number.small {width: 30px;}
+.tpriemnica .sifra.medium , .tpriemnica .sifra2.medium {width: 70px;}
+.tpriemnica .katbroj.medium {width: 70px;}
+.tpriemnica .stavka.big {width: 300px;}
+.tpriemnica .edicinamerka.small {width: 50px;}
+.tpriemnica .ddv.small {width: 30px;}
+.klientpr-mat {margin: 0 auto;width: 260px;}
+.naslovpriemnici, .naslovpriemnicidetali, .naslovispratnici, .naslovispratnicidetali, .naslovkartici,
+.naslovlagerlista, .naslovpromet, .naslovraporti, .naslovinterniispratnici, .naslovstavkipopis, .naslovpopis,
+.naslovclenovipopis {background: none repeat scroll 0 0 #1A4775;color: #FFFFFF;font-size: 14px;padding: 1px;margin: 5px 0 0 0;}
+.priemnica-form .artikl {margin-bottom: 0;}
+.otpisnica-form .artikl{margin-bottom: 0;}
+.kopcinjafak-mat .button {float: left;margin-right: 10px;}
+.kopcinjafak-mat form {clear: none;}
+.matfform {float: left;}
+.matfform .predtabela {margin-top: 10px;}
+td .number {width: 30px;}
+td .katbroj {width: 70px;}
+td .stavka {width: 300px;}
+td .kolicina {width:45px;}
+td .ddv {width: 30px;}
+td .edicinamerka {width: 50px;}
+td .sifra2 {width: 70px;}
+td .em {width: 50px;}
+td .procent {width: 20px;}
+td .tip {width: 80px;}
+td .number {width:90px;}
+td .number.small {width:30px;}
+td .datum {width: 85px;}
+td .zabeleska {width: 300px;}
+th.kopcinjakolona {width: 40px;}
+th.datum {width: 85px;}
+th.zabeleska {width: auto;}
+th.tip {width:80px;}
+.matizlezform form select {margin-right:10px;}
+.ispratnica-form .right {clear: both; float: left; margin: 5px 0px;}
+.ispratnica-form .artikl {margin: 0;clear: both;}
+.ispratnica-form .submitbutton , .ispratnica-form .addstavka {margin:10px 0;}
+.matvlezform.vlez-form .filterformmat , .matvlezform.vlez-form .filter2-vlez {float: left;margin-top: 0;margin-bottom: 10px;margin-left: 10px;}
+.matvlezform.vlez-form form select , .matvlezform.vlez-form .filter2-vlez select {margin-right: 10px;}
+.lagermenu-filter, .filter-sno , .promet-filter {margin: 10px 0;}
+.promet-filter select {margin-right: 10px;}
+#raporti-meni {padding: 0;}
+.raporti-filter {margin: 10px 0;}
+.raporti-filter select {margin-right: 10px;}
+
+.matvlezform .buttoncontainer {
+    float: left;
+}
+.priemnica-form .left {margin: 0;}
+.priemnica-form .addstavka, .edit-priemnica-form .addstavka {margin-top: 5px;}
+.priemnica-form .submitbutton, .edit-priemnica-form .submitbutton {clear: none; float: left; margin: 10px 0;}
+.priemnica-form .otkazibutton, .edit-priemnica-form .otkazibutton {float: right; margin: 10px 0;}
+/*.priemnica-form input.broj, .edit-priemnica-form input.broj {width: auto;}*/
+.otpisnica-form .left {margin: 0;}
+.otpisnica-form .addstavka, .edit-otpisnica-form .addstavka {margin-top: 5px;}
+.otpisnica-form .submitbutton, .edit-otpisnica-form .submitbutton {clear: none; float: left; margin: 10px 0;}
+.otpisnica-form .otkazibutton, .edit-priemnica-form .otkazibutton {float: right; margin: 10px 0;}
+input.broj{width: auto !important;}
+.klientpr-mat label {float: left; line-height: 1.7;}
+div.dodadeni-fakturi {clear: both;}
+div.ispratnicabroj span.arhivskibroj {line-height: 1.7; margin-left: 5px;}
+.lagerlista td.srednacena, .lagerlista td.vrednost { text-align: right;}
+div.lagermenu-filter label, div.lagermenu-filter .searchlager {float: left;}
+div.lagermenu-filter label {line-height: 1.7;}
+#kartici_form .span-artikl, #kartici_form .span-magacin {float: left; line-height: 1.7; margin-right: 5px;}
+.matintizlezform .filterformmat span {float: left; line-height: 1.7; margin-right: 5px;}
+.matizlezform .filterformmat span {float: left; line-height: 1.7; margin-right: 5px;}
+.matvlezform .filterformmat span {float: left; line-height: 1.7; margin-right: 5px;}
+#lager_menu .lagermenu-filter span {float: left; line-height: 1.7; margin-right: 5px;}
+.matvlezform table {table-layout: inherit !important;}
+
+.prikaz .lagerlista {table-layout: fixed;}
+.prikaz .lagerlista td {overflow: hidden;}
+
+.prikaz .lagerlista .sifra {width: 110px;}
+.prikaz .lagerlista .katbroj {width: 110px;}
+.prikaz .lagerlista .edmerka {width: 110px;}
+.prikaz .lagerlista .kolicina {width: 110px;}
+
+
+.summatmag .vkupno.sifra {text-align: left}
+.summatmag .vrednost {text-align: right;}
+td.cenavlez , td.cenasredna , td.cenavkupno {text-align: right}
+.nov-popis-form .spanmagacin, .izmeni-popis-form .spanmagacin {float: left; line-height: 1.7;}
+.nov-popis-form .spanpretsedatel, .izmeni-popis-form .spanpretsedatel {float: left; line-height: 1.7; clear: left;}
+.clenovipopis {clear: both; margin-top: 60px;}
+.popis-novastavkab, .button.snimi-forma
+{
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.tabela-stavki-popis {table-layout: fixed;}
+.tabela-stavki-popis td {overflow: hidden;}
+.tabela-stavki-popis .action-popis {width: 45px;}
+.tabela-stavki-popis .redenbroj{width: 30px;}
+.tabela-stavki-popis .sifra{width: 172px}
+.tabela-stavki-popis .artikl{width: 172px}
+.tabela-stavki-popis .edmerka{width: 70px;}
+.tabela-stavki-popis .kolicina{width: 70px;}
+.tabela-stavki-popis .po-magacin{width: 115px;}
+.tabela-stavki-popis .realna-kolicina{width: 115px;}
+.tabela-stavki-popis .sredna-cena{width: 85px;}
+.tabela-stavki-popis .iznos-softver{width: 95px}
+.tabela-stavki-popis .iznos {width: 95px;}
+.tabela-stavki-popis .iznos-magacin{width: 95px;}
+.tabela-stavki-popis .realen-iznos{width: 85px;}
+.tabela-stavki-popis  .zabeleska{width: 300px;}
+.novpopis-zabeleska {width: auto !important;}
+.tabela-clenovi-popis {table-layout: fixed}
+.tabela-clenovi-popis .action-popis {width:20px}
+.tabela-clenovi-popis .redenbroj {width: 30px}
+.tabela-clenovi-popis .ime-prezime {width: auto}
+
+.izmenipopisform label {
+    float: left;
+    line-height: 1.6;
+    width: 195px !important;
+    margin-bottom: 5px;
+}
+.stavkipopistabeladiv .predtabela {overflow-x: hidden;}
+.magacin-pretsedatel {float: left;clear: both;}
+
+.popis-index-form.content-area table {table-layout: fixed;}
+.popis-index-form.content-area table tr td {overflow: hidden;}
+.popis-index-form .tabela-stavkipopis th.redenbroj {width: 30px;}
+.popis-index-form .tabela-stavkipopis th.sifra {width: 95px;}
+.popis-index-form .tabela-stavkipopis th.artikl {width: 150px;}
+.popis-index-form .tabela-stavkipopis th.edinicamerka {width: 80px;}
+.popis-index-form .tabela-stavkipopis th.kolicina {width: 100px;}
+.popis-index-form .tabela-stavkipopis th.sredna-cena {width: 100px;}
+.popis-index-form .tabela-stavkipopis th.iznos {width: 100px;}
+.popis-index-form .tabela-stavkipopis th.zabeleska {width: auto;}
+.popis-index-form .tabela-stavkipopis tbody tr td.sredna_cena {text-align: right;}
+.popis-index-form .tabela-popis th.izbrisi-izmeni {width: 15px;}
+.popis-index-form .tabela-popis th.redenbroj {width: 25px;}
+.popis-index-form .tabela-popis th.datum {width: 80px;}
+
+.tkartici .vlez,
+.tkartici .izlez,
+.tkartici .sostojba {text-align: right;}
+.tkartici .edmerka {width: 30px;}
+table.tkartici {table-layout:inherit !important;}
+#pregled_form table.sumiranje .vkupno {padding-right: 20px;}
+.tabela-stavki-popis td input {width: 100% !important;}
+.tabela-stavki-popis td input.ui-combobox-input {width: 75% !important;}
+.kolicina_magacin , .tabela-stavki-popis .kolicina , .sredna_cena , .iznos_softver , .iznos_magacin , .iznos_realen {text-align: right;}
+.konto-novokonto label {float: left;}
+.grupiranje-namena {clear: both;}
+.filter-pregledkasa label {float: left;}
+
+.editpriemnica.vlez-nova-priemnica-tabela .magacin {width:100px;}
+.editpriemnica.vlez-nova-priemnica-tabela .ui-combobox-input {width: 57% !important;}
+.datumnova-priemnica #datum {width: 90px;}
+.izmeni-priemnica-faktura tr td input {width: 100% !important;}
+.izmeni-popis-form .tabela-stavki-popis .zabeleska {width: auto !important;}
+.tabela-clenovi-popis th:first-child {width: 17px;}
+.tabela-clenovi-popis th:first-child + * {width: 30px;}
+.tabela-clenovi-popis .ui-combobox-input {width: 90% !important;}
+th.kolicina {text-align: left !important;}
+
+.tabela-stavki-popis .kolicina_realna {text-align: right;}
+.vlez-nova-priemnica-tabela td.artikli .ui-combobox-input.ui-autocomplete-input {width: 75% !important;}
+.interna-ispratcnia-form .submitbutton {float: left;}
+.interna-ispratcnia-form .otkazibutton {float: right;}
+
+.edit-ispratnica-form .submitbutton {clear: none; float: left; margin: 10px 0;}
+.edit-ispratnica-form .otkazibutton {float: right; margin: 10px 0;}
+.tpriemnica {table-layout: fixed;}
+.tpriemnica tr td {overflow: hidden;}
+.tpriemnica tr td input {width: 100%;}
+.tpriemnica th.delete {width: 19px;}
+.tpriemnica th.broj {width: 22px;}
+.tpriemnica th.sifra {width: 100px;}
+.tpriemnica th.stavka {width: 160px;}
+.tpriemnica th.kolicina {width: 26px;}
+.tpriemnica th.edinicamerka {width: 80px;}
+.tpriemnica th.thmagacin {width: 120px;}
+.tpriemnica th.garanten-rok {width: 85px;}
+.tpriemnica th.upotreblivodo {width: 100px;}
+.tpriemnica th.seriskibroj {width: 100px;}
+
+.tpriemnica.nova-otpisnica th.stavka {width: 330px;}
+.tpriemnica.nova-otpisnica td.artikli .ui-autocomplete-input {width: 290px !important;}
+.tpriemnica.nova-otpisnica td.sifra .ui-autocomplete-input {width: 60px !important;}
+.tpriemnica.nova-otpisnica td.edmerka .ui-autocomplete-input {width: 40px !important;}
+.tpriemnica.nova-otpisnica td.tdmagacin .ui-autocomplete-input {width: 82px !important;}
+
+.tpriemnica td.sifra .ui-autocomplete-input {width: 70px !important;}
+.tpriemnica td.artikli .ui-autocomplete-input {width: 135px !important;}
+.tpriemnica td.edmerka .ui-autocomplete-input {width: 52px !important;}
+.tpriemnica td.magacintd .ui-autocomplete-input {width: 95px !important;}
+.interna-ispratcnia-form {margin: 10px;}
+.interen-transfer-form .submitbutton , .interen-transfer-form .otkazibutton {margin-bottom: 10px;}
+#kartici_form .ui-autocomplete-input {width: 250px;}
+.tpriemnica.editpriemnica.vlez-nova-priemnica-tabela td.sifra .ui-autocomplete-input {width: 60px !important;}
+.editklasa.iskluci-izmeni {margin: 10px;}

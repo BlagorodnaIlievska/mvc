@@ -1,0 +1,53 @@
+<html>
+<head>
+</head>
+<body>
+
+<p align='center'>Pregled na vlezna roba</p>
+
+<table  border='1'   width='150' height='60' align='center'>
+    <tr>
+
+        <td>No.</td>
+        <td>Tip</td>
+        <td>Broj</td>
+        <td>Datum</td>
+        <td>Faktura</td>
+        <td>Klient</td>
+        <td>Zabeleska</td>
+
+
+    </tr>
+
+    <?php
+    $reden=1;
+
+    if(isset($q)){
+        foreach($q as $row){
+
+            echo "<tr>" ;
+
+            echo "<td width='20'>" . $reden . "</td>";
+            echo "<td width='60'>PovD</td>";
+            echo "<td width='60'>" . $row->textBroj. "</td>";
+            echo "<td width='60'>" .$row->datum."</td>";
+            echo "<td width='60'>" .$row->faktura."</td>";
+            echo "<td width='60'>".$row->firmaIme."</td>";
+            echo "<td width='60'>".$row->zabeleska. "</td>";
+
+            $reden=$reden+1;
+
+
+            echo " </tr>";
+
+        }
+    }
+    else {echo 'Vo momentov nema kasi';}
+    ?>
+
+</table>
+<br>
+<br>
+<br>
+</body>
+</html>

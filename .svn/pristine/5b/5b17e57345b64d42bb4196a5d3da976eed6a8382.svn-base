@@ -1,0 +1,275 @@
+<?php
+
+class Smenski_model extends CI_Model
+{
+    public function get_Allsmeni(){
+        $this->db->select('*');
+        $this->db->from('smenska_grupa');
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function smenskiKorisnici($smena){
+        $this->db->select('*');
+        $this->db->where('smenska_grupa', $smena);
+        $this->db->where('firma',$this->session->userdata('firma_id'));
+        $this->db->from('covecki_resursi');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function siteKorisnici(){
+        $dozvoleni_firmi=implode(",", bis_dozvoleni_firmiArray());
+
+        $result = $this->db->query("
+        SELECT * FROM covecki_resursi WHERE
+        firma IN ($dozvoleni_firmi) OR
+        oddel IN ($dozvoleni_firmi) OR
+        pododdel IN ($dozvoleni_firmi)
+        ")->result();
+
+
+        return $result;
+    }
+
+    public function updateSmena($userId, $smena, $day, $month, $year){
+        $data = array(
+            $day => $smena
+        );
+
+        $this->db->where('user_id', $userId);
+        $this->db->where('month', $month);
+        $this->db->where('year', $year);
+        $this->db->update('smenska_mapa', $data);
+    }
+
+    public function addSmena($userId, $smena, $day, $month, $year){
+        $data = array(
+            $day => $smena,
+            'user_id' => $userId,
+            'month' => $month,
+            'year' => $year
+        );
+        $this->db->insert('smenska_mapa', $data);
+    }
+
+    public function smeniPoUser($userId, $month, $year){
+        $this->db->select('*');
+        $this->db->from('smenska_mapa');
+        $this->db->where('user_id', $userId);
+        $this->db->where('month', $month);
+        $this->db->where('year', $year);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result;
+    }
+
+    public function prvaSmena($userId, $month, $year){
+        $this->db->select('day1, day2, day3, day4, day5, day6, day7, day8, day9, day10,
+         day11, day12, day13, day14, day15, day16, day17, day18, day19, day20,
+          day21, day22, day23, day24, day25, day26, day27, day28, day29, day30, day31');
+        $this->db->from('smenska_mapa');
+        $this->db->where('user_id', $userId);
+        $this->db->where('month', $month);
+        $this->db->where('year', $year);
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result;
+    }
+
+    public function Smena($day, $month, $year, $usersArr,$smena){
+
+        $sql = "(month = '".$month."') AND (year = '".$year."') AND (".$day." = ".$smena.") AND (";
+        foreach($usersArr as $id){
+            $sql.= " user_id = '".$id."' OR";
+        }
+        $sql = substr($sql, 0, -3);
+        $sql.= " )";
+        $this->db->where($sql);
+        $query = $this->db->get('smenska_mapa');
+        $result = $query->result();
+        return $result;
+    }
+
+    public function addPlan($data_zakazuvanje){
+//        $data = array(
+//            'user_id' => $data_zakazuvanje['user_id'],
+//            'vreme' => $data_zakazuvanje['vreme'],
+//            'vreme_do' => $data_zakazuvanje['vreme_do'],
+//            'predmet' => $data_zakazuvanje['mesto'],
+//            'aktivnost' => $data_zakazuvanje['aktivnost'],
+//            'year' => $year,
+//            'month' => $month,
+//            'day' => $dayNo,
+//            'pacient_id' => $pacient
+//        );
+//        $this->db->insert('zakazuvanje', $data);
+    }
+
+    public function getSmenskaMapaForUser($userId, $date)
+    {
+        $date = explode("/", $date);
+
+        $this->db->where('user_id', $userId);
+        $this->db->where('month', $date[1]);
+        $this->db->where('year', $date[0]);
+        $query = $this->db->get('smenska_mapa');
+        if($query->num_rows() == 1)
+        {
+            $result = $query->result();
+            $day='day'.$date[2];
+            return array("id" =>$result[0]->id , "day" => $result[0]->$day);
+        }
+        else return false;
+    }
+
+    public function getSmenskaMapaForUser2($userId, $date)
+    {
+        $date = explode("-", $date);
+
+        $this->db->where('user_id', $userId);
+        $this->db->where('month', $date[1]);
+        $this->db->where('year', $date[0]);
+        $query = $this->db->get('smenska_mapa');
+        if($query->num_rows() == 1)
+        {
+            $den = $date[2];
+            if($den[0] == 0) $day = 'day'.$den[1];
+            else $day = 'day'.$den;
+
+            $result = $query->result();
+
+            return array("id" =>$result[0]->id, "index" =>$day , "day" => $result[0]->$day);
+        }
+        else return false;
+    }
+
+    public function getPlanByUserId($userId, $date){
+        $this->db->select('zakazuvanje.*, bis_pacienti.ime as pacientIme, bis_pacienti.prezime as pacientPrezime');
+        $this->db->from('zakazuvanje');
+        $this->db->join('smenska_mapa', 'zakazuvanje.smenska_mapa_id=smenska_mapa.id', 'left');
+        $this->db->join('bis_pacienti', 'zakazuvanje.pacient_id=bis_pacienti.id', 'left');
+        $this->db->where('smenska_mapa.user_id', $userId);
+        $this->db->where('zakazuvanje.datum_aktivnost', $date);
+        $this->db->order_by('zakazuvanje.id');
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result;
+    }
+
+    public function getPlanByDate($date){
+        $this->db->select('zakazuvanje.*,
+                           bis_pacienti.ime as pacientIme,
+                           bis_pacienti.prezime as pacientPrezime,
+                           covecki_resursi.ime as doktorIme,
+                           covecki_resursi.prezime as doktorPrezime
+                  ');
+        $this->db->from('zakazuvanje');
+        $this->db->join('smenska_mapa', 'zakazuvanje.smenska_mapa_id=smenska_mapa.id', 'left');
+        $this->db->join('covecki_resursi', 'smenska_mapa.user_id=covecki_resursi.id', 'left');
+        $this->db->join('bis_pacienti', 'zakazuvanje.pacient_id=bis_pacienti.id', 'left');
+        $this->db->where('zakazuvanje.datum_aktivnost', $date);
+        $this->db->order_by('zakazuvanje.id');
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result;
+    }
+
+    public function deletePlanById($id){
+        $this->db->where('id', $id);
+        $this->db->delete('zakazuvanje');
+    }
+
+    public function zacuvaj_planiranje_den($data)
+    {
+        $aktivnosti = (isset($data['aktivnosti']) ? $data['aktivnosti'] : "");
+        $datum_aktivnost = $data['datum_aktivnost'];
+        $smena_id = $data['smenska_mapa_id'];
+        unset($data['aktivnosti']);
+        unset($data['datum_aktivnost']);
+        unset($data['smenska_mapa_id']);
+
+        $update_id = $this->proveri_plan_za_korisnik($data['user_id'], $data['month'], $data['year']);
+        if($update_id != false)
+        {
+            $this->db->where('id', $smena_id);
+            $this->db->update('smenska_mapa', $data);
+            $smenska_id = $update_id;
+        }
+        else
+        {
+            $insert = $this->db->insert('smenska_mapa', $data);
+            $smenska_id = $this->db->insert_id();
+        }
+
+        if (is_array($aktivnosti)) {
+            if (count($aktivnosti) > 0) {
+                foreach ($aktivnosti as $aktivnost) {
+                    $aktivnost['datum_aktivnost'] = $datum_aktivnost;
+                    if($aktivnost['status'] == 0) $this->zacuvaj_aktivnost_planiranje($smenska_id, $aktivnost);
+                    elseif($aktivnost['status'] == 1) $this->update_aktivnost_planiranje($smenska_id, $aktivnost);
+                    elseif($aktivnost['status'] == 2) $this->delete_aktivnost_planiranje($smenska_id, $aktivnost);
+                }
+            }
+        }
+
+        return $smenska_id;
+    }
+
+    public function zacuvaj_aktivnost_planiranje($smenska_id, $data)
+    {
+        unset($data['status']);
+        $data['smenska_mapa_id'] = $smenska_id;
+        $this->db->insert('zakazuvanje', $data);
+    }
+
+    public function update_aktivnost_planiranje($smenska_id, $data)
+    {
+        $id = $data['id'];
+        unset($data['id']);
+        unset($data['status']);
+
+        $this->db->where('id', $id);
+        $this->db->update('zakazuvanje', $data);
+    }
+
+    public function proveri_plan_za_korisnik($user_id, $month, $year)
+    {
+        $this->db->where('user_id', $user_id);
+        $this->db->where('month', $month);
+        $this->db->where('year', $year);
+        $query = $this->db->get('smenska_mapa');
+
+        if ($query->num_rows() == 1)
+        {
+            $result = $query->result();
+            return $result[0]->id;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function delete_aktivnost($id)
+    {
+        $this->db->where('id', $id);
+        $query = $this->db->delete('zakazuvanje');
+        if($query) return 1;
+        else return 0;
+    }
+}
+?>

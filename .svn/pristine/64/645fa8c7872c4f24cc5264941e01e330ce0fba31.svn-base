@@ -1,0 +1,70 @@
+<?php  if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class Edmerki extends CI_Controller
+{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+    }
+
+    public function nov()
+    {
+        $this->load->view('podatoci/edmerki/nov');
+    }
+
+
+    public function izmeni()
+    {
+        $this->load->model('podatoci/edmerki_model');
+        $data['edmerka']      = $this->edmerki_model->getEdmerka($this->input->get("id"));
+        $this->load->view('podatoci/edmerki/izmeni', $data);
+    }
+
+
+
+    public function lista()
+    {
+        $this->load->view('podatoci/edmerki/lista');
+    }
+
+    public function popolnilista()
+    {
+
+        //$data['main_content'] = 'podatoci/katalog/popolnilista';
+        $this->load->model('podatoci/edmerki_model');
+        $return = $this->edmerki_model->getEdmerki();
+        echo json_encode($return);
+    }
+
+
+
+
+
+    public function create_edmerka()
+    {
+        $this->load->model('podatoci/edmerki_model');
+        $this->edmerki_model->create_edmerka();
+        echo "ok";
+    }
+
+
+
+    public function update_edmerka()
+    {
+        $this->load->model('podatoci/edmerki_model');
+        $this->edmerki_model->update_edmerka();
+        echo "ok";
+    }
+
+    public function delete_edmerka()
+    {
+        $id = $this->input->get("id");
+        $this->load->model('podatoci/edmerki_model');
+       $this->edmerki_model->delete_edmerka($id);
+        echo "ok";
+    }
+}

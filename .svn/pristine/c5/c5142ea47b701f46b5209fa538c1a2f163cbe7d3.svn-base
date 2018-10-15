@@ -1,0 +1,283 @@
+<?php
+
+class Cenovnik_model extends CI_Model
+{
+
+	public function getGlavniKatalozi()
+	{
+		$this->db->where("parent_id", 0);
+		$query = $this->db->get('bis_katalog');
+		return $query->result();
+	}
+
+	public function getPodKatalozi($id)
+	{
+		$this->db->where("parent_id", $id);
+		$query = $this->db->get('bis_katalog');
+		return $query->result();
+	}
+  public function grupa_dropdown(){
+      $this->db->select('id, naziv');
+      $this->db->from('paketi');
+      $this->db->where('parent_grupa',0);
+      $this->db->order_by('id');
+      $query = $this->db->get();
+      $dropdown = array();
+      $dropdown[''] = '-  -';
+      if($query->num_rows() > 0){
+
+          foreach($query->result_array() as $row){
+              $dropdown[$row['id']] = $row['naziv'];
+          }
+      }
+      return $dropdown;
+  }
+    public function zemiPodgrupi($grupaid){
+        $this->db->select('id, naziv');
+        $this->db->from('paketi');
+        $this->db->where('parent_grupa',$grupaid);
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        return $query->result();
+    }
+	public function getKatalogArtikli($id)
+	{
+		$arrayin     = array();
+		$arrayin[]   = $id;
+		$podkatalozi = $this->getPodKatalozi($id);
+		foreach ($podkatalozi as $podkatalog) {
+			$arrayin[] = $podkatalog->id;
+		}
+		$in = implode(",", $arrayin);
+		$this->db->where("katBroj IN ($in)");
+		$query = $this->db->get('s1');
+		return $query->result();
+	}
+
+	public function getKatalog($id)
+	{
+		$this->db->where("id", $id);
+		$query = $this->db->get('bis_katalog');
+		$return = $query->result();
+
+		return $return[0];
+	}
+
+	public function create_katalog()
+	{
+		$insert_data = $this->input->post();
+		$insert      = $this->db->insert('bis_katalog', $insert_data);
+		return $insert;
+	}
+
+	public function create_podkatalog()
+	{
+		$insert_data = $this->input->post();
+		$insert      = $this->db->insert('bis_katalog', $insert_data);
+		return $insert;
+	}
+	public function delete_katalog($id)
+	{
+
+
+		// POTREBNO DA SE IZBRISE KATEGORIJA ID OD PRODUKTITE ZA DA NE DOJDE KONFLIKT VO IDNIA
+		$arrayin     = array();
+		$arrayin[]   = $id;
+		$podkatalozi = $this->getPodKatalozi($id);
+		foreach ($podkatalozi as $podkatalog) {
+			$arrayin[] = $podkatalog->id;
+		}
+		$in = implode(",", $arrayin);
+		$this->db->where("katBroj IN ($in)");
+		$field_update_data = array("katBroj"=>0);
+		$this->db->update('s1', $field_update_data);
+
+
+		$this->db->where('id', $id);
+		$this->db->delete('bis_katalog');
+
+		$this->db->where('parent_id', $id);
+		$this->db->delete('bis_katalog');
+	}
+	public function update_artiklikategorija($id){
+
+	}
+	public function update_katalog()
+	{
+		$field_update_data =	$this->input->post();
+
+		$this->db->where('id',$field_update_data['id']);
+		unset($field_update_data['id']);
+		$this->db->update('bis_katalog', $field_update_data);
+	}
+    public function getSitePaketi(){
+        $paketi = $this->getPaketiSoCena();
+        $paketi_dsg = $this->getPaketiSoCenaDsg();
+        $paketi_db = $this->getPaketiSoCenaDb();
+        $paketi_spec = $this->getPaketiSoCenaSpec();
+        $result = array_merge($paketi, $paketi_dsg, $paketi_db, $paketi_spec);
+        bis_debug($result,'Site Paketi');
+        return $result;
+    }
+    public function getPaketiSoCena(){
+        $this->db->where("cena >", 0);
+        $query = $this->db->get('paketi');
+        $result = $query->result();
+        foreach($result as $key=>$row){
+            $result[$key]->cenovnik = 1;
+        }
+        return $result;
+    }
+
+    public function getPaketiSoCenaDsg(){
+        $this->db->where("cena >", 0);
+        $query = $this->db->get('dsg_uslugi');
+        $result = $query->result();
+        foreach($result as $key=>$row){
+            $result[$key]->cenovnik = 2;
+        }
+        return $result;
+    }
+
+    public function getPaketiSoCenaDb(){
+        $this->db->where("cena >", 0);
+        $query = $this->db->get('dnevnaBol_uslugi');
+        $result = $query->result();
+        foreach($result as $key=>$row){
+            $result[$key]->cenovnik = 3;
+        }
+        return $result;
+    }
+
+    public function getPaketiSoCenaSpec(){
+        $this->db->where("cena >", 0);
+        $query = $this->db->get('spec_kon_prev_zz');
+        $result = $query->result();
+        foreach($result as $key=>$row){
+            $result[$key]->naziv=str_replace(array("\n","'",'"'),"",$result[$key]->naziv);
+            $result[$key]->sifra=str_replace(array("\n","'",'"'),"",$result[$key]->sifra);
+            $result[$key]->cenovnik = 4;
+        }
+        return $result;
+    }
+    public function getDijagnozi()
+    {
+        //$this->db->limit(100); // dodadeno za da ne pravi problem so skriptata zasega ...
+        $query = $this->db->get('bis_mkb_10');
+        $result = $query->result();
+        foreach($result as $key=>$row){
+            $result[$key]->opis=str_replace(array("\n","'",'"'),"",$result[$key]->opis);
+            $result[$key]->sifra=str_replace(array("\n","'",'"'),"",$result[$key]->sifra);
+        }
+        return $result;
+    }
+    //za izlezni fakturi
+    public function getPaketiSoCenaByID($id){
+        $this->db->where("id", $id);
+        $query = $this->db->get('paketi');
+        return $query->result();
+    }
+
+    public function getPaketiSoCenaDsgByID($id){
+        $this->db->where("id", $id);
+        $query = $this->db->get('dsg_uslugi');
+        return $query->result();
+    }
+
+    public function getPaketiSoCenaDbByID($id){
+        $this->db->where("id", $id);
+        $query = $this->db->get('dnevnaBol_uslugi');
+        return $query->result();
+    }
+
+    public function getPaketiSoCenaSpecByID($id){
+        $this->db->where("id", $id);
+        $query = $this->db->get('spec_kon_prev_zz');
+        $result = $query->result();
+        foreach($result as $key=>$row){
+            $result[$key]->naziv=str_replace(array("\n","'",'"'),"",$result[$key]->naziv);
+            $result[$key]->sifra=str_replace(array("\n","'",'"'),"",$result[$key]->sifra);
+        }
+        return $result;
+    }
+    public function getAutocompleteDijagnozi($sifra, $limit)
+    {
+        $this->db->select("bis_mkb_10.*");
+        $this->db->from("bis_mkb_10");
+        $this->db->like("opis", $sifra, 'both');
+        $this->db->or_like("sifra", $sifra, 'both');
+        $this->db->limit($limit); // dodadeno za da ne pravi problem so skriptata zasega ...
+        $query = $this->db->get();
+        $result = $query->result();
+        foreach($result as $key=>$row){
+            $result[$key]->opis=str_replace(array("\n","'",'"'),"",$result[$key]->opis);
+            $result[$key]->sifra=str_replace(array("\n","'",'"'),"",$result[$key]->sifra);
+        }
+        return $result;
+    }
+    public function getAutocompletePaketiSoCena($text, $limit)
+    {
+        $this->db->where("cena >", 0);
+        $this->db->like("naziv", $text, 'both');
+        $this->db->or_like("sifra", $text, 'both');
+        $this->db->limit($limit);
+        $query = $this->db->get('paketi');
+        $result = $query->result();
+        foreach($result as $key=>$row){
+            $result[$key]->cenovnik = 1;
+        }
+        return $result;
+    }
+    public function getAutocompletePaketiSoCenaDsg($text, $limit){
+        $this->db->where("cena >", 0);
+        $this->db->like("naziv", $text, 'both');
+        $this->db->or_like("sifra", $text, 'both');
+        $this->db->limit($limit);
+        $query = $this->db->get('dsg_uslugi');
+        $result = $query->result();
+        foreach($result as $key=>$row){
+            $result[$key]->cenovnik = 2;
+        }
+        return $result;
+    }
+
+    public function getAutocompletePaketiSoCenaDb($text, $limit){
+        $this->db->where("cena >", 0);
+        $this->db->like("naziv", $text, 'both');
+        $this->db->or_like("sifra", $text, 'both');
+        $this->db->limit($limit);
+        $query = $this->db->get('dnevnaBol_uslugi');
+        $result = $query->result();
+        foreach($result as $key=>$row){
+            $result[$key]->cenovnik = 3;
+        }
+        return $result;
+    }
+
+    public function getAutocompletePaketiSoCenaSpec($text, $limit){
+        $this->db->where("cena >", 0);
+        $this->db->like("naziv", $text, 'both');
+        $this->db->or_like("sifra", $text, 'both');
+        $this->db->limit($limit);
+        $query = $this->db->get('spec_kon_prev_zz');
+        $result = $query->result();
+        foreach($result as $key=>$row){
+            $result[$key]->naziv=str_replace(array("\n","'",'"'),"",$result[$key]->naziv);
+            $result[$key]->sifra=str_replace(array("\n","'",'"'),"",$result[$key]->sifra);
+            $result[$key]->cenovnik = 4;
+        }
+        return $result;
+    }
+    public function getAutocompleteBolnickiDenoviStacionar($text, $limit){
+        $this->db->like("naziv", $text, 'both');
+        $this->db->or_like("sifra", $text, 'both');
+        $this->db->limit($limit);
+        $query = $this->db->get('bolnicki_denovi_stacionar');
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result;
+        }
+        else return false;
+    }
+}

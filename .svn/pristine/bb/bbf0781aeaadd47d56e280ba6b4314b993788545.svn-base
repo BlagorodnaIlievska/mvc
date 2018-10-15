@@ -1,0 +1,35 @@
+
+<?php
+
+
+$this->load->helper('lista_helper.php');
+
+$modul="magacin";
+$buttons=array("magacin_nov()"=>"Нов магацин") ;
+$collons=array("delete"=>"",
+    "edit"=>"",
+    "tip"=>"Тип",
+    "magacin"=>"Име на магацин",
+    "sifra"=>"Шифра" ,
+    "lokacija"=>"Локација",
+    "firma"=>"Име на фирма"
+);
+
+tabela($modul,$buttons,$collons);
+
+?>
+
+<script>
+    jQuery(document).ready(function () {
+	    jQuery(".magacin-tabela").tablesorter();
+        magacin_popolnilista();
+
+        jQuery(".magacin-tabela .edit-tr").live("click",function(){
+	       magacin_izmeni(jQuery(this).parent().parent().attr("id"));
+        });
+        jQuery(".magacin-tabela .delete-tr").live("click",function(){
+            magacin_delete(jQuery(this).parent().parent().attr("id"));
+        });
+
+    });
+</script>

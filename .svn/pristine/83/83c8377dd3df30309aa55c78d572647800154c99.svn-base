@@ -1,0 +1,71 @@
+
+<div id="info_faktura_form">
+
+
+    <div class="stavkipopistabeladiv">
+        <table class="tabela-stavki-popis" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th>Име</th>
+                <th>Презиме</th>
+
+              <!--  <th>Класификација</th> -->
+             <!--   <th>Бр.факсимил</th>
+                <th>Оддел</th>
+                <th>Пододдел</th>
+                <th>Поч. раб. однос</th>
+                <th>Крај раб. однос</th> -->
+            </tr>
+            </thead>
+            <tbody>
+           <?php
+
+           /*
+           $vraboten = $vraboteni[0]; if(is_array($vraboten)){ ?>
+                <?php $i=1; foreach($vraboten as $vrab): ?>
+                    <?php
+                    $ddv = $stavka->ddv;
+                    $vkupno_bezddv = $stavka->kolicina*$stavka->cena;
+                    $vkupno_ddv = ($vkupno_bezddv*$ddv)/100;
+                    $vkupno_so_ddv = $vkupno_bezddv + $vkupno_ddv;
+                    ?>
+                <tr>
+                    <td class="redenbr"><?= $i; ?></td>
+                    <td class="sifra"><?= $stavka->sifra2; ?></td>
+                    <!-- $stavka->stavka -->
+                    <td class="stavka"><?= $stavka->naziv; ?></td>
+                    <td class="konto"><?= $stavka->kontoSifra; ?></td>
+                    <td class="kolicina centar-print"><?= $stavka->kolicina; ?></td>
+                    <td class="edmerka centar-print"><?= $stavka->edMerkaIme; ?></td>
+                    <td class="cena desno-print"><?= $stavka->cena; ?>&nbsp;ден.</td>
+                    <td class="vkupno_bezddv desno-print"><?= $vkupno_bezddv; ?>&nbsp;ден.</td>
+                    <td class="ddv desno-print"><?= $ddv ?></td>
+                    <td class="vkupno_ddv desno-print"><?= $vkupno_ddv; ?>&nbsp;ден.</td>
+                    <td class="vkupno_so_ddv desno-print"><?= $vkupno_so_ddv; ?>&nbsp;ден.</td>
+                </tr>
+                    <?php $i++; ?>
+                    <?php endforeach; ?>
+                <?php };
+           */
+
+
+           ?>
+              <?php
+           foreach($vraboteni as $vrab):
+               ?>
+            <tr>
+<td><?= $vrab->ime ?></td>
+ <td><?= $vrab->prezime ?></td>
+
+
+
+            </tr>
+              <?php
+          endforeach;
+?>
+            </tbody>
+        </table>
+    </div>
+
+
+</div>

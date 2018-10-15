@@ -1,0 +1,285 @@
+<div class="faktura-ministerstvo-form">
+
+<?php
+$primena_options = array(
+    '0' => 'ne znam',
+    '1' => 'ne e primena',
+    '2' => 'primena'
+);
+$platena_options = array(
+    '0' => 'ne znam',
+    '1' => 'ne e platena',
+    '2' => 'platena'
+);
+$valuta_options = array(
+    '0' => 'DEN',
+    '1' => 'EUR',
+    '2' => 'USD'
+);
+$nacin_options = array(
+    '0' => 'virmanski',
+    '1' => 'vo gotovo',
+    '2' => 'kompenzacija'
+);
+?>
+<?php echo form_open('izlezni_fakturi/faktura/create_faktura_ministerstvo'); ?>
+<fieldset>
+    <legend>Излезна фактура од добавувач</legend>
+    <div class="faktura-od-dobavuvac">
+        <div class="f-od-dobavuvac broj">
+            <label>Број: </label>
+            <span class="arhivskibroj"></span>
+            <input type="hidden" name="broj" class="fakturabroj">
+            <input type="hidden" name="arhivskibrojint" class="arhivskibrojint">
+            <input type="hidden" class="vrzaniFakturi" name="vrzani_fakturi">
+        </div>
+        <div class="f-od-dobavuvac klient">
+            <label>Коминтент: </label>
+            <label>Министерство за здравство</label>
+        </div>
+        <div class="f-od-dobavuvac datum">
+            <label>Датум :</label>
+            <input type="text" name="datum" class="fakturadatum">
+        </div>
+    </div>
+</fieldset>
+<?php
+$delete = img(array(
+    'src' => 'images/delete.png',
+    'width' => '15',
+    'height' => '15',
+    'class' => 'delete'
+));
+$edit = img(array(
+    'src' => 'images/edit.png',
+    'width' => '15',
+    'height' => '15',
+));
+$add = img(array(
+    'src' => 'images/add.png',
+    'width' => '15',
+    'height' => '15',
+    'class' => 'add',
+    'formaction' => '/index.php/vlezni_fakturi/faktura/dodaj_stavka'
+));
+?>
+<fieldset>
+    <legend>Ставки во документот - детално</legend>
+    <table class="tstavki fzomfaktura" border="1" cellpadding="2" id="faktura">
+        <thead>
+        <tr>
+            <th class="delete"></th>
+            <th class="redenbr">РБ</th>
+            <th class="sifra">Шифра на пакет/услуга</th>
+            <th class="naziv">Назив на услугата</th>
+            <th class="kolicina">Количина/денови/третмани</th>
+            <th class="ref-cena">Референтна цена</th>
+            <th class="vkupno">Вкупен износ</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <div class="addstavka floatleft">
+        <button type="button" class="add button" formaction="/index.php/izlezni_fakturi/faktura/dodaj_stavka_paket">
+            <span>Додади ставка</span>
+        </button>
+    </div>
+</fieldset>
+<fieldset class="ceni">
+    <legend>За наплата</legend><br>
+    <label>Вкупно здравствени услуги со партиципација: </label>
+    <input type="text" class="vkupnopaket inlineceni" name="vkupnopaket" readonly><br>
+    <label>Вкупен износ на пресметана партиципација: </label>
+    <input type="text" class="presmetanaparticipacija inlineceni" name="presmetana" readonly><br>
+    <label>Вкупен износ на наплатена партиципација: </label>
+    <input type="text" class="naplatenaparticipacija inlineceni" name="naplatena" readonly><br>
+    <label>Вкупно за наплата од Министерство: </label>
+    <input type="text" class="vkupnofzom inlineceni" name="vkupnofzom" readonly><br>
+</fieldset>
+<div class="otkazi-snimi-novafak">
+    <div class="snimi">
+        <div class="submitclosebutton">
+            <button type="button" class="submitclosefaktura button"><span>Зачувај</span></button>
+        </div>
+    </div>
+    <div class="drugo">
+        <div class="otkazibutton">
+            <button type="button" class="otkazifaktura button"><span>Откажи</span></button>
+        </div>
+    </div>
+</div>
+<?php echo form_close(); ?>
+</div>
+<script>
+jQuery(document).ready(function () {
+    jQuery(".fakturabroj").focus();
+    jQuery(".fakturaklient").combobox();
+    jQuery('.fakturadatum').datepicker();
+    jQuery('.fakturadatum').datepicker('setDate', new Date());
+    jQuery('.rok').datepicker({});
+    getNewIzleznaFakturaBroj();
+    getIzlezniFakturiZaMinisterstvo();
+    jQuery('.add').click(function (e) {
+        var formaction = jQuery(this).attr('formaction');
+        var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+        jQuery.ajax({
+            url: formaction,
+            success: function (response) {
+                jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                jQuery("." + tempdialog).html(response);
+                jQuery('div.' + tempdialog).dialog({
+                    autoOpen: true,
+                    width: "auto",
+                    position: "center",
+                    modal: true,
+                    dialogClass: 'dialogsotabovi',
+                    title: "Додади ставки",
+                    close: function (event, ui) {
+                        jQuery(this).dialog("destroy");
+                        jQuery(this).remove();
+                    }
+                });
+            }
+        });
+    });
+    jQuery('.dodadiklient').click(function (e) {
+        var formaction = "/index.php/podatoci/klient/new_klient";
+        var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+        jQuery("body").append('<div class="' + tempdialog + '"></div>');
+        jQuery('div.' + tempdialog).dialog({
+            autoOpen: true,
+            width: 1100,
+            close: function (event, ui) {
+                jQuery(this).dialog("destroy");
+                jQuery(this).remove();
+            }}).load(formaction);
+        e.preventDefault();
+    });
+    jQuery(".delete").live('click', function () {
+        var trow = jQuery(this).closest('tr');
+        var trowclass = trow.attr('class');
+        if ((!trow.is(":last-child"))) {
+            trow.remove();
+        }
+        var i = 1;
+        jQuery('.tstavki tbody tr').each(function () {
+            jQuery(this).find('.number').html(i);
+            i = 1 * i + 1;
+        });
+    });
+    jQuery(".kolicina").live('blur', function () {
+        var temp = jQuery(this);
+        var currentrow = temp.closest('tr');
+        var cenabezddv = currentrow.find(".bezddv").val();
+        if (temp.val() && cenabezddv) presmetajSuma(temp);
+    });
+    jQuery(".bezddv").live('blur', function () {
+        var temp = jQuery(this);
+        var currentrow = temp.closest('tr');
+        var kolicina = currentrow.find(".kolicina").val();
+        if (temp.val() && kolicina) presmetajSuma(temp);
+    });
+    jQuery(".tstavki").live('blur', function () {
+        var osnovasum = 0, vkupnosum = 0;
+        jQuery(".tstavki td").each(function () {
+            var osnova = jQuery(this).find('.vkupno1').val();
+            var vkupno = jQuery(this).find('.vkupno2').val();
+            // add only if the value is number
+            if (!isNaN(osnova) && osnova.length != 0) {
+                osnovasum += parseFloat(osnova);
+            }
+            if (!isNaN(vkupno) && vkupno.length != 0) {
+                vkupnosum += parseFloat(vkupno);
+            }
+        });
+        jQuery('.osnova').val(osnovasum);
+        jQuery('.vkupnose').val(vkupnosum);
+        jQuery('.tvkupen-iznos-novafak').find('.vkupnoosnova').text(osnovasum);
+        jQuery('.tvkupen-iznos-novafak').find('.vkupnoddv').text(vkupnosum);
+    });
+    jQuery('.izborkonto2').change(function () {
+        var kontozasite = jQuery('.izborkonto2 option:selected').val();
+        jQuery('.tstavki').find('.kontostavka').val(kontozasite);
+    });
+    jQuery('.otkazifaktura').click(function () {
+        destroyparentdialog(jQuery(this));
+    });
+    jQuery('.submitclosefaktura').click(function () {
+        var ovakopce = jQuery(this);
+        var formaction = jQuery(this).parent().parent().parent().parent().attr('action');
+//        var index = 1;
+//        jQuery('.tstavki tr:last').remove();
+//        jQuery("tr.detali").each(function () {
+//            jQuery(this).find('td').each(function () {
+//                var name = jQuery(this).find("input").attr('name');
+//                var konto = jQuery(this).find("select").attr('name');
+//                var newname = name + "[" + index + "]";
+//                var newkontoname = konto + "[" + index + "]";
+//                jQuery(this).find("input").attr('name', newname);
+//                jQuery(this).find("select").attr('name', newkontoname);
+//            })
+//            index = parseInt(index) + 1;
+//        });
+        jQuery.ajax({
+            type: "post",
+            url: formaction,
+            data: jQuery(this).parent().parent().parent().parent().serialize(),
+            success: function (response) {
+                destroyparentdialog(ovakopce);
+                if_dp_napolnilista();
+            }
+        });
+    });
+    jQuery(".fakturabroj").live('blur', function () {
+        var brojfaktura = jQuery(this).val();
+        var klient = jQuery('.fakturaklient').val();
+        if ((brojfaktura.length > 0) && (klient.length > 0)) {
+            //console.log(brojfaktura, klient);
+            var data = {
+                brojfaktura: brojfaktura,
+                klientid: klient
+            }
+            jQuery.ajax({
+                type: "post",
+                url: "/index.php/vlezni_fakturi/faktura/proveriBrojFaktura",
+                data: data,
+                dataType: "JSON",
+                success: function (response) {
+                    //console.log(response);
+                    if (response.length > 0) {
+                        jQuery('.submitclosefaktura').addClass('hide');
+                        alert("Веќе постоечки број на фактура за овој клиент!!!");
+                    }
+                    else jQuery('.submitclosefaktura').removeClass('hide');
+                }
+            });
+        }
+    });
+    jQuery(".fakturaklient").live('change', function () {
+        var brojfaktura = jQuery('.fakturabroj').val();
+        var klient = jQuery(this).val();
+        if ((brojfaktura.length > 0) && (klient.length > 0)) {
+            //console.log(brojfaktura, klient);
+            var data = {
+                brojfaktura: brojfaktura,
+                klientid: klient
+            }
+            jQuery.ajax({
+                type: "post",
+                url: "/index.php/vlezni_fakturi/faktura/proveriBrojFaktura",
+                data: data,
+                dataType: "JSON",
+                success: function (response) {
+                    //console.log(response);
+                    if (response.length > 0) {
+                        jQuery('.submitclosefaktura').addClass('hide');
+                        alert("Веќе постоечки број на фактура за овој клиент!!!");
+                    }
+                    else jQuery('.submitclosefaktura').removeClass('hide');
+                }
+            });
+        }
+    });
+});
+</script>

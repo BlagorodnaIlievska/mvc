@@ -1,0 +1,373 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: HP
+ * Date: 4/15/13
+ * Time: 11:55 PM
+ * To change this template use File | Settings | File Templates.
+ */
+
+class Spec_model extends CI_Model{
+
+    public  function sifra_dropdown()
+    {
+        $this->db->select('id, sifra');
+        $this->db->from('spec_kon_prev_zz');
+        $this->db->order_by('sifra');
+        // $this->db->where('parent_grupa !=',0);
+        //    $this->db->where('parent_podgrupa !=',0);
+
+        $query    = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown['0'] = 'сите';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['id']] = $row['sifra'];
+            }
+        }
+
+        return $dropdown;
+
+    }
+
+    public  function naziv_dropdown()
+    {
+        $this->db->select('id, naziv');
+        $this->db->from('spec_kon_prev_zz');
+        //   $this->db->where('parent_grupa !=',0);
+        // $this->db->where('parent_podgrupa !=',0);
+        $this->db->order_by('id');
+        $query    = $this->db->get();
+        $dropdown = array();
+        if ($query->num_rows() > 0) {
+            $dropdown['0'] = 'сите';
+            foreach ($query->result_array() as $row) {
+                $dropdown[$row['id']] = $row['naziv'];
+            }
+        }
+
+        return $dropdown;
+
+    }
+
+
+    public function prebaruvanje_paketi_posifra($sifraid){
+        $this->db->from('spec_kon_prev_zz');
+
+        //   $this->db->where('parent_grupa !=',0);
+
+        //  $this->db->where('id',0);
+        //   $this->db->where('parent_podgrupa !=',0);
+        $this->db->where('id',$sifraid);
+        $this->db->order_by('id');
+        $query    = $this->db->get();
+        return $query->result();
+    }
+    public function prebaruvanje_paketi_ponaziv($nazivid){
+        $this->db->from('spec_kon_prev_zz');
+        //   $this->db->where('parent_grupa !=',0);
+
+        //  $this->db->where('id',0);
+        //  $this->db->where('parent_podgrupa !=',0);
+        $this->db->where('id',$nazivid);
+        $this->db->order_by('id');
+        $query    = $this->db->get();
+        return $query->result();
+    }
+
+    public function getUslugi()
+    {
+
+        $this->db->select('*');
+        $this->db->from('spec_kon_prev_zz');
+
+        //  $this->db->where("parent_podgrupa",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function getGrupa($id)
+    {
+        $this->db->select("*");
+        $this->db->where('id', $id);
+
+        $query = $this->db->get('spec_kon_prev_zz');
+
+        if ($query->num_rows > 0) {
+            return $query->result();
+        }
+
+    }
+
+
+    public function update_paket()
+    {
+        $field_update_data = $this->input->post();
+        $this->db->where('id', $this->input->post('id'));
+        $update = $this->db->update('spec_kon_prev_zz', $field_update_data);
+
+        return $update;
+    }
+
+    public function delete_grupa($id)
+    {
+        $this->db->where('id',$id );
+        $this->db->delete('spec_kon_prev_zz');
+    }
+
+    public function delete_sodrzina($id)
+    {
+        $this->db->where('sodrzina_id', $id);
+        $this->db->delete('spec_kon_prev_zz_sodrzina');
+
+    }
+
+    public function create_paket(){
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('spec_kon_prev_zz', $new_field_insert_data);
+        return $insert;
+    }
+
+    public function getSodrzini($id)
+    {
+
+        $this->db->select('sodrzina_id, sodrzina');
+        $this->db->from('spec_kon_prev_zz_sodrzina');
+
+        $this->db->where("parent_id",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+
+    public function getSodrzina($id)
+    {
+
+        $this->db->select('sodrzina');
+        $this->db->from('spec_kon_prev_zz_sodrzina');
+
+        $this->db->where("sodrzina_id",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+//print_r($result); die();
+        return $result;
+    }
+
+    public function getPaket($id)
+    {
+
+        $this->db->select('*');
+        $this->db->from('spec_kon_prev_zz');
+        $this->db->where("id",$id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            $result = $query->result();
+        } else {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    public function create_sodrzina(){
+//        $new_field_insert_data = array('parent_id'=> $this->input->post('paket_id'),
+//            'sodrzina_paket' => $this->input->post('paket_sifra'),
+//            'sodrzina'=>$this->input->post('sodrzina'));
+       // $this->db->where('id',$this->input->post('paket_id'));
+        $new_field_insert_data = $this->input->post();
+        $insert = $this->db->insert('spec_kon_prev_zz_sodrzina', $new_field_insert_data);
+       // $insert = $this->db->update('spec_kon_prev_zz', $new_field_insert_data);
+        return $insert;
+        print_r($insert);
+    }
+
+
+
+
+
+
+
+
+
+    public function update_sodrzina(){
+        $new_field_insert_data = array('sodrzina'=>$this->input->post('sodrzina'));
+        $this->db->where('sodrzina_id',$this->input->post('id'));
+        $insert = $this->db->update('spec_kon_prev_zz_sodrzina', $new_field_insert_data);
+        return $insert;
+    }
+    public function smeni_p(){
+
+        $this->db->select('id, cena');
+        $this->db->from('spec_kon_prev_zz');
+        $ceni = $this->db->get();
+        if($ceni->num_rows()>0){
+            foreach ($ceni->result_array() as $row) {
+                switch (true){
+                    case ($row['cena'] <= 100):
+                        $nova=0;
+                        $id = $row['id'];
+                       $this->update_cena($id, $nova);
+                        break;
+                    case($row['cena'] >= 101 && $row['cena'] <= 300):
+                        $nova = 20;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= 301 && $row['cena'] <= 500):
+
+                        $nova = 40;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case($row['cena'] >= 501 && $row['cena'] <= 700):
+
+                        $nova = 60;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= 701 && $row['cena'] <= 1000):
+
+                        $nova = 80;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= 1001 && $row['cena'] <= 2000):
+
+                        $nova = 150;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= 2001 && $row['cena'] <= 3000):
+
+                        $nova = 250;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= 3001 && $row['cena'] <= 4000):
+                        $nova = 350;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= 4001 && $row['cena'] <= 5000):
+
+
+                        $nova = 450;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= 5001 && $row['cena'] <= 6000):
+
+                        $nova = 550;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= 6001 && $row['cena'] <= 8000):
+
+                        $nova = 700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= 8001 && $row['cena'] <= 10000):
+
+                        $nova = 900;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= 10001 && $row['cena'] <= 15000):
+
+                        $nova = 1250;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+
+                    case($row['cena'] >= 15001 && $row['cena'] <= 20000):
+                        $nova = 1700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case($row['cena'] >= 20001 && $row['cena'] <= 25000):
+                        $nova = 2200;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case($row['cena'] >= 25001 && $row['cena'] <= 30000):
+                        $nova = 2700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case($row['cena'] >= 30001 && $row['cena'] <= 35000):
+                        $nova = 3200;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case($row['cena'] >= 35001 && $row['cena'] <= 40000):
+                        $nova = 3700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case($row['cena'] >= 40001 && $row['cena'] <= 45000):
+                        $nova = 4200;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case($row['cena'] >= 45001 && $row['cena'] <= 50000):
+                        $nova = 4700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case($row['cena'] >= 50001 && $row['cena'] <= 55000):
+                        $nova = 5200;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case($row['cena'] >= 55001 && $row['cena'] <= 60000):
+                        $nova = 5700;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                    case($row['cena'] > 60000):
+                        $nova = 6000;
+                        $id = $row['id'];
+                        $this->update_cena($id, $nova);
+                        break;
+                }
+            }
+        }
+
+    }
+    public function update_cena($id, $nova){
+        $pole = array(
+            'participacija' => $nova
+        );
+
+        $this->db->where('id', $id);
+        $this->db->update('spec_kon_prev_zz', $pole);
+        }
+
+}

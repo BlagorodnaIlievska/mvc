@@ -1,0 +1,64 @@
+<div class="raspored_planiranje_denovi">
+<!--    <form class="raspored-planiranje-aktivnosti-forma">-->
+    <div class="raspored-denovi-parametri">
+        <div class="raspored-denovi-datum">
+            <span>Датум:</span>
+            <input type="text" class="datum parametar-raspored-denovi" />
+            <span class="previous"><img width="15" height="15" alt="" src="/images/prev.png"></span>
+            <span class="next"><img width="15" height="15" alt="" src="/images/next.png"></span>
+        </div>
+    </div>
+    <div class="raspored-denovi-prikaz">
+        <p class="naslov-raspored-denovi" > ( <span class="vkupnostavki">0</span> ) <span class="status">Активности</span></p>
+        <div class="predtabela">
+            <table class="tabela-raspored-denovi">
+                <thead>
+<!--                    <th class="delete"></th>-->
+                    <th class="redenbroj">Р.Б</th>
+                    <th class="doktor">Вработен</th>
+                    <th class="vreme-od">Време од</th>
+                    <th class="vreme-do">Време до</th>
+                    <th class="aktivnost">Активност</th>
+                    <th class="mesto">Место</th>
+                    <th class="pacient">Пациент</th>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<!--    </form>-->
+</div>
+<script>
+function popolni_podatoci_aktivnosti_za_den(datum)
+{
+    jQuery.when(get_site_aktivnosti_za_den(datum)).done(function(response){
+        jQuery(".raspored_planiranje_denovi .tabela-raspored-denovi tbody").html(response);
+        var broj_aktivnosti = jQuery(".raspored_planiranje_denovi .tabela-raspored-denovi tbody tr").length;
+        jQuery(".naslov-raspored-denovi .vkupnostavki").html(broj_aktivnosti);
+        jQuery(".raspored_planiranje_denovi .tabela-raspored-denovi").tablesorter();
+    });
+}
+jQuery(document).ready(function() {
+    jQuery(".datum.parametar-raspored-denovi").datepicker({dateFormat:'dd-mm-yy'});
+    jQuery(".datum.parametar-raspored-denovi").datepicker('setDate', new Date());
+    popolni_podatoci_aktivnosti_za_den(jQuery(".datum.parametar-raspored-denovi").val());
+
+    jQuery(".parametar-raspored-denovi").change(function(){
+        var datum = jQuery(".raspored_planiranje_denovi .datum").val();
+        popolni_podatoci_aktivnosti_za_den(datum);
+    });
+    jQuery(".raspored_planiranje_denovi .previous").click(function(){
+        var datum = jQuery(".raspored_planiranje_denovi .datum").val();
+        var previous_day = get_previous_day(datum);
+        jQuery('.datum.parametar-raspored-denovi').datepicker('setDate', previous_day);
+        popolni_podatoci_aktivnosti_za_den(previous_day);
+    });
+    jQuery(".raspored_planiranje_denovi .next").click(function(){
+        var datum = jQuery(".raspored_planiranje_denovi .datum").val();
+        var next_day = get_next_day(datum);
+        jQuery('.datum.parametar-raspored-denovi').datepicker('setDate', next_day);
+        popolni_podatoci_aktivnosti_za_den(next_day);
+    });
+});
+</script>

@@ -1,0 +1,1799 @@
+function mat_vlez_nov() {
+    var formurl = "/index.php/materijalno/vlez_izlez/nova_roba";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: {},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: 1024,
+                position: [00, 00],
+                modal:true,
+                title: "Новa Приемница",
+                dialogClass: 'dialogsotabovi',
+                close: function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/materijalno/priemnica/index',
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #priemnica").html(response);
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/materijalno/faktura/index',
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #faktura").html(response);
+                }
+            });
+            jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                cache:true,
+                ajaxOptions:{
+                    type:"POST"
+                }
+            });
+        }
+    });
+}
+function mat_vlez_izmeni(id) {
+    var formurl = "/index.php/materijalno/vlez_izlez/editVleznaRobaMenu";
+    var data = {  id: id  }
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: 1024,
+                modal: true,
+                position: [00, 00],
+                title: "Измени Приемница",
+                close: function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/materijalno/vlez_izlez/editPriemnica?id='+id,
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #priemnica").html(response);
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/materijalno/vlez_izlez/editFaktura?id='+id,
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #faktura").html(response);
+                }
+            });
+            jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                cache:true,
+                ajaxOptions:{
+                    type:"POST"
+                }
+            });
+        }
+    });
+}
+
+function mat_vlez_popolnilista(klientid, pogledid, magacinid) {
+    if (typeof klientid == "undefined") klientid = 0;
+    if (typeof pogledid == "undefined") pogledid = 0;
+    if (typeof magacinid == "undefined") magacinid = 0;
+    var data = {
+        klientid: klientid,
+        pogledid: pogledid,
+        magacinid: magacinid
+    }
+    var formurl = "/index.php/materijalno/vlez_izlez/getPriemniciB";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+            //  console.log(response);
+            jQuery(".matvlezform .vleznaroba tbody").html('');
+            jQuery(".matvlezform .tstavkadetail.matstavki tbody").html('');
+
+            jQuery.each(response, function (index, item) {
+                var vrzanidokumenti = '';
+                jQuery.each(item.dokumenti, function (dindex, ditem) {
+                    vrzanidokumenti = vrzanidokumenti +
+                        '<span>' + ditem.textBroj + '</span>';
+                });
+                jQuery(".matvlezform .vleznaroba tbody").append(('<tr priemnica_id="' + item.ID + '">' +
+                    '<td class="deletefaktura">' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' + '</td>' +
+                    '<td class="editfaktura">' + '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' + '</td>' +
+                    '<td>' + item.textBroj + '</td>' +
+                    '<td>' + item.datum + '</td>' +
+                    '<td>' + item.firmaime + '</td>' +
+                    '<td>' + vrzanidokumenti + '</td>' +
+                    '<td>' + item.komentar + '</td>' +
+                    '</tr>'
+                    ));
+            });
+            jQuery('.matvlezform .vleznaroba tbody tr .delete-tr').click(function() {
+                var trow = jQuery(this).closest('tr');
+                var priemnicaid = trow.attr('priemnica_id');
+                delete_priemnica(priemnicaid);
+            });
+            jQuery(".naslovpriemnici .vkupnostavki").html(response.length);
+            jQuery(".matvlezform .vleznaroba").trigger("update");
+        }
+    });
+}
+function mat_vlez_popolnilista_artikli_podokument(id,targettabela) {
+    var data = {
+        id: id
+    }
+   // var formurl = "/index.php/podatoci/artikl/getArtikliPoDokument";
+    var formurl = "/index.php/materijalno/vlez_izlez/getStavkiInPriemnica";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+
+//            console.log(response);
+            var vkupnostavki = response.length;
+            jQuery(targettabela +" tbody").html('');
+            var redenbroj = 1;
+            jQuery.each(response, function (index, item) {
+                jQuery(targettabela).append(('<tr artikl_id="' + item.SID + '">' +
+//                    '<td>' +
+//                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+//                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+//                    '</td>' +
+                    '<td class="text-right">' + redenbroj + '</td>' +
+                    '<td class="text-right">' + item.sifra + '</td>' +
+                    '<td class="text-right">' + item.katBroj + '</td>' +
+                    '<td>' + item.stavka + '</td>' +
+                    '<td class="text-right">' + item.kolicina + '</td>' +
+                    '<td>' + item.edMerka + '</td>' +
+                    '<td>' + item.magacin + '</td>' +
+                    '<td>' + item.garantenrok + '</td>' +
+                    '<td>' + item.upotreblivodo + '</td>' +
+                    '<td class="text-right">' + item.seriskibroj + '</td>' +
+                    '</tr>'
+                    ));
+                redenbroj = redenbroj + 1;
+
+            });
+            jQuery(".naslovpriemnicidetali .vkupnostavki").html(vkupnostavki);
+            jQuery(targettabela).trigger("update");
+        }
+    });
+}
+
+function mat_otpisnica_popolnilista_artikli_podokument(id,targettabela) {
+    var data = {
+        id: id
+    }
+    // var formurl = "/index.php/podatoci/artikl/getArtikliPoDokument";
+    var formurl = "/index.php/materijalno/vlez_izlez/getStavkiInPriemnica";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+
+//            console.log(response);
+            var vkupnostavki = response.length;
+            jQuery(targettabela +" tbody").html('');
+            var redenbroj = 1;
+            jQuery.each(response, function (index, item) {
+                jQuery(targettabela).append(('<tr artikl_id="' + item.SID + '">' +
+//                    '<td>' +
+//                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+//                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+//                    '</td>' +
+                    '<td class="text-right">' + redenbroj + '</td>' +
+                    '<td class="text-right">' + item.sifra + '</td>' +
+                    '<td class="text-right">' + item.katBroj + '</td>' +
+                    '<td>' + item.stavka + '</td>' +
+                    '<td class="text-right">' + item.kolicina + '</td>' +
+                    '<td>' + item.edMerka + '</td>' +
+                    '<td>' + item.magacin + '</td>' +
+                    '<td>' + item.SRDCena + '</td>' +
+//                    '<td>' + item.garantenrok + '</td>' +
+//                    '<td>' + item.upotreblivodo + '</td>' +
+                    '<td class="text-right">' + item.seriskibroj + '</td>' +
+                    '</tr>'
+                    ));
+                redenbroj = redenbroj + 1;
+
+            });
+            jQuery(".naslovpriemnicidetali .vkupnostavki").html(vkupnostavki);
+            jQuery(targettabela).trigger("update");
+        }
+    });
+}
+
+function get_priemnica_stavki_tabela(id)
+{
+    var data = {
+        id: id
+    }
+    var formurl = "/index.php/materijalno/priemnica/priemnica_stavki_tabela";
+    return jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data
+    });
+}
+
+function get_ispratnica_stavki_tabela(id)
+{
+    var data = {
+        id: id
+    }
+    var formurl = "/index.php/materijalno/izlez/ispratnica_stavki_tabela";
+    return jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data
+    });
+}
+
+//function mat_edit_vlez_popolnilista_artikli_podokument(id,targettabela)
+//{
+//    jQuery.when(get_priemnica_stavki_tabela(id)).done(function(response){
+//        if(response)
+//        {
+//            jQuery(targettabela+" tbody").html(response);
+//            lastrow = jQuery(targettabela+" tbody tr:last");
+//            addNewStavkaPriemnicaLast(lastrow);
+//        }
+//        else
+//        {
+//            jQuery(targettabela+" tbody").html('');
+//        }
+//    });
+// var formurl = "/index.php/podatoci/artikl/getArtikliPoDokument";
+//    jQuery.ajax({
+//        url: formurl,
+//        type: 'GET',
+//        data: data,
+//        dataType: 'json',
+//        success: function (response) {
+//            console.log(response);
+//            jQuery(targettabela +" tbody").html('');
+//            var redenbroj = 1;
+//            var magacin = [];
+//            console.log("tttttt");
+//            console.log(targettabela);
+//            jQuery(".edit-priemnica-form .tpriemnica tbody").html(response);
+//            for ( var i = 0; i < response.length; i++ ) {
+//                magacin.push(response[i].magacinId);
+//                jQuery(".tpriemnica tbody").append(('<tr class="detali" artikl_id="' + response[i].artikl_id + '">' +
+//                    '<td>' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +'</td>' +
+//                    '<td class="redenbroj">' + redenbroj + '</td>' +
+//                    '<td>' + '<input class="sifra" name="sifra" value="'+ response[i].sifra +'" readonly />' + '</td>' +
+//                    '<td>' + '<input class="stavka" name="stavka" value="'+ response[i].stavka +'" />' + '</td>' +
+//                    '<td>' + '<input class="kolicina" name="kolicina" value="' + response[i].kolicina + '" /></td>' +
+//                    '<td class="edmerka">' + response[i].edMerkaIme + '</td>' +
+//                    '<td>' + '<select class="magacin" name="magacin"></select>' + '</td>' +
+//                    '<td>' + '<input class="garantenrok" name="garantenrok" value="' + response[i].garantenrok + '" />' + '</td>' +
+//                    '<td>' + '<input class="upotreblivodo" name="upotreblivodo" value="' + response[i].upotreblivodo + '" />' + '</td>' +
+//                    '<td>' + '<input class="seriskibroj" name="seriskibroj" value="' + response[i].seriskibroj + '" />' + '</td>' +
+//                    '<td class="hide">' + '<input type="hidden" class="SID" name="SID" value="'+ response[i].artikl_id + '" />' + '</td>' +
+//                    '<td class="hide">' + '<input type="hidden" class="dbid" name="dbid" value="'+ response[i].dbid + '" />' + '</td>' +
+//                    '<td class="hide">' + '<input type="hidden" class="edmerkaid" name="edmerkaid" value="'+ response[i].edMerkaId + '" />' + '</td>' +
+//                    '<td class="hide">' + '<input type="hidden" class="brisistavka" name="brisistavka" />' + '</td>' +
+//                    '</tr>'
+//                    ));
+//                var thisrow = jQuery('.tpriemnica tbody tr:last');
+//                thisrow.find('.upotreblivodo').datepicker();
+//                thisrow.find(".delete-tr").click(function() {
+//                    var trow = jQuery(this).closest('tr');
+//                    trow.find("input.brisistavka").val(1);
+//                    trow.addClass('hiderow');
+//                });
+//                redenbroj = 1*redenbroj + 1;
+//                jQuery(".tpriemnica").trigger("update");
+//            }
+//            jQuery.ajax({
+//                url:  "/index.php/materijalno/priemnica/getMagacin",
+//                type: 'GET',
+//                dataType: 'json',
+//                success: function (responseM) {
+//                    var rb = 0;
+//                    jQuery('.tpriemnica tbody tr').each(function(){
+//                        for(var i = 0; i < responseM.length;i++)
+//                        {
+//                            jQuery(this).find(".magacin").append('<option value="'+responseM[i].id+'">'+responseM[i].ime+'</option');
+//                        }
+//                        jQuery(this).find(".magacin").val(magacin[rb]);
+//                        rb = 1*rb + 1;
+//                    });
+//                }
+//            });
+//            addNewStavkaPriemnica();
+//        }
+//    });
+//}
+
+
+
+function mat_edit_otpisnica_popolnilista_artikli_podokument(id,targettabela) {
+    var data = {
+        id: id
+    }
+    var formurl = "/index.php/podatoci/artikl/getArtikliPoDokument";
+    // var formurl = "/index.php/materijalno/vlez_izlez/getStavkiInPriemnica";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            jQuery(targettabela +" tbody").html('');
+            var redenbroj = 1;
+            var magacin = [];
+            for ( var i = 0; i < response.length; i++ ) {
+                magacin.push(response[i].magacinId);
+                jQuery(".totpisnica tbody").append(('<tr class="detali" artikl_id="' + response[i].artikl_id + '">' +
+                    '<td>' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +'</td>' +
+                    '<td class="redenbroj">' + redenbroj + '</td>' +
+                    '<td>' + '<input class="sifra" name="sifra" value="'+ response[i].sifra +'" readonly />' + '</td>' +
+                    '<td>' + '<input class="stavka" name="stavka" value="'+ response[i].stavka +'" />' + '</td>' +
+                    '<td>' + '<input class="kolicina" name="kolicina" value="' + response[i].kolicina + '" /></td>' +
+                    '<td class="edmerka">' + response[i].edMerkaIme + '</td>' +
+                    '<td>' + '<select class="magacin" name="magacin"></select>' + '</td>' +
+                 //   '<td>' + '<input class="srd_cena" name="srd_cena" value="' + response[i].SRDCena + '" />' + '</td>' +
+//                    '<td>' + '<input class="garantenrok" name="garantenrok" value="' + response[i].garantenrok + '" />' + '</td>' +
+//                    '<td>' + '<input class="upotreblivodo" name="upotreblivodo" value="' + response[i].upotreblivodo + '" />' + '</td>' +
+                    '<td>' + '<input class="seriskibroj" name="seriskibroj" value="' + response[i].seriskibroj + '" />' + '</td>' +
+                    '<td class="hide">' + '<input type="hidden" class="SID" name="SID" value="'+ response[i].artikl_id + '" />' + '</td>' +
+                    '<td class="hide">' + '<input type="hidden" class="dbid" name="dbid" value="'+ response[i].dbid + '" />' + '</td>' +
+                    '<td class="hide">' + '<input type="hidden" class="edmerkaid" name="edmerkaid" value="'+ response[i].edMerkaId + '" />' + '</td>' +
+                    '<td class="hide">' + '<input type="hidden" class="kontoid" name="kontoid" value="'+ response[i].kontoID + '" />' + '</td>' +
+                    '<td class="hide">' + '<input type="hidden" class="ddv" name="ddv" value="'+ response[i].ddv + '" />' + '</td>' +
+
+                    '<td class="hide">' + '<input type="hidden" class="brisistavka" name="brisistavka" />' + '</td>' +
+                    '</tr>'
+                    ));
+                var thisrow = jQuery('.totpisnica tbody tr:last');
+                thisrow.find('.upotreblivodo').datepicker();
+                thisrow.find(".delete-tr").click(function() {
+                    var trow = jQuery(this).closest('tr');
+                    trow.find("input.brisistavka").val(1);
+                    trow.addClass('hiderow');
+                });
+                redenbroj = 1*redenbroj + 1;
+                jQuery(".totpisnica").trigger("update");
+            }
+            jQuery.ajax({
+                url:  "/index.php/materijalno/priemnica/getMagacin",
+                type: 'GET',
+                dataType: 'json',
+                success: function (responseM) {
+                    var rb = 0;
+                    jQuery('.totpisnica tbody tr').each(function(){
+                        for(var i = 0; i < responseM.length;i++)
+                        {
+                            jQuery(this).find(".magacin").append('<option value="'+responseM[i].id+'">'+responseM[i].ime+'</option');
+                        }
+                        jQuery(this).find(".magacin").val(magacin[rb]);
+                        rb = 1*rb + 1;
+                    });
+                }
+            });
+           //addNewStavkaPriemnica();
+            addNewStavkaOtpisnica();
+        }
+    });
+}
+
+
+
+function mat_vlez_popolnilista_artikli(targettabela){
+    var formurl = "/index.php/podatoci/artikl/getAll";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            //  console.log(response);
+            jQuery(targettabela +" tbody").html('');
+            jQuery.each(response, function (index, item) {
+                jQuery(targettabela +" tbody").append(('<tr artikl_id="' + item.SID + '">' +
+                    '<td>' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +'</td>' +
+                    '<td>' + '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' + '</td>' +
+                    '<td class="sifra">' + item.sifra + '</td>' +
+                    '<td class="katbroj">' + item.katBroj + '</td>' +
+                    '<td class="stavka">' + item.S1Ime + '</td>' +
+                    '<td class="opis">' + item.opis_artikl  + '</td>' +
+                    '<td class="edmerka">' + item.edMerkaIme + '</td>' +
+                    '<td class="edmerkaid hide">' + item.EdMerka + '</td>' +
+                    '<td class="ddv hide">' + item.ddv + '</td>' +
+                    '</tr>'
+                    ));
+            });
+            jQuery(targettabela).trigger("update");
+            //dodadeno za priemnica - Stole
+            var redenbroj = jQuery('.tpriemnica tbody tr:last').find('.redenbroj').text();
+            if(redenbroj.length > 0) var newredenbroj = parseInt(redenbroj) + parseInt(1);
+            else var newredenbroj = 1;
+            jQuery(targettabela +' tr').dblclick(function(){
+                var currentrow = jQuery(this);
+                addNewStavkaPriemnica2((currentrow));
+            });
+        }
+    });
+}
+function mat_vlez_dodadiartikal_vo_tabela(id,targettabela){
+    var formurl = "/index.php/podatoci/artikl/getAll";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            //  console.log(response);
+            jQuery(targettabela +" tbody").html('');
+            jQuery.each(response, function (index, item) {
+                jQuery(targettabela +" tbody").append(('<tr artikl_id="' + item.SID + '">' +
+                    '<td>' +
+                    '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +
+                    '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' +
+                    '</td>' +
+                    '<td class="sifra">' + item.sifra + '</td>' +
+                    '<td class="katbroj">' + item.katBroj + '</td>' +
+                    '<td class="stavka">' + item.S1Ime + '</td>' +
+                    '<td class="opis">' + item.opis_artikl  + '</td>' +
+                    '<td class="edmerka">' + item.EdMerka + '</td>' +
+                    '</tr>'
+                    ));
+            });
+            jQuery(targettabela).trigger("update");
+
+
+        }
+    });
+}
+
+function nova_vlezna_faktura_po_priemnica(id){
+//    var id=485; // privremeno dodeka ne se sredi
+    var formaction = '/index.php/materijalno/faktura/FakturaPoPriemnicaMeni';
+    var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+    jQuery.ajax({
+        url:formaction,
+        success:function (response) {
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery("." + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen:true,
+                width:"auto",
+                position:[20, 20],
+                modal:true,
+                dialogClass: 'dialogsotabovi',
+                title:"Нова Фактура",
+                close:function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/materijalno/faktura/novaFakturaPoPriemnica?id='+id,
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #faktura").html(response);
+                }
+            });
+            jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                cache:true,
+                ajaxOptions:{
+                    type:"POST"
+                }
+            });
+        }
+    });
+}
+
+function mat_izlez_nov() {
+    var formurl = "/index.php/materijalno/izlez/izlez_roba";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: {},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: 1024,
+                position: [00, 00],
+                modal:true,
+                title: "Новa Испратница",
+                dialogClass: 'dialogsotabovi',
+                close: function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/materijalno/izlez/ispratnica',
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #ispratnica").html(response);
+                }
+            });
+//            jQuery.ajax({
+//                url:'/index.php/materijalno/faktura/index',
+//                type:'GET',
+//                success:function (response) {
+//                    jQuery("." + tempdialog +" #faktura").html(response);
+//                }
+//            });
+            jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                cache:true,
+                ajaxOptions:{
+                    type:"POST"
+                }
+            });
+        }
+    });
+}
+function nov_otpis() {
+    var formurl = "/index.php/materijalno/otpis_na_materijali/otpis_roba";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: {},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: 1024,
+                position: [00, 00],
+                modal:true,
+                title: "Нов отпис на материјали",
+                dialogClass: 'dialogsotabovi',
+                close: function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/materijalno/otpis_na_materijali/otpisnica',
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #otpisnica").html(response);
+                }
+            });
+//            jQuery.ajax({
+//                url:'/index.php/materijalno/faktura/index',
+//                type:'GET',
+//                success:function (response) {
+//                    jQuery("." + tempdialog +" #faktura").html(response);
+//                }
+//            });
+            jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                cache:true,
+                ajaxOptions:{
+                    type:"POST"
+                }
+            });
+        }
+    });
+}
+function mat_interna_ispratnica_nova() {
+    var formurl = "/index.php/materijalno/interni/interen_transfer";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: {},
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: 1024,
+                position: [00, 00],
+                modal:true,
+                title: "Новa Интерна Испратница",
+                dialogClass: 'dialogsotabovi',
+                close: function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+        }
+    });
+}
+function mat_izlez_popolnilista(klientid, pogledid, magacinid) {
+    if (typeof klientid == "undefined") klientid = 0;
+    if (typeof pogledid == "undefined") pogledid = 0;
+    if (typeof magacinid == "undefined") magacinid = 0;
+    var data = {
+        klientid: klientid,
+        pogledid: pogledid,
+        magacinid: magacinid
+    }
+    var formurl = "/index.php/materijalno/izlez/getIspratnici";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+//              console.log(response);
+            jQuery(".matvlezform .izleznaroba tbody").html('');
+            jQuery(".matvlezform .tstavkadetail.matizlezstavki tbody").html('');
+
+            jQuery.each(response, function (index, item) {
+                var vrzanidokumenti = '';
+                jQuery.each(item.dokumenti, function (dindex, ditem) {
+                    vrzanidokumenti = vrzanidokumenti +
+                        '<span>' + ditem.textBroj + '</span>';
+                });
+                if(item.firmaID > 0)
+                {
+                    jQuery(".matvlezform .izleznaroba tbody").append(('<tr ispratnica_id="' + item.ID + '">' +
+                        '<td class="deletefaktura">' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' + '</td>' +
+                        '<td class="editfaktura">' + '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' + '</td>' +
+                        '<td>' + item.textBroj + '</td>' +
+                        '<td>' + item.datum + '</td>' +
+                        '<td>' + item.firmaime + '</td>' +
+                        '<td>' + vrzanidokumenti + '</td>' +
+                        '<td>' + item.komentar + '</td>' +
+                        '</tr>'
+                        ));
+                }
+                if(item.pacient_id > 0)
+                {
+                    var pacientImePrezime = item.pacientIme+" "+item.pacientTatkovoIme+" "+item.pacientPrezime;
+                    jQuery(".matvlezform .izleznaroba tbody").append(('<tr ispratnica_id="' + item.ID + '">' +
+                        '<td class="deletefaktura">' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' + '</td>' +
+                        '<td class="editfaktura">' + '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' + '</td>' +
+                        '<td>' + item.textBroj + '</td>' +
+                        '<td>' + item.datum + '</td>' +
+                        '<td>' + pacientImePrezime + '</td>' +
+                        '<td>' + vrzanidokumenti + '</td>' +
+                        '<td>' + item.komentar + '</td>' +
+                        '</tr>'
+                        ));
+                }
+            });
+            jQuery('.matvlezform .izleznaroba tbody tr .delete-tr').click(function() {
+                var trow = jQuery(this).closest('tr');
+                var ispratnicaid = trow.attr('ispratnica_id');
+                delete_ispratnica(ispratnicaid);
+            });
+            jQuery(".naslovispratnici .vkupnostavki").html(response.length);
+            jQuery(".matizlezform .izleznaroba").trigger("update");
+        }
+    });
+}
+
+
+function mat_otpismaterijali_popolnilista(klientid, pogledid, magacinid) {
+    if (typeof klientid == "undefined") klientid = 0;
+    if (typeof pogledid == "undefined") pogledid = 0;
+    if (typeof magacinid == "undefined") magacinid = 0;
+    var data = {
+        klientid: klientid,
+        pogledid: pogledid,
+        magacinid: magacinid
+    }
+    var formurl = "/index.php/materijalno/otpis_na_materijali/getOtpisnici";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+//              console.log(response);
+            jQuery(".matvlezform .otpisnaroba tbody").html('');
+            jQuery(".matvlezform .tstavkadetail.matotpisnicastavki tbody").html('');
+
+
+
+            jQuery.each(response, function (index, item) {
+//                var vrzanidokumenti = '';
+//                jQuery.each(item.dokumenti, function (dindex, ditem) {
+//                    vrzanidokumenti = vrzanidokumenti +
+//                        '<span>' + ditem.textBroj + '</span>';
+//                });
+
+
+
+                jQuery(".matvlezform .otpisnaroba tbody").append(('<tr otpisnica_id="' + item.ID + '">' +
+                    '<td class="deletefaktura">' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' + '</td>' +
+                    '<td class="editfaktura">' + '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' + '</td>' +
+                    '<td>' + item.textBroj + '</td>' +
+                    '<td>' + item.datum + '</td>' +
+                //  '<td>' + item.firmaime + '</td>' +
+                  //  '<td>' + vrzanidokumenti + '</td>' +
+                    '<td>' + item.komentar + '</td>' +
+                    '</tr>'
+                    ));
+
+            });
+
+
+
+            jQuery('.matvlezform .otpisnaroba tbody tr .delete-tr').click(function() {
+                var trow = jQuery(this).closest('tr');
+                var otpisnicaid = trow.attr('otpisnica_id');
+                delete_otpisnica(otpisnicaid);
+
+            });
+            jQuery(".naslovispratnici .vkupnostavki").html(response.length);
+            jQuery(".matotpisform .otpisnaroba").trigger("update");
+
+    }
+});
+}
+
+
+function mat_izlez_izmeni(id) {
+    var formurl = "/index.php/materijalno/vlez_izlez/editIzleznaRobaMenu";
+    var data = {  id: id  }
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: 1024,
+                modal: true,
+                position: [00, 00],
+                title: "Измени Испратница",
+                close: function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/materijalno/vlez_izlez/editIspratnica?id='+id,
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #ispratnica").html(response);
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/materijalno/vlez_izlez/editFaktura?id='+id,
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #faktura").html(response);
+                }
+            });
+            jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                cache:true,
+                ajaxOptions:{
+                    type:"POST"
+                }
+            });
+        }
+
+    });
+}
+
+function mat_otpisnamaterijali_izmeni(id) {
+    var formurl = "/index.php/materijalno/vlez_izlez/editOtpisnaMaterijaliRobaMenu";
+    var data = {  id: id  }
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: 1024,
+                modal: true,
+                position: [00, 00],
+                title: "Измени Отпис на материјали",
+                close: function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/materijalno/vlez_izlez/editOtpisnica?id='+id,
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #otpisnica").html(response);
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/materijalno/vlez_izlez/editFaktura?id='+id,
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #faktura").html(response);
+                }
+            });
+            jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                cache:true,
+                ajaxOptions:{
+                    type:"POST"
+                }
+            });
+        }
+    });
+}
+
+
+
+
+
+
+
+
+
+function getNewIspratnicaBroj(){
+    var formaction = "/index.php/materijalno/vlez_izlez/getLastIspratnicaBroj";
+    jQuery.ajax({
+        url:formaction,
+        dataType: "json",
+        success:function (response) {
+            var lastbroj = response;
+            var newbroj = 1*lastbroj + 1;
+            var newbrojint = newbroj;
+            var prefix = 'ИСП';
+            var currentYear = (new Date).getFullYear();
+            var godina = ""+currentYear;
+            var YY = godina.substr(2,2);
+            if(lastbroj.toString().length == 0) newbroj= prefix + '0001' + '/' + YY;
+            if(lastbroj.toString().length == 1) newbroj= prefix + '000' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 2) newbroj= prefix + '00' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 3) newbroj= prefix + '0' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 4) newbroj= prefix + newbroj + '/' + YY;
+            jQuery('.priemnica-form span.arhivskibroj').html(newbroj);
+            jQuery('.priemnica-form input.arhivskibroj').val(newbroj);
+            jQuery('.priemnica-form input.arhivskibrojint').val(newbrojint);
+        }
+    });
+}
+
+
+function getNewOtpisnicaBroj(){
+    var formaction = "/index.php/materijalno/vlez_izlez/getLastOtpisnicaMatBroj";
+    jQuery.ajax({
+        url:formaction,
+        dataType: "json",
+        success:function (response) {
+            var lastbroj = response;
+            var newbroj = 1*lastbroj + 1;
+            var newbrojint = newbroj;
+            var prefix = 'OM';
+            var currentYear = (new Date).getFullYear();
+            var godina = ""+currentYear;
+            var YY = godina.substr(2,2);
+            if(lastbroj.toString().length == 0) newbroj= prefix + '0001' + '/' + YY;
+            if(lastbroj.toString().length == 1) newbroj= prefix + '000' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 2) newbroj= prefix + '00' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 3) newbroj= prefix + '0' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 4) newbroj= prefix + newbroj + '/' + YY;
+            jQuery('.otpisnica-form span.arhivskibroj').html(newbroj);
+            jQuery('.otpisnica-form input.arhivskibroj').val(newbroj);
+            jQuery('.otpisnica-form input.arhivskibrojint').val(newbrojint);
+        }
+    });
+}
+
+
+
+function getNewPriemnicaBroj(){
+    var formaction = "/index.php/materijalno/vlez_izlez/getLastPriemnicaBroj";
+    jQuery.ajax({
+        url:formaction,
+        dataType: "json",
+        success:function (response) {
+            var lastbroj = response;
+            var newbroj = 1*lastbroj + 1;
+            var newbrojint = newbroj;
+            var prefix = 'ПР';
+            var currentYear = (new Date).getFullYear();
+            var godina = ""+currentYear;
+            var YY = godina.substr(2,2);
+            if(lastbroj.toString().length == 0) newbroj= prefix + '0001' + '/' + YY;
+            if(lastbroj.toString().length == 1) newbroj= prefix + '000' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 2) newbroj= prefix + '00' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 3) newbroj= prefix + '0' + newbroj + '/' + YY;
+            if(lastbroj.toString().length == 4) newbroj= prefix + newbroj + '/' + YY;
+            jQuery('.priemnica-form span.arhivskibroj').html(newbroj);
+            jQuery('.priemnica-form input.arhivskibroj').val(newbroj);
+            jQuery('.priemnica-form input.arhivskibrojint').val(newbrojint);
+        }
+    });
+}
+function novaStavkaPriemnica()
+{
+        var formaction = "/index.php/materijalno/priemnica/novaStavka";
+        var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+        jQuery.ajax({
+            url:formaction,
+            success:function (response) {
+                jQuery("body").append('<div class="' + tempdialog + '"></div>');
+                jQuery("." + tempdialog).html(response);
+                jQuery('div.' + tempdialog).dialog({
+                    autoOpen:true,
+                    width:"auto",
+                    position:"center",
+                    modal:true,
+                    dialogClass: 'dialogsotabovi',
+                    title:"Додади ставки",
+                    close:function (event, ui) {
+                        jQuery(this).dialog("destroy");
+                        jQuery(this).remove();
+                    }
+                });
+            }
+        });
+}
+function delete_priemnica(priemnicaid){
+    var r=confirm("Избриши приемница");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/materijalno/priemnica/deletePriemnica";
+            var data = {  id:priemnicaid  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    mat_vlez_popolnilista();
+                    jQuery(".tstavkadetail .matstavki tr:gt(1)").remove();
+                }
+            });
+            mat_vlez_popolnilista();
+        }
+    }
+}
+function delete_ispratnica(ispratnicaid){
+    var r=confirm("Избриши испратница");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/materijalno/interni/deleteInterni";
+            var data = {  id:ispratnicaid  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    mat_izlez_popolnilista();
+                    jQuery(".tstavkadetail .matizlezstavki tr:gt(1)").remove();
+                }
+            });
+            mat_izlez_popolnilista();
+        }
+    }
+}
+
+
+function delete_otpisnica(otpisnicaid){
+    var r=confirm("Избриши отпис на материјали");
+    if (r==true)
+    {
+        var b=confirm("Дали сте сигурни?");
+        if (b==true)
+        {
+            var formurl = "/index.php/materijalno/otpis_na_materijali/deleteOtpisnica";
+            var data = {  id:otpisnicaid  }
+            jQuery.ajax({
+                url:formurl,
+                type:'GET',
+                data:data,
+                success:function (response) {
+                    mat_otpismaterijali_popolnilista();
+                    jQuery(".tstavkadetail .matotpisnicastavki tr:gt(1)").remove();
+                }
+            });
+           mat_otpismaterijali_popolnilista();
+        }
+    }
+}
+
+//function addNewStavkaPriemnica(){
+//    var redenbroj = jQuery('.tpriemnica tbody tr:last').find('.redenbroj').text();
+//    if(redenbroj.length > 0) var newredenbroj = parseInt(redenbroj) + parseInt(1);
+//    else var newredenbroj = 1;
+//        jQuery(".tpriemnica tbody").append(('<tr class="detali" artikl_id="">' +
+//            '<td>' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +'</td>' +
+//            '<td class="redenbroj">' + newredenbroj + '</td>' +
+////            '<td>' + '<input class="sifra" name="sifra" value="" />' + '</td>' +
+//            '<td class="sifra">' + '<select class="sifra-dropdown" name="sifra"></select>' + '</td>' +
+//            '<td class="artikli">' + '<select class="artikli-dropdown" name="artikli"></select>' + '</td>' +
+//            '<td>' + '<input class="kolicina" name="kolicina" value="" />' + '</td>' +
+//            '<td class="edmerka">' + '</td>' +
+//            '<td>' + '<select class="magacin" name="magacin"></select>' + '</td>' +
+//            '<td>' + '<input class="garantenrok" name="garantenrok" value="" />' + '</td>' +
+//            '<td>' + '<input class="upotreblivodo" name="upotreblivodo" value="" />' + '</td>' +
+//            '<td>' + '<input class="seriskibroj" name="seriskibroj" value="" />' + '</td>' +
+//            '<td class="hide">' + '<input type="hidden" class="SID" name="SID" value="" />' + '</td>' +
+//            '<td class="hide">' + '<input type="hidden" class="stavka" name="stavka" value="" />' + '</td>' +
+//            '<td class="hide">' + '<input type="hidden" class="edmerkaid" name="edmerkaid" value="" />' + '</td>' +
+//            '<td class="hide">' + '<input type="hidden" class="cena" name="cena" value="" />' + '</td>' +
+//            '<td class="hide">' + '<input type="hidden" class="ddv" name="ddv" value="" />' + '</td>' +
+//            '<td class="hide">' + '<input type="hidden" class="konto" name="konto" value="" />' + '</td>' +
+//            '<td class="hide">' + '<input type="hidden" class="kontoid" name="konto" value="" />' + '</td>' +
+//            '</tr>'
+//            ));
+//        var thisrow = jQuery('.tpriemnica tbody tr:last');
+//        thisrow.find('.upotreblivodo').datepicker();
+//        jQuery.ajax({
+//            url:  "/index.php/materijalno/priemnica/getMagacin",
+//            type: 'GET',
+//            dataType: 'json',
+//            success: function (response) {
+//                for(var i = 0; i < response.length;i++)
+//                {
+//                    thisrow.find('.magacin').append('<option value="'+response[i].id+'">'+response[i].ime+'</option')
+//                }
+//            }
+//        });
+//        jQuery.ajax({
+//            url:  "/index.php/vlezni_fakturi/faktura/getArtikliDropdown",
+//            type: 'GET',
+//            dataType: 'json',
+//            success: function (response) {
+//                for(var i = 0; i < response.length;i++)
+//                {
+//                    thisrow.find('.artikli-dropdown').append('<option value="'+response[i].SID+'">'+response[i].S1Ime+'</option>')
+//                }
+//                thisrow.find('.artikli-dropdown').val();
+//            }
+//        });
+//        jQuery.ajax({
+//            url:  "/index.php/vlezni_fakturi/faktura/getKatbrojDropdown",
+//            type: 'GET',
+//            dataType: 'json',
+//            success: function (response) {
+//                for(var i = 0; i < response.length;i++)
+//                {
+//                    thisrow.find('.sifra-dropdown').append('<option value="'+response[i].sifra+'">'+response[i].sifra+'</option>')
+//                }
+//                thisrow.find('.sifra-dropdown').val();
+//            }
+//        });
+//        jQuery('.artikli-dropdown').combobox();
+//        jQuery('.sifra-dropdown').combobox();
+//        thisrow.find(".delete-tr").click(function () {
+//            var trow = jQuery(this).closest('tr');
+//            if(!trow.is(":last-child"))
+//            {
+//                trow.remove();
+//                var i = 1;
+//                jQuery('.tpriemnica tbody tr').each(function(){
+//                    jQuery(this).find('.redenbroj').html(i);
+//                    i = 1*i + 1;
+//                });
+//            }
+//        });
+//}
+//function addNewStavkaPriemnicaLast(currentrow){
+//    if(currentrow.is(":last-child"))
+//    {
+//        var redenbroj = jQuery('.tpriemnica tbody tr:last').find('.redenbroj').text();
+//        if(redenbroj.length > 0) var newredenbroj = parseInt(redenbroj) + parseInt(1);
+//        else var newredenbroj = 1;
+//        jQuery(".tpriemnica tbody").append(('<tr class="detali" artikl_id="">' +
+//            '<td>' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +'</td>' +
+//            '<td class="redenbroj">' + newredenbroj + '</td>' +
+////            '<td>' + '<input class="sifra" name="sifra" value="" />' + '</td>' +
+//            '<td class="sifra">' + '<select class="sifra-dropdown" name="sifra"></select>' + '</td>' +
+//            '<td class="artikli">' + '<select class="artikli-dropdown" name="artikli"></select>' + '</td>' +
+//            '<td>' + '<input class="kolicina" name="kolicina" value="" />' + '</td>' +
+//            '<td class="edmerka">' + '</td>' +
+//            '<td>' + '<select class="magacin" name="magacin"></select>' + '</td>' +
+//            '<td>' + '<input class="garantenrok" name="garantenrok" value="" />' + '</td>' +
+//            '<td>' + '<input class="upotreblivodo" name="upotreblivodo" value="" />' + '</td>' +
+//            '<td>' + '<input class="seriskibroj" name="seriskibroj" value="" />' + '</td>' +
+//            '<td class="hide">' + '<input type="hidden" class="SID" name="SID" value="" />' + '</td>' +
+//            '<td class="hide">' + '<input type="hidden" class="stavka" name="stavka" value="" />' + '</td>' +
+//            '<td class="hide">' + '<input type="hidden" class="edmerkaid" name="edmerkaid" value="" />' + '</td>' +
+//            '<td class="hide">' + '<input type="hidden" class="cena" name="cena" value="" />' + '</td>' +
+//            '<td class="hide">' + '<input type="hidden" class="ddv" name="ddv" value="" />' + '</td>' +
+//            '<td class="hide">' + '<input type="hidden" class="konto" name="konto" value="" />' + '</td>' +
+//            '<td class="hide">' + '<input type="hidden" class="kontoid" name="konto" value="" />' + '</td>' +
+//            '</tr>'
+//            ));
+//        var thisrow = jQuery('.tpriemnica tbody tr:last');
+//        jQuery('.upotreblivodo').datepicker();
+//        jQuery.ajax({
+//            url:  "/index.php/materijalno/priemnica/getMagacin",
+//            type: 'GET',
+//            dataType: 'json',
+//            success: function (response) {
+//                for(var i = 0; i < response.length;i++)
+//                {
+//                    thisrow.find('.magacin').append('<option value="'+response[i].id+'">'+response[i].ime+'</option')
+//                }
+//            }
+//        });
+//        jQuery.ajax({
+//            url:  "/index.php/vlezni_fakturi/faktura/getArtikliDropdown",
+//            type: 'GET',
+//            dataType: 'json',
+//            success: function (response) {
+//                for(var i = 0; i < response.length;i++)
+//                {
+//                    thisrow.find('.artikli-dropdown').append('<option value="'+response[i].SID+'">'+response[i].S1Ime+'</option>')
+//                }
+//                thisrow.find('.artikli-dropdown').val();
+//            }
+//        });
+//        jQuery.ajax({
+//            url:  "/index.php/vlezni_fakturi/faktura/getKatbrojDropdown",
+//            type: 'GET',
+//            dataType: 'json',
+//            success: function (response) {
+//                for(var i = 0; i < response.length;i++)
+//                {
+//                    thisrow.find('.sifra-dropdown').append('<option value="'+response[i].sifra+'">'+response[i].sifra+'</option>')
+//                }
+//                thisrow.find('.sifra-dropdown').val();
+//            }
+//        });
+//        jQuery('.artikli-dropdown').combobox();
+//        jQuery('.sifra-dropdown').combobox();
+//        jQuery(".tpriemnica .delete-tr").click(function () {
+//            var trow = jQuery(this).closest('tr');
+//            trow.remove();
+//            var i = 1;
+//            jQuery('.tpriemnica tbody tr').each(function(){
+//                jQuery(this).find('.redenbroj').html(i);
+//                i = 1*i + 1;
+//            });
+//        });
+//    }
+//}
+function addNewStavkaPriemnica2(currentrow){
+    jQuery('.tpriemnica tbody tr:last').remove();
+    var redenbroj = jQuery('.tpriemnica tbody tr:last').find('.redenbroj').text();
+    if(redenbroj.length > 0) var newredenbroj = parseInt(redenbroj) + parseInt(1);
+    else var newredenbroj = 1;
+    jQuery(".tpriemnica tbody").append(('<tr class="detali" artikl_id="' + currentrow.attr('artikl_id') + '">' +
+        '<td>' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +'</td>' +
+        '<td class="redenbroj">' + newredenbroj + '</td>' +
+//            '<td>' + '<input class="sifra" name="sifra" value="" />' + '</td>' +
+        '<td class="sifra">' + '<select class="sifra-dropdown" name="sifra"></select>' + '</td>' +
+        '<td class="artikli">' + '<select class="artikli-dropdown" name="stavka"></select>' + '</td>' +
+        '<td>' + '<input class="kolicina" name="kolicina" value="" />' + '</td>' +
+        '<td class="edmerka">' + currentrow.find('.edmerka').text() + '</td>' +
+        '<td>' + '<select class="magacin" name="magacin"></select>' + '</td>' +
+        '<td>' + '<input class="garantenrok" name="garantenrok" value="" />' + '</td>' +
+        '<td>' + '<input class="upotreblivodo" name="upotreblivodo" value="" />' + '</td>' +
+        '<td>' + '<input class="seriskibroj" name="seriskibroj" value="" />' + '</td>' +
+        '<td class="hide">' + '<input type="hidden" class="SID" name="SID" value="'+ currentrow.attr('artikl_id') + '" />' + '</td>' +
+        '<td class="hide">' + '<input type="hidden" class="stavka" name="stavka" value="'+ currentrow.find('.stavka').text() + '" />' + '</td>' +
+        '<td class="hide">' + '<input type="hidden" class="edmerkaid" name="edmerkaid" value="'+ currentrow.find('.edmerkaid').text() + '" />' + '</td>' +
+        '</tr>'
+        ));
+    var thisrow = jQuery('.tpriemnica tbody tr:last');
+    jQuery('.upotreblivodo').datepicker();
+    jQuery.ajax({
+        url:  "/index.php/materijalno/priemnica/getMagacin",
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            for(var i = 0; i < response.length;i++)
+            {
+                thisrow.find('.magacin').append('<option value="'+response[i].id+'">'+response[i].ime+'</option')
+            }
+        }
+    });
+    jQuery.ajax({
+        url:  "/index.php/vlezni_fakturi/faktura/getArtikliDropdown",
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            for(var i = 0; i < response.length;i++)
+            {
+                thisrow.find('.artikli-dropdown').append('<option value="'+response[i].SID+'">'+response[i].S1Ime+'</option>')
+            }
+            thisrow.find('.artikli-dropdown').val();
+        }
+    });
+    jQuery.ajax({
+        url:  "/index.php/vlezni_fakturi/faktura/getKatbrojDropdown",
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            for(var i = 0; i < response.length;i++)
+            {
+                thisrow.find('.sifra-dropdown').append('<option value="'+response[i].sifra+'">'+response[i].sifra+'</option>')
+            }
+            thisrow.find('.sifra-dropdown').val();
+        }
+    });
+    jQuery(".tpriemnica .delete-tr").click(function () {
+        var trow = jQuery(this).closest('tr');
+        trow.remove();
+        var i = 1;
+        jQuery('.tpriemnica tbody tr').each(function(){
+            jQuery(this).find('.redenbroj').html(i);
+            i = 1*i + 1;
+        });
+    });
+    jQuery('.artikli-dropdown').combobox();
+    jQuery('.sifra-dropdown').combobox();
+    thisrow.find("td.artikli .ui-combobox-input").val(currentrow.find('.stavka').text());
+    thisrow.find("td.sifra .ui-combobox-input").val(currentrow.find('.sifra').text());
+    destroyparentdialog(currentrow);
+    addNewStavkaPriemnica();
+}
+
+
+
+
+
+
+function getPodatociArtiklByStavkaMat(stavka, elem)
+{
+    var data = {
+        stavka: stavka,
+        katbroj: ''
+    }
+    jQuery.ajax({
+        url:"/index.php/vlezni_fakturi/faktura/getPodatociArtikl",
+        type:'POST',
+        data: data,
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            var currentrow = elem.closest('tr');
+            currentrow.find("td.sifra .ui-combobox-input").val(response[0].sifra2);
+            currentrow.find(".SID").val(response[0].sifra1);
+            currentrow.find(".konto").val(response[0].konto);
+            if(response[0].EdMerkaID > 0) {
+                currentrow.find("td.edmerka .ui-combobox-input").val(response[0].EdMerkaID);
+                currentrow.find(".edmerkaid").val(response[0].EdMerkaID);
+            }
+            else {
+                currentrow.find("td.edmerka .ui-combobox-input").val('парче');
+                currentrow.find(".edmerkaid").val(4);
+            }
+            currentrow.find(".stavka").val(response[0].stavka);
+            currentrow.find(".cena").val(response[0].cena);
+            currentrow.find(".ddv").val(response[0].ddv);
+            currentrow.find(".kontoid").val(response[0].kontoID);
+            //currentrow.find(".konto").val(response[0].kontoSifra);
+            addNewStavkaPriemnicaLast(currentrow);
+        }
+    });
+}
+function getPodatociArtiklByKatBrojMat(katbroj, elem)
+{
+    var data = {
+        stavka: 0,
+        katbroj: katbroj
+    }
+    jQuery.ajax({
+        url:"/index.php/vlezni_fakturi/faktura/getPodatociArtikl",
+        type:'POST',
+        data: data,
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            var currentrow = elem.closest('tr');
+            currentrow.find("td.artikli .ui-combobox-input").val(response[0].stavka);
+            if(response[0].EdMerkaID > 0) {
+                currentrow.find("td.edmerka .ui-combobox-input").val(response[0].EdMerkaID);
+                currentrow.find(".edmerkaid").val(response[0].EdMerkaID);
+            }
+            else {
+                currentrow.find("td.edmerka .ui-combobox-input").val('парче');
+                currentrow.find(".edmerkaid").val(4);
+            }
+            currentrow.find(".SID").val(response[0].sifra1);
+            currentrow.find(".stavka").val(response[0].stavka);
+            currentrow.find(".cena").val(response[0].cena);
+            currentrow.find(".ddv").val(response[0].ddv);
+            currentrow.find(".kontoid").val(response[0].kontoID);
+            currentrow.find(".konto").val(response[0].konto);
+            addNewStavkaPriemnicaLast(currentrow);
+        }
+    });
+}
+//function addNewStavkaMaterijalno(targettabela){
+//    var redenbroj = jQuery(targettabela+' tbody tr:last').find('.redenbroj').text();
+//    if(redenbroj.length > 0) var newredenbroj = parseInt(redenbroj) + parseInt(1);
+//    else var newredenbroj = 1;
+//    jQuery(targettabela+" tbody").append(('<tr class="detali" artikl_id="">' +
+//        '<td>' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +'</td>' +
+//        '<td class="redenbroj">' + newredenbroj + '</td>' +
+//        '<td class="sifra">' + '<select class="sifra-dropdown" name="sifra"></select>' + '</td>' +
+//        '<td class="artikli">' + '<select class="artikli-dropdown" name="artikli"></select>' + '</td>' +
+//        '<td>' + '<input class="kolicina" name="kolicina" value="" />' + '</td>' +
+//        '<td class="edmerka">' + '</td>' +
+//        '<td>' + '<input class="garantenrok" name="garantenrok" value="" />' + '</td>' +
+//        '<td>' + '<input class="upotreblivodo" name="upotreblivodo" value="" />' + '</td>' +
+//        '<td>' + '<input class="seriskibroj" name="seriskibroj" value="" />' + '</td>' +
+//        '<td class="hide">' + '<input type="hidden" class="SID" name="SID" value="" />' + '</td>' +
+//        '<td class="hide">' + '<input type="hidden" class="stavka" name="stavka" value="" />' + '</td>' +
+//        '<td class="hide">' + '<input type="hidden" class="edmerkaid" name="edmerkaid" value="" />' + '</td>' +
+//        '</tr>'
+//        ));
+//    var thisrow = jQuery(targettabela+' tbody tr:last');
+//    jQuery('.upotreblivodo').datepicker();
+//    jQuery.ajax({
+//        url:  "/index.php/vlezni_fakturi/faktura/getArtikliDropdown",
+//        type: 'GET',
+//        dataType: 'json',
+//        success: function (response) {
+//            for(var i = 0; i < response.length;i++)
+//            {
+//                thisrow.find('.artikli-dropdown').append('<option value="'+response[i].SID+'">'+response[i].S1Ime+'</option>')
+//            }
+//            thisrow.find('.artikli-dropdown').val();
+//        }
+//    });
+//    jQuery.ajax({
+//        url:  "/index.php/vlezni_fakturi/faktura/getKatbrojDropdown",
+//        type: 'GET',
+//        dataType: 'json',
+//        success: function (response) {
+//            for(var i = 0; i < response.length;i++)
+//            {
+//                thisrow.find('.sifra-dropdown').append('<option value="'+response[i].sifra+'">'+response[i].sifra+'</option>')
+//            }
+//            thisrow.find('.sifra-dropdown').val();
+//        }
+//    });
+//    jQuery('.artikli-dropdown').combobox();
+//    jQuery('.sifra-dropdown').combobox();
+//    jQuery(targettabela+" .delete-tr").click(function () {
+//        var trow = jQuery(this).closest('tr');
+//        trow.remove();
+//        var i = 1;
+//        jQuery(targettabela+' tbody tr').each(function(){
+//            jQuery(this).find('.redenbroj').html(i);
+//            i = 1*i + 1;
+//        });
+//    });
+//}
+//function addNewStavkaMaterijalnoLast(targettabela, currentrow){
+//    if(currentrow.is(":last-child"))
+//    {
+//    var redenbroj = jQuery(targettabela+' tbody tr:last').find('.redenbroj').text();
+//    if(redenbroj.length > 0) var newredenbroj = parseInt(redenbroj) + parseInt(1);
+//    else var newredenbroj = 1;
+//    jQuery(targettabela+" tbody").append(('<tr class="detali" artikl_id="">' +
+//        '<td>' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +'</td>' +
+//        '<td class="redenbroj">' + newredenbroj + '</td>' +
+//        '<td class="sifra">' + '<select class="sifra-dropdown" name="sifra"></select>' + '</td>' +
+//        '<td class="artikli">' + '<select class="artikli-dropdown" name="artikli"></select>' + '</td>' +
+//        '<td>' + '<input class="kolicina" name="kolicina" value="" />' + '</td>' +
+//        '<td class="edmerka">' + '</td>' +
+//        '<td>' + '<input class="garantenrok" name="garantenrok" value="" />' + '</td>' +
+//        '<td>' + '<input class="upotreblivodo" name="upotreblivodo" value="" />' + '</td>' +
+//        '<td>' + '<input class="seriskibroj" name="seriskibroj" value="" />' + '</td>' +
+//        '<td class="hide">' + '<input type="hidden" class="SID" name="SID" value="" />' + '</td>' +
+//        '<td class="hide">' + '<input type="hidden" class="stavka" name="stavka" value="" />' + '</td>' +
+//        '<td class="hide">' + '<input type="hidden" class="edmerkaid" name="edmerkaid" value="" />' + '</td>' +
+//        '</tr>'
+//        ));
+//    var thisrow = jQuery(targettabela+' tbody tr:last');
+//    jQuery('.upotreblivodo').datepicker();
+//    jQuery.ajax({
+//        url:  "/index.php/vlezni_fakturi/faktura/getArtikliDropdown",
+//        type: 'GET',
+//        dataType: 'json',
+//        success: function (response) {
+//            for(var i = 0; i < response.length;i++)
+//            {
+//                thisrow.find('.artikli-dropdown').append('<option value="'+response[i].SID+'">'+response[i].S1Ime+'</option>')
+//            }
+//            thisrow.find('.artikli-dropdown').val();
+//        }
+//    });
+//    jQuery.ajax({
+//        url:  "/index.php/vlezni_fakturi/faktura/getKatbrojDropdown",
+//        type: 'GET',
+//        dataType: 'json',
+//        success: function (response) {
+//            for(var i = 0; i < response.length;i++)
+//            {
+//                thisrow.find('.sifra-dropdown').append('<option value="'+response[i].sifra+'">'+response[i].sifra+'</option>')
+//            }
+//            thisrow.find('.sifra-dropdown').val();
+//        }
+//    });
+//    jQuery('.artikli-dropdown').combobox();
+//    jQuery('.sifra-dropdown').combobox();
+//    jQuery(targettabela+" .delete-tr").click(function () {
+//        var trow = jQuery(this).closest('tr');
+//        trow.remove();
+//        var i = 1;
+//        jQuery(targettabela+' tbody tr').each(function(){
+//            jQuery(this).find('.redenbroj').html(i);
+//            i = 1*i + 1;
+//        });
+//    });
+//    }
+//}
+function getPodatociArtiklByStavkaInterni(stavka, elem)
+{
+    var data = {
+        stavka: stavka,
+        katbroj: ''
+    }
+    jQuery.ajax({
+        url:"/index.php/vlezni_fakturi/faktura/getPodatociArtikl",
+        type:'POST',
+        data: data,
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            var currentrow = elem.closest('tr');
+            currentrow.find("td.sifra .ui-combobox-input").val(response[0].sifra2);
+            currentrow.find(".SID").val(response[0].sifra1);
+            if(response[0].EdMerkaID > 0) {
+                currentrow.find("td.edmerka .ui-combobox-input").val(response[0].EdMerkaID);
+                currentrow.find(".edmerkaid").val(response[0].EdMerkaID);
+            }
+            else {
+                currentrow.find("td.edmerka .ui-combobox-input").val('парче');
+                currentrow.find(".edmerkaid").val(4);
+            }
+//            currentrow.find(".edmerka").html(response[0].EdMerkaIme);
+//            currentrow.find(".edmerkaid").val(response[0].EdMerkaID);
+            currentrow.find(".stavka").val(response[0].stavka);
+            addNewStavkaMaterijalnoLast("table.internaispratnica", currentrow);
+        }
+    });
+}
+function getPodatociArtiklByKatBrojInterni(katbroj, elem)
+{
+    var data = {
+        stavka: 0,
+        katbroj: katbroj
+    }
+    jQuery.ajax({
+        url:"/index.php/vlezni_fakturi/faktura/getPodatociArtikl",
+        type:'POST',
+        data: data,
+        dataType:'json',
+        success:function (response) {
+//            console.log(response);
+            var currentrow = elem.closest('tr');
+            currentrow.find("td.artikli .ui-combobox-input").val(response[0].stavka);
+            if(response[0].EdMerkaID > 0) {
+                currentrow.find("td.edmerka .ui-combobox-input").val(response[0].EdMerkaID);
+                currentrow.find(".edmerkaid").val(response[0].EdMerkaID);
+            }
+            else {
+                currentrow.find("td.edmerka .ui-combobox-input").val('парче');
+                currentrow.find(".edmerkaid").val(4);
+            }
+//            currentrow.find(".edmerka").html(response[0].EdMerkaIme);
+//            currentrow.find(".edmerkaid").val(response[0].EdMerkaID);
+            currentrow.find(".SID").val(response[0].sifra1);
+            currentrow.find(".stavka").val(response[0].stavka);
+            addNewStavkaMaterijalnoLast("table.internaispratnica",currentrow);
+        }
+    });
+}
+function mat_interni_popolnilista(klientid, magacinid) {
+    if (typeof klientid == "undefined") klientid = 0; //vo
+    //if (typeof pogledid == "undefined") pogledid = 0;
+    if (typeof magacinid == "undefined") magacinid = 0; //od
+    var data = {
+        klientid: klientid,
+        magacinid: magacinid
+    }
+    var formurl = "/index.php/materijalno/interni/getInterniIspratnici";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+            //  console.log(response);
+            jQuery(".matvlezform .internaroba tbody").html('');
+            jQuery(".matvlezform .tstavkadetail.matintizlezstavki tbody").html('');
+
+            jQuery.each(response, function (index, item) {
+                var vrzanidokumenti = '';
+                jQuery.each(item.dokumenti, function (dindex, ditem) {
+                    vrzanidokumenti = vrzanidokumenti +
+                        '<span>' + ditem.textBroj + '</span>';
+                });
+                jQuery(".matvlezform .internaroba tbody").append(('<tr ispratnica_id="' + item.ID + '" priemnica_id="' + item.zaDokID + '">' +
+                    '<td class="deletefaktura">' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' + '</td>' +
+                    '<td class="editfaktura">' + '<a class="edit-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/edit.png"></a>' + '</td>' +
+                    '<td>' + item.textBroj + '</td>' +
+                    '<td>' + item.datum + '</td>' +
+                    '<td>' + item.magacin_od + '</td>' +
+                    '<td>' + item.magacin_vo + '</td>' +
+                    '<td>' + vrzanidokumenti + '</td>' +
+                    '<td>' + item.komentar + '</td>' +
+                    '</tr>'
+                    ));
+            });
+            jQuery('.matvlezform .internaroba tbody tr .delete-tr').click(function() {
+                var trow = jQuery(this).closest('tr');
+                var ispratnicaid = trow.attr('ispratnica_id');
+                delete_ispratnica(ispratnicaid);
+                mat_interni_popolnilista();
+            });
+            jQuery(".naslovinterniispratnici .vkupnostavki").html(response.length);
+            jQuery(".matintizlezform .internaroba").trigger("update");
+        }
+    });
+}
+function mat_interni_popolnilista_artikli_podokument(id,targettabela) {
+    var data = {
+        id: id
+    }
+    var formurl = "/index.php/materijalno/interni/getInterniDetali";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            var vkupnostavki = response.length;
+            jQuery(targettabela +" tbody").html('');
+            var redenbroj = 1;
+            jQuery.each(response, function (index, item) {
+                jQuery(targettabela).append(('<tr artikl_id="' + item.SID + '">' +
+                    '<td>' + redenbroj + '</td>' +
+                    '<td>' + item.sifra + '</td>' +
+//                    '<td>' + item.katBroj + '</td>' +
+                    '<td>' + item.stavka + '</td>' +
+                    '<td class="text-right">' + item.kolicina + '</td>' +
+                    '<td>' + item.edMerka + '</td>' +
+                    '<td>' + item.garanten_rok + '</td>' +
+                    '<td>' + item.upotreblivo_do + '</td>' +
+                    '<td>' + item.SerNo + '</td>' +
+                    '</tr>'
+                    ));
+                redenbroj = redenbroj + 1;
+            });
+            jQuery(".naslovinternidetali .vkupnostavki").html(vkupnostavki);
+            jQuery(targettabela).trigger("update");
+        }
+    });
+}
+function mat_interni_izmeni(id, priemnica_id) {
+    var formurl = "/index.php/materijalno/interni/editInternaRobaMenu";
+    var data = {
+        id: id,
+        priemnicaid: priemnica_id
+    }
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        success: function (response) {
+            var tempdialog = "dialog" + Math.floor((Math.random() * 1000) + 1);
+            jQuery("body").append('<div class="' + tempdialog + '"></div>');
+            jQuery('div.' + tempdialog).html(response);
+            jQuery('div.' + tempdialog).dialog({
+                autoOpen: true,
+                width: 1024,
+                modal: true,
+                position: [00, 00],
+                title: "Измени Интерна",
+                close: function (event, ui) {
+                    jQuery(this).dialog("destroy");
+                    jQuery(this).remove();
+                }
+            });
+            jQuery.ajax({
+                url:'/index.php/materijalno/interni/editInterna?id='+id,
+                data: data,
+                type:'GET',
+                success:function (response) {
+                    jQuery("." + tempdialog +" #interna").html(response);
+                }
+            });
+            jQuery("." + tempdialog + ' .pop-menu-tabs').tabs({
+                cache:true,
+                ajaxOptions:{
+                    type:"POST"
+                }
+            });
+        }
+    });
+}
+function mat_edit_interni_popolnilista_artikli_podokument(id,targettabela) {
+    var data = {
+        id: id
+    }
+    var formurl = "/index.php/podatoci/artikl/getArtikliPoDokument";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            jQuery(targettabela +" tbody").html('');
+            var redenbroj = 1;
+            var magacinOd = '';
+            var magacinVo = '';
+            for ( var i = 0; i < response.length; i++ ) {
+                magacinOd = response[0].magacinId;
+                magacinVo = response[0].magacinVo;
+                jQuery(targettabela+" tbody").append(('<tr class="detali" artikl_id="' + response[i].artikl_id + '">' +
+                    '<td>' + '<a class="delete-tr" href="javascript:"><img width="15" height="15" alt="" src="/images/delete.png"></a>' +'</td>' +
+                    '<td class="redenbroj">' + redenbroj + '</td>' +
+                    '<td>' + '<input class="sifra" name="sifra" value="'+ response[i].sifra +'" readonly />' + '</td>' +
+                    '<td>' + '<input class="stavka" name="stavka" value="'+ response[i].stavka +'" readonly />' + '</td>' +
+                    '<td>' + '<input class="kolicina" name="kolicina" value="' + response[i].kolicina + '" /></td>' +
+                    '<td class="edmerka">' + response[i].edMerkaIme + '</td>' +
+                    '<td>' + '<input class="garantenrok" name="garantenrok" value="' + response[i].garantenrok + '" />' + '</td>' +
+                    '<td>' + '<input class="upotreblivodo" name="upotreblivodo" value="' + response[i].upotreblivodo + '" />' + '</td>' +
+                    '<td>' + '<input class="seriskibroj" name="seriskibroj" value="' + response[i].seriskibroj + '" />' + '</td>' +
+                    '<td class="hide">' + '<input type="hidden" class="SID" name="SID" value="'+ response[i].artikl_id + '" />' + '</td>' +
+                    '<td class="hide">' + '<input type="hidden" class="dbid" name="dbid" value="'+ response[i].dbid + '" />' + '</td>' +
+                    '<td class="hide">' + '<input type="hidden" class="edmerkaid" name="edmerkaid" value="'+ response[i].edMerkaId + '" />' + '</td>' +
+                    '<td class="hide">' + '<input type="hidden" class="brisistavka" name="brisistavka" />' + '</td>' +
+                    '</tr>'
+                    ));
+                var thisrow = jQuery(targettabela+' tbody tr:last');
+                thisrow.find('.upotreblivodo').datepicker();
+                thisrow.find(".delete-tr").click(function() {
+                    var trow = jQuery(this).closest('tr');
+                    trow.find("input.brisistavka").val(1);
+                    trow.addClass('hiderow');
+                });
+                redenbroj = 1*redenbroj + 1;
+                jQuery(targettabela).trigger("update");
+            }
+            jQuery(".magacin_od").val(magacinOd);
+            jQuery(".magacin_vo").val(magacinVo);
+//            console.log(magacinOd, magacinVo);
+            addNewStavkaMaterijalno(targettabela);
+        }
+    });
+}
+//function proveriLagerMagacin(magacin,kolicina,artikl,elem)
+function proveriLagerMagacin(elem)
+{
+    var trow = jQuery(elem).closest("tr");
+    var magacin = trow.find(".magacin option:selected").val();
+    var kolicina = trow.find(".kolicina").val();
+    var artikl = trow.find(".SID").val();
+    var magacinIme =jQuery(".tpriemnica tbody tr").find(".magacin option:selected").text();
+    var data = {
+        artikl: artikl,
+        magacin: magacin
+    }
+    console.log("javascipt ", artikl, magacin);
+    var formurl = "/index.php/materijalno/izlez/proveriLagerMagacin";
+    jQuery.ajax({
+        url: formurl,
+        type: 'GET',
+        data: data,
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            if(kolicina > response)
+            {
+                trow.find(".kolicina").val('0');
+                alert("Количина на лагер за овој артикл во овој магацин е " + response);
+            }
+
+        }
+    });
+}
+function reload_kartica()
+{
+    var data = {
+        artiklid: 0,
+        magacinid: 0
+    };
+    jQuery.ajax({
+        url: "/index.php/materijalno/kartici/getArtiklKarticaPrazna",
+        type: 'POST',
+        data: data,
+        dataType: 'json',
+        success: function(response) {
+            // ovde se brisat kombo vrednostite za magacin i artikl vo tabot za kartici
+            jQuery("div.magacintest .ui-combobox-input").val('');
+            jQuery("div.artikltest .ui-combobox-input").val('');
+            //
+            var pozitiva = [710, 719, 726];
+            var negativa = [715, 720, 729, 90];
+            var sostojba = 0;
+            jQuery(".tkartici").find("tr:gt(0)").not(":last").remove();
+            var tr = jQuery('.tkartici tr:last');
+            tr.removeClass('hiderow');
+            for ( var i = 0; i < response.length; i++ ) {
+                var newrow = jQuery(tr).clone().insertBefore(tr);
+                newrow.find('.datum').html(response[i].datum);
+                newrow.find('.klient').html(response[i].firmaIme);
+                newrow.find('.cenavlez').html(formatnumbermkd(response[i].vleznacena));
+                newrow.find('.cenasredna').html(formatnumbermkd(response[i].srednacena));
+                newrow.find('.edmerka').html(response[i].edMerka);
+                if(response[i].vleznacena > 0) newrow.find('.cenavkupno').html(formatnumbermkd(parseInt(response[i].kolicina) * parseInt(response[i].vleznacena)));
+                if(response[i].tip == 710)
+                {
+                    newrow.find('.dokument').html(response[i].broj);
+                    newrow.find('.vlez').html(response[i].kolicina);
+                    sostojba = sostojba + parseInt(response[i].kolicina);
+                    newrow.find('.sostojba').html(sostojba);
+                    newrow.find('.cenavkupno').html(formatnumbermkd(1*response[i].kolicina*response[i].vleznacena));
+                }
+                if(response[i].tip == 720)
+                {
+                    newrow.find('.dokument').html(response[i].broj);
+                    newrow.find('.izlez').html(response[i].kolicina);
+                    sostojba = sostojba - parseInt(response[i].kolicina);
+                    newrow.find('.sostojba').html(response[i].sostojba);
+                    newrow.find('.cenavkupno').html(formatnumbermkd(1*response[i].kolicina*response[i].srednacena));
+                }
+                if(response[i].tip == 90)
+                {
+                    newrow.find('.dokument').html(response[i].broj);
+                    newrow.find('.izlez').html(response[i].kolicina);
+                    sostojba = sostojba - parseInt(response[i].kolicina);
+                    newrow.find('.sostojba').html(response[i].sostojba);
+                    newrow.find('.cenavkupno').html(formatnumbermkd(1*response[i].kolicina*response[i].srednacena));
+                }
+                if(response[i].tip == 715)
+                {
+                    newrow.find('.dokument').html(response[i].broj);
+                    newrow.find('.izlez').html(response[i].kolicina);
+                    sostojba = sostojba - parseInt(response[i].kolicina);
+                    newrow.find('.sostojba').html(response[i].sostojba);
+                }
+                if(response[i].tip == 719)
+                {
+                    newrow.find('.dokument').html(response[i].broj);
+                    newrow.find('.vlez').html(response[i].kolicina);
+                    sostojba = sostojba + parseInt(response[i].kolicina);
+                    newrow.find('.sostojba').html(response[i].sostojba);
+                }
+                if(response[i].tip == 726)
+                {
+                    newrow.find('.dokument').html(response[i].broj);
+                    newrow.find('.vlez').html(response[i].kolicina);
+                    sostojba = sostojba + parseInt(response[i].kolicina);
+                    newrow.find('.sostojba').html(response[i].sostojba);
+                }
+                if(response[i].tip == 729)
+                {
+                    newrow.find('.dokument').html(response[i].broj);
+                    newrow.find('.izlez').html(response[i].kolicina);
+                    sostojba = sostojba - parseInt(response[i].kolicina);
+                    newrow.find('.sostojba').html(response[i].sostojba);
+                }
+            }
+            tr.addClass('hiderow');
+            jQuery(".naslovkartici .vkupnostavki").html(response.length);
+            jQuery(".tkartici").trigger("update");
+        }
+    });
+
+}

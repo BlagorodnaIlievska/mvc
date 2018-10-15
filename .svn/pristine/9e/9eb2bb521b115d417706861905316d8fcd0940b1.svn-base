@@ -1,0 +1,365 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+
+class Nov_plan extends CI_Controller
+{
+    function __construct()
+    {
+        parent::__construct();
+        $this->load->model('planiranje/smenski_model');
+    }
+
+    public function index()
+    {
+        $data['main_content'] = 'planiranje/index';
+        $this->load->view('includes/template', $data);
+    }
+
+
+    public function denovi($numDays)
+    {
+        $_28days = array('day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7', 'day8', 'day9', 'day10',
+            'day11', 'day12', 'day13', 'day14', 'day15', 'day16', 'day17', 'day18', 'day19', 'day20',
+            'day21', 'day22', 'day23', 'day24', 'day25', 'day26', 'day27', 'day28');
+
+        if($numDays == '28'){
+            $daysArr = $_28days ;
+        }
+        elseif($numDays == '29') {
+            $daysArr = $_28days;
+            array_push($daysArr,'day29');
+        }
+        elseif($numDays == '30') {
+            $daysArr = $_28days;
+            array_push($daysArr,'day29','day30');
+        }
+        elseif($numDays == '31') {
+            $daysArr = $_28days;
+            array_push($daysArr,'day29','day30','day31');
+        }
+
+        return $daysArr;
+    }
+
+    public function planiranje()
+    {
+        $this->load->model('planiranje/smenski_model');
+        $smeni = $this->smenski_model->get_Allsmeni();
+        $smena = '0';
+        $month = date("m");
+        $year = date('Y');
+        $usersArr = array();
+        $numDays = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+
+        $smenski_korisnici = $this->smenski_model->siteKorisnici();
+        if($smenski_korisnici != array()){
+            foreach($smenski_korisnici as &$smen){
+                $userId = $smen->id;
+                $smeniPoUser = $this->smenski_model->smeniPoUser($userId, $month, $year);
+                $smen->denovi = $smeniPoUser;
+
+                $s1 = $this->smenski_model->prvaSmena($userId, $month, $year);
+                $smen->smenaDen = $s1;
+                $usersIdArr = array_push($usersArr, $userId);
+            }
+        }
+        if($smenski_korisnici != array()){
+            $day = $this->input->post('den');
+            if(isset($day) && ($day == '')){
+                $day = 'day1';
+            }
+
+        $daysArr= $this->denovi($numDays);
+
+            $prvaArr = array();
+            $vtoraArr = array();
+            $tretaArr = array();
+            $cetvrtaArr = array();
+            $petaArr = array();
+            foreach($daysArr as $day1){
+                $prvaSmena = $this->smenski_model->Smena($day1, $month, $year, $usersArr,"1");
+                $prvaSmenas = count($prvaSmena);
+                $vtoraSmena = $this->smenski_model->Smena($day1, $month, $year, $usersArr,"2");;
+                $vtoraSmenas = count($vtoraSmena);
+                $tretaSmena = $this->smenski_model->Smena($day1, $month, $year, $usersArr,"3");;
+                $tretaSmenas = count($tretaSmena);
+                $dez1Smena = $this->smenski_model->Smena($day1, $month, $year, $usersArr,"4");;
+                $dez1Smenas = count($dez1Smena);
+                $dez2Smena = $this->smenski_model->Smena($day1, $month, $year, $usersArr,"5");;
+                $dez2Smenas = count($dez2Smena);
+                $sumPrvaSmena = array_push($prvaArr, $prvaSmenas);
+                $sumVtoraSmena = array_push($vtoraArr, $vtoraSmenas);
+                $sumTretaSmena = array_push($tretaArr, $tretaSmenas);
+                $sumCetvrtaSmena = array_push($cetvrtaArr, $dez1Smenas);
+                $sumPetaSmena = array_push($petaArr, $dez2Smenas);
+            }
+
+            $data['smena'] = $smena;
+            $data['month'] = $month;
+            $data['smenskiK'] = $smenski_korisnici;
+            $data['novaSmena'] = $smeniPoUser;
+            $data['sumPrvaSmena'] = $prvaArr;
+            $data['sumVtoraSmena'] = $vtoraArr;
+            $data['sumTretaSmena'] = $tretaArr;
+            $data['dez1Smena'] = $cetvrtaArr;
+            $data['dez2Smena'] = $petaArr;
+            $data['daysArr'] = $daysArr;
+
+        }else{
+            $error = 'Во моментов нема записи за оваа сменска група.';
+            $data['error'] = $error;
+        }
+
+        $data['smeni'] = $smeni;
+        $this->load->view('planiranje/iplan', $data);
+    }
+
+    public function view_plan()
+    {
+        $this->load->model('planiranje/plan_model');
+        $this->load->view('planiranje/lista');
+    }
+
+    public function iminjaSporedSmeni(){
+        $this->load->model('planiranje/smenski_model');
+
+        $smena = $this->input->post('smena');
+        $month = $this->input->post('mesec');
+
+        $year = date('Y');
+        $usersArr = array();
+        $numDays = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        if(isset($smena) && ($smena != '0')){
+            $smenski_korisnici = $this->smenski_model->smenskiKorisnici($smena);
+            if($smenski_korisnici != array()){
+                foreach($smenski_korisnici as &$smen){
+                    $userId = $smen->id;
+                    $smeniPoUser = $this->smenski_model->smeniPoUser($userId, $month, $year);
+                    $smen->denovi = $smeniPoUser;
+
+                    $s1 = $this->smenski_model->prvaSmena($userId, $month, $year);
+                    $smen->smenaDen = $s1;
+                    $usersIdArr = array_push($usersArr, $userId);
+                }
+            }
+        }else{
+            $smenski_korisnici = $this->smenski_model->siteKorisnici();
+            if($smenski_korisnici != array()){
+                foreach($smenski_korisnici as &$smen){
+                    $userId = $smen->id;
+                    $smeniPoUser = $this->smenski_model->smeniPoUser($userId, $month, $year);
+                    $smen->denovi = $smeniPoUser;
+
+                    $s1 = $this->smenski_model->prvaSmena($userId, $month, $year);
+                    $smen->smenaDen = $s1;
+                    $usersIdArr = array_push($usersArr, $userId);
+                }
+            }
+        }
+
+        if($smenski_korisnici != array()){
+            $day = $this->input->post('den');
+            if(isset($day) && ($day == '')){
+                $day = 'day1';
+            }
+
+            $daysArr= $this->denovi($numDays);
+
+            $prvaArr = array();
+            $vtoraArr = array();
+            $tretaArr = array();
+            $cetvrtaArr = array();
+            $petaArr = array();
+            foreach($daysArr as $day1){
+                $prvaSmena = $this->smenski_model->Smena($day1, $month, $year, $usersArr,"1");
+                $prvaSmenas = count($prvaSmena);
+                $vtoraSmena = $this->smenski_model->Smena($day1, $month, $year, $usersArr,"2");;
+                $vtoraSmenas = count($vtoraSmena);
+                $tretaSmena = $this->smenski_model->Smena($day1, $month, $year, $usersArr,"3");;
+                $tretaSmenas = count($tretaSmena);
+                $dez1Smena = $this->smenski_model->Smena($day1, $month, $year, $usersArr,"4");;
+                $dez1Smenas = count($dez1Smena);
+                $dez2Smena = $this->smenski_model->Smena($day1, $month, $year, $usersArr,"5");;
+                $dez2Smenas = count($dez2Smena);
+                $sumPrvaSmena = array_push($prvaArr, $prvaSmenas);
+                $sumVtoraSmena = array_push($vtoraArr, $vtoraSmenas);
+                $sumTretaSmena = array_push($tretaArr, $tretaSmenas);
+                $sumCetvrtaSmena = array_push($cetvrtaArr, $dez1Smenas);
+                $sumPetaSmena = array_push($petaArr, $dez2Smenas);
+            }
+
+            $data['smena'] = $smena;
+            $data['month'] = $month;
+            $data['smenskiK'] = $smenski_korisnici;
+            $data['novaSmena'] = $smeniPoUser;
+            $data['sumPrvaSmena'] = $prvaArr;
+            $data['sumVtoraSmena'] = $vtoraArr;
+            $data['sumTretaSmena'] = $tretaArr;
+            $data['dez1Smena'] = $cetvrtaArr;
+            $data['dez2Smena'] = $petaArr;
+            $data['daysArr'] = $daysArr;
+
+        }else{
+            $error = 'Во моментов нема записи за оваа сменска група.';
+            $data['error'] = $error;
+        }
+        $data['main_content'] = 'planiranje/tabela';
+        $this->load->view('planiranje/tabela', $data);
+    }
+
+    function pregled(){
+        $this->load->model('users/accounts_model');
+        $this->load->model('planiranje/smenski_model');
+        $this->load->model('pacienti/pacienti_model');
+
+        $pacienti = $this->pacienti_model->getPacienti();
+
+        $userId = $this->input->post('userId');
+        $date = $this->input->post('date');
+        $smena = $this->smenski_model->getSmenskaMapaForUser($userId, $date);
+//        bis_debug($smena["day"], "smena");
+
+        $data['datum'] = $date;
+        $data['user_id']= $userId;
+        $data['user']= $this->accounts_model->getById($userId);
+        $data['smena_id']= $smena["id"];
+        $data['smena']= $smena["day"];
+        $data['aktivnosti']= $this->smenski_model->getPlanByUserId($userId, $date);
+        $data['pacienti'] = $pacienti;
+//        $data['main_content'] = 'planiranje/planiranjePopup';
+        $this->load->view('planiranje/planiranje_den', $data);
+    }
+
+    function deletePlan(){
+        $this->load->model('planiranje/smenski_model');
+        $id = $this->input->post('id');
+        $this->smenski_model->deletePlanById($id);
+    }
+
+    function addSmena(){
+        $this->load->model('planiranje/smenski_model');
+
+        $smena = $this->input->post('smena');
+        $userId = $this->input->post('userId');
+        $dayNo = $this->input->post('dayNo');
+        $month = $this->input->post('mesec');
+
+        $visible = $this->input->post('visible');
+        $vreme = $this->input->post('vreme');
+        $aktivnost = $this->input->post('aktivnost');
+        $mesto = $this->input->post('mesto');
+        $pacient = $this->input->post('pacient');
+        $year = date('Y');
+        $data_zakazuvanje['user_id'] = $userId;
+        $data_zakazuvanje['vreme'] = $vreme;
+        $data_zakazuvanje['vreme_do'] = $this->input->post('vreme_do');
+        $data_zakazuvanje['aktivnost'] = $aktivnost;
+        $data_zakazuvanje['mesto'] = $mesto;
+        $data_zakazuvanje['year'] = $year;
+        $data_zakazuvanje['month'] = $month;
+        $data_zakazuvanje['day'] = $dayNo;
+        $data_zakazuvanje['pacient'] = $pacient;
+
+        if(isset($visible) && (trim($visible) == '1')){
+            if((trim($vreme) != '') && (trim($aktivnost) != '') && (trim($mesto) != '')){
+                $this->smenski_model->addPlan($data_zakazuvanje);
+            }
+        }
+
+        if(isset($smena) && (trim($smena) != '')){
+
+       $day="day".$dayNo;
+
+
+        $proverka = $this->smenski_model->smeniPoUser($userId, $month, $year);
+        if($proverka != array()){
+            $this->smenski_model->updateSmena($userId, $smena, $day, $month, $year);
+        }else{
+            $this->smenski_model->addSmena($userId, $smena, $day, $month, $year);
+        }
+    }
+       redirect('planiranje/nov_plan/');
+    }
+
+    function zacuvaj_planiranje_den()
+    {
+        $this->load->model('planiranje/smenski_model');
+        $data = $this->input->post();
+        $this->smenski_model->zacuvaj_planiranje_den($data);
+    }
+
+    function delete_aktivnost()
+    {
+        $id = $this->input->post("id");
+        $result = $this->smenski_model->delete_aktivnost($id);
+        echo json_encode($result);
+    }
+
+    function raspored_vraboteni()
+    {
+        $this->load->model('users/accounts_model');
+        $this->load->model('planiranje/smenski_model');
+        $this->load->model('pacienti/pacienti_model');
+        $vraboteni = $this->smenski_model->siteKorisnici();
+        $pacienti = $this->pacienti_model->getPacienti();
+
+        $data['vraboteni'] = $vraboteni;
+        $data['pacienti'] = $pacienti;
+        $this->load->view('planiranje/raspored_vraboteni', $data);
+    }
+
+    function get_aktivnost_za_den()
+    {
+        $this->load->model('planiranje/smenski_model');
+        $this->load->model('pacienti/pacienti_model');
+
+        $vraboten_id = $this->input->post("vraboten_id");
+        $datum = $this->input->post("datum");
+
+        $aktivnosti = $this->smenski_model->getPlanByUserId($vraboten_id, $datum);
+        $pacienti = $this->pacienti_model->getPacienti();
+
+        $data['aktivnosti'] = $aktivnosti;
+        $data['pacienti'] = $pacienti;
+        $this->load->view('planiranje/aktivnosti_tabela', $data);
+    }
+    function get_smena_za_den()
+    {
+        $this->load->model('planiranje/smenski_model');
+        $userId = $this->input->post("vraboten_id");
+        $date = $this->input->post("datum");
+
+        $smena = $this->smenski_model->getSmenskaMapaForUser2($userId, $date);
+        $data['smena_id'] = $smena['id'];
+        $data['smena_index'] = $smena['index'];
+        $data['smena_day'] = $smena['day'];
+        echo json_encode($data);
+    }
+
+    function raspored_denovi()
+    {
+        $this->load->model('users/accounts_model');
+        $this->load->model('planiranje/smenski_model');
+        $this->load->model('pacienti/pacienti_model');
+        $vraboteni = $this->smenski_model->siteKorisnici();
+        $pacienti = $this->pacienti_model->getPacienti();
+
+        $data['vraboteni'] = $vraboteni;
+        $data['pacienti'] = $pacienti;
+        $this->load->view('planiranje/raspored_denovi', $data);
+    }
+
+    function get_site_aktivnosti_za_den()
+    {
+        $this->load->model('planiranje/smenski_model');
+        $this->load->model('pacienti/pacienti_model');
+
+        $datum = $this->input->post("datum");
+        $aktivnosti = $this->smenski_model->getPlanByDate($datum);
+
+        $data['aktivnosti'] = $aktivnosti;
+        $this->load->view('planiranje/dnevni_aktivnosti_tabela', $data);
+    }
+}

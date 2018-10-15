@@ -1,0 +1,24 @@
+<div class="izmeni-sindikat">
+    <form action="/index.php/plata_podatoci/sindikat/update_sindikat" method="post">
+        <fieldset>
+            <input type="hidden" name="id" value="<?php echo $sindikat->id  ?>"/>
+            <legend>Измени синдикат</legend>
+            Назив:<br/>
+            <input type="text" name="naziv" value="<?php echo $sindikat->naziv ?>"/><br/>
+            Процент:<br/>
+            <input type="text" name="procent" value="<?php echo $sindikat->procent ?>"/><br/>
+            Жиросметка:<br/>
+            <input type="text" name="zirosmetka" value="<?php echo $sindikat->zirosmetka ?>"/><br/>
+            Подсметка:<br/>
+            <input type="text" name="podsmetka" value="<?php echo $sindikat->podsmetka ?>"/><br/>
+            Конто:<br/>
+            <input type="text" name="konto" value="<?php echo $sindikat->konto ?>"/><br/>
+        </fieldset>
+        <br/>
+
+        <button type="button" class="button snimi-forma" izvrsi="sindikat_polnilista()" poraka_uspesno="Успешно изменетo"
+                poraka_neuspesno="Грешка при снимање"
+                ><span>Сними</span></button>
+        <br/>
+    </form>
+</div>

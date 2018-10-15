@@ -1,0 +1,42 @@
+<div class="podatoci-plata">
+    <div class="sindikat">
+        <?php if (bis_check_access('sistemsko_podesuvanje_planiranje_resursi_sindikati_nov_sindikat_button')): ?>
+        <div class="buttoncontainer">
+            <button class="button" onclick="sindikat_nov()">Нов синдикат</button>
+        </div>
+            <?php endif ?>
+        <div class="predtabela">
+            <table class="tabela-sindikati">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>РБ</th>
+                    <th>Назив</th>
+                    <th>Процент</th>
+                    <th>Жиросметка</th>
+                    <th>Подсметка</th>
+                    <th>Конто</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function () {
+        jQuery(".tabela-sindikati").tablesorter();
+        sindikat_polnilista();
+        jQuery(".tabela-sindikati tbody tr").live('click', function () {
+            jQuery(".tabela-sindikati tbody tr").removeClass("active");
+            jQuery(this).addClass("active");
+        });
+        jQuery(".tabela-sindikati .edit-tr").live('click', function () {
+            sindikat_izmeni(jQuery(this).parent().parent().attr('sindikat_id'));
+        });
+        jQuery(".tabela-sindikati .delete-tr").live('click', function () {
+            sindikat_delete(jQuery(this).parent().parent().attr('sindikat_id'));
+        });
+    });
+</script >

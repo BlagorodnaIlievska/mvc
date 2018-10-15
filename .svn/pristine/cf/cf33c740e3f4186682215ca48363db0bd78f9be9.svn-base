@@ -1,0 +1,140 @@
+<?php
+//print_r($kasi_all);
+//die();
+?>
+<br/>
+<div class="filtermenukasa"10px">
+            <div class="filter-kasa">
+                <span>Период од: </span>
+                <label><? echo $period_od; ?></label>
+
+                <span style="margin: 0 5px;">до:</span>
+                <label><? echo $period_do; ?></label>
+                <div class="sostojba">
+                 </div>
+                </div><br/>
+                <div class="filter-kasa" >
+                    <span>Каса: </span>
+                    <label><? echo $kasa_ime_celo; ?></label>
+
+                </div>
+            </div>
+                    <br/>
+    <br/>
+<?php if(!($kasi_all)) {
+    echo 'Во моментов нема каси.';
+    die();
+}
+
+
+?>
+                <div class="kasatabela">
+
+                     <p class="naslovkasapregled" > ( <span class="vkupnostavki"><? echo count($kasi_all); ?></span> ) Преглед на каси</p>
+                     <div class="predtabela">
+             <?php
+
+                   if($kasaid > 0){
+                         ?>
+
+<table class="print_kasov_izvestaj" border="0.5px">
+                             <tr style="border: 1px solid black;">
+                                 <td style="padding-left: 5px" class="print_td" style="width: 90px;">Датум</td>
+                                 <td style="padding-left: 5px" class="print_td">Број</td>
+                                 <td style="padding-left: 5px" class="print_td" style="width: 150px;">Клиент</td>
+                                 <td style="padding-left: 5px" class="print_td">Одлив</td>
+                                 <td style="padding-left: 5px" class="print_td">Прилив</td>
+                                 <td style="padding-left: 5px" class="print_td">Состојба</td>
+                                  <td style="padding-left: 5px" class="print_td">Конто</td>
+                                 <td style="padding-left: 5px" class="print_td">Намена</td>
+
+                             </tr>
+
+                       <?php
+    foreach($kasi_all as $krow){
+        if($krow->firmaID > 0){ $klientIme = $krow->firmaIme;}else
+            if($krow->pacient_id > 0){ $klientIme = $krow->pacientIme . " " . $krow->pacientTatkovoIme . " " . $krow->pacientPrezime;}
+        ?>
+
+
+        <tr style="border: 1px solid black;">
+            <td style="padding-left: 5px" class="datumkasa" style="width: 90px;"><? echo $krow->datum; ?></td>
+            <td style="padding-left: 5px" class="brojkasa" style="padding-left: 5px"><? echo $krow->textBroj; ?></td>
+
+            <td style="padding-left: 5px" class="firmakasa"><? echo $klientIme; ?></td>
+            <?php if($krow->tip == 550){ ?>
+            <td style="padding-left: 5px" class="odlivkasa"></td>
+            <td style="padding-left: 5px" class="prilivkasa text-right"><? echo $krow->z_uplata; ?></td>
+            <?php }else
+            if($krow->tip == 540){ ?>
+                <td style="padding-left: 5px" class="odlivkasa text-right"><? echo $krow->z_uplata; ?></td>
+                <td style="padding-left: 5px" class="prilivkasa"></td>
+                <?php }?>
+            <td style="padding-left: 5px" class="sostojbakasa1 text-right"><? echo $krow->sostojba; ?></td>
+            <td style="padding-left: 5px" class="kontobrojkasa"><? echo $krow->konto; ?></td>
+            <td style="padding-left: 5px" class="namenakasa"><? echo $krow->namena; ?></td>
+
+        </tr>
+
+        <?php
+                   }
+
+                         ?>
+
+</table>
+
+<?php }else
+                   if($kasaid == 0){
+                   ?>
+
+<table class="print_kasov_izvestaj" border="0.5px">
+                             <tr style="border: 1px solid black;">
+                                 <td style="padding-left: 5px"  class="print_td" style="width: 90px;">Датум</td>
+                                 <td style="padding-left: 5px" class="print_td">Број</td>
+                                 <td style="padding-left: 5px" class="print_td" style="width: 150px;">Клиент</td>
+                                 <td style="padding-left: 5px" class="print_td">Одлив</td>
+                                 <td style="padding-left: 5px" class="print_td">Прилив</td>
+
+                                 <td style="padding-left: 5px" class="print_td">Конто</td>
+                                 <td style="padding-left: 5px" class="print_td">Намена</td>
+
+                             </tr>
+
+                       <?php if($kasi_all){
+             foreach($kasi_all as $krow){
+                 if($krow->firmaID > 0){ $klientIme = $krow->firmaIme;}else
+                     if($krow->pacient_id > 0){ $klientIme = $krow->pacientIme . " " . $krow->pacientTatkovoIme . " " . $krow->pacientPrezime;}
+                 ?>
+
+
+                 <tr style="border: 1px solid black;">
+                     <td style="padding-left: 5px"  class="datumkasa" style="width: 90px;"><? echo $krow->datum; ?></td>
+                     <td class="brojkasa" style="padding-left: 5px"><? echo $krow->textBroj; ?></td>
+
+                     <td style="padding-left: 5px" class="firmakasa"><? echo $klientIme; ?></td>
+                     <?php if($krow->tip == 550){ ?>
+                     <td style="padding-left: 5px" class="odlivkasa"></td>
+                     <td style="padding-left: 5px" class="prilivkasa text-right"><? echo $krow->z_uplata; ?></td>
+                     <?php }else
+                     if($krow->tip == 540){ ?>
+                         <td style="padding-left: 5px" class="odlivkasa text-right"><? echo $krow->z_uplata; ?></td>
+                         <td style="padding-left: 5px" class="prilivkasa"></td>
+                         <?php }?>
+
+
+                     <td style="padding-left: 5px" class="kontobrojkasa"><? echo $krow->konto; ?></td>
+                     <td style="padding-left: 5px" class="namenakasa"><? echo $krow->namena; ?></td>
+
+                 </tr>
+
+                 <?php
+             }}
+
+             ?>
+
+             </table></div>
+
+
+                   </div>
+<?php }
+ ?>

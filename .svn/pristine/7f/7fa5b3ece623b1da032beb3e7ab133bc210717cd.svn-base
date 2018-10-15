@@ -1,0 +1,31 @@
+<div class="pecatenje" xmlns="http://www.w3.org/1999/html">
+    <fieldset style="margin: 20px;">
+        <legend>Одлив/прилив на каса</legend>
+
+        <br/><br/><br/>
+        <table style="margin-left: 15px;">
+
+            <tr><td>Каса : </td><td><? echo $podatoci_kasa->kasa_ime;?></td></tr>
+            <tr><td>Број на каса : </td><td><? echo $podatoci_kasa->kasa_broj;?></td></tr>
+            <tr><td>Датум : </td><td><? echo $kasa[0]->datum;?></td></tr>
+
+
+            <tr><td>Клиент : </td><td><? echo $kasa[0]->pacientIme.' '.$kasa[0]->pacientTatkovoIme.' '.$kasa[0]->pacientPrezime; ?></td></tr>
+            <tr><td>Пакет : </td><td><? echo $kasa[0]->paket; ?></td></tr>
+            <tr><td>Референтна цена на пакетот : </td><td><?echo $kasa[0]->ref_cena; ?></td></tr>
+            <?php if($podatoci_kasa->kasa_tip == 550) { ?>
+            <tr><td>Прилив : </td><td><? echo $podatoci_kasa->kasa_suma; ?></td></tr>
+            <?php }else
+            if($podatoci_kasa->kasa_tip == 540){ ?>
+                <tr><td>Одлив : </td><td><? echo $podatoci_kasa->kasa_suma ?></td></tr>
+                <?php } ?>
+
+<!--            <tr><td>Повикувачки број : </td><td>--><?// echo $kasa[0]->zaPovikBroj;?><!--</td></tr>-->
+<!--            <tr><td>Конто : </td><td>--><?// echo $kasa[0]->konto;?><!--</td></tr>-->
+            <tr><td>Намена : </td><td><? echo $podatoci_kasa->kasa_namena;?></td></tr>
+            <tr><td>Забелешка : </td><td><? echo $podatoci_kasa->kasa_zabeleska;?></td></tr>
+        </table><br/><br/>
+
+    </fieldset>
+
+</div>

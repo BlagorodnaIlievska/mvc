@@ -1,0 +1,31 @@
+<div id="update_accounts_form">
+
+<h2>Update Account Information</h2>
+
+    <?php
+    foreach($accounts as $row) {
+        $f0=$row->id;
+        //$f1=$row->first_name;
+        //$f2=$row->last_name;
+        $f3=$row->username;
+        $f4=$row->email;
+        $f5=$row->role_id;
+        //$f6=$row['phone'];
+    }
+    ?>
+
+    <h1>Account</h1>
+    <?php echo form_open('users/account/update_account'); ?>
+    <?php echo form_hidden('row_id', $f0); ?>
+    <?php echo form_label('Username:', 'username'); ?>
+    <?php echo form_input('username', $f3, 'username'); ?>
+    <?php echo form_label('Email Address:', 'email_address'); ?>
+    <?php echo form_input('email_address', $f4, 'email_address'); ?>
+    <?php $dropdown_label = 'id="role"'; ?>
+    <?php echo form_label('Role:', $dropdown_label); ?>
+    <?php echo form_dropdown('role', $roles, $f5, $dropdown_label ); ?><br><br>
+    <input type="button" value="Update" class="ajaxsubmitform"><br>
+
+    <?php echo form_close(); ?>
+
+</div>

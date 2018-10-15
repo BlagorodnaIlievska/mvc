@@ -1,0 +1,96 @@
+<div id="realen-trosok">
+<fieldset>
+    <legend>Информација за лекување</legend>
+    <div class="faktura-od-dobavuvac">
+        <div class="f-od-dobavuvac broj">
+            <label class="broj_lekuvanje">Број на лекување :</label>
+            <span class="broj_lekuvanje"><?= $this->input->get('priem'); ?></span>
+        </div>
+        <div class="f-od-dobavuvac klient">
+            <label>Пациент:</label>
+            <span class="klient"><?= $priem->ime." ".$priem->tatkovoime." ".$priem->prezime; ?></span>
+        </div>
+        <div class="f-od-dobavuvac1 datum">
+            <label>Датум :</label>
+            <span class="fakturadatum"><?= $priem->priem_datum; ?></span>
+        </div>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>Извршени услуги</legend>
+    <table class="tstavki" border="1" cellspacing="2" cellpadding="2" id="faktura">
+        <thead>
+        <tr>
+            <th>РБ</th>
+            <th>Шифра</th>
+            <th>Ставка</th>
+            <th class='kontodetali hide'>Конто</th>
+            <th>Кол</th>
+            <th>ЕМ</th>
+            <th>Цена</th>
+            <th>Вкупно</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php if(is_array($querydetails)){ ?>
+            <?php $i=1; foreach($querydetails as $detali): ?>
+                <tr class="detali trow">
+                    <td class="number"><?= $i; ?></td>
+                    <td><input type="text" value="<?= $detali->sifra; ?>" class="katbroj" /></td>
+                    <td><input type="text" value="<?= $detali->naziv; ?>" class="stavka" /></td>
+                    <td><input type="text" value="<?= $detali->kolicina; ?>" class="kolicina" /></td>
+                    <td>парче</td>
+                    <td><input type="text" value="<?= $detali->cena; ?>" class="bezddv" /></td>
+                    <td><input type="text" value="<?= $detali->cena*$detali->kolicina; ?>" class="vkupno1" /></td>
+                </tr>
+                <?php $i++; ?>
+            <?php endforeach; ?>
+        <?php }; ?>
+        <?php if(is_array($materijali)){ ?>
+            <?php foreach($materijali as $materijal): ?>
+                <tr class="detali trow">
+                    <td class="number"><?= $i; ?></td>
+                    <td><input type="text" value="<?= $materijal->artiklSifra; ?>" class="katbroj" /></td>
+                    <td><input type="text" value="<?= $materijal->artiklIme; ?>" class="stavka" /></td>
+                    <td><input type="text" value="<?= $materijal->kolicina; ?>" class="kolicina" /></td>
+                    <td>парче</td>
+                    <td><input type="text" value="<?= $materijal->sredna_cena; ?>" class="bezddv" /></td>
+                    <td><input type="text" value="<?= $materijal->sredna_cena*$materijal->kolicina; ?>" class="vkupno1" /></td>
+                </tr>
+                <?php $i++; ?>
+            <?php endforeach; ?>
+        <?php }; ?>
+        </tbody>
+    </table>
+</fieldset>
+<fieldset class="">
+    <legend>Вкупно</legend>
+    <div class="vkupen-iznos-novafak">
+        <table class="tvkupen-iznos-novafak">
+            <tr>
+                <td class="konto1p hide"></td>
+                <td class="konto2p hide"></td>
+                <td>Вкупно</td>
+                <td class="vkupnoosnova"></td>
+                <td>Ден.</td>
+            </tr>
+        </table>
+    </div>
+    <input type="hidden" class="vkupnose" name="vkupnose" value="">
+</fieldset>
+</div>
+</div>
+
+<script>
+jQuery(document).ready(function() {
+    var vkupno = 0, cena_stavka = 0, cena=0;
+    jQuery(".tstavki tbody tr").each(function(){
+        cena = jQuery(this).find("input.bezddv").val();
+        cena_stavka = jQuery(this).find("input.vkupno1").val();
+        vkupno = vkupno + 1*cena_stavka;
+        jQuery(this).find("input.bezddv").val(formatnumbermkd(cena));
+        jQuery(this).find("input.vkupno1").val(formatnumbermkd(cena_stavka));
+    });
+    jQuery(".tvkupen-iznos-novafak .vkupnoosnova").html(formatnumbermkd(vkupno));
+});
+</script>

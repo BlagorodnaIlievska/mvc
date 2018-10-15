@@ -1,0 +1,16 @@
+<div id="plata-podatoci" class="sub-menu-tabs">
+    <ul>
+    <?php if (bis_check_access('sistemsko_podesuvanje_planiranje_resursi_sindikati_tab')): ?>
+        <li><a href="/index.php/plata_podatoci/sindikat/lista">Синдикати</a></li>
+            <?php endif ?>
+    <?php if (bis_check_access('sistemsko_podesuvanje_planiranje_resursi_pridonesi_tab')): ?>
+        <li><a href="/index.php/plata_podatoci/pridonesi/lista">Придонеси</a></li>
+            <?php endif ?>
+    <?php if (bis_check_access('sistemsko_podesuvanje_planiranje_resursi_samopridonesi_tab')): ?>
+        <li><a href="/index.php/plata_podatoci/samopridonesi/lista">Самопридонеси</a></li>
+            <?php endif ?>
+    <?php if (bis_check_access('sistemsko_podesuvanje_planiranje_resursi_kreditori_tab')): ?>
+        <li><a href="/index.php/plata_podatoci/kreditori/lista">Кредитори</a></li>
+            <?php endif ?>
+    </ul>
+</div>

@@ -1,0 +1,58 @@
+<div id="update_klient_komerc_form">
+
+
+
+
+
+
+
+
+
+
+
+
+<table class="tabela" border="1" cellspacing="2" cellpadding="2">
+
+    <tr>
+
+
+
+        <td>ид</td>
+
+
+
+        <td>Име на клиент</td>
+
+
+
+    </tr>
+
+
+
+    <?php if(isset($klient_komerc)): foreach($klient_komerc->result() as $row){
+
+
+
+    echo "<tr>";
+
+
+    echo "<td>" . $row->firmaID. "</td>";
+    echo "<td>" . $row->ime. "</td>";
+
+}
+
+    ?>
+
+    </table>
+
+
+
+    <?php endif; ?>
+
+
+
+
+
+
+
+</div>

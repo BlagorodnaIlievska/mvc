@@ -1,0 +1,54 @@
+<?php
+/*$
+this->load->helper('lista_helper.php');
+$this->load->helper('form_helper.php');
+
+$class_name="novazirosmetka";
+$form_action="/index.php/start/zirosmetki/createZirosmetka";
+$options=[];
+
+$fields=array("select"=>array("firma_id"=>array("firmadropdown"=>$options)),
+    "select"=>"banka_id",
+    "input"=>"zirosmetka"
+);
+
+pop_up_form($class_name,$form_action,$firmi,$start_model,$banki) ;
+*/
+?>
+
+<div class="novazirosmetka">
+    <fieldset>
+        <legend>Нова жиросметка</legend>
+ <form action="/index.php/start/zirosmetki/createZirosmetka" method="post" accept-charset="utf-8">
+
+     Фирма:<br />
+     <select class="firmadropdown" name="firma_id">
+         <?php 	foreach($firmi as $firma) { ?>
+         <option class="firmafirma" value="<?php echo $firma->id ?>"><?php echo $firma->ime ?> (<?php echo $firma->sifra ?>)</option>
+
+<!--         --><?//php //$odeli =$start_model->getOdeli($firma->id);
+//                foreach($odeli as $odel) { ?>
+<!--             <option class="firmaodel" value="--><?//php //echo $odel->id ?><!--">--><?//= $firma->ime ?><!--/--><?//= $odel->ime ?><!-- (--><?//php //echo $odel->sifra ?><!--)</option>-->
+<!---->
+<!--             --><?//php //$pododeli = $start_model->getPodOdeli($odel->id); ?>
+             <?//php 	foreach($pododeli as $pododel) { ?>
+<!--                 <option class="firmapododel" value="--><?//php //echo $pododel->id ?><!--">--><?//php //echo $pododel->ime ?><!-- (--><?//php //echo $pododel->sifra ?><!--)</option>-->
+                 <?//php
+//           }
+//       }
+   }	?>
+     </select><br>
+     Банка:<br />
+     <select class="firmadropdown" name="banka_id">
+         <?php 	foreach($banki as $banka) { ?>
+         <option class="banka" value="<?php echo $banka->id ?>"><?php echo $banka->ime ?></option>
+
+         <?php }	?>
+     </select><br />
+
+     Жиро сметка:<br />
+     <input type="text" name="zirosmetka" value=""><br /><br />
+     <button type="button" class="snimi-forma button" izvrsi="zirosmetka_popolnilista()" poraka_uspesno="Жиросметката е снимен" poraka_neuspesno="Грешка">Сними</button>
+</form>
+    </fieldset>
+</div>

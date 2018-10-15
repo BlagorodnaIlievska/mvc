@@ -1,0 +1,76 @@
+<div class="popis-index-form content-area">
+    <div class="popis-novpopis">
+<?php if (bis_check_access('materijalno_popis_nov_popis_kopce')): ?>
+        <button type="button" class="button novpopisbutton" onclick="nov_popis()"><span>Нов попис</span></button>
+            <?php endif ?>
+    </div>
+
+    <div class="popistabeladiv">
+    </div>
+    <div class="stavka">
+        <p class="naslovpopis" > ( <span class="vkupnostavki">0</span> ) <span class="status">Попис</span></p>
+        <div class="predtabela">
+        <table class="tabela-popis" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+                <th class="izbrisi-izmeni"></th>
+                <th class="redenbroj">РБ</th>
+                <th class="datum">Датум</th>
+                <th>Магацин</th>
+                <th>Претседател на комисија</th>
+                <th>Членови на попис</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    <form action="/index.php/materijalno/popis/create_stavki_popis" method="post">
+    <div class="stavkipopistabeladiv">
+        <p class="naslovstavkipopis" > ( <span class="vkupnostavki">0</span> ) Ставки за попис</p>
+        <div class="predtabela">
+        <table class="tabela-stavkipopis" border="1" cellspacing="2" cellpadding="2">
+            <thead>
+            <tr>
+<!--                <th></th>-->
+                <th class="redenbroj">РБ</th>
+                <th class="sifra">Шифра</th>
+                <th class="artikl">Артикл</th>
+                <th class="edinicamerka">Ед. мерка</th>
+                <th class="kolicina">Кол.</th>
+                <th class="sredna-cena">Средна цена</th>
+                <th class="iznos">Износ</th>
+                <th class="zabeleska">Забелешка</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+    </form>
+</div>
+
+<script>
+jQuery(document).ready(function () {
+    jQuery('.periodod').datepicker({dateFormat:'yy-mm-dd'});
+    jQuery('.periodod').datepicker({dateFormat:'yy-mm-dd'});
+    jQuery(".tabela-popis").tablesorter();
+    jQuery(".tabela-stavki-popis").tablesorter();
+    popis_polnilista();
+    jQuery(".tabela-popis tbody tr").live('click', function () {
+        jQuery(".tabela-popis tbody tr").removeClass("active");
+        jQuery(this).addClass("active");
+        var popis_id =jQuery(".tabela-popis tbody").find("tr.active").attr("popis_id");
+        get_stavki_popis(popis_id);
+    });
+    jQuery(".tabela-popis .edit-tr").live('click', function () {
+        popis_izmeni(jQuery(this).parent().parent().attr('popis_id'));
+    });
+    jQuery(".tabela-popis .delete-tr").live('click', function () {
+        popis_delete(jQuery(this).parent().parent().attr('popis_id'));
+    });
+});
+</script>

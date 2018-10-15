@@ -1,0 +1,79 @@
+
+
+<div class="pecatenje" xmlns="http://www.w3.org/1999/html">
+    <p align="left">Приемница :</p>
+
+        <br/><br/>
+        <table style="margin-left: 15px;">
+
+            <tr><td style="width: 120px;">Арх. број : </td><td><? echo $stavkiP->arhTextBroj;?></td>
+                <td style="width: 120px;">Коминтент : </td><td><? echo $stavkiP->komintent_ime;?></td>
+            </tr>
+            <tr><td>Број : </td><td><? echo $stavkiP->textBroj;?></td>
+                <td>Магацин : </td><td><? echo $magacinIme;?></td>
+            </tr>
+            <tr><td>Датум : </td><td><? echo $stavkiP->datum;?></td>
+                <?php
+                $vrzanidok = '';
+                foreach($stavkiP->dokumenti as $dok){
+                    $vrzanidok .=  '<span>' .  $dok->textBroj . '</span>';
+                }
+                ?>
+            <tr><td>Фактура : </td><td><? echo $vrzanidok;?></td></tr>
+            </tr>
+
+            <tr><td>Забелешка : </td><td><? echo $stavkiP->komentar;?></td></tr>
+
+        </table><br/><br/><br/><br/>
+
+
+        <div>
+            <p align="left">Ставки во документот - детално :</p><br/><br/><br/>
+            <table border="1" align="center">
+                <thead>
+                <tr>
+                    <th class="broj">Број</th>
+                    <th class="sifra">Шифра</th>
+                    <th class="katbroj">Кат.Број</th>
+                    <th class="stavka">Ставка</th>
+                    <th class="kolicina">Кол</th>
+                    <th class="em">ЕМ</th>
+                    <th class="magacin">Магацин</th>
+                    <th class="garantenrok">Гарантен рок</th>
+                    <th class="upotreblivodo">Употребливо до</th>
+                    <th class="serbr">Сер. Бр.</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                $redbr = 1;
+                foreach($stavkiP->stavki as $stavka){
+
+ ?>
+                <tr>
+                    <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $redbr; ?></td>
+                    <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $stavka->sifra; ?></td>
+                    <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $stavka->katBroj; ?></td>
+                    <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $stavka->stavka; ?></td>
+                    <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $stavka->kolicina; ?></td>
+                    <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $stavka->edMerka; ?></td>
+                    <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $stavka->magacin; ?></td>
+                    <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $stavka->garantenrok; ?></td>
+                    <td align="center" style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px;"><? echo $stavka->upotreblivodo; ?></td>
+                    <td style="padding-left: 6px; padding-bottom: 3px; padding-top: 3px; padding-right: 6px"><? echo $stavka->seriskibroj; ?></td>
+
+
+                </tr>
+
+                    <?php
+                    $redbr +=1;
+                }
+
+                ?>
+                </tbody>
+            </table>
+        </div>
+
+
+
+</div>

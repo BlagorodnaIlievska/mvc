@@ -1,0 +1,75 @@
+<div class="nov-artikl novlabaratoriskiupat2">
+    <form action="/index.php/upati/upati/create_upat" method="post">
+        <input type="hidden" name="priem_id" value="<?php echo $priem_id ?>" class="<?php echo $priem_id ?>"/>
+
+        <div class="novupat-levomeni">
+            <input type="hidden" name="tip_upat" value="laboratoriski">
+            Назив на здравствена установа<br/>
+            <input type="text" class="upat" value="ЈЗУ Ургентни Клиники" disabled="" />
+            <br/>
+            Работна единица - одделение <br/>
+            <input type="text" name="rabotna_edinica_oddelenie" class="upat" value="<?php echo $this->session->userdata('firma_ime') ?>" readonly=""/> <br/>
+            Број на лекарски дневник <br/>
+            <input type="text" class="upat <?php echo $priem_id ?>" value="<?php echo $priem_id ?>" disabled="" /> <br/>
+            <br/>
+
+        </div>
+        <div class="novupat-desnomeni">
+
+            До: <br/>
+            <input type="text" name="do_zdravstvena_ustanova" class="upat"/> <br/>
+            Место: <br/>
+            <input type="text" name="mesto_na_zdr_ustanova" class="upat"/> <br/>
+        </div>
+        <div class="clear"></div>
+        <div class="novupat-podmeni">
+            <ul>
+                <h4 align='center' class="naslovupat">ЛАБОРАТОРИСКИ УПАТ -2</h4> <br/>
+                <ul class="ime-tatko-prezime">
+                    <li class="first">Име: <input type="text" name="ime" class="upatime" disabled=""/></li>
+                    <li class="second">Татково име: <input type="text" name="tatkovoime" class="upatime" disabled=""/></li>
+                    <li class="last">Презиме: <input type="text" name="prezime" class="upatime" disabled=""/></li>
+                </ul><br>
+                <li class="adresa">Адреса: <input type="text" name="ulica" class="adresaupat" disabled=""> <!--Бр: <input type="text" name="broj_na_kuka" disabled="">--> </li> <br/>
+                <ul class="legitimacija-matichen">
+                    <li class="first">Број на здр. легитимација: <input type="text" name="br_zdravstvena_legitimacija" class="zdrleg" disabled=""/></li>
+                    <li class="last">Единствен матичен број: <input type="text" name="embg" class="embg" disabled=""></li></ul> <br>
+                <li>Единствен здравствен број на осигуреникот: <input type="text" name="ezbo" class="ezbo" disabled="" /></li> <br/>
+                <li>Основ на осигурување <input type="text" name="osnov_na_osiguruvanje" class="osnovosig" disabled="">
+                Број на здравствен картон <input type="text" name="br_zdr_karton" class="karton" disabled=""></li> <br/>
+                <li>Вид на здравствена услуга-лабораториска анализа:</li> <br/>
+                <li><textarea style="overflow-y:scroll;width:100%;resize: none;" name="dijagnoza"></textarea></li> <br/>
+            </ul>
+
+            <ul class="datumvrememesto-upat dolno-meni">
+                <li><label>Датум :</label><input type="text" name="datum" class="datum" readonly="" value="<?php echo date("d-m-Y") ?>"/></li>
+                <li class="mesto"><label>Место:</label> <input type="text" name="mesto"/></li>
+                <li><label>Време: </label><input type="text" name="vreme" class="vreme" readonly="" value="<?php echo date("H:i") ?>"/></li>
+            </ul>
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="addstavka floatright">
+            <?php if($print == 2) { ?>
+            <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_laboratoriski_upat&id=" class="printlink" target="_blank" >
+                <button type="button" class="print"><span>Принт</span></button>
+            </a>
+            <?php } ?>
+            <a href="/index.php/print/pdf?view=/index.php/upati/upati/print_laboratoriski_upat&id=" class="printlinkupati hide" target="_blank" >
+                <button type="button" class="print"><span>Принт</span></button>
+            </a>
+            <button type="button" class="button snimi-forma-upati" poraka_uspesno="успешно снимен"
+                    poraka_neuspesno="Грешка при снимање"
+                    izvrsi="lekuvanja_listasozapisi(lekuvanja_getaktiven_priemid())"
+                ><span>Сними</span></button>
+
+        </div>
+
+    </form>
+</div>
+<script>
+    jQuery(document).ready(function(){
+        jQuery('.datum').datepicker({dateFormat:'yy-mm-dd'});
+    });
+</script>

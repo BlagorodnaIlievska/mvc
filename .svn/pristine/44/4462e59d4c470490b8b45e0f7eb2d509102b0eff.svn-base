@@ -1,0 +1,676 @@
+<?php
+
+class Covecki_resursi_model extends CI_Model{
+
+
+    public function create_resurs()
+    {
+
+        $new_field_insert_data = array(
+
+            'ime' => $this->input->post('ime'),
+            'brPlatenSpisok' => $this->input->post('brPlatenSpisok'),
+            'prezime' => $this->input->post('prezime'),
+            'brLicnaKarta' => $this->input->post('brLicnaKarta'),
+            'datRag' => $this->input->post('datRag'),
+            'pol' => $this->input->post('pol'),
+            'mestoRag' => $this->input->post('mestoRag'),
+            'brstatus' => $this->input->post('brstatus'),
+            'pocRabOdnos' => $this->input->post('pocRabOdnos'),
+            'krajRabOdnos' => $this->input->post('krajRabOdnos'),
+            'staz' => $this->input->post('staz'),
+            'MFID' => $this->input->post('MFID'),
+            'role' => $this->input->post('role'),
+            'prstaz' => $this->input->post('prstaz'),
+            'oddelID' => $this->input->post('oddelID'),
+            'smenaID' => $this->input->post('smenaID'),
+            'vkstaz'=> $this->input->post('vkstaz'),
+            'pododdelID' => $this->input->post('pododdelID'),
+            'grupaID' => $this->input->post('grupaID'),
+            'ldOsnovica' => $this->input->post('ldOsnovica'),
+            'obrazovanie' => $this->input->post('obrazovanie'),
+            'diplomi' => $this->input->post('diplomi'),
+            'slika' => $this->input->post('slika')
+
+
+        );
+
+        $insert = $this->db->insert('covecki_resursi', $new_field_insert_data);
+        return $insert;
+    }
+
+    public function getDoktori()
+    {
+        $this->db->select('id, ime');
+        $this->db->from('covecki_resursi');
+        $this->db->where('uloga',1);
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = '';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function getDoktoriB($oddel){
+        $this->db->select('*');
+        $this->db->from('covecki_resursi');
+        $this->db->where('klasifikacija',7);
+        $this->db->where('oddel',$oddel);
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = '';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] =$row['broj_faksimil'] . ': ' . $row['ime'] . ' ' . $row['prezime'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function getDoktor($id){
+        $this->db->select('*');
+        $this->db->from('covecki_resursi');
+        $this->db->where('id',$id);
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            $return= $query->result();
+            return $return[0];
+        } else {
+            return '';
+        }
+    }
+
+    public function osnov_osig_dropdown()
+    {
+        $query = $this->db->get('bis_osnov_na_osiguruvanje');
+        if($query->num_rows() > 0){
+            $return= $query->result();
+            return $return;
+        } else {
+            return '';
+        }
+    }
+
+
+
+
+    public function getDoktorImePrezime($id)
+    {
+        $this->db->select('*')->from('covecki_resursi')->where('id',$id)->order_by('id');
+
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            $return= $query->result();
+            return $return[0]->ime . " " . $return[0]->prezime;
+        } else {
+            return '';
+        }
+
+    }
+    public function getVraboteniBojan($filter = '')
+    {
+        if (is_array($filter)) {
+            foreach ($filter as $key => $val) {
+                if ($val == "") unset($filter[$key]);
+            }
+//            $this->db->limit(15);
+            $query = $this->db->get_where("covecki_resursi", $filter);
+        } else {
+            $this->db->from("covecki_resursi");
+            //$this->db->limit(15);
+            $query = $this->db->get();
+        }
+        if ($query->num_rows > 0) {
+            $table1 = $query->result();
+            for($i=0; $i<count($table1); $i++){
+                $klasif = $this->get_klasifikacija_id($table1[$i]->klasifikacija);
+                //print_r($this->get_klasifikacija_id($table1[$i]->klasifikacija)); die();
+                $firmlata =   $this->get_firma_id($table1[$i]->firma);
+                $odelo =  $this->get_firma_id($table1[$i]->oddel);
+                $podoodelot =  $this->get_firma_id($table1[$i]->pododdel);
+                $smenata = $this->get_smena_id($table1[$i]->smenska_grupa);
+                $table1[$i]->smgr = $smenata;
+                $table1[$i]->bfod = $odelo;
+                $table1[$i]->firma_ime = $firmlata;
+                $table1[$i]->klasifikacija_ime = $klasif;
+                $table1[$i]->pododdel_ime = $podoodelot;
+
+            }
+            return $table1;
+            //   print_r($table1); die();
+        }
+    }
+
+    public function getVraboteni($filter = '')
+    {
+        if (is_array($filter))
+        {
+            foreach ($filter as $key => $val)
+            {
+                if ($val == "") unset($filter[$key]);
+            }
+          $query_pom = $this->db->get_where('covecki_resursi', $filter);
+
+           if ($query_pom->num_rows > 0) {
+
+               $table1 = $query_pom->result();
+              // print_r(count($table1));
+              // print_r($table1); die();
+               for($i=0; $i<count($table1); $i++){
+                 $klasif = $this->get_klasifikacija_id($table1[$i]->klasifikacija);
+                 //print_r($this->get_klasifikacija_id($table1[$i]->klasifikacija)); die();
+                 $firmlata =   $this->get_firma_id($table1[$i]->firma);
+                 $odelo =  $this->get_firma_id($table1[$i]->oddel);
+                 $podoodelot =  $this->get_firma_id($table1[$i]->pododdel);
+                 $smenata = $this->get_smena_id($table1[$i]->smenska_grupa);
+                 $table1[$i]->smgr = $smenata;
+                 $table1[$i]->bfod = $odelo;
+                 $table1[$i]->firma_ime = $firmlata;
+                 $table1[$i]->klasifikacija_ime = $klasif;
+                 $table1[$i]->pododdel_ime = $podoodelot;
+
+                }
+                return $table1;
+        //   print_r($table1); die();
+           }
+
+        }else{
+            $this->db->select('covecki_resursi.id, covecki_resursi.ime, covecki_resursi.broj_platen_spisok, covecki_resursi.bruto_plata, covecki_resursi.prezime, covecki_resursi.rabotno_mesto,
+        covecki_resursi.klasifikacija, covecki_resursi.embg, covecki_resursi.nacionalna_pripadnost, covecki_resursi.broj_licna_karta, covecki_resursi.datum_ragjanje, covecki_resursi.mesto_ragjanje,
+        covecki_resursi.pol, covecki_resursi.bracen_status, covecki_resursi.pocetok_raboten_odnos, covecki_resursi.kraj_raboten_odnos, covecki_resursi.praven_osnov, covecki_resursi.broj_licenca,
+        covecki_resursi.vazi_od, covecki_resursi.vazi_do, covecki_resursi.broj_faksimil, covecki_resursi.staz, covecki_resursi.firma, covecki_resursi.uloga, covecki_resursi.prethoden_staz, covecki_resursi.oddel,
+        covecki_resursi.smena, covecki_resursi.vkupno_staz, covecki_resursi.pododdel, covecki_resursi.smenska_grupa, covecki_resursi.ld_osnovica, covecki_resursi.obrazovanie, covecki_resursi.diplomi, covecki_resursi.slika,
+        smenska_grupa.ime as smgr, bis_firmi.ime as bfod, firma1.ime as firma_ime, klasifikacija_ime, tab_pododeli.ime as pododdel_ime');
+            $this->db->from('covecki_resursi');
+            $this->db->join('smenska_grupa', 'covecki_resursi.smenska_grupa = smenska_grupa.id', 'left');
+            $this->db->join('bis_firmi as firma1', 'covecki_resursi.firma = firma1.id', 'left');
+            $this->db->join('bis_firmi', 'covecki_resursi.oddel = bis_firmi.id', 'left');
+            $this->db->join('bis_covecki_resursi_klasifikacii', 'covecki_resursi.klasifikacija = bis_covecki_resursi_klasifikacii.klasifikacija_id', 'left');
+            $this->db->join('bis_firmi as tab_pododeli', 'covecki_resursi.pododdel = tab_pododeli.id', 'left');
+            $limit = $this->input->post("limit");
+            $this->db->limit($limit);
+
+            $query = $this->db->get();
+            if ($query->num_rows > 0) {
+
+                return $query->result();
+            }
+        }
+    }
+    public function getVraboteni_all(){
+        $this->db->select('covecki_resursi.id, covecki_resursi.ime, covecki_resursi.broj_platen_spisok, covecki_resursi.bruto_plata, covecki_resursi.prezime, covecki_resursi.rabotno_mesto,
+        covecki_resursi.klasifikacija, covecki_resursi.embg, covecki_resursi.nacionalna_pripadnost, covecki_resursi.broj_licna_karta, covecki_resursi.datum_ragjanje, covecki_resursi.mesto_ragjanje,
+        covecki_resursi.pol, covecki_resursi.bracen_status, covecki_resursi.pocetok_raboten_odnos, covecki_resursi.kraj_raboten_odnos, covecki_resursi.praven_osnov, covecki_resursi.broj_licenca,
+        covecki_resursi.vazi_od, covecki_resursi.vazi_do, covecki_resursi.broj_faksimil, covecki_resursi.staz, covecki_resursi.firma, covecki_resursi.uloga, covecki_resursi.prethoden_staz, covecki_resursi.oddel,
+        covecki_resursi.smena, covecki_resursi.vkupno_staz, covecki_resursi.pododdel, covecki_resursi.smenska_grupa, covecki_resursi.ld_osnovica, covecki_resursi.obrazovanie, covecki_resursi.diplomi, covecki_resursi.slika,
+        smenska_grupa.ime as smgr, bis_firmi.ime as bfod, firma1.ime as firma_ime, klasifikacija_ime, tab_pododeli.ime as pododdel_ime');
+        $this->db->from('covecki_resursi');
+        $this->db->join('smenska_grupa', 'covecki_resursi.smenska_grupa = smenska_grupa.id', 'left');
+        $this->db->join('bis_firmi as firma1', 'covecki_resursi.firma = firma1.id', 'left');
+        $this->db->join('bis_firmi', 'covecki_resursi.oddel = bis_firmi.id', 'left');
+        $this->db->join('bis_covecki_resursi_klasifikacii', 'covecki_resursi.klasifikacija = bis_covecki_resursi_klasifikacii.klasifikacija_id', 'left');
+        $this->db->join('bis_firmi as tab_pododeli', 'covecki_resursi.pododdel = tab_pododeli.id', 'left');
+
+
+        $query = $this->db->get();
+        if ($query->num_rows > 0) {
+
+            return $query->result();
+        }
+    }
+
+    public function get_klasifikacija_id($id){
+        $this->db->select('klasifikacija_id, klasifikacija_ime');
+        $this->db->from('bis_covecki_resursi_klasifikacii');
+        $this->db->where('klasifikacija_id', $id);
+        $query = $this->db->get();
+        if($query->num_rows > 0){
+            $res = $query->result();
+          //  print_r($res); die();
+            return $res[0]->klasifikacija_ime;
+        }
+
+    }
+    public function get_firma_id($id){
+        $this->db->select('id, ime');
+        $this->db->from('bis_firmi');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        if($query->num_rows > 0){
+            $res = $query->result();
+            return $res[0]->ime;
+        }
+    }
+
+    public function get_smena_id($id){
+        $this->db->select('id, ime');
+        $this->db->from('smenska_grupa');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        if($query->num_rows > 0){
+            $res = $query->result();
+            return $res[0]->ime;
+        }
+    }
+
+
+
+    public function get_firmi(){
+
+        $this->db->select('id, ime');
+        $this->db->from('bis_firmi');
+        $this->db->where('parent_id',0);
+       $this->db->where('parent_odel_id', 0);
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+       //   $dropdown[''] = '-----';
+            $dropdown[''] = 'Сите';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime'];
+            }
+        }
+        return $dropdown;
+    }
+    public function create_vraboten()
+    {
+        $data = $this->input->post();
+
+        if(isset($data['clen_na_sindikat']))
+        {
+            unset($data['clen_na_sindikat']);
+            $data['clen_na_sindikat'] = 1;
+        }
+        else $data['clen_na_sindikat'] = 0;
+        if(isset($data['profesor_medicinski_fakultet']))
+        {
+            unset($data['profesor_medicinski_fakultet']);
+            $data['profesor_medicinski_fakultet'] = 1;
+        }
+        else $data['profesor_medicinski_fakultet'] = 0;
+
+        $insert = $this->db->insert('covecki_resursi', $data);
+        return $insert;
+    }
+
+    public function get_oddeli(){
+
+        $this->db->select('id, ime');
+        $this->db->from('bis_firmi');
+        $this->db->where('parent_id !=',0);
+        $this->db->where('parent_odel_id',0);
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+        // $dropdown[''] = '-----';
+            $dropdown[''] = 'Сите';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime'];
+            }
+        }
+        return $dropdown;
+    }
+    public function get_pododdeli(){
+
+        $this->db->select('id, ime');
+        $this->db->from('bis_firmi');
+        $this->db->where('parent_id !=',0);
+        $this->db->where('parent_odel_id !=',0);
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+        $dropdown[''] = 'Сите';
+          //  $dropdown['0'] = 'Сите';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime'];
+            }
+        }
+        return $dropdown;
+    }
+
+    public function get_pododdeli_in_oddel($oddel_id){
+
+        $this->db->select('id, ime');
+        $this->db->from('bis_firmi');
+        $this->db->where('parent_odel_id',$oddel_id);
+         $this->db->order_by('id');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows() > 0){
+            $dropdown[''] = 'Сите';
+            //  $dropdown['0'] = 'Сите';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['id']] = $row['ime'];
+            }
+        }
+       // print_r($dropdown); die();
+        return $dropdown;
+    }
+
+    public function get_klasifikacii(){
+        $this->db->select('klasifikacija_id, klasifikacija_ime');
+       $this->db->from('bis_covecki_resursi_klasifikacii'); //, 'covecki_resursi.klasifikacija = bis_covecki_resursi_klasifikacii.klasifikacija_id', 'left');
+        $query = $this->db->get();
+        $dropdown = array();
+        if($query->num_rows()> 0){
+           $dropdown[''] = 'Сите';
+            $dropdown['0'] = 'Нема';
+            foreach($query->result_array() as $row){
+                $dropdown[$row['klasifikacija_id']] = $row['klasifikacija_ime'];
+            }
+        }
+        return $dropdown;
+    }
+
+
+    public function update_vraboten()
+    {
+        $data = $this->input->post();
+        if(isset($data['clen_na_sindikat']))
+        {
+            unset($data['clen_na_sindikat']);
+            $data['clen_na_sindikat'] = 1;
+        }
+        else $data['clen_na_sindikat'] = 0;
+        if(isset($data['profesor_medicinski_fakultet']))
+        {
+            unset($data['profesor_medicinski_fakultet']);
+            $data['profesor_medicinski_fakultet'] = 1;
+        }
+        else $data['profesor_medicinski_fakultet'] = 0;
+        if(isset($data['status_vraboten']))
+        {
+            unset($data['status_vraboten']);
+            $data['status_vraboten'] = 1;
+        }
+        else $data['status_vraboten'] = 0;
+        $this->db->where('id', $this->input->post('id'));
+        $update = $this->db->update('covecki_resursi', $data);
+
+        return $update;
+    }
+
+
+
+    public function getVraboten($id)
+    {
+        $this->db->select('*');
+        $this->db->where('id', $id);
+        $query = $this->db->get('covecki_resursi');
+        if ($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+    }
+
+
+    public function getAll_resursi()
+    {
+        $this->db->select('
+                   covecki_resursi.covekID,
+                   covecki_resursi.ime,
+                   covecki_resursi.brPlatenSpisok,
+                   covecki_resursi.prezime,
+                   covecki_resursi.brLicnaKarta,
+                   covecki_resursi.datRag,
+                   covecki_resursi.mestoRag,
+                   covecki_resursi.pol,
+                   covecki_resursi.brstatus,
+                   covecki_resursi.pocRabOdnos,
+                   covecki_resursi.krajRabOdnos,
+                   covecki_resursi.staz,
+
+                   roles.name as rabMesto,
+                   covecki_resursi.prstaz,
+                   Oddel.imeOddel as oddel,
+                   Pododdel.pododdelIme as pododdel,
+                   covecki_resursi.grupaID,
+                   covecki_resursi.ldOsnovica,
+                   covecki_resursi.obrazovanie,
+                   covecki_resursi.diplomi
+
+                   ');
+        $this->db->from('covecki_resursi');
+        $this->db->join('Pododdel','covecki_resursi.pododdelID=Pododdel.pododdelID');
+        $this->db->join('Oddel','covecki_resursi.oddelID=Oddel.oddelID');
+    //    $this->db->join('xmf','covecki_resursi.MFID=xmf.MFID');
+        $this->db->join('roles','covecki_resursi.role=roles.id');
+        //$this->db->join('komerc','firma.komercID=komerc.komercID');
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+    public function delete_pacient(){
+
+        $this->db->where('pacientID', $this->uri->segment(4));
+        $this->db->delete('pacient');
+    }
+
+    public function delete_vraboten($id){
+
+        $this->db->where('id',$id );
+        $this->db->delete('covecki_resursi');
+    }
+    public function edit_pacient(){
+
+        $this->db->where('pacientID', $this->uri->segment(4));
+        $query = $this->db->get('pacient');
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+    public function prebaruvajFilter($oddelid,$pododdelid,$smenaid){
+        $this->db->select('
+                    covecki_resursi.covekID,
+                   covecki_resursi.ime,
+                   covecki_resursi.brPlatenSpisok,
+                   covecki_resursi.prezime,
+                   covecki_resursi.brLicnaKarta,
+                   covecki_resursi.datRag,
+                   covecki_resursi.mestoRag,
+                   covecki_resursi.pol,
+                   covecki_resursi.brstatus,
+                   covecki_resursi.pocRabOdnos,
+                   covecki_resursi.krajRabOdnos,
+                   covecki_resursi.staz,
+
+                   roles.name as rabMesto,
+                   covecki_resursi.prstaz,
+                   Oddel.imeOddel as oddel,
+                   Pododdel.pododdelIme as pododdel,
+                   covecki_resursi.grupaID,
+                   covecki_resursi.ldOsnovica,
+                   covecki_resursi.obrazovanie,
+                   covecki_resursi.diplomi');
+        $this->db->from('covecki_resursi');
+        $this->db->join('Pododdel','covecki_resursi.pododdelID=Pododdel.pododdelID');
+        $this->db->join('Oddel','covecki_resursi.oddelID=Oddel.oddelID');
+        //    $this->db->join('xmf','covecki_resursi.MFID=xmf.MFID');
+        $this->db->join('roles','covecki_resursi.role=roles.id');
+        if($oddelid!=0) $this->db->where('covecki_resursi.oddelID', $oddelid);
+        if($pododdelid!=0)$this->db->where('covecki_resursi.pododdelID', $pododdelid);
+        if($smenaid!=0)$this->db->where('covecki_resursi.smenaID', $smenaid);
+        $query = $this->db->get();
+        if($query->num_rows() > 0)
+        {
+            $result = $query->result();
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+    public function edit_pacient2($id){
+
+        $this->db->where('pacientID', $id);
+        $query = $this->db->get('pacient');
+
+        if($query->num_rows > 0)
+        {
+            return $query->result();
+        }
+
+    }
+
+    public function update_pacient()
+    {
+        $field_update_data = array(
+
+            'ime' => $this->input->post('ime'),
+            'tatkovoIme' => $this->input->post('tatkovoIme'),
+            'prezime' => $this->input->post('prezime'),
+            'PID' => $this->input->post('PID'),
+            'datRag' => $this->input->post('datRag'),
+            'pol' => $this->input->post('pol'),
+            'embr' => $this->input->post('embr'),
+            'ezbo' => $this->input->post('ezbo'),
+            'ulica' => $this->input->post('ulica'),
+            'broj' => $this->input->post('broj'),
+            'naselenoMesto' => $this->input->post('naselenoMesto'),
+            'opstina' => $this->input->post('opstina'),
+            'drzava' => $this->input->post('drzava'),
+            'nacionalnost' => $this->input->post('nacionalnost'),
+            'rabotodavac' => $this->input->post('rabotodavac'),
+            'naselenoRab' => $this->input->post('naselenoRab'),
+            'sifraDejnost'=> $this->input->post('sifraDejnost'),
+            'regBroj' => $this->input->post('regBroj'),
+            'rabMesto' => $this->input->post('rabMesto'),
+            'telefon' => $this->input->post('telefon'),
+            'mobilen1' => $this->input->post('mobilen1'),
+            'mobilen2' => $this->input->post('mobilen2'),
+            'blizokZaKontakt' => $this->input->post('blizokZaKontakt'),
+            'oslobodenOdPar' => $this->input->post('oslobodenOdPar'),
+            'pricina' => $this->input->post('pricina'),
+            'resenie' => $this->input->post('resenie'),
+            'tipNaOsig' => $this->input->post('tipNaOsig'),
+            'osnovNaOsig' => $this->input->post('osnovNaOsig'),
+            'fzoPodracna' => $this->input->post('fzoPodracna'),
+            'imeNaOsigurenik' => $this->input->post('imeNaOsigurenik'),
+            'prezimeNaOsigurenik' => $this->input->post('prezimeNaOsigurenik'),
+            'embrNaOsigurenik' => $this->input->post('embrNaOsigurenik'),
+            'osnovOsigurenik' => $this->input->post('osnovOsigurenik'),
+            'sifraZemja' => $this->input->post('sifraZemja'),
+            'stranskaZemja' => $this->input->post('stranskaZemja'),
+            'stranstvoBrOsiguruvanje' => $this->input->post('stranstvoBrOsiguruvanje'),
+            'ehis' => $this->input->post('ehis'),
+            'krvodaritel' => $this->input->post('krvodaritel'),
+            'brNaKrvodaritel' => $this->input->post('brNaKrvodaritel'),
+            'krvnaGrupa' => $this->input->post('krvnaGrupa'),
+            'rhFaktor' => $this->input->post('rhFaktor'),
+            'alergii' => $this->input->post('alergii'),
+            'hronicniZaboluvanja' => $this->input->post('hronicniZaboluvanja'),
+            'deformiteti' => $this->input->post('deformiteti'),
+            'slika' => $this->input->post('slika'),
+            'zabeleska' => $this->input->post('zabeleska')
+        );
+
+        $this->db->where('pacientID',$this->input->post('pacientID'));
+        $update = $this->db->update('pacient', $field_update_data);
+        return $update;
+    }
+
+    public function up_faks($f_ime, $f_prez, $f_vo, $f_broj){
+
+        $update_data = array(
+            'broj_faksimil' => $f_broj
+        );
+        $this->db->where('ime', $f_ime);
+        $this->db->where('prezime', $f_prez);
+        $this->db->where('oddel', $f_vo);
+        $this->db->where('klasifikacija', 7);
+
+       return $this->db->update('covecki_resursi', $update_data);
+
+    }
+
+    public function staj_faksimili(){
+        $this->db->select('*');
+        $this->db->from('faksimili');
+        $count = 1;
+        $res = $this->db->get();
+        if($res->num_rows > 0)
+        {
+
+          $query = $res->result_array();
+            for($i = 0; $i < $query->num_rows; $i++){
+                $row = $query[$i];
+                up_faks($row['ime'], $row['prezime'], $row['dr_vo_odd'], $row['faksimil_num']);
+        $count++;
+            }
+        }
+        return $count;
+}
+
+    public function getVlezniPodatociZaPlata($oddel, $mesec, $godina)
+    {
+        $this->db->select('
+                    covecki_resursi.*,
+                    bis_banki.ime as bankaIme
+                    ');
+        $this->db->from('covecki_resursi');
+        $this->db->join('bis_banki', 'covecki_resursi.banka_id=bis_banki.id', 'left');
+        $this->db->where('oddel', $oddel);
+        $query = $this->db->get();
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            foreach($result as $res)
+            {
+                $mesecni_promeni = $this->getVrabotenMesecniPromeni($res->id, $mesec, $godina);
+                $res->mesecni_promeni = $mesecni_promeni;
+            }
+            return $result;
+        }
+        else return false;
+    }
+
+    public function getVrabotenMesecniPromeni($id, $mesec, $godina)
+    {
+        $this->db->where('vraboten_id', $id);
+        $this->db->where('mesec', $mesec);
+        $this->db->where('godina', $godina);
+        $query = $this->db->get('bis_vraboteni_mesecni_promeni');
+        if($query->num_rows == 1)
+        {
+            $result = $query->result();
+            return $result[0];
+        }
+        else return false;
+    }
+
+    public function getBanki()
+    {
+        $query = $this->db->get("bis_banki");
+        if($query->num_rows > 0)
+        {
+            $result = $query->result();
+            return $result;
+        }
+        else return false;
+    }
+
+
+
+}

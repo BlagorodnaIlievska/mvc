@@ -1,0 +1,146 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Klient extends CI_Controller{
+
+    function __construct()
+    {
+        parent::__construct();
+        //$this->is_logged_in();
+    }
+
+    public function new_klient()
+    {
+        $this->load->model('podatoci/grad_model');
+        $this->load->model('podatoci/banka_model');
+        $this->load->model('podatoci/komerc_model');
+        $data['grad'] = $this->grad_model->get_grad_dropdown();
+        $data['banka'] = $this->banka_model->get_banka_dropdown();
+        $data['komerc'] = $this->komerc_model->get_komerc_dropdown();
+        $this->load->view('podatoci/klient/klient_form', $data);
+    }
+
+    public function create_klient()
+    {
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('ime', 'Ime', 'trim|required');
+
+        if($this->form_validation->run() == FALSE)
+        {
+            $this->new_klient();
+        }
+        else
+        {
+            $this->load->model('podatoci/klient_model');
+            if($query = $this->klient_model->create_klient())
+            {
+                $data['main_content'] = 'podatoci/klient/klient_successful';
+                $this->load->view('includes/template', $data);
+            }
+            else
+            {
+                $this->load->view('podatoci/klient/klient_form');
+            }
+        }
+    }
+
+    public function pecati_klienti(){
+
+        $this->load->helper('to_pdf');
+
+        $this->load->model('podatoci/klient_model');
+
+        $q=$this->klient_model->getAll();
+
+
+        $data['q']=$q;
+        // page info here, db calls, etc.
+        $html = $this->load->view('podatoci/pecatenje/pecati_klienti', $data, true);
+        pdf_create($html, 'filename')
+            or
+            $data = pdf_create($html, '', false);
+        write_file('name', $data);
+        //if you want to write it to disk and/or send it as an attachment
+
+    }
+    public function pregled()
+    {
+        $gradid = $this->input->post('gradid');
+        $tipid = $this->input->post('tipid');
+
+        $this->load->model('podatoci/klient_model');
+        $query = $this->klient_model->getPregled($gradid,$tipid);
+        echo json_encode($query);
+    }
+    public function getAll(){
+        $this->load->model('podatoci/klient_model');
+        $query = $this->klient_model->getAll();
+        echo json_encode($query);
+    }
+    public function view_klient()
+    {
+        $this->load->model('podatoci/klient_model');
+        $this->load->model('podatoci/joins_model');
+        $this->load->model('podatoci/grad_model');
+        //$query = $this->fields_model->getAll();  // ova e za da se zeme se od fields tabelata
+        $query = $this->klient_model->getAll();
+        $data['grad']=$this->grad_model->get_grad_dropdown();
+        $data['klient'] = $query;
+        $this->load->view('podatoci/klient/edit_klient_form', $data);
+    }
+
+    public function delete_klient(){
+
+        $this->load->model('podatoci/klient_model');
+        $this->klient_model->delete_klient();
+
+        $this->view_klient();
+    }
+
+    public function edit_klient(){
+
+        $this->load->model('podatoci/klient_model');
+        $query = $this->klient_model->edit_klient();
+
+        //print_r($query); die();
+        $this->load->model('podatoci/grad_model');
+        $this->load->model('podatoci/komerc_model');
+        $this->load->model('podatoci/banka_model');
+        $data['grad'] = $this->grad_model->get_grad_dropdown();
+        $data['komerc'] = $this->komerc_model->get_komerc_dropdown();
+        $data['banka'] = $this->banka_model->get_banka_dropdown();
+        $data['main_content'] = 'podatoci/klient/update_klient_form';
+
+        $data['klient'] = $query;
+
+        $this->load->view('includes/template', $data);
+        $this->view_klient();
+    }
+
+    public function update_klient(){
+
+        $this->load->model('podatoci/klient_model');
+        $query = $this->klient_model->update_klient();
+
+        if($query)
+        {
+            echo "Field updated successfully";
+        }
+        else
+        {
+            echo "No row was found ... Please try again.";
+        }
+        $this->view_klient();
+    }
+
+    public function is_logged_in()
+    {
+        $is_logged_in = $this->session->userdata('is_logged_in');
+
+        if(!isset($is_logged_in) || $is_logged_in != true)
+        {
+            echo 'You don\'t have permition to access this page. <a href="../login">Login</a>';
+            die();
+        }
+    }
+
+}
